@@ -3541,6 +3541,11 @@ var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
 var LOCAL_ASK = `${EXT}/status?`;
 var GM_WINDOW = "eb-gm";
+var WHISPER = `${EXT}/whisper`;
+var WHISPER_ACK = `${EXT}/whisper-ack`;
+var WHISPER_REPLY = `${EXT}/whisper-reply`;
+var CHAT_UPDATED = `${EXT}/chat-updated`;
+var MESSAGE_MODAL = `${EXT}/message`;
 
 // src/rules.js
 var CR_XP = {

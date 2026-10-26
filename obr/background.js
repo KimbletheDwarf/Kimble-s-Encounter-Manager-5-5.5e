@@ -3905,6 +3905,12 @@ var SETTINGS_KEY = `${EXT}/settings`;
 var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
 var LOCAL_ASK = `${EXT}/status?`;
+var WHISPER = `${EXT}/whisper`;
+var WHISPER_ACK = `${EXT}/whisper-ack`;
+var WHISPER_REPLY = `${EXT}/whisper-reply`;
+var CHAT_UPDATED = `${EXT}/chat-updated`;
+var MESSAGE_MODAL = `${EXT}/message`;
+var chatKey = (thread) => `kem-chat:${thread}`;
 
 // src/obr/turn-die.js
 var KEY = `${EXT}/turn-die`;
@@ -4007,7 +4013,74 @@ async function startTurnDie() {
   sync();
 }
 
+// src/obr/whisper.js
+var KEEP = 200;
+function readThread(thread) {
+  try {
+    return JSON.parse(localStorage.getItem(chatKey(thread)) || "null") || { character: "", messages: [] };
+  } catch {
+    return { character: "", messages: [] };
+  }
+}
+function addToThread(thread, character, message) {
+  const t = readThread(thread);
+  t.character = character || t.character;
+  t.messages = [...t.messages, message].slice(-KEEP);
+  try {
+    localStorage.setItem(chatKey(thread), JSON.stringify(t));
+  } catch {
+  }
+  return t;
+}
+async function sendWhisper(m) {
+  if (!m.tokens?.length) return { error: `${m.character} has no linked token: link one first (right-click > Link to token\u2026).` };
+  if (!await lib_default.scene.isReady()) return { error: "No scene is open in Owlbear." };
+  const tokens = await lib_default.scene.items.getItems(m.tokens);
+  if (!tokens.length) return { error: `${m.character}'s token is not on this map.` };
+  const owners = new Set(tokens.map((t) => t.createdUserId));
+  const players = (await lib_default.party.getPlayers()).filter((p) => owners.has(p.id) && p.role !== "GM");
+  if (!players.length) return { error: `No connected player owns ${m.character}'s token.` };
+  await lib_default.broadcast.sendMessage(WHISPER, {
+    to: [...new Set(players.map((p) => p.id))],
+    id: m.id,
+    thread: m.thread,
+    character: m.character,
+    from: m.from,
+    text: m.text,
+    at: Date.now()
+  }, { destination: "REMOTE" });
+  return { sentTo: [...new Set(players.map((p) => p.name))] };
+}
+function startWhispers(gm2) {
+  const waiting = [];
+  lib_default.broadcast.onMessage(WHISPER, async ({ data }) => {
+    if (gm2.isGM() || !data?.to?.includes(await lib_default.player.getId())) return;
+    addToThread(data.thread, data.character, { dir: "in", from: data.from, text: data.text, at: data.at });
+    lib_default.broadcast.sendMessage(WHISPER_ACK, { id: data.id, name: await lib_default.player.getName() }, { destination: "REMOTE" }).catch(() => {
+    });
+    lib_default.broadcast.sendMessage(CHAT_UPDATED, { thread: data.thread }, { destination: "LOCAL" }).catch(() => {
+    });
+    const url = new URL(`message.html?thread=${encodeURIComponent(data.thread)}`, location.href).href;
+    lib_default.modal.open({ id: MESSAGE_MODAL, url, width: 380, height: 420, hideBackdrop: true }).catch(() => {
+    });
+  });
+  lib_default.broadcast.onMessage(WHISPER_ACK, ({ data }) => {
+    if (gm2.isGM()) gm2.toWindow({ type: "whisperAck", id: data?.id, name: data?.name });
+  });
+  lib_default.broadcast.onMessage(WHISPER_REPLY, ({ data }) => {
+    if (!gm2.isGM() || !data) return;
+    const msg = { type: "whisperReply", thread: data.thread, character: data.character, name: data.name, text: data.text, at: data.at };
+    if (gm2.toWindow(msg)) return;
+    waiting.push(msg);
+    lib_default.notification.show(`Reply from ${data.name} (${data.character}). Open the GM window to read it.`, "INFO");
+  });
+  return { flush: () => {
+    while (waiting.length && gm2.toWindow(waiting[0])) waiting.shift();
+  } };
+}
+
 // src/obr/background.js
+var whispers = null;
 var role2 = "PLAYER";
 var settings2 = {};
 var gm = null;
@@ -4041,6 +4114,7 @@ window.addEventListener("message", async (e) => {
     gmSeen = Date.now();
     post(gm, { type: "welcome", settings: settings2 });
     status();
+    whispers?.flush();
   } else if (m.type === "ping") {
     if (e.source === gm) {
       gmSeen = Date.now();
@@ -4054,6 +4128,7 @@ window.addEventListener("message", async (e) => {
   } else if (m.type === "pick") startPick(e.source, m);
   else if (m.type === "unlink") await unlink(m.ids || []);
   else if (m.type === "rename") await rename(m.items || []);
+  else if (m.type === "whisper") post(e.source, { type: "whisperResult", id: m.id, ...await sendWhisper(m).catch((err) => ({ error: String(err?.message || err) })) });
 });
 var TOOL = `${EXT}/link-tool`;
 var MODE = `${EXT}/pick`;
@@ -4066,9 +4141,7 @@ async function startPick(source, { id, names }) {
   pick = { id, names, at: 0, picked: /* @__PURE__ */ new Set(), source, back: await lib_default.tool.getActiveTool().catch(() => MOVE) };
   if (pick.back === TOOL) pick.back = MOVE;
   await lib_default.tool.activateTool(TOOL);
-  prompt();
 }
-var prompt = () => lib_default.notification.show(pick.names.length > 1 ? `Click the token for ${pick.names[pick.at]} (${pick.at + 1} of ${pick.names.length}). Esc stops.` : `Click the token for ${pick.names[0]}. Esc cancels.`, "INFO");
 function finishPick(reason) {
   if (!pick) return;
   const { id, source, back } = pick;
@@ -4100,10 +4173,7 @@ async function onTokenClick(target) {
   pick.picked.add(target.id);
   post(pick.source, { type: "picked", id: pick.id, index: pick.at, token: target.id });
   pick.at++;
-  if (pick.at >= pick.names.length) {
-    lib_default.notification.show(pick.names.length > 1 ? `Linked all ${pick.names.length} tokens.` : `Linked: ${name}.`, "SUCCESS");
-    finishPick("done");
-  } else prompt();
+  if (pick.at >= pick.names.length) finishPick("done");
 }
 var onMap = async (ids) => await lib_default.scene.isReady() ? (await lib_default.scene.items.getItems(ids)).map((i) => i.id) : [];
 async function unlink(ids) {
@@ -4245,5 +4315,10 @@ lib_default.onReady(async () => {
   });
   redraw();
   startTurnDie();
+  whispers = startWhispers({ isGM: () => role2 === "GM", toWindow: (msg) => {
+    if (!linked()) return false;
+    post(gm, msg);
+    return true;
+  } });
   resolveReady();
 });

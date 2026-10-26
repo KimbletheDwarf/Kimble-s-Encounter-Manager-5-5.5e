@@ -2390,7 +2390,7 @@ var init_cannon_es = __esm({
         localOrigin.setZero();
         Transform.vectorToLocalFrame(pos, quat, axis, localAxis);
         Transform.pointToLocalFrame(pos, quat, localOrigin, localOrigin);
-        const add = localOrigin.dot(localAxis);
+        const add2 = localOrigin.dot(localAxis);
         min = max = vs[0].dot(localAxis);
         for (let i = 1; i < n; i++) {
           const val = vs[i].dot(localAxis);
@@ -2401,8 +2401,8 @@ var init_cannon_es = __esm({
             min = val;
           }
         }
-        min -= add;
-        max -= add;
+        min -= add2;
+        max -= add2;
         if (min > max) {
           const temp = min;
           min = max;
@@ -21382,7 +21382,7 @@ var init_three_core = __esm({
         const times = this.times.slice(), values = this.values.slice(), stride = this.getValueSize(), smoothInterpolation = this.getInterpolation() === InterpolateSmooth, lastIndex = times.length - 1;
         let writeIndex = 1;
         for (let i = 1; i < lastIndex; ++i) {
-          let keep = false;
+          let keep2 = false;
           const time = times[i];
           const timeNext = times[i + 1];
           if (time !== timeNext && (i !== 1 || time !== times[0])) {
@@ -21391,15 +21391,15 @@ var init_three_core = __esm({
               for (let j = 0; j !== stride; ++j) {
                 const value = values[offset + j];
                 if (value !== values[offsetP + j] || value !== values[offsetN + j]) {
-                  keep = true;
+                  keep2 = true;
                   break;
                 }
               }
             } else {
-              keep = true;
+              keep2 = true;
             }
           }
-          if (keep) {
+          if (keep2) {
             if (i !== writeIndex) {
               times[writeIndex] = times[i];
               const readOffset = i * stride, writeOffset = writeIndex * stride;
@@ -36950,14 +36950,14 @@ var require_browser = __commonJS({
     var spawnWorker = require_spawnWorker();
     var terminateWorker = require_terminateWorker();
     var onMessage = require_onMessage();
-    var send = require_send();
+    var send2 = require_send();
     var loadImage = require_loadImage();
     module.exports = {
       defaultOptions,
       spawnWorker,
       terminateWorker,
       onMessage,
-      send,
+      send: send2,
       loadImage
     };
   }
@@ -36978,7 +36978,7 @@ var require_createWorker = __commonJS({
       terminateWorker,
       onMessage,
       loadImage,
-      send
+      send: send2
     } = require_browser();
     var workerCounter = 0;
     module.exports = async (langs = "eng", oem = OEM.LSTM_ONLY, _options = {}, config = {}) => {
@@ -37012,14 +37012,14 @@ var require_createWorker = __commonJS({
         log2(`[${id}]: Start ${jobId}, action=${action}`);
         const promiseId = `${action}-${jobId}`;
         promises[promiseId] = { resolve, reject };
-        send(worker, {
+        send2(worker, {
           workerId: id,
           jobId,
           action,
           payload
         });
       });
-      const load = () => console.warn("`load` is depreciated and should be removed from code (workers now come pre-loaded)");
+      const load2 = () => console.warn("`load` is depreciated and should be removed from code (workers now come pre-loaded)");
       const loadInternal = (jobId) => startJob(createJob({
         id: jobId,
         action: "load",
@@ -37134,7 +37134,7 @@ var require_createWorker = __commonJS({
       const resolveObj = {
         id,
         worker,
-        load,
+        load: load2,
         writeText,
         readText: readText2,
         removeFile,
@@ -41057,17 +41057,17 @@ var init_pdf = __esm({
           editorType,
           _uiManager
         } = this.#editor;
-        const button = document.createElement("button");
-        button.className = "delete";
-        button.tabIndex = 0;
-        button.setAttribute("data-l10n-id", _EditorToolbar.#l10nRemove[editorType]);
-        this.#addListenersToElement(button);
-        button.addEventListener("click", (e) => {
+        const button2 = document.createElement("button");
+        button2.className = "delete";
+        button2.tabIndex = 0;
+        button2.setAttribute("data-l10n-id", _EditorToolbar.#l10nRemove[editorType]);
+        this.#addListenersToElement(button2);
+        button2.addEventListener("click", (e) => {
           _uiManager.delete();
         }, {
           signal: _uiManager._signal
         });
-        this.#buttons.append(button);
+        this.#buttons.append(button2);
       }
       get #divider() {
         const divider = document.createElement("div");
@@ -41075,16 +41075,16 @@ var init_pdf = __esm({
         return divider;
       }
       async addAltText(altText) {
-        const button = await altText.render();
-        this.#addListenersToElement(button);
-        this.#buttons.prepend(button, this.#divider);
+        const button2 = await altText.render();
+        this.#addListenersToElement(button2);
+        this.#buttons.prepend(button2, this.#divider);
         this.#altText = altText;
       }
       addColorPicker(colorPicker) {
         this.#colorPicker = colorPicker;
-        const button = colorPicker.renderButton();
-        this.#addListenersToElement(button);
-        this.#buttons.prepend(button, this.#divider);
+        const button2 = colorPicker.renderButton();
+        this.#addListenersToElement(button2);
+        this.#buttons.prepend(button2, this.#divider);
       }
       remove() {
         this.#toolbar.remove();
@@ -41149,24 +41149,24 @@ var init_pdf = __esm({
         this.#toolbar.remove();
       }
       #addHighlightButton() {
-        const button = document.createElement("button");
-        button.className = "highlightButton";
-        button.tabIndex = 0;
-        button.setAttribute("data-l10n-id", `pdfjs-highlight-floating-button1`);
+        const button2 = document.createElement("button");
+        button2.className = "highlightButton";
+        button2.tabIndex = 0;
+        button2.setAttribute("data-l10n-id", `pdfjs-highlight-floating-button1`);
         const span = document.createElement("span");
-        button.append(span);
+        button2.append(span);
         span.className = "visuallyHidden";
         span.setAttribute("data-l10n-id", "pdfjs-highlight-floating-button-label");
         const signal = this.#uiManager._signal;
-        button.addEventListener("contextmenu", noContextMenu, {
+        button2.addEventListener("contextmenu", noContextMenu, {
           signal
         });
-        button.addEventListener("click", () => {
+        button2.addEventListener("click", () => {
           this.#uiManager.highlightSelection("floating_button");
         }, {
           signal
         });
-        this.#buttons.append(button);
+        this.#buttons.append(button2);
       }
     };
     IdManager = class {
@@ -43127,13 +43127,13 @@ var init_pdf = __esm({
         this.#badge = null;
       }
       async #setState() {
-        const button = this.#altTextButton;
-        if (!button) {
+        const button2 = this.#altTextButton;
+        if (!button2) {
           return;
         }
         if (this.#useNewAltTextFlow) {
-          button.classList.toggle("done", !!this.#altText);
-          button.setAttribute("data-l10n-id", _AltText.#l10nNewButton[this.#label]);
+          button2.classList.toggle("done", !!this.#altText);
+          button2.setAttribute("data-l10n-id", _AltText.#l10nNewButton[this.#label]);
           this.#altTextButtonLabel?.setAttribute("data-l10n-id", _AltText.#l10nNewButton[`${this.#label}-label`]);
           if (!this.#altText) {
             this.#altTextTooltip?.remove();
@@ -43141,12 +43141,12 @@ var init_pdf = __esm({
           }
         } else {
           if (!this.#altText && !this.#altTextDecorative) {
-            button.classList.remove("done");
+            button2.classList.remove("done");
             this.#altTextTooltip?.remove();
             return;
           }
-          button.classList.add("done");
-          button.setAttribute("data-l10n-id", "pdfjs-editor-alt-text-edit-button");
+          button2.classList.add("done");
+          button2.setAttribute("data-l10n-id", "pdfjs-editor-alt-text-edit-button");
         }
         let tooltip = this.#altTextTooltip;
         if (!tooltip) {
@@ -43162,7 +43162,7 @@ var init_pdf = __esm({
           }, {
             once: true
           });
-          button.addEventListener("mouseenter", () => {
+          button2.addEventListener("mouseenter", () => {
             this.#altTextTooltipTimeout = setTimeout(() => {
               this.#altTextTooltipTimeout = null;
               this.#altTextTooltip.classList.add("show");
@@ -43173,7 +43173,7 @@ var init_pdf = __esm({
           }, {
             signal
           });
-          button.addEventListener("mouseleave", () => {
+          button2.addEventListener("mouseleave", () => {
             if (this.#altTextTooltipTimeout) {
               clearTimeout(this.#altTextTooltipTimeout);
               this.#altTextTooltipTimeout = null;
@@ -43190,7 +43190,7 @@ var init_pdf = __esm({
           tooltip.textContent = this.#altText;
         }
         if (!tooltip.parentNode) {
-          button.append(tooltip);
+          button2.append(tooltip);
         }
         const element = this.#editor.getImageForAltText();
         element?.setAttribute("aria-describedby", tooltip.id);
@@ -53649,7 +53649,7 @@ var init_pdf = __esm({
         parent,
         rect,
         parentRect,
-        open
+        open: open2
       }) {
         this.#container = container;
         this.#titleObj = titleObj;
@@ -53672,7 +53672,7 @@ var init_pdf = __esm({
           element.container?.addEventListener("keydown", this.#boundKeyDown);
         }
         this.#container.hidden = true;
-        if (open) {
+        if (open2) {
           this.#toggle();
         }
       }
@@ -55852,24 +55852,24 @@ var init_pdf = __esm({
         });
       }
       renderButton() {
-        const button = this.#button = document.createElement("button");
-        button.className = "colorPicker";
-        button.tabIndex = "0";
-        button.setAttribute("data-l10n-id", "pdfjs-editor-colorpicker-button");
-        button.setAttribute("aria-haspopup", true);
+        const button2 = this.#button = document.createElement("button");
+        button2.className = "colorPicker";
+        button2.tabIndex = "0";
+        button2.setAttribute("data-l10n-id", "pdfjs-editor-colorpicker-button");
+        button2.setAttribute("aria-haspopup", true);
         const signal = this.#uiManager._signal;
-        button.addEventListener("click", this.#openDropdown.bind(this), {
+        button2.addEventListener("click", this.#openDropdown.bind(this), {
           signal
         });
-        button.addEventListener("keydown", this.#keyDown.bind(this), {
+        button2.addEventListener("keydown", this.#keyDown.bind(this), {
           signal
         });
         const swatch = this.#buttonSwatch = document.createElement("span");
         swatch.className = "swatch";
         swatch.setAttribute("aria-hidden", true);
         swatch.style.backgroundColor = this.#defaultColor;
-        button.append(swatch);
-        return button;
+        button2.append(swatch);
+        return button2;
       }
       renderMainDropdown() {
         const dropdown = this.#dropdown = this.#getDropdownRoot();
@@ -55889,21 +55889,21 @@ var init_pdf = __esm({
         div.setAttribute("aria-orientation", "vertical");
         div.setAttribute("data-l10n-id", "pdfjs-editor-colorpicker-dropdown");
         for (const [name, color] of this.#uiManager.highlightColors) {
-          const button = document.createElement("button");
-          button.tabIndex = "0";
-          button.role = "option";
-          button.setAttribute("data-color", color);
-          button.title = name;
-          button.setAttribute("data-l10n-id", _ColorPicker.#l10nColor[name]);
+          const button2 = document.createElement("button");
+          button2.tabIndex = "0";
+          button2.role = "option";
+          button2.setAttribute("data-color", color);
+          button2.title = name;
+          button2.setAttribute("data-l10n-id", _ColorPicker.#l10nColor[name]);
           const swatch = document.createElement("span");
-          button.append(swatch);
+          button2.append(swatch);
           swatch.className = "swatch";
           swatch.style.backgroundColor = color;
-          button.setAttribute("aria-selected", color === this.#defaultColor);
-          button.addEventListener("click", this.#colorSelect.bind(this, color), {
+          button2.setAttribute("aria-selected", color === this.#defaultColor);
+          button2.addEventListener("click", this.#colorSelect.bind(this, color), {
             signal
           });
-          div.append(button);
+          div.append(button2);
         }
         div.addEventListener("keydown", this.#keyDown.bind(this), {
           signal
@@ -57395,15 +57395,15 @@ var init_pdf = __esm({
           parent.drawLayer.updateProperties(this._currentDrawId, _DrawingEditor.#currentDraw.end(event.offsetX, event.offsetY));
         }
         if (this.supportMultipleDrawings) {
-          const draw = _DrawingEditor.#currentDraw;
+          const draw2 = _DrawingEditor.#currentDraw;
           const drawId = this._currentDrawId;
-          const lastElement = draw.getLastElement();
+          const lastElement = draw2.getLastElement();
           parent.addCommands({
             cmd: () => {
-              parent.drawLayer.updateProperties(drawId, draw.setLastElement(lastElement));
+              parent.drawLayer.updateProperties(drawId, draw2.setLastElement(lastElement));
             },
             undo: () => {
-              parent.drawLayer.updateProperties(drawId, draw.removeLastElement());
+              parent.drawLayer.updateProperties(drawId, draw2.removeLastElement());
             },
             mustExec: false,
             type: AnnotationEditorParamsType.DRAW_STEP
@@ -59972,7 +59972,7 @@ var require_affix = __commonJS({
       var ruleType;
       var count;
       var remove2;
-      var add;
+      var add2;
       var source;
       var entry;
       var position;
@@ -60029,16 +60029,16 @@ var require_affix = __commonJS({
           while (++index <= count) {
             parts = lines[index].split(whiteSpaceExpression);
             remove2 = parts[2];
-            add = parts[3].split("/");
+            add2 = parts[3].split("/");
             source = parts[4];
             entry = {
               add: "",
               remove: "",
               match: "",
-              continuation: parse(flags, add[1])
+              continuation: parse(flags, add2[1])
             };
-            if (add && add[0] !== "0") {
-              entry.add = add[0];
+            if (add2 && add2[0] !== "0") {
+              entry.add = add2[0];
             }
             try {
               if (remove2 !== "0") {
@@ -60576,7 +60576,7 @@ var require_add = __commonJS({
   "node_modules/nspell/lib/util/add.js"(exports, module) {
     "use strict";
     var apply = require_apply();
-    module.exports = add;
+    module.exports = add2;
     var push = [].push;
     var NO_RULES = [];
     function addRules(dict, word, rules) {
@@ -60591,7 +60591,7 @@ var require_add = __commonJS({
         dict[word] = rules.concat();
       }
     }
-    function add(dict, word, codes, options) {
+    function add2(dict, word, codes, options) {
       var position = -1;
       var rule;
       var offset;
@@ -60647,9 +60647,9 @@ var require_add2 = __commonJS({
   "node_modules/nspell/lib/add.js"(exports, module) {
     "use strict";
     var push = require_add();
-    module.exports = add;
+    module.exports = add2;
     var NO_CODES = [];
-    function add(value, model) {
+    function add2(value, model) {
       var self2 = this;
       push(self2.data, value, self2.data[model] || NO_CODES, self2);
       return self2;
@@ -60686,7 +60686,7 @@ var require_dictionary = __commonJS({
   "node_modules/nspell/lib/util/dictionary.js"(exports, module) {
     "use strict";
     var parseCodes = require_rule_codes();
-    var add = require_add();
+    var add2 = require_add();
     module.exports = parse;
     var whiteSpaceExpression = /\s/g;
     function parse(buf, options, dict) {
@@ -60729,7 +60729,7 @@ var require_dictionary = __commonJS({
       }
       word = word.trim();
       if (word) {
-        add(dict, word, parseCodes(options.flags, codes.trim()), options);
+        add2(dict, word, parseCodes(options.flags, codes.trim()), options);
       }
     }
   }
@@ -60740,8 +60740,8 @@ var require_dictionary2 = __commonJS({
   "node_modules/nspell/lib/dictionary.js"(exports, module) {
     "use strict";
     var parse = require_dictionary();
-    module.exports = add;
-    function add(buf) {
+    module.exports = add2;
+    function add2(buf) {
       var self2 = this;
       var index = -1;
       var rule;
@@ -60768,8 +60768,8 @@ var require_dictionary2 = __commonJS({
 var require_personal = __commonJS({
   "node_modules/nspell/lib/personal.js"(exports, module) {
     "use strict";
-    module.exports = add;
-    function add(buf) {
+    module.exports = add2;
+    function add2(buf) {
       var self2 = this;
       var lines = buf.toString("utf8").split("\n");
       var index = -1;
@@ -60954,10 +60954,10 @@ function mountDiceTray() {
     if (e.key === "Escape" && !panel.hidden) toggle(false);
   });
 }
-function toggle(open = panel.hidden) {
-  panel.hidden = !open;
-  fab.classList.toggle("open", open);
-  if (open) render();
+function toggle(open2 = panel.hidden) {
+  panel.hidden = !open2;
+  fab.classList.toggle("open", open2);
+  if (open2) render();
 }
 function trayExpression() {
   const parts = DICE.filter((d) => pick[d]).map((d) => `${pick[d]}d${d}`);
@@ -61573,8 +61573,8 @@ var tokensOf = (c2) => isGroup(c2) ? c2.members.map((m) => m.token).filter(Boole
 var tokenName = (c2, i = -1) => i >= 0 ? `${c2.name} ${i + 1}` : c2.name;
 function linkPlan(c2) {
   if (!isGroup(c2)) return [{ member: -1, name: tokenName(c2) }];
-  const open = c2.members.map((m, i) => i).filter((i) => !c2.members[i].token);
-  return (open.length ? open : c2.members.map((m, i) => i)).map((i) => ({ member: i, name: tokenName(c2, i) }));
+  const open2 = c2.members.map((m, i) => i).filter((i) => !c2.members[i].token);
+  return (open2.length ? open2 : c2.members.map((m, i) => i)).map((i) => ({ member: i, name: tokenName(c2, i) }));
 }
 function linkToken(s, key2, member2, id) {
   for (const x of s.combatants) {
@@ -62565,7 +62565,7 @@ var bonusExpr = (b2) => {
   return Number.isFinite(n) ? `1d20${sign(n)}` : null;
 };
 var roll2 = (text, expr, label, who) => expr ? rollButton(text, expr, label, who) : esc(text);
-var block = (title, text, open = false) => text ? `<details class="sh-text"${open ? " open" : ""}><summary>${title}</summary><div>${condify(spellify(esc(text.replace(/[ \t]+\n/g, "\n").trim()))).replace(/\n/g, "<br>")}</div></details>` : "";
+var block = (title, text, open2 = false) => text ? `<details class="sh-text"${open2 ? " open" : ""}><summary>${title}</summary><div>${condify(spellify(esc(text.replace(/[ \t]+\n/g, "\n").trim()))).replace(/\n/g, "<br>")}</div></details>` : "";
 function characterSheet(c2, opts2 = {}) {
   const s = c2.sheet, who = c2.name;
   if (!s) return h("div.empty", "No character sheet yet. Import this character's D&D Beyond PDF on the Party tab to see the full sheet here.");
@@ -63035,9 +63035,9 @@ async function spellingDialog(monsters, { title = "Spelling", onOpen, onChanged 
   }, "primary"]]);
   body2.closest(".modal")?.classList.add("wide");
   const checker = await getChecker(vocabulary);
-  const open = /* @__PURE__ */ new Set();
+  const open2 = /* @__PURE__ */ new Set();
   let shown3 = 40;
-  function draw() {
+  function draw2() {
     const words = /* @__PURE__ */ new Map();
     for (const m of monsters) for (const issue of findIssues(m, checker, [...skipped])) {
       if (!words.has(issue.word)) words.set(issue.word, { word: issue.word, count: 0, monsters: [] });
@@ -63057,7 +63057,7 @@ async function spellingDialog(monsters, { title = "Spelling", onOpen, onChanged 
         }
       }
       onChanged?.();
-      draw();
+      draw2();
       return n;
     };
     const many = monsters.length > 1;
@@ -63068,15 +63068,15 @@ async function spellingDialog(monsters, { title = "Spelling", onOpen, onChanged 
         const own = h("input.spell-own", { type: "text", placeholder: "Your spelling", onkeydown: (e) => {
           if (e.key === "Enter") fix(w, e.target.value);
         } });
-        const isOpen = open.has(w.word);
+        const isOpen = open2.has(w.word);
         return h(
           "div.spell-row",
           h(
             "div.spell-top",
             h("button.icon-btn.chev", { title: isOpen ? "Hide where it is" : "Show where it is", onclick: () => {
-              if (isOpen) open.delete(w.word);
-              else open.add(w.word);
-              draw();
+              if (isOpen) open2.delete(w.word);
+              else open2.add(w.word);
+              draw2();
             } }, isOpen ? "\u25BE" : "\u25B8"),
             h("span.spell-word", w.word),
             h("span.muted", `\xD7${w.count}${many ? ` in ${w.monsters.length} monster${w.monsters.length === 1 ? "" : "s"}` : ""}`),
@@ -63087,11 +63087,11 @@ async function spellingDialog(monsters, { title = "Spelling", onOpen, onChanged 
               h("button", { onclick: () => fix(w, own.value) }, "Replace"),
               h("button", { title: "Known from now on, in every monster", onclick: async () => {
                 await addUserWord(w.word);
-                draw();
+                draw2();
               } }, "Add to dictionary"),
               h("button.link", { title: "Hide it until the app is closed", onclick: () => {
                 skipped.add(w.word.toLowerCase());
-                draw();
+                draw2();
               } }, "Skip")
             )
           ),
@@ -63108,11 +63108,11 @@ async function spellingDialog(monsters, { title = "Spelling", onOpen, onChanged 
       }),
       list.length > shown3 ? h("button.load-more", { onclick: () => {
         shown3 += 40;
-        draw();
+        draw2();
       } }, `Show more (${list.length - shown3} left)`) : null
     );
   }
-  draw();
+  draw2();
 }
 
 // src/tabs/library.js
@@ -63332,7 +63332,7 @@ function editor(m) {
   const section = (title, key2) => {
     m[key2] ??= [];
     const box = h("div.entries");
-    const draw = () => fill(box, ...m[key2].map((entry, i) => h(
+    const draw2 = () => fill(box, ...m[key2].map((entry, i) => h(
       "div.entry",
       h(
         "div.entry-top",
@@ -63342,12 +63342,12 @@ function editor(m) {
         } }),
         h("button.icon-btn", { title: "Move up", disabled: i === 0, onclick: () => {
           m[key2].splice(i - 1, 0, m[key2].splice(i, 1)[0]);
-          draw();
+          draw2();
           changed3();
         } }, "\u2191"),
         h("button.icon-btn", { title: "Remove", onclick: () => {
           m[key2].splice(i, 1);
-          draw();
+          draw2();
           changed3();
         } }, "\xD7")
       ),
@@ -63369,7 +63369,7 @@ function editor(m) {
         }
       }))
     )));
-    draw();
+    draw2();
     return h(
       "details.edit-section",
       { open: m[key2].length > 0 },
@@ -63377,7 +63377,7 @@ function editor(m) {
       box,
       h("button", { onclick: () => {
         m[key2].push({ name: "", text: "" });
-        draw();
+        draw2();
         changed3();
         box.lastChild?.querySelector("input")?.focus();
       } }, `Add ${title.replace(/s$/, "").toLowerCase()}`)
@@ -63740,10 +63740,10 @@ var testText = "The target must succeed on a DC 13 Constitution saving throw or 
 function renderSide() {
   const side = el4.querySelector("#cd-side");
   const out = h("div.test-out");
-  const draw = () => {
+  const draw2 = () => {
     out.innerHTML = condify(esc(testText)) || "&nbsp;";
   };
-  draw();
+  draw2();
   const c2 = store.conditions.find((x) => x.id === selectedId3);
   const uses = c2 ? usage.get(c2.id) || [] : [];
   fill(
@@ -63752,7 +63752,7 @@ function renderSide() {
     h("div.hint", "Type or paste stat block text. Linked words use the keywords as they are now; hover them to check."),
     h("textarea", { rows: 5, value: testText, oninput: (e) => {
       testText = e.target.value;
-      draw();
+      draw2();
     } }),
     out,
     c2 ? h("h3.uses-head", c2.keywords.length ? `Found in ${uses.length} monster${uses.length === 1 ? "" : "s"}` : "Not linked (no keywords)") : null,
@@ -64256,10 +64256,10 @@ function row(res, g) {
   const m = findMonster(g.monsterId);
   if (!m) return h("div.gen-row", h("div.muted", "A monster that is no longer in your library."));
   const style = styleOf(m);
-  const open = expanded === g.monsterId;
+  const open2 = expanded === g.monsterId;
   const redraw = () => renderResult();
   return h(
-    "div.gen-item" + (open ? ".open" : ""),
+    "div.gen-item" + (open2 ? ".open" : ""),
     h(
       "div.gen-row",
       h("button.icon-btn.lock" + (g.locked ? ".on" : ""), { title: g.locked ? "Locked: kept when you regenerate. Click to unlock." : "Lock: keep this when you regenerate", onclick: () => {
@@ -64298,12 +64298,12 @@ function row(res, g) {
           redraw();
         }]
       ]) }, "\u22EE"),
-      h("button.icon-btn.chev", { title: open ? "Hide stat block" : "Show stat block", onclick: () => {
-        expanded = open ? null : g.monsterId;
+      h("button.icon-btn.chev", { title: open2 ? "Hide stat block" : "Show stat block", onclick: () => {
+        expanded = open2 ? null : g.monsterId;
         redraw();
-      } }, open ? "\u25B4" : "\u25BE")
+      } }, open2 ? "\u25B4" : "\u25BE")
     ),
-    open ? h("div.mon-detail", statBlock(m, { description: false })) : null
+    open2 ? h("div.mon-detail", statBlock(m, { description: false })) : null
   );
 }
 function suggestedName(res) {
@@ -64395,7 +64395,7 @@ function render3() {
 }
 function renderList5() {
   const table = h("div.enc-table-wrap");
-  const draw = () => fill(table, encounterTable({
+  const draw2 = () => fill(table, encounterTable({
     query: listQuery,
     onOpen: (e) => {
       current2 = e;
@@ -64430,11 +64430,11 @@ function renderList5() {
     } }, "Generate"), h("button.outline.big", { onclick: create }, "Create New"))),
     h("div.list-tools", h("input.search", { type: "search", placeholder: "Search", value: listQuery, oninput: (e) => {
       listQuery = e.target.value;
-      draw();
+      draw2();
     } })),
     table
   );
-  draw();
+  draw2();
 }
 function create() {
   if (!store.libraryPath) return alert("Choose a library folder first (top right).");
@@ -64577,9 +64577,9 @@ function renderMonsters() {
   } }, label, sort.key === key2 ? sort.dir > 0 ? " \u25B2" : " \u25BC" : " \u21C5");
   const rows = list.slice(0, shown2).map((m) => {
     const r = evaluate([xpItem(m)], party, current2.rules);
-    const open = expanded2 === m.id;
+    const open2 = expanded2 === m.id;
     return h(
-      "div.mon-item" + (open ? ".open" : ""),
+      "div.mon-item" + (open2 ? ".open" : ""),
       h(
         "div.mon-row",
         avatar(m.avatar, m.name, "sm"),
@@ -64589,12 +64589,12 @@ function renderMonsters() {
         h("div", m.challengeRating),
         h("div", { title: levels.length ? `${r.difficulty} on its own for this party` : "Add characters to see difficulty" }, dots(r.rank, r.maxRank)),
         h("button.add", { onclick: () => addMonster(m) }, "+ Add"),
-        h("button.icon-btn.chev", { title: open ? "Hide stat block" : "Show stat block", onclick: () => {
-          expanded2 = open ? null : m.id;
+        h("button.icon-btn.chev", { title: open2 ? "Hide stat block" : "Show stat block", onclick: () => {
+          expanded2 = open2 ? null : m.id;
           renderMonsters();
-        } }, open ? "\u25B4" : "\u25BE")
+        } }, open2 ? "\u25B4" : "\u25BE")
       ),
-      open ? h("div.mon-detail", statBlock(m, { description: false })) : null
+      open2 ? h("div.mon-detail", statBlock(m, { description: false })) : null
     );
   });
   fill(
@@ -64813,7 +64813,7 @@ function render4() {
 function renderPicker() {
   const table = h("div.enc-table-wrap");
   let query2 = "";
-  const draw = () => fill(table, encounterTable({ query: query2, onOpen: (e) => go4("builder", e.id), onRun: (e) => showRunner(e.id) }));
+  const draw2 = () => fill(table, encounterTable({ query: query2, onOpen: (e) => go4("builder", e.id), onRun: (e) => showRunner(e.id) }));
   const party = activeParty();
   fill(
     el8,
@@ -64839,19 +64839,19 @@ function renderPicker() {
         h("h2", "Encounters"),
         h("div.list-tools", h("input.search", { type: "search", placeholder: "Search", oninput: (e) => {
           query2 = e.target.value;
-          draw();
+          draw2();
         } })),
         table
       )
     )
   );
-  draw();
+  draw2();
 }
 var condIcon = (name) => {
   const i = iconOf(name, store.conditions);
   return i ? h("img.cond-icon", { src: iconPath(i, 64), alt: "" }) : h("span.cond-badge", iconLetters(name));
 };
-function condChips(c2, { add, remove: remove2 }) {
+function condChips(c2, { add: add2, remove: remove2 }) {
   return h(
     "div.conds",
     c2.conditions.map((cond) => h("button.cond", { title: "Click to remove", dataset: { cond }, onclick: (e) => {
@@ -64862,7 +64862,7 @@ function condChips(c2, { add, remove: remove2 }) {
     rowMarks(c2).filter((q) => !c2.conditions.includes(q)).map((q) => h("span.cond.auto", { title: q === "Dead" ? "At 0 HP. Healing it above 0 removes this." : "At 0 HP: unconscious until healed.", dataset: { cond: q } }, condIcon(q), q)),
     isOut(c2) ? null : h("button.cond.add", { title: "Add a condition", onclick: (e) => {
       e.stopPropagation();
-      popMenu(e.currentTarget, [...conditionNames(), "Concentrating", "Dodging"].filter((q) => !c2.conditions.includes(q)).map((q) => [[condIcon(q), q], () => add(q), "", { dataset: { cond: q } }]));
+      popMenu(e.currentTarget, [...conditionNames(), "Concentrating", "Dodging"].filter((q) => !c2.conditions.includes(q)).map((q) => [[condIcon(q), q], () => add2(q), "", { dataset: { cond: q } }]));
     } }, "+ Condition")
   );
 }
@@ -65422,6 +65422,15 @@ function addCombatant() {
   ]);
 }
 var linker = null;
+var messenger = null;
+function setMessenger(m) {
+  messenger = m;
+}
+function characterTokens(charId) {
+  const c2 = liveEncounter()?.combat?.combatants.find((x) => x.key === `pc-${charId}`);
+  return c2 ? tokensOf(c2) : findCharacter(charId)?.live?.tokens || [];
+}
+var messageItem = (charId, name) => messenger ? [["Send message\u2026", () => messenger.compose({ charId, character: name })]] : [];
 function setTokenLinker(l) {
   linker = l;
 }
@@ -65434,7 +65443,8 @@ function tokenItems(c2) {
   const label = !n ? "Link to token\u2026" : isGroup(c2) ? n < c2.members.length ? `Link the other ${plan.length} token${plan.length === 1 ? "" : "s"}\u2026` : "Relink tokens\u2026" : "Link to a different token\u2026";
   return [
     [label, () => startLink(c2)],
-    ...n ? [[n === 1 ? "Unlink token" : `Unlink ${n} tokens`, () => unlinkCombatant(c2)]] : []
+    ...n ? [[n === 1 ? "Unlink token" : `Unlink ${n} tokens`, () => unlinkCombatant(c2)]] : [],
+    ...c2.kind === "pc" && c2.refId ? messageItem(c2.refId, c2.name) : []
   ];
 }
 function tokenMenu(e, c2) {
@@ -65577,7 +65587,7 @@ function chooseParty() {
 function partyTokenItems(ch) {
   const n = ch.live?.tokens?.length || 0;
   if (!linker) return [];
-  return [[n ? "Link to a different token\u2026" : "Link to token\u2026", () => startPartyLink(ch)], ...n ? [["Unlink token", () => unlinkParty(ch)]] : []];
+  return [[n ? "Link to a different token\u2026" : "Link to token\u2026", () => startPartyLink(ch)], ...n ? [["Unlink token", () => unlinkParty(ch)]] : [], ...messageItem(ch.id, ch.name)];
 }
 function startPartyLink(ch) {
   if (!linker.available()) return notice('Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".', "error");
@@ -65771,7 +65781,7 @@ function githubDialog() {
   const token = h("input", { type: "password", value: "", placeholder: s.token ? "saved (type a new one to replace it)" : "github_pat_\u2026", autocomplete: "off" });
   const auto = h("input", { type: "checkbox", checked: !!s.auto });
   const result = h("div.gh-result");
-  const keep = () => {
+  const keep2 = () => {
     const name = parseRepo(repo.value);
     if (!name) {
       fill(result, h("span.bad-text", 'The repository is "owner/name", e.g. your-name/your-library, or its github.com address.'));
@@ -65789,7 +65799,7 @@ function githubDialog() {
     return next2;
   };
   const check = async () => {
-    const next2 = keep();
+    const next2 = keep2();
     if (!next2) return;
     fill(result, "Checking\u2026");
     try {
@@ -65815,12 +65825,12 @@ function githubDialog() {
     ),
     h("label.check-row", auto, "Save to GitHub automatically (a minute after each change)"),
     h("div.row-gap", h("button", { onclick: check }, "Check connection"), h("button", { onclick: () => {
-      if (keep()) {
+      if (keep2()) {
         close();
         githubLoad();
       }
     } }, "Load from GitHub"), h("button.primary", { onclick: () => {
-      if (keep()) {
+      if (keep2()) {
         close();
         githubSave();
       }
@@ -65884,7 +65894,7 @@ function githubDialog() {
       renderGhButton();
     }, "danger"]] : [],
     ["Close", () => {
-      keep();
+      keep2();
     }, "primary"]
   ]);
   repo.focus();
@@ -65921,10 +65931,10 @@ async function importLibrary(text, fileName, { onDone } = {}) {
   }, "primary"]]);
   const plan = planImport(pack, store);
   const sum = (key2) => Object.fromEntries(PACK_KINDS.map((k) => [k, plan[k][key2]]));
-  const add = sum("add"), newer = sum("newer"), older = sum("older"), same = sum("same");
+  const add2 = sum("add"), newer = sum("newer"), older = sum("older"), same = sum("same");
   const n = (by) => PACK_KINDS.reduce((t, k) => t + by[k].length, 0);
   const lines = [
-    n(add) ? h("li", h("strong", "New: "), countText(add)) : null,
+    n(add2) ? h("li", h("strong", "New: "), countText(add2)) : null,
     n(newer) ? h("li", h("strong", "Changed since your copy: "), countText(newer), " (the file\u2019s copy replaces yours)") : null,
     n(older) ? h("li", h("strong", "Yours are newer: "), countText(older), " (kept, unless you choose Import everything)") : null,
     n(same) ? h("li.muted", "Already the same: ", countText(same)) : null,
@@ -65941,7 +65951,7 @@ async function importLibrary(text, fileName, { onDone } = {}) {
     }, "primary"]]);
     onDone?.({ mode: mode2, localNewer: localOnly || mode2 !== "all" && n(older) > 0 });
   };
-  const nothing = !n(add) && !n(newer);
+  const nothing = !n(add2) && !n(newer);
   if (nothing) onDone?.({ mode: null, localNewer: localOnly || n(older) > 0 });
   modal(`Import ${fileName}`, h(
     "div",
@@ -66226,6 +66236,181 @@ function fit(state2) {
   return state2;
 }
 
+// src/obr/chat.js
+init_ui();
+init_store();
+var STORE = "kemChats";
+var VOICE = "kemChatVoice";
+var KEEP = 200;
+var threads = load();
+var open = null;
+var send = () => false;
+var linked = () => false;
+function load() {
+  try {
+    return JSON.parse(localStorage.getItem(STORE) || "{}");
+  } catch {
+    return {};
+  }
+}
+function keep() {
+  try {
+    localStorage.setItem(STORE, JSON.stringify(threads));
+  } catch {
+  }
+}
+var lastVoice = () => {
+  try {
+    return localStorage.getItem(VOICE) || "GM";
+  } catch {
+    return "GM";
+  }
+};
+var thread = (key2, character, charId) => threads[key2] ??= { character, charId, messages: [], unread: 0 };
+var add = (key2, msg) => {
+  const t = threads[key2];
+  t.messages = [...t.messages, msg].slice(-KEEP);
+  keep();
+};
+var unread = () => Object.values(threads).reduce((n, t) => n + (t.unread || 0), 0);
+function sendMessage(charId, character, from, text) {
+  const key2 = `pc-${charId}`;
+  thread(key2, character, charId);
+  try {
+    localStorage.setItem(VOICE, from);
+  } catch {
+  }
+  const id = `m-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+  add(key2, { id, dir: "out", from, text, at: Date.now(), status: "sending" });
+  const ok = linked() && send({ type: "whisper", id, thread: key2, character, from, text, tokens: characterTokens(charId) });
+  if (!ok) setStatus(id, "error", 'Not linked to Owlbear: press "Open / reconnect GM window" in Owlbear, then send again.');
+  draw();
+}
+function setStatus(id, status4, note) {
+  for (const t of Object.values(threads)) {
+    const m = t.messages.find((x) => x.id === id);
+    if (m) {
+      m.status = status4;
+      m.note = note;
+      keep();
+    }
+  }
+  draw();
+}
+function compose({ charId, character }) {
+  const from = h("input", { type: "text", value: lastVoice(), placeholder: "e.g. Elder Voss, A voice in your head" });
+  const text = h("textarea", { rows: 5, placeholder: `Message for ${character}'s player\u2026` });
+  const close = modal(`Message to ${character}`, h(
+    "div.chat-compose",
+    h("label", "From (the title they see)", from),
+    h("label", "Message", text),
+    h("div.hint", "Only the player who owns this character's linked token sees it. Their replies appear in Messages (top bar).")
+  ), [
+    ["Cancel", () => {
+    }],
+    ["Send", () => {
+      if (!text.value.trim()) return false;
+      sendMessage(charId, character, from.value.trim() || "GM", text.value.trim());
+      openPanel(`pc-${charId}`);
+    }, "primary"]
+  ]);
+  text.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      close();
+      sendMessage(charId, character, from.value.trim() || "GM", text.value.trim());
+      openPanel(`pc-${charId}`);
+    }
+  });
+  text.focus();
+}
+var button = h("button.chat-btn", { title: "Messages with players", onclick: () => open ? closePanel() : openPanel(latest()) });
+var panel2 = h("div.chat-panel", { hidden: true });
+var latest = () => Object.entries(threads).sort(([, a2], [, b2]) => (b2.messages.at(-1)?.at || 0) - (a2.messages.at(-1)?.at || 0))[0]?.[0] || null;
+function openPanel(key2) {
+  open = key2 || latest() || "";
+  if (threads[open]) threads[open].unread = 0;
+  keep();
+  draw();
+}
+function closePanel() {
+  open = null;
+  draw();
+}
+function draw() {
+  const n = unread();
+  button.replaceChildren("\u{1F4AC} Messages", n ? h("span.chat-count", n) : "");
+  button.classList.toggle("has-unread", !!n);
+  panel2.hidden = open === null;
+  if (open === null) return;
+  const keys = Object.keys(threads);
+  const t = threads[open];
+  const status4 = (m) => m.status === "sending" ? "Sending\u2026" : m.status === "error" ? m.note : m.note || "";
+  const list = h("div.chat-list", t ? t.messages.map((m) => h(
+    `div.chat-msg.${m.dir}${m.status === "error" ? ".error" : ""}`,
+    h("div.chat-who", m.dir === "out" ? `As ${m.from}` : m.from, h("span.chat-time", new Date(m.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }))),
+    h("div.chat-text", m.text),
+    m.dir === "out" && status4(m) ? h("div.chat-status", status4(m)) : null
+  )) : h("div.empty", "No messages yet. Right-click a character in Run Encounter > Send message\u2026"));
+  const from = h("input", { type: "text", value: lastVoice(), title: "Who it seems to come from (the title they see)" });
+  const text = h("textarea", { rows: 2, placeholder: t ? `Message for ${t.character}\u2026` : "Pick a character first", disabled: !t });
+  const go6 = () => {
+    if (!t || !text.value.trim()) return;
+    sendMessage(t.charId, t.character, from.value.trim() || "GM", text.value.trim());
+  };
+  text.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      go6();
+    }
+  });
+  fill(
+    panel2,
+    h("div.chat-head", h("strong", "Messages"), h("button.icon-btn", { title: "Close", onclick: closePanel }, "\xD7")),
+    keys.length ? h("div.chat-tabs", keys.map((k) => h(
+      "button" + (k === open ? ".active" : ""),
+      { onclick: () => openPanel(k) },
+      threads[k].character,
+      threads[k].unread ? h("span.chat-count", threads[k].unread) : ""
+    ))) : null,
+    list,
+    t ? h("div.chat-send", h("label", "From", from), h("div.chat-row", text, h("button.primary", { onclick: go6 }, "Send"))) : null
+  );
+  list.scrollTop = list.scrollHeight;
+}
+function initChat(bridge2) {
+  send = bridge2.send;
+  linked = bridge2.linked;
+  setMessenger({ available: linked, compose });
+  const mount2 = () => {
+    const bar = document.querySelector("header.top .top-right");
+    if (!bar) return setTimeout(mount2, 100);
+    bar.prepend(button);
+    document.body.append(panel2);
+    draw();
+  };
+  mount2();
+  return {
+    result({ id, error: error2, sentTo }) {
+      if (error2) {
+        setStatus(id, "error", error2);
+        notice(error2, "error");
+      } else setStatus(id, "sent", `Sent to ${sentTo.join(", ")}`);
+    },
+    ack({ id, name }) {
+      setStatus(id, "delivered", `Delivered to ${name}`);
+    },
+    reply({ thread: key2, character, name, text, at: at2 }) {
+      const charId = key2.replace(/^pc-/, "");
+      const t = thread(key2, character || store.party.find((c2) => c2.id === charId)?.name || "Player", charId);
+      add(key2, { id: `r-${at2}`, dir: "in", from: `${name}${t.character ? ` (${t.character})` : ""}`, text, at: at2 });
+      if (open !== key2) t.unread = (t.unread || 0) + 1;
+      keep();
+      openPanel(key2);
+    }
+  };
+}
+
 // src/obr/link.js
 var obr = window.opener ? window.opener.top : null;
 var bridge = null;
@@ -66307,8 +66492,15 @@ window.addEventListener("message", (e) => {
   else if (m.type === "pickDone") {
     picks.get(m.id)?.onDone(m.reason);
     picks.delete(m.id);
-  }
+  } else if (m.type === "whisperResult") chat.result(m);
+  else if (m.type === "whisperAck") chat.ack(m);
+  else if (m.type === "whisperReply") chat.reply(m);
 });
+var chat = initChat({ send: (msg) => {
+  if (!bridge) return false;
+  post(bridge, msg);
+  return true;
+}, linked: () => !!bridge });
 var picks = /* @__PURE__ */ new Map();
 var pickCount = 0;
 setTokenLinker({
