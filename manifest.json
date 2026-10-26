@@ -1,0 +1,15 @@
+{
+  "name": "Kimble's Encounter Manager 5/5.5e",
+  "version": "1.0.0",
+  "manifest_version": 1,
+  "author": "Kimble",
+  "description": "Initiative tracker, token linking and condition markers, run from a GM window with an encounter builder.",
+  "action": {
+    "title": "Kimble's Encounter Manager 5/5.5e",
+    "icon": "/Kimble-s-Encounter-Manager-5-5.5e/obr/icon.svg",
+    "popover": "/Kimble-s-Encounter-Manager-5-5.5e/obr/popover.html",
+    "width": 320,
+    "height": 260
+  },
+  "background_url": "/Kimble-s-Encounter-Manager-5-5.5e/obr/background.html"
+}
