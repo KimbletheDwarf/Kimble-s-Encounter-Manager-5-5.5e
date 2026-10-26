@@ -3914,19 +3914,21 @@ var chatKey = (thread) => `kem-chat:${thread}`;
 
 // src/obr/turn-die.js
 var KEY = `${EXT}/turn-die`;
-var SIZE = 2.2;
-var PULSE = { mid: 1.04, depth: 0.08, seconds: 1.6 };
+var SIZE = 1.55;
+var PULSE = { mid: 1.04, depth: 0.08, seconds: 3.2 };
+var SPIN_SECONDS = 60;
 var FRAME_MS = 66;
 var picture = (name) => ({ url: new URL(name, location.href).href, width: 512, height: 512, mime: "image/png" });
 var role = "PLAYER";
 var state = null;
 var settings = {};
-var drawn = { sig: "", glows: [] };
+var drawn = { sig: "", glows: [], dice: [] };
 var busy = false;
 var again = false;
 function wanted() {
-  if (settings.showTurnDie === false || state?.phase !== "active") return [];
-  return state.order?.find((r) => r.key === state.turn)?.tokens || [];
+  if (settings.showTurnDie === false || state?.phase !== "active") return { ids: [], red: false };
+  const row = state.order?.find((r) => r.key === state.turn);
+  return { ids: row?.tokens || [], red: row?.kind !== "pc" };
 }
 async function sync() {
   if (busy) {
@@ -3947,13 +3949,13 @@ async function sync() {
 }
 async function draw() {
   const ready2 = await lib_default.scene.isReady();
-  const ids = ready2 ? wanted() : [];
+  const { ids, red } = ready2 ? wanted() : { ids: [], red: false };
   const tokens = ids.length ? (await lib_default.scene.items.getItems(ids)).filter((t) => role === "GM" || t.visible) : [];
-  const sig = JSON.stringify(tokens.map((t) => [t.id, t.scale.x, t.scale.y]));
+  const sig = JSON.stringify([red, tokens.map((t) => [t.id, t.scale.x, t.scale.y])]);
   if (sig === drawn.sig) return;
   const old = ready2 ? (await lib_default.scene.local.getItems((i) => !!i.metadata?.[KEY])).map((i) => i.id) : [];
   if (old.length) await lib_default.scene.local.deleteItems(old);
-  drawn = { sig, glows: [] };
+  drawn = { sig, glows: [], dice: [] };
   if (!tokens.length) return;
   const dpi = await lib_default.scene.grid.getDpi();
   const add = [];
@@ -3961,9 +3963,11 @@ async function draw() {
     const b = await lib_default.scene.items.getItemBounds([t.id]);
     const base = Math.max(b.width, b.height) * SIZE / dpi;
     const item = (name, kind, z) => buildImage(picture(name), { dpi: 512, offset: { x: 256, y: 256 } }).position(b.center).scale({ x: base, y: base }).attachedTo(t.id).layer("PROP").zIndex(z).locked(true).disableHit(true).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).name("Turn indicator").metadata({ [KEY]: { kind } }).build();
-    const glow = item("turn-glow.png", "glow", 0);
-    add.push(glow, item("turn-d20.png", "die", 1));
+    const tint = red ? "-red" : "";
+    const glow = item(`turn-glow${tint}.png`, "glow", 0), die2 = item(`turn-d20${tint}.png`, "die", 1);
+    add.push(glow, die2);
     drawn.glows.push({ id: glow.id, base });
+    drawn.dice.push(die2.id);
   }
   await lib_default.scene.local.addItems(add);
 }
@@ -3971,13 +3975,18 @@ var animating = false;
 setInterval(async () => {
   if (animating || !drawn.glows.length || document.hidden) return;
   animating = true;
-  const s = PULSE.mid + PULSE.depth * Math.sin(2 * Math.PI * (performance.now() / 1e3) / PULSE.seconds);
+  const now = performance.now() / 1e3;
+  const s = PULSE.mid + PULSE.depth * Math.sin(2 * Math.PI * now / PULSE.seconds);
+  const turn = now / SPIN_SECONDS * 360 % 360;
   const base = new Map(drawn.glows.map((g) => [g.id, g.base]));
   try {
-    await lib_default.scene.local.updateItems([...base.keys()], (items) => {
+    await lib_default.scene.local.updateItems([...base.keys(), ...drawn.dice], (items) => {
       for (const it of items) {
-        const k = base.get(it.id) * s;
-        it.scale = { x: k, y: k };
+        it.rotation = turn;
+        if (base.has(it.id)) {
+          const k = base.get(it.id) * s;
+          it.scale = { x: k, y: k };
+        }
       }
     }, true);
   } catch {
