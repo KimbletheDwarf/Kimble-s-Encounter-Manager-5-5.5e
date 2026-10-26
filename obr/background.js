@@ -193,10 +193,10 @@ var require_events = __commonJS({
       }
     }
     function _onceWrap(target, type, listener) {
-      var state = { fired: false, wrapFn: void 0, target, type, listener };
-      var wrapped = onceWrapper.bind(state);
+      var state2 = { fired: false, wrapFn: void 0, target, type, listener };
+      var wrapped = onceWrapper.bind(state2);
       wrapped.listener = listener;
-      state.wrapFn = wrapped;
+      state2.wrapFn = wrapped;
       return wrapped;
     }
     EventEmitter2.prototype.once = function once2(type, listener) {
@@ -488,8 +488,8 @@ var PlayerApi = class {
   }
   getRole() {
     return __awaiter(this, void 0, void 0, function* () {
-      const { role: role2 } = yield this.messageBus.sendAsync("OBR_PLAYER_GET_ROLE", {});
-      return role2;
+      const { role: role3 } = yield this.messageBus.sendAsync("OBR_PLAYER_GET_ROLE", {});
+      return role3;
     });
   }
   getMetadata() {
@@ -505,8 +505,8 @@ var PlayerApi = class {
   }
   hasPermission(permission) {
     return __awaiter(this, void 0, void 0, function* () {
-      const role2 = yield this.getRole();
-      if (role2 === "GM") {
+      const role3 = yield this.getRole();
+      if (role3 === "GM") {
         return true;
       }
       const { permissions } = yield this.messageBus.sendAsync("OBR_ROOM_GET_PERMISSIONS", {});
@@ -1175,8 +1175,8 @@ function each(obj, iter, strict = true) {
   }
 }
 function getArchtype(thing) {
-  const state = thing[DRAFT_STATE];
-  return state ? state.type_ : Array.isArray(thing) ? 1 : isMap(thing) ? 2 : isSet(thing) ? 3 : 0;
+  const state2 = thing[DRAFT_STATE];
+  return state2 ? state2.type_ : Array.isArray(thing) ? 1 : isMap(thing) ? 2 : isSet(thing) ? 3 : 0;
 }
 function has(thing, prop) {
   return getArchtype(thing) === 2 ? thing.has(prop) : Object.prototype.hasOwnProperty.call(thing, prop);
@@ -1206,8 +1206,8 @@ function isMap(target) {
 function isSet(target) {
   return target instanceof Set;
 }
-function latest(state) {
-  return state.copy_ || state.base_;
+function latest(state2) {
+  return state2.copy_ || state2.base_;
 }
 function shallowCopy(base, strict) {
   if (isMap(base)) {
@@ -1325,11 +1325,11 @@ function enterScope(immer2) {
   return currentScope = createScope(currentScope, immer2);
 }
 function revokeDraft(draft) {
-  const state = draft[DRAFT_STATE];
-  if (state.type_ === 0 || state.type_ === 1)
-    state.revoke_();
+  const state2 = draft[DRAFT_STATE];
+  if (state2.type_ === 0 || state2.type_ === 1)
+    state2.revoke_();
   else
-    state.revoked_ = true;
+    state2.revoked_ = true;
 }
 function processResult(result, scope) {
   scope.unfinalizedDrafts_ = scope.drafts_.length;
@@ -1366,28 +1366,28 @@ function finalize(rootScope, value, path) {
   if (isFrozen(value))
     return value;
   const useStrictIteration = rootScope.immer_.shouldUseStrictIteration();
-  const state = value[DRAFT_STATE];
-  if (!state) {
+  const state2 = value[DRAFT_STATE];
+  if (!state2) {
     each(
       value,
-      (key, childValue) => finalizeProperty(rootScope, state, value, key, childValue, path),
+      (key, childValue) => finalizeProperty(rootScope, state2, value, key, childValue, path),
       useStrictIteration
     );
     return value;
   }
-  if (state.scope_ !== rootScope)
+  if (state2.scope_ !== rootScope)
     return value;
-  if (!state.modified_) {
-    maybeFreeze(rootScope, state.base_, true);
-    return state.base_;
+  if (!state2.modified_) {
+    maybeFreeze(rootScope, state2.base_, true);
+    return state2.base_;
   }
-  if (!state.finalized_) {
-    state.finalized_ = true;
-    state.scope_.unfinalizedDrafts_--;
-    const result = state.copy_;
+  if (!state2.finalized_) {
+    state2.finalized_ = true;
+    state2.scope_.unfinalizedDrafts_--;
+    const result = state2.copy_;
     let resultEach = result;
     let isSet2 = false;
-    if (state.type_ === 3) {
+    if (state2.type_ === 3) {
       resultEach = new Set(result);
       result.clear();
       isSet2 = true;
@@ -1396,7 +1396,7 @@ function finalize(rootScope, value, path) {
       resultEach,
       (key, childValue) => finalizeProperty(
         rootScope,
-        state,
+        state2,
         result,
         key,
         childValue,
@@ -1408,14 +1408,14 @@ function finalize(rootScope, value, path) {
     maybeFreeze(rootScope, result, false);
     if (path && rootScope.patches_) {
       getPlugin("Patches").generatePatches_(
-        state,
+        state2,
         path,
         rootScope.patches_,
         rootScope.inversePatches_
       );
     }
   }
-  return state.copy_;
+  return state2.copy_;
 }
 function finalizeProperty(rootScope, parentState, targetObject, prop, childValue, rootPath, targetIsSet) {
   if (childValue == null) {
@@ -1461,7 +1461,7 @@ function maybeFreeze(scope, value, deep = false) {
 }
 function createProxyProxy(base, parent) {
   const isArray = Array.isArray(base);
-  const state = {
+  const state2 = {
     type_: isArray ? 1 : 0,
     // Track which produce call this is associated with.
     scope_: parent ? parent.scope_ : getCurrentScope(),
@@ -1484,91 +1484,91 @@ function createProxyProxy(base, parent) {
     revoke_: null,
     isManual_: false
   };
-  let target = state;
+  let target = state2;
   let traps = objectTraps;
   if (isArray) {
-    target = [state];
+    target = [state2];
     traps = arrayTraps;
   }
   const { revoke, proxy } = Proxy.revocable(target, traps);
-  state.draft_ = proxy;
-  state.revoke_ = revoke;
+  state2.draft_ = proxy;
+  state2.revoke_ = revoke;
   return proxy;
 }
 var objectTraps = {
-  get(state, prop) {
+  get(state2, prop) {
     if (prop === DRAFT_STATE)
-      return state;
-    const source = latest(state);
+      return state2;
+    const source = latest(state2);
     if (!has(source, prop)) {
-      return readPropFromProto(state, source, prop);
+      return readPropFromProto(state2, source, prop);
     }
     const value = source[prop];
-    if (state.finalized_ || !isDraftable(value)) {
+    if (state2.finalized_ || !isDraftable(value)) {
       return value;
     }
-    if (value === peek(state.base_, prop)) {
-      prepareCopy(state);
-      return state.copy_[prop] = createProxy(value, state);
+    if (value === peek(state2.base_, prop)) {
+      prepareCopy(state2);
+      return state2.copy_[prop] = createProxy(value, state2);
     }
     return value;
   },
-  has(state, prop) {
-    return prop in latest(state);
+  has(state2, prop) {
+    return prop in latest(state2);
   },
-  ownKeys(state) {
-    return Reflect.ownKeys(latest(state));
+  ownKeys(state2) {
+    return Reflect.ownKeys(latest(state2));
   },
-  set(state, prop, value) {
-    const desc = getDescriptorFromProto(latest(state), prop);
+  set(state2, prop, value) {
+    const desc = getDescriptorFromProto(latest(state2), prop);
     if (desc?.set) {
-      desc.set.call(state.draft_, value);
+      desc.set.call(state2.draft_, value);
       return true;
     }
-    if (!state.modified_) {
-      const current2 = peek(latest(state), prop);
+    if (!state2.modified_) {
+      const current2 = peek(latest(state2), prop);
       const currentState = current2?.[DRAFT_STATE];
       if (currentState && currentState.base_ === value) {
-        state.copy_[prop] = value;
-        state.assigned_[prop] = false;
+        state2.copy_[prop] = value;
+        state2.assigned_[prop] = false;
         return true;
       }
-      if (is(value, current2) && (value !== void 0 || has(state.base_, prop)))
+      if (is(value, current2) && (value !== void 0 || has(state2.base_, prop)))
         return true;
-      prepareCopy(state);
-      markChanged(state);
+      prepareCopy(state2);
+      markChanged(state2);
     }
-    if (state.copy_[prop] === value && // special case: handle new props with value 'undefined'
-    (value !== void 0 || prop in state.copy_) || // special case: NaN
-    Number.isNaN(value) && Number.isNaN(state.copy_[prop]))
+    if (state2.copy_[prop] === value && // special case: handle new props with value 'undefined'
+    (value !== void 0 || prop in state2.copy_) || // special case: NaN
+    Number.isNaN(value) && Number.isNaN(state2.copy_[prop]))
       return true;
-    state.copy_[prop] = value;
-    state.assigned_[prop] = true;
+    state2.copy_[prop] = value;
+    state2.assigned_[prop] = true;
     return true;
   },
-  deleteProperty(state, prop) {
-    if (peek(state.base_, prop) !== void 0 || prop in state.base_) {
-      state.assigned_[prop] = false;
-      prepareCopy(state);
-      markChanged(state);
+  deleteProperty(state2, prop) {
+    if (peek(state2.base_, prop) !== void 0 || prop in state2.base_) {
+      state2.assigned_[prop] = false;
+      prepareCopy(state2);
+      markChanged(state2);
     } else {
-      delete state.assigned_[prop];
+      delete state2.assigned_[prop];
     }
-    if (state.copy_) {
-      delete state.copy_[prop];
+    if (state2.copy_) {
+      delete state2.copy_[prop];
     }
     return true;
   },
   // Note: We never coerce `desc.value` into an Immer draft, because we can't make
   // the same guarantee in ES5 mode.
-  getOwnPropertyDescriptor(state, prop) {
-    const owner = latest(state);
+  getOwnPropertyDescriptor(state2, prop) {
+    const owner = latest(state2);
     const desc = Reflect.getOwnPropertyDescriptor(owner, prop);
     if (!desc)
       return desc;
     return {
       writable: true,
-      configurable: state.type_ !== 1 || prop !== "length",
+      configurable: state2.type_ !== 1 || prop !== "length",
       enumerable: desc.enumerable,
       value: owner[prop]
     };
@@ -1576,8 +1576,8 @@ var objectTraps = {
   defineProperty() {
     die(11);
   },
-  getPrototypeOf(state) {
-    return getPrototypeOf(state.base_);
+  getPrototypeOf(state2) {
+    return getPrototypeOf(state2.base_);
   },
   setPrototypeOf() {
     die(12);
@@ -1590,27 +1590,27 @@ each(objectTraps, (key, fn) => {
     return fn.apply(this, arguments);
   };
 });
-arrayTraps.deleteProperty = function(state, prop) {
+arrayTraps.deleteProperty = function(state2, prop) {
   if (isNaN(parseInt(prop)))
     die(13);
-  return arrayTraps.set.call(this, state, prop, void 0);
+  return arrayTraps.set.call(this, state2, prop, void 0);
 };
-arrayTraps.set = function(state, prop, value) {
+arrayTraps.set = function(state2, prop, value) {
   if (prop !== "length" && isNaN(parseInt(prop)))
     die(14);
-  return objectTraps.set.call(this, state[0], prop, value, state[0]);
+  return objectTraps.set.call(this, state2[0], prop, value, state2[0]);
 };
 function peek(draft, prop) {
-  const state = draft[DRAFT_STATE];
-  const source = state ? latest(state) : draft;
+  const state2 = draft[DRAFT_STATE];
+  const source = state2 ? latest(state2) : draft;
   return source[prop];
 }
-function readPropFromProto(state, source, prop) {
+function readPropFromProto(state2, source, prop) {
   const desc = getDescriptorFromProto(source, prop);
   return desc ? `value` in desc ? desc.value : (
     // This is a very special case, if the prop is a getter defined by the
     // prototype, we should invoke it with the draft as context!
-    desc.get?.call(state.draft_)
+    desc.get?.call(state2.draft_)
   ) : void 0;
 }
 function getDescriptorFromProto(source, prop) {
@@ -1625,19 +1625,19 @@ function getDescriptorFromProto(source, prop) {
   }
   return void 0;
 }
-function markChanged(state) {
-  if (!state.modified_) {
-    state.modified_ = true;
-    if (state.parent_) {
-      markChanged(state.parent_);
+function markChanged(state2) {
+  if (!state2.modified_) {
+    state2.modified_ = true;
+    if (state2.parent_) {
+      markChanged(state2.parent_);
     }
   }
 }
-function prepareCopy(state) {
-  if (!state.copy_) {
-    state.copy_ = shallowCopy(
-      state.base_,
-      state.scope_.immer_.useStrictShallowCopy_
+function prepareCopy(state2) {
+  if (!state2.copy_) {
+    state2.copy_ = shallowCopy(
+      state2.base_,
+      state2.scope_.immer_.useStrictShallowCopy_
     );
   }
 }
@@ -1695,7 +1695,7 @@ var Immer2 = class {
     };
     this.produceWithPatches = (base, recipe) => {
       if (typeof base === "function") {
-        return (state, ...args) => this.produceWithPatches(state, (draft) => base(draft, ...args));
+        return (state2, ...args) => this.produceWithPatches(state2, (draft) => base(draft, ...args));
       }
       let patches, inversePatches;
       const result = this.produce(base, recipe, (p, ip) => {
@@ -1723,10 +1723,10 @@ var Immer2 = class {
     return proxy;
   }
   finishDraft(draft, patchListener) {
-    const state = draft && draft[DRAFT_STATE];
-    if (!state || !state.isManual_)
+    const state2 = draft && draft[DRAFT_STATE];
+    if (!state2 || !state2.isManual_)
       die(9);
-    const { scope_: scope } = state;
+    const { scope_: scope } = state2;
     usePatchesInScope(scope, patchListener);
     return processResult(void 0, scope);
   }
@@ -1794,15 +1794,15 @@ function current(value) {
 function currentImpl(value) {
   if (!isDraftable(value) || isFrozen(value))
     return value;
-  const state = value[DRAFT_STATE];
+  const state2 = value[DRAFT_STATE];
   let copy;
   let strict = true;
-  if (state) {
-    if (!state.modified_)
-      return state.base_;
-    state.finalized_ = true;
-    copy = shallowCopy(value, state.scope_.immer_.useStrictShallowCopy_);
-    strict = state.scope_.immer_.shouldUseStrictIteration();
+  if (state2) {
+    if (!state2.modified_)
+      return state2.base_;
+    state2.finalized_ = true;
+    copy = shallowCopy(value, state2.scope_.immer_.useStrictShallowCopy_);
+    strict = state2.scope_.immer_.shouldUseStrictIteration();
   } else {
     copy = shallowCopy(value, true);
   }
@@ -1813,8 +1813,8 @@ function currentImpl(value) {
     },
     strict
   );
-  if (state) {
-    state.finalized_ = false;
+  if (state2) {
+    state2.finalized_ = false;
   }
   return copy;
 }
@@ -1835,30 +1835,30 @@ function enablePatches() {
   const REPLACE = "replace";
   const ADD = "add";
   const REMOVE = "remove";
-  function generatePatches_(state, basePath, patches, inversePatches) {
-    switch (state.type_) {
+  function generatePatches_(state2, basePath, patches, inversePatches) {
+    switch (state2.type_) {
       case 0:
       case 2:
         return generatePatchesFromAssigned(
-          state,
+          state2,
           basePath,
           patches,
           inversePatches
         );
       case 1:
-        return generateArrayPatches(state, basePath, patches, inversePatches);
+        return generateArrayPatches(state2, basePath, patches, inversePatches);
       case 3:
         return generateSetPatches(
-          state,
+          state2,
           basePath,
           patches,
           inversePatches
         );
     }
   }
-  function generateArrayPatches(state, basePath, patches, inversePatches) {
-    let { base_, assigned_ } = state;
-    let copy_ = state.copy_;
+  function generateArrayPatches(state2, basePath, patches, inversePatches) {
+    let { base_, assigned_ } = state2;
+    let copy_ = state2.copy_;
     if (copy_.length < base_.length) {
       ;
       [base_, copy_] = [copy_, base_];
@@ -1899,9 +1899,9 @@ function enablePatches() {
       });
     }
   }
-  function generatePatchesFromAssigned(state, basePath, patches, inversePatches) {
-    const { base_, copy_ } = state;
-    each(state.assigned_, (key, assignedValue) => {
+  function generatePatchesFromAssigned(state2, basePath, patches, inversePatches) {
+    const { base_, copy_ } = state2;
+    each(state2.assigned_, (key, assignedValue) => {
       const origValue = get(base_, key);
       const value = get(copy_, key);
       const op = !assignedValue ? REMOVE : has(base_, key) ? REPLACE : ADD;
@@ -1914,8 +1914,8 @@ function enablePatches() {
       );
     });
   }
-  function generateSetPatches(state, basePath, patches, inversePatches) {
-    let { base_, copy_ } = state;
+  function generateSetPatches(state2, basePath, patches, inversePatches) {
+    let { base_, copy_ } = state2;
     let i = 0;
     base_.forEach((value) => {
       if (!copy_.has(value)) {
@@ -3906,9 +3906,110 @@ var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
 var LOCAL_ASK = `${EXT}/status?`;
 
-// src/obr/background.js
+// src/obr/turn-die.js
+var KEY = `${EXT}/turn-die`;
+var SIZE = 2.2;
+var PULSE = { mid: 1.04, depth: 0.08, seconds: 1.6 };
+var FRAME_MS = 66;
+var picture = (name) => ({ url: new URL(name, location.href).href, width: 512, height: 512, mime: "image/png" });
 var role = "PLAYER";
+var state = null;
 var settings = {};
+var drawn = { sig: "", glows: [] };
+var busy = false;
+var again = false;
+function wanted() {
+  if (settings.showTurnDie === false || state?.phase !== "active") return [];
+  return state.order?.find((r) => r.key === state.turn)?.tokens || [];
+}
+async function sync() {
+  if (busy) {
+    again = true;
+    return;
+  }
+  busy = true;
+  try {
+    do {
+      again = false;
+      await draw();
+    } while (again);
+  } catch (err) {
+    console.error("Encounter Builder: could not draw the turn indicator", err);
+  } finally {
+    busy = false;
+  }
+}
+async function draw() {
+  const ready2 = await lib_default.scene.isReady();
+  const ids = ready2 ? wanted() : [];
+  const tokens = ids.length ? (await lib_default.scene.items.getItems(ids)).filter((t) => role === "GM" || t.visible) : [];
+  const sig = JSON.stringify(tokens.map((t) => [t.id, t.scale.x, t.scale.y]));
+  if (sig === drawn.sig) return;
+  const old = ready2 ? (await lib_default.scene.local.getItems((i) => !!i.metadata?.[KEY])).map((i) => i.id) : [];
+  if (old.length) await lib_default.scene.local.deleteItems(old);
+  drawn = { sig, glows: [] };
+  if (!tokens.length) return;
+  const dpi = await lib_default.scene.grid.getDpi();
+  const add = [];
+  for (const t of tokens) {
+    const b = await lib_default.scene.items.getItemBounds([t.id]);
+    const base = Math.max(b.width, b.height) * SIZE / dpi;
+    const item = (name, kind, z) => buildImage(picture(name), { dpi: 512, offset: { x: 256, y: 256 } }).position(b.center).scale({ x: base, y: base }).attachedTo(t.id).layer("PROP").zIndex(z).locked(true).disableHit(true).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).name("Turn indicator").metadata({ [KEY]: { kind } }).build();
+    const glow = item("turn-glow.png", "glow", 0);
+    add.push(glow, item("turn-d20.png", "die", 1));
+    drawn.glows.push({ id: glow.id, base });
+  }
+  await lib_default.scene.local.addItems(add);
+}
+var animating = false;
+setInterval(async () => {
+  if (animating || !drawn.glows.length || document.hidden) return;
+  animating = true;
+  const s = PULSE.mid + PULSE.depth * Math.sin(2 * Math.PI * (performance.now() / 1e3) / PULSE.seconds);
+  const base = new Map(drawn.glows.map((g) => [g.id, g.base]));
+  try {
+    await lib_default.scene.local.updateItems([...base.keys()], (items) => {
+      for (const it of items) {
+        const k = base.get(it.id) * s;
+        it.scale = { x: k, y: k };
+      }
+    }, true);
+  } catch {
+  }
+  animating = false;
+}, FRAME_MS);
+async function startTurnDie() {
+  role = await lib_default.player.getRole();
+  lib_default.player.onChange((p) => {
+    if (p.role !== role) {
+      role = p.role;
+      drawn.sig = "";
+      sync();
+    }
+  });
+  const md = await lib_default.room.getMetadata();
+  state = md[TRACKER_KEY] || null;
+  settings = md[SETTINGS_KEY] || {};
+  lib_default.room.onMetadataChange((m) => {
+    state = m[TRACKER_KEY] || null;
+    settings = m[SETTINGS_KEY] || {};
+    sync();
+  });
+  lib_default.scene.onReadyChange(() => {
+    drawn.sig = "";
+    sync();
+  });
+  let timer = null;
+  lib_default.scene.items.onChange(() => {
+    clearTimeout(timer);
+    timer = setTimeout(sync, 200);
+  });
+  sync();
+}
+
+// src/obr/background.js
+var role2 = "PLAYER";
+var settings2 = {};
 var gm = null;
 var gmSeen = 0;
 var resolveReady;
@@ -3933,12 +4034,12 @@ function status(force = false) {
 window.addEventListener("message", async (e) => {
   if (e.origin !== location.origin || !e.data?.eb || !e.source) return;
   await ready;
-  if (role !== "GM") return;
+  if (role2 !== "GM") return;
   const m = e.data;
   if (m.type === "hello") {
     gm = e.source;
     gmSeen = Date.now();
-    post(gm, { type: "welcome", settings });
+    post(gm, { type: "welcome", settings: settings2 });
     status();
   } else if (m.type === "ping") {
     if (e.source === gm) {
@@ -4032,9 +4133,9 @@ var iconUrl = (id) => new URL(`../conditions%20symbols/png-128/${id}.png`, locat
 var syncRunning = false;
 var syncNext;
 var lastState = null;
-async function syncMarkers(state) {
-  lastState = state;
-  syncNext = state;
+async function syncMarkers(state2) {
+  lastState = state2;
+  syncNext = state2;
   if (syncRunning) return;
   syncRunning = true;
   try {
@@ -4049,11 +4150,11 @@ async function syncMarkers(state) {
     syncRunning = false;
   }
 }
-async function drawMarkers(state) {
-  if (role !== "GM" || !await lib_default.scene.isReady()) return;
+async function drawMarkers(state2) {
+  if (role2 !== "GM" || !await lib_default.scene.isReady()) return;
   const want = /* @__PURE__ */ new Map();
-  for (const r of state?.order || []) for (const [token, marks] of Object.entries(r.tm || {})) want.set(token, marks);
-  for (const [token, marks] of Object.entries(state?.tmExtra || {})) want.set(token, marks);
+  for (const r of state2?.order || []) for (const [token, marks] of Object.entries(r.tm || {})) want.set(token, marks);
+  for (const [token, marks] of Object.entries(state2?.tmExtra || {})) want.set(token, marks);
   const tokens = new Map((want.size ? await lib_default.scene.items.getItems([...want.keys()]) : []).map((t) => [t.id, t]));
   const have = /* @__PURE__ */ new Map();
   const remove = [];
@@ -4094,19 +4195,19 @@ async function markersFor(token, marks, sig, dpi) {
   return items;
 }
 lib_default.onReady(async () => {
-  role = await lib_default.player.getRole();
+  role2 = await lib_default.player.getRole();
   lib_default.player.onChange((p) => {
-    role = p.role;
+    role2 = p.role;
   });
-  settings = (await lib_default.room.getMetadata())[SETTINGS_KEY] || {};
+  settings2 = (await lib_default.room.getMetadata())[SETTINGS_KEY] || {};
   lib_default.room.onMetadataChange((md) => {
     const next = md[SETTINGS_KEY] || {};
-    if (JSON.stringify(next) === JSON.stringify(settings)) return;
-    settings = next;
-    if (linked()) post(gm, { type: "settings", settings });
+    if (JSON.stringify(next) === JSON.stringify(settings2)) return;
+    settings2 = next;
+    if (linked()) post(gm, { type: "settings", settings: settings2 });
   });
   lib_default.broadcast.onMessage(LOCAL_COMMAND, ({ data }) => {
-    if (role === "GM" && linked()) post(gm, { type: "command", cmd: data?.cmd });
+    if (role2 === "GM" && linked()) post(gm, { type: "command", cmd: data?.cmd });
   });
   lib_default.broadcast.onMessage(LOCAL_ASK, () => status(true));
   const icon = new URL("icon.svg", location.href).href;
@@ -4131,17 +4232,18 @@ lib_default.onReady(async () => {
   }
   setInterval(() => status(), 2e3);
   const redraw = async () => {
-    if (role === "GM") syncMarkers((await lib_default.room.getMetadata())[TRACKER_KEY] ?? null);
+    if (role2 === "GM") syncMarkers((await lib_default.room.getMetadata())[TRACKER_KEY] ?? null);
   };
   lib_default.scene.onReadyChange((ready2) => {
     if (ready2) redraw();
   });
   let resizeTimer = null;
   lib_default.scene.items.onChange(() => {
-    if (role !== "GM" || !lastState) return;
+    if (role2 !== "GM" || !lastState) return;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => syncMarkers(lastState), 250);
   });
   redraw();
+  startTurnDie();
   resolveReady();
 });

@@ -3699,6 +3699,12 @@ function gmControls() {
       h("input", { type: "checkbox", checked: !!settings.showPartyHp, onchange: (e) => lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings, showPartyHp: e.target.checked } }) }),
       "Show party HP to players"
     ),
+    h(
+      "label.check",
+      {},
+      h("input", { type: "checkbox", checked: settings.showTurnDie !== false, onchange: (e) => lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings, showTurnDie: e.target.checked } }) }),
+      "Show the turn d20 on the active token"
+    ),
     h(`div.status${connected ? ".on" : ""}`, {}, connected ? "\u25CF GM window linked" : "\u25CB GM window not linked"),
     h("button", { onclick: openGmWindow }, connected ? "Show the GM window" : "Open / reconnect GM window"),
     note ? h("div.status", {}, note) : null
