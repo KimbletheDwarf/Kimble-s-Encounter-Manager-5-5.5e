@@ -723,3 +723,36 @@ button.temp { background: #13283a; border-color: #2b5a80; color: #8fd0ff; }
 .chat-row textarea { resize: none; }
 .chat-compose { display: grid; gap: 10px; }
 .chat-compose label { display: grid; gap: 4px; }
+/* ---------- loot: Creatures > Loot tables, and the loot dialog (Run Encounter > Loot) ---------- */
+.page-head.view-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+.view-switch { display: flex; flex-shrink: 0; }
+.view-switch button { border-radius: 0; font: 700 13px var(--head); text-transform: uppercase; letter-spacing: .05em; }
+.view-switch button:first-child { border-radius: 3px 0 0 3px; }
+.view-switch button:last-child { border-radius: 0 3px 3px 0; border-left: 0; }
+.view-switch button.on { background: var(--blue-btn); border-color: var(--blue-btn); color: #fff; }
+.loot-entries { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+.loot-entry { display: grid; grid-template-columns: minmax(0, 1fr) 84px 76px 76px 30px; gap: 6px; align-items: center; }
+.loot-entry.head { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.loot-types { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 10px; }
+.loot-types .check-row { padding: 2px 0; font-size: 13px; }
+#lt-side h3 { margin: 4px 0 6px; }
+#lt-restore { margin-top: 8px; text-align: center; }
+.loot-sample { background: var(--card-2); border-radius: 4px; padding: 10px 12px; margin: 8px 0 16px; line-height: 1.5; }
+.loot-dialog { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 20px; align-items: start; }
+.loot-controls { display: flex; flex-direction: column; gap: 14px; }
+.loot-controls .form-grid { grid-template-columns: 1fr; margin: 0; }
+.loot-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; white-space: nowrap; }
+.loot-slider { width: 100%; margin: 8px 0 4px; accent-color: var(--blue); }
+.loot-stops { display: flex; justify-content: space-between; }
+.loot-stops button.link { padding: 2px 0; font-size: 12px; }
+.loot-count { width: 70px; }
+.loot-enemies { display: flex; flex-direction: column; margin-top: 6px; }
+.loot-enemies .check-row { padding: 2px 0; font-size: 13px; }
+.loot-out h4 { margin: 14px 0 4px; }
+.loot-coins { font: 700 20px var(--head); }
+.loot-label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; margin-right: 10px; }
+.loot-list { margin: 4px 0; padding-left: 20px; line-height: 1.7; font-size: 15px; }
+.loot-qty { font-weight: 700; }
+.loot-list .tag { margin-left: 6px; }
+.loot-total { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+@media (max-width: 760px) { .loot-dialog { grid-template-columns: 1fr; } .loot-entry { grid-template-columns: minmax(0, 1fr) 64px 56px 56px 30px; } }

@@ -151,40 +151,40 @@ var init_cannon_es = __esm({
        * @todo Create another function that immediately creates an identity matrix eg. `eye()`
        */
       identity() {
-        const e = this.elements;
-        e[0] = 1;
-        e[1] = 0;
-        e[2] = 0;
-        e[3] = 0;
-        e[4] = 1;
-        e[5] = 0;
-        e[6] = 0;
-        e[7] = 0;
-        e[8] = 1;
+        const e2 = this.elements;
+        e2[0] = 1;
+        e2[1] = 0;
+        e2[2] = 0;
+        e2[3] = 0;
+        e2[4] = 1;
+        e2[5] = 0;
+        e2[6] = 0;
+        e2[7] = 0;
+        e2[8] = 1;
       }
       /**
        * Set all elements to zero
        */
       setZero() {
-        const e = this.elements;
-        e[0] = 0;
-        e[1] = 0;
-        e[2] = 0;
-        e[3] = 0;
-        e[4] = 0;
-        e[5] = 0;
-        e[6] = 0;
-        e[7] = 0;
-        e[8] = 0;
+        const e2 = this.elements;
+        e2[0] = 0;
+        e2[1] = 0;
+        e2[2] = 0;
+        e2[3] = 0;
+        e2[4] = 0;
+        e2[5] = 0;
+        e2[6] = 0;
+        e2[7] = 0;
+        e2[8] = 0;
       }
       /**
        * Sets the matrix diagonal elements from a Vec3
        */
       setTrace(vector) {
-        const e = this.elements;
-        e[0] = vector.x;
-        e[4] = vector.y;
-        e[8] = vector.z;
+        const e2 = this.elements;
+        e2[0] = vector.x;
+        e2[4] = vector.y;
+        e2[8] = vector.z;
       }
       /**
        * Gets the matrix diagonal elements
@@ -193,10 +193,10 @@ var init_cannon_es = __esm({
         if (target === void 0) {
           target = new Vec3();
         }
-        const e = this.elements;
-        target.x = e[0];
-        target.y = e[4];
-        target.z = e[8];
+        const e2 = this.elements;
+        target.x = e2[0];
+        target.y = e2[4];
+        target.z = e2[8];
         return target;
       }
       /**
@@ -208,13 +208,13 @@ var init_cannon_es = __esm({
         if (target === void 0) {
           target = new Vec3();
         }
-        const e = this.elements;
+        const e2 = this.elements;
         const x = v.x;
         const y = v.y;
         const z = v.z;
-        target.x = e[0] * x + e[1] * y + e[2] * z;
-        target.y = e[3] * x + e[4] * y + e[5] * z;
-        target.z = e[6] * x + e[7] * y + e[8] * z;
+        target.x = e2[0] * x + e2[1] * y + e2[2] * z;
+        target.y = e2[3] * x + e2[4] * y + e2[5] * z;
+        target.z = e2[6] * x + e2[7] * y + e2[8] * z;
         return target;
       }
       /**
@@ -256,12 +256,12 @@ var init_cannon_es = __esm({
         if (target === void 0) {
           target = new _Mat3();
         }
-        const e = this.elements;
+        const e2 = this.elements;
         const t = target.elements;
         for (let i = 0; i !== 3; i++) {
-          t[3 * i + 0] = vector.x * e[3 * i + 0];
-          t[3 * i + 1] = vector.y * e[3 * i + 1];
-          t[3 * i + 2] = vector.z * e[3 * i + 2];
+          t[3 * i + 0] = vector.x * e2[3 * i + 0];
+          t[3 * i + 1] = vector.y * e2[3 * i + 1];
+          t[3 * i + 2] = vector.z * e2[3 * i + 2];
         }
         return target;
       }
@@ -473,16 +473,16 @@ var init_cannon_es = __esm({
         const wx = w * x2;
         const wy = w * y2;
         const wz = w * z2;
-        const e = this.elements;
-        e[3 * 0 + 0] = 1 - (yy + zz);
-        e[3 * 0 + 1] = xy - wz;
-        e[3 * 0 + 2] = xz + wy;
-        e[3 * 1 + 0] = xy + wz;
-        e[3 * 1 + 1] = 1 - (xx + zz);
-        e[3 * 1 + 2] = yz - wx;
-        e[3 * 2 + 0] = xz - wy;
-        e[3 * 2 + 1] = yz + wx;
-        e[3 * 2 + 2] = 1 - (xx + yy);
+        const e2 = this.elements;
+        e2[3 * 0 + 0] = 1 - (yy + zz);
+        e2[3 * 0 + 1] = xy - wz;
+        e2[3 * 0 + 2] = xz + wy;
+        e2[3 * 1 + 0] = xy + wz;
+        e2[3 * 1 + 1] = 1 - (xx + zz);
+        e2[3 * 1 + 2] = yz - wx;
+        e2[3 * 2 + 0] = xz - wy;
+        e2[3 * 2 + 1] = yz + wx;
+        e2[3 * 2 + 2] = 1 - (xx + yy);
         return this;
       }
       /**
@@ -978,14 +978,14 @@ var init_cannon_es = __esm({
         const u2 = aabb.upperBound;
         return l1.x <= l2.x && u1.x >= u2.x && l1.y <= l2.y && u1.y >= u2.y && l1.z <= l2.z && u1.z >= u2.z;
       }
-      getCorners(a2, b2, c2, d, e, f, g, h2) {
+      getCorners(a2, b2, c2, d, e2, f, g, h2) {
         const l = this.lowerBound;
         const u = this.upperBound;
         a2.copy(l);
         b2.set(u.x, l.y, l.z);
         c2.set(u.x, u.y, l.z);
         d.set(l.x, u.y, u.z);
-        e.set(u.x, l.y, u.z);
+        e2.set(u.x, l.y, u.z);
         f.set(l.x, u.y, l.z);
         g.set(l.x, l.y, u.z);
         h2.copy(u);
@@ -1000,11 +1000,11 @@ var init_cannon_es = __esm({
         const b2 = corners[1];
         const c2 = corners[2];
         const d = corners[3];
-        const e = corners[4];
+        const e2 = corners[4];
         const f = corners[5];
         const g = corners[6];
         const h2 = corners[7];
-        this.getCorners(a2, b2, c2, d, e, f, g, h2);
+        this.getCorners(a2, b2, c2, d, e2, f, g, h2);
         for (let i = 0; i !== 8; i++) {
           const corner = corners[i];
           frame.pointToLocal(corner, corner);
@@ -1021,11 +1021,11 @@ var init_cannon_es = __esm({
         const b2 = corners[1];
         const c2 = corners[2];
         const d = corners[3];
-        const e = corners[4];
+        const e2 = corners[4];
         const f = corners[5];
         const g = corners[6];
         const h2 = corners[7];
-        this.getCorners(a2, b2, c2, d, e, f, g, h2);
+        this.getCorners(a2, b2, c2, d, e2, f, g, h2);
         for (let i = 0; i !== 8; i++) {
           const corner = corners[i];
           frame.pointToWorld(corner, corner);
@@ -2476,10 +2476,10 @@ var init_cannon_es = __esm({
         return target;
       }
       static calculateInertia(halfExtents, mass, target) {
-        const e = halfExtents;
-        target.x = 1 / 12 * mass * (2 * e.y * 2 * e.y + 2 * e.z * 2 * e.z);
-        target.y = 1 / 12 * mass * (2 * e.x * 2 * e.x + 2 * e.z * 2 * e.z);
-        target.z = 1 / 12 * mass * (2 * e.y * 2 * e.y + 2 * e.x * 2 * e.x);
+        const e2 = halfExtents;
+        target.x = 1 / 12 * mass * (2 * e2.y * 2 * e2.y + 2 * e2.z * 2 * e2.z);
+        target.y = 1 / 12 * mass * (2 * e2.x * 2 * e2.x + 2 * e2.z * 2 * e2.z);
+        target.z = 1 / 12 * mass * (2 * e2.y * 2 * e2.y + 2 * e2.x * 2 * e2.x);
       }
       /**
        * Get the box 6 side normals
@@ -2518,8 +2518,8 @@ var init_cannon_es = __esm({
        * forEachWorldCorner
        */
       forEachWorldCorner(pos, quat, callback) {
-        const e = this.halfExtents;
-        const corners = [[e.x, e.y, e.z], [-e.x, e.y, e.z], [-e.x, -e.y, e.z], [-e.x, -e.y, -e.z], [e.x, -e.y, -e.z], [e.x, e.y, -e.z], [-e.x, e.y, -e.z], [e.x, -e.y, e.z]];
+        const e2 = this.halfExtents;
+        const corners = [[e2.x, e2.y, e2.z], [-e2.x, e2.y, e2.z], [-e2.x, -e2.y, e2.z], [-e2.x, -e2.y, -e2.z], [e2.x, -e2.y, -e2.z], [e2.x, e2.y, -e2.z], [-e2.x, e2.y, -e2.z], [e2.x, -e2.y, e2.z]];
         for (let i = 0; i < corners.length; i++) {
           worldCornerTempPos.set(corners[i][0], corners[i][1], corners[i][2]);
           quat.vmult(worldCornerTempPos, worldCornerTempPos);
@@ -2531,15 +2531,15 @@ var init_cannon_es = __esm({
        * calculateWorldAABB
        */
       calculateWorldAABB(pos, quat, min, max) {
-        const e = this.halfExtents;
-        worldCornersTemp[0].set(e.x, e.y, e.z);
-        worldCornersTemp[1].set(-e.x, e.y, e.z);
-        worldCornersTemp[2].set(-e.x, -e.y, e.z);
-        worldCornersTemp[3].set(-e.x, -e.y, -e.z);
-        worldCornersTemp[4].set(e.x, -e.y, -e.z);
-        worldCornersTemp[5].set(e.x, e.y, -e.z);
-        worldCornersTemp[6].set(-e.x, e.y, -e.z);
-        worldCornersTemp[7].set(e.x, -e.y, e.z);
+        const e2 = this.halfExtents;
+        worldCornersTemp[0].set(e2.x, e2.y, e2.z);
+        worldCornersTemp[1].set(-e2.x, e2.y, e2.z);
+        worldCornersTemp[2].set(-e2.x, -e2.y, e2.z);
+        worldCornersTemp[3].set(-e2.x, -e2.y, -e2.z);
+        worldCornersTemp[4].set(e2.x, -e2.y, -e2.z);
+        worldCornersTemp[5].set(e2.x, e2.y, -e2.z);
+        worldCornersTemp[6].set(-e2.x, e2.y, -e2.z);
+        worldCornersTemp[7].set(e2.x, -e2.y, e2.z);
         const wc = worldCornersTemp[0];
         quat.vmult(wc, wc);
         pos.vadd(wc, wc);
@@ -3066,14 +3066,14 @@ var init_cannon_es = __esm({
         velo.x += force.x * iMdt * linearFactor.x;
         velo.y += force.y * iMdt * linearFactor.y;
         velo.z += force.z * iMdt * linearFactor.z;
-        const e = invInertia.elements;
+        const e2 = invInertia.elements;
         const angularFactor = this.angularFactor;
         const tx = torque2.x * angularFactor.x;
         const ty = torque2.y * angularFactor.y;
         const tz = torque2.z * angularFactor.z;
-        angularVelo.x += dt * (e[0] * tx + e[1] * ty + e[2] * tz);
-        angularVelo.y += dt * (e[3] * tx + e[4] * ty + e[5] * tz);
-        angularVelo.z += dt * (e[6] * tx + e[7] * ty + e[8] * tz);
+        angularVelo.x += dt * (e2[0] * tx + e2[1] * ty + e2[2] * tz);
+        angularVelo.y += dt * (e2[3] * tx + e2[4] * ty + e2[5] * tz);
+        angularVelo.z += dt * (e2[6] * tx + e2[7] * ty + e2[8] * tz);
         pos.x += velo.x * dt;
         pos.y += velo.y * dt;
         pos.z += velo.z * dt;
@@ -3926,13 +3926,13 @@ var init_cannon_es = __esm({
        * @param defaults An object containing default values.
        * @return The modified options object.
        */
-      static defaults(options, defaults2) {
+      static defaults(options, defaults3) {
         if (options === void 0) {
           options = {};
         }
-        for (let key2 in defaults2) {
+        for (let key2 in defaults3) {
           if (!(key2 in options)) {
-            options[key2] = defaults2[key2];
+            options[key2] = defaults3[key2];
           }
         }
         return options;
@@ -7902,9 +7902,9 @@ var init_three_core = __esm({
        */
       applyMatrix3(m) {
         const x = this.x, y = this.y;
-        const e = m.elements;
-        this.x = e[0] * x + e[3] * y + e[6];
-        this.y = e[1] * x + e[4] * y + e[7];
+        const e2 = m.elements;
+        this.x = e2[0] * x + e2[3] * y + e2[6];
+        this.y = e2[1] * x + e2[4] * y + e2[7];
         return this;
       }
       /**
@@ -9149,10 +9149,10 @@ var init_three_core = __esm({
        */
       applyMatrix3(m) {
         const x = this.x, y = this.y, z = this.z;
-        const e = m.elements;
-        this.x = e[0] * x + e[3] * y + e[6] * z;
-        this.y = e[1] * x + e[4] * y + e[7] * z;
-        this.z = e[2] * x + e[5] * y + e[8] * z;
+        const e2 = m.elements;
+        this.x = e2[0] * x + e2[3] * y + e2[6] * z;
+        this.y = e2[1] * x + e2[4] * y + e2[7] * z;
+        this.z = e2[2] * x + e2[5] * y + e2[8] * z;
         return this;
       }
       /**
@@ -9174,11 +9174,11 @@ var init_three_core = __esm({
        */
       applyMatrix4(m) {
         const x = this.x, y = this.y, z = this.z;
-        const e = m.elements;
-        const w = 1 / (e[3] * x + e[7] * y + e[11] * z + e[15]);
-        this.x = (e[0] * x + e[4] * y + e[8] * z + e[12]) * w;
-        this.y = (e[1] * x + e[5] * y + e[9] * z + e[13]) * w;
-        this.z = (e[2] * x + e[6] * y + e[10] * z + e[14]) * w;
+        const e2 = m.elements;
+        const w = 1 / (e2[3] * x + e2[7] * y + e2[11] * z + e2[15]);
+        this.x = (e2[0] * x + e2[4] * y + e2[8] * z + e2[12]) * w;
+        this.y = (e2[1] * x + e2[5] * y + e2[9] * z + e2[13]) * w;
+        this.z = (e2[2] * x + e2[6] * y + e2[10] * z + e2[14]) * w;
         return this;
       }
       /**
@@ -9227,10 +9227,10 @@ var init_three_core = __esm({
        */
       transformDirection(m) {
         const x = this.x, y = this.y, z = this.z;
-        const e = m.elements;
-        this.x = e[0] * x + e[4] * y + e[8] * z;
-        this.y = e[1] * x + e[5] * y + e[9] * z;
-        this.z = e[2] * x + e[6] * y + e[10] * z;
+        const e2 = m.elements;
+        this.x = e2[0] * x + e2[4] * y + e2[8] * z;
+        this.y = e2[1] * x + e2[5] * y + e2[9] * z;
+        this.z = e2[2] * x + e2[6] * y + e2[10] * z;
         return this.normalize();
       }
       /**
@@ -9621,10 +9621,10 @@ var init_three_core = __esm({
        * @return {Vector3} A reference to this vector.
        */
       setFromMatrixPosition(m) {
-        const e = m.elements;
-        this.x = e[12];
-        this.y = e[13];
-        this.z = e[14];
+        const e2 = m.elements;
+        this.x = e2[12];
+        this.y = e2[13];
+        this.z = e2[14];
         return this;
       }
       /**
@@ -9669,10 +9669,10 @@ var init_three_core = __esm({
        * @param {Euler} e - The Euler angles to set.
        * @return {Vector3} A reference to this vector.
        */
-      setFromEuler(e) {
-        this.x = e._x;
-        this.y = e._y;
-        this.z = e._z;
+      setFromEuler(e2) {
+        this.x = e2._x;
+        this.y = e2._y;
+        this.z = e2._z;
         return this;
       }
       /**
@@ -9982,8 +9982,8 @@ var init_three_core = __esm({
        */
       determinant() {
         const te = this.elements;
-        const a2 = te[0], b2 = te[1], c2 = te[2], d = te[3], e = te[4], f = te[5], g = te[6], h2 = te[7], i = te[8];
-        return a2 * e * i - a2 * f * h2 - b2 * d * i + b2 * f * g + c2 * d * h2 - c2 * e * g;
+        const a2 = te[0], b2 = te[1], c2 = te[2], d = te[3], e2 = te[4], f = te[5], g = te[6], h2 = te[7], i = te[8];
+        return a2 * e2 * i - a2 * f * h2 - b2 * d * i + b2 * f * g + c2 * d * h2 - c2 * e2 * g;
       }
       /**
        * Inverts this matrix, using the [analytic method](https://en.wikipedia.org/wiki/Invertible_matrix#Analytic_solution).
@@ -11061,11 +11061,11 @@ var init_three_core = __esm({
        */
       applyMatrix4(m) {
         const x = this.x, y = this.y, z = this.z, w = this.w;
-        const e = m.elements;
-        this.x = e[0] * x + e[4] * y + e[8] * z + e[12] * w;
-        this.y = e[1] * x + e[5] * y + e[9] * z + e[13] * w;
-        this.z = e[2] * x + e[6] * y + e[10] * z + e[14] * w;
-        this.w = e[3] * x + e[7] * y + e[11] * z + e[15] * w;
+        const e2 = m.elements;
+        this.x = e2[0] * x + e2[4] * y + e2[8] * z + e2[12] * w;
+        this.y = e2[1] * x + e2[5] * y + e2[9] * z + e2[13] * w;
+        this.z = e2[2] * x + e2[6] * y + e2[10] * z + e2[14] * w;
+        this.w = e2[3] * x + e2[7] * y + e2[11] * z + e2[15] * w;
         return this;
       }
       /**
@@ -11183,11 +11183,11 @@ var init_three_core = __esm({
        * @return {Vector4} A reference to this vector.
        */
       setFromMatrixPosition(m) {
-        const e = m.elements;
-        this.x = e[12];
-        this.y = e[13];
-        this.z = e[14];
-        this.w = e[15];
+        const e2 = m.elements;
+        this.x = e2[12];
+        this.y = e2[13];
+        this.z = e2[14];
+        this.w = e2[15];
         return this;
       }
       /**
@@ -12106,10 +12106,10 @@ var init_three_core = __esm({
         const x = euler.x, y = euler.y, z = euler.z;
         const a2 = Math.cos(x), b2 = Math.sin(x);
         const c2 = Math.cos(y), d = Math.sin(y);
-        const e = Math.cos(z), f = Math.sin(z);
+        const e2 = Math.cos(z), f = Math.sin(z);
         if (euler.order === "XYZ") {
-          const ae = a2 * e, af = a2 * f, be = b2 * e, bf = b2 * f;
-          te[0] = c2 * e;
+          const ae = a2 * e2, af = a2 * f, be = b2 * e2, bf = b2 * f;
+          te[0] = c2 * e2;
           te[4] = -c2 * f;
           te[8] = d;
           te[1] = af + be * d;
@@ -12119,30 +12119,30 @@ var init_three_core = __esm({
           te[6] = be + af * d;
           te[10] = a2 * c2;
         } else if (euler.order === "YXZ") {
-          const ce = c2 * e, cf = c2 * f, de = d * e, df = d * f;
+          const ce = c2 * e2, cf = c2 * f, de = d * e2, df = d * f;
           te[0] = ce + df * b2;
           te[4] = de * b2 - cf;
           te[8] = a2 * d;
           te[1] = a2 * f;
-          te[5] = a2 * e;
+          te[5] = a2 * e2;
           te[9] = -b2;
           te[2] = cf * b2 - de;
           te[6] = df + ce * b2;
           te[10] = a2 * c2;
         } else if (euler.order === "ZXY") {
-          const ce = c2 * e, cf = c2 * f, de = d * e, df = d * f;
+          const ce = c2 * e2, cf = c2 * f, de = d * e2, df = d * f;
           te[0] = ce - df * b2;
           te[4] = -a2 * f;
           te[8] = de + cf * b2;
           te[1] = cf + de * b2;
-          te[5] = a2 * e;
+          te[5] = a2 * e2;
           te[9] = df - ce * b2;
           te[2] = -a2 * d;
           te[6] = b2;
           te[10] = a2 * c2;
         } else if (euler.order === "ZYX") {
-          const ae = a2 * e, af = a2 * f, be = b2 * e, bf = b2 * f;
-          te[0] = c2 * e;
+          const ae = a2 * e2, af = a2 * f, be = b2 * e2, bf = b2 * f;
+          te[0] = c2 * e2;
           te[4] = be * d - af;
           te[8] = ae * d + bf;
           te[1] = c2 * f;
@@ -12153,25 +12153,25 @@ var init_three_core = __esm({
           te[10] = a2 * c2;
         } else if (euler.order === "YZX") {
           const ac = a2 * c2, ad = a2 * d, bc = b2 * c2, bd = b2 * d;
-          te[0] = c2 * e;
+          te[0] = c2 * e2;
           te[4] = bd - ac * f;
           te[8] = bc * f + ad;
           te[1] = f;
-          te[5] = a2 * e;
-          te[9] = -b2 * e;
-          te[2] = -d * e;
+          te[5] = a2 * e2;
+          te[9] = -b2 * e2;
+          te[2] = -d * e2;
           te[6] = ad * f + bc;
           te[10] = ac - bd * f;
         } else if (euler.order === "XZY") {
           const ac = a2 * c2, ad = a2 * d, bc = b2 * c2, bd = b2 * d;
-          te[0] = c2 * e;
+          te[0] = c2 * e2;
           te[4] = -f;
-          te[8] = d * e;
+          te[8] = d * e2;
           te[1] = ac * f + bd;
-          te[5] = a2 * e;
+          te[5] = a2 * e2;
           te[9] = ad * f - bc;
           te[2] = bc * f - ad;
-          te[6] = b2 * e;
+          te[6] = b2 * e2;
           te[10] = bd * f + ac;
         }
         te[3] = 0;
@@ -13881,8 +13881,8 @@ var init_three_core = __esm({
        */
       getWorldDirection(target) {
         this.updateWorldMatrix(true, false);
-        const e = this.matrixWorld.elements;
-        return target.set(e[8], e[9], e[10]).normalize();
+        const e2 = this.matrixWorld.elements;
+        return target.set(e2[8], e2[9], e2[10]).normalize();
       }
       /**
        * Abstract method to get intersections between a casted ray and this
@@ -15200,10 +15200,10 @@ var init_three_core = __esm({
        */
       applyMatrix3(m) {
         const r = this.r, g = this.g, b2 = this.b;
-        const e = m.elements;
-        this.r = e[0] * r + e[3] * g + e[6] * b2;
-        this.g = e[1] * r + e[4] * g + e[7] * b2;
-        this.b = e[2] * r + e[5] * g + e[8] * b2;
+        const e2 = m.elements;
+        this.r = e2[0] * r + e2[3] * g + e2[6] * b2;
+        this.g = e2[1] * r + e2[4] * g + e2[7] * b2;
+        this.b = e2[2] * r + e2[5] * g + e2[8] * b2;
         return this;
       }
       /**
@@ -22295,13 +22295,13 @@ var init_three_core = __esm({
         let height = 2 * top;
         let width = this.aspect * height;
         let left = -0.5 * width;
-        const view2 = this.view;
+        const view3 = this.view;
         if (this.view !== null && this.view.enabled) {
-          const fullWidth = view2.fullWidth, fullHeight = view2.fullHeight;
-          left += view2.offsetX * width / fullWidth;
-          top -= view2.offsetY * height / fullHeight;
-          width *= view2.width / fullWidth;
-          height *= view2.height / fullHeight;
+          const fullWidth = view3.fullWidth, fullHeight = view3.fullHeight;
+          left += view3.offsetX * width / fullWidth;
+          top -= view3.offsetY * height / fullHeight;
+          width *= view3.width / fullWidth;
+          height *= view3.height / fullHeight;
         }
         const skew = this.filmOffset;
         if (skew !== 0) left += near * skew / this.getFilmWidth();
@@ -23181,11 +23181,11 @@ function WebGLAttributes(gl) {
   const buffers = /* @__PURE__ */ new WeakMap();
   function createBuffer(attribute, bufferType) {
     const array = attribute.array;
-    const usage2 = attribute.usage;
+    const usage3 = attribute.usage;
     const size = array.byteLength;
     const buffer = gl.createBuffer();
     gl.bindBuffer(bufferType, buffer);
-    gl.bufferData(bufferType, array, usage2);
+    gl.bufferData(bufferType, array, usage3);
     attribute.onUploadCallback();
     let type;
     if (array instanceof Float32Array) {
@@ -23339,7 +23339,7 @@ function WebGLBackground(renderer, environments, state2, objects, alpha, premult
       renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
     }
   }
-  function addToRenderList(renderList6, scene) {
+  function addToRenderList(renderList7, scene) {
     const background = getBackground(scene);
     if (background && (background.isCubeTexture || background.mapping === CubeUVReflectionMapping)) {
       if (boxMesh === void 0) {
@@ -23384,7 +23384,7 @@ function WebGLBackground(renderer, environments, state2, objects, alpha, premult
         currentTonemapping = renderer.toneMapping;
       }
       boxMesh.layers.enableAll();
-      renderList6.unshift(boxMesh, boxMesh.geometry, boxMesh.material, 0, 0, null);
+      renderList7.unshift(boxMesh, boxMesh.geometry, boxMesh.material, 0, 0, null);
     } else if (background && background.isTexture) {
       if (planeMesh === void 0) {
         planeMesh = new Mesh(
@@ -23423,7 +23423,7 @@ function WebGLBackground(renderer, environments, state2, objects, alpha, premult
         currentTonemapping = renderer.toneMapping;
       }
       planeMesh.layers.enableAll();
-      renderList6.unshift(planeMesh, planeMesh.geometry, planeMesh.material, 0, 0, null);
+      renderList7.unshift(planeMesh, planeMesh.geometry, planeMesh.material, 0, 0, null);
     }
   }
   function setClear(color, alpha2) {
@@ -24590,13 +24590,13 @@ function WebGLGeometries(gl, attributes, info2, bindingStates) {
     const indices = [];
     const geometryIndex = geometry.index;
     const geometryPosition = geometry.attributes.position;
-    let version2 = 0;
+    let version3 = 0;
     if (geometryPosition === void 0) {
       return;
     }
     if (geometryIndex !== null) {
       const array = geometryIndex.array;
-      version2 = geometryIndex.version;
+      version3 = geometryIndex.version;
       for (let i = 0, l = array.length; i < l; i += 3) {
         const a2 = array[i + 0];
         const b2 = array[i + 1];
@@ -24605,7 +24605,7 @@ function WebGLGeometries(gl, attributes, info2, bindingStates) {
       }
     } else {
       const array = geometryPosition.array;
-      version2 = geometryPosition.version;
+      version3 = geometryPosition.version;
       for (let i = 0, l = array.length / 3 - 1; i < l; i += 3) {
         const a2 = i + 0;
         const b2 = i + 1;
@@ -24614,7 +24614,7 @@ function WebGLGeometries(gl, attributes, info2, bindingStates) {
       }
     }
     const attribute = new (geometryPosition.count >= 65535 ? Uint32BufferAttribute : Uint16BufferAttribute)(indices, 1);
-    attribute.version = version2;
+    attribute.version = version3;
     const previousAttribute = wireframeAttributes.get(geometry);
     if (previousAttribute) attributes.remove(previousAttribute);
     wireframeAttributes.set(geometry, attribute);
@@ -27876,14 +27876,14 @@ function WebGLState(gl, extensions) {
   let currentPolygonOffsetUnits = null;
   const maxTextures = gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
   let lineWidthAvailable = false;
-  let version2 = 0;
+  let version3 = 0;
   const glVersion = gl.getParameter(gl.VERSION);
   if (glVersion.indexOf("WebGL") !== -1) {
-    version2 = parseFloat(/^WebGL (\d)/.exec(glVersion)[1]);
-    lineWidthAvailable = version2 >= 1;
+    version3 = parseFloat(/^WebGL (\d)/.exec(glVersion)[1]);
+    lineWidthAvailable = version3 >= 1;
   } else if (glVersion.indexOf("OpenGL ES") !== -1) {
-    version2 = parseFloat(/^OpenGL ES (\d)/.exec(glVersion)[1]);
-    lineWidthAvailable = version2 >= 2;
+    version3 = parseFloat(/^OpenGL ES (\d)/.exec(glVersion)[1]);
+    lineWidthAvailable = version3 >= 2;
   }
   let currentTextureSlot = null;
   let currentBoundTextures = {};
@@ -28211,71 +28211,71 @@ function WebGLState(gl, extensions) {
   function compressedTexImage2D() {
     try {
       gl.compressedTexImage2D(...arguments);
-    } catch (e) {
-      error("WebGLState:", e);
+    } catch (e2) {
+      error("WebGLState:", e2);
     }
   }
   function compressedTexImage3D() {
     try {
       gl.compressedTexImage3D(...arguments);
-    } catch (e) {
-      error("WebGLState:", e);
+    } catch (e2) {
+      error("WebGLState:", e2);
     }
   }
   function texSubImage2D() {
     try {
       gl.texSubImage2D(...arguments);
-    } catch (e) {
-      error("WebGLState:", e);
+    } catch (e2) {
+      error("WebGLState:", e2);
     }
   }
   function texSubImage3D() {
     try {
       gl.texSubImage3D(...arguments);
-    } catch (e) {
-      error("WebGLState:", e);
+    } catch (e2) {
+      error("WebGLState:", e2);
     }
   }
   function compressedTexSubImage2D() {
     try {
       gl.compressedTexSubImage2D(...arguments);
-    } catch (e) {
-      error("WebGLState:", e);
+    } catch (e2) {
+      error("WebGLState:", e2);
     }
   }
   function compressedTexSubImage3D() {
     try {
       gl.compressedTexSubImage3D(...arguments);
-    } catch (e) {
-      error("WebGLState:", e);
+    } catch (e2) {
+      error("WebGLState:", e2);
     }
   }
   function texStorage2D() {
     try {
       gl.texStorage2D(...arguments);
-    } catch (e) {
-      error("WebGLState:", e);
+    } catch (e2) {
+      error("WebGLState:", e2);
     }
   }
   function texStorage3D() {
     try {
       gl.texStorage3D(...arguments);
-    } catch (e) {
-      error("WebGLState:", e);
+    } catch (e2) {
+      error("WebGLState:", e2);
     }
   }
   function texImage2D() {
     try {
       gl.texImage2D(...arguments);
-    } catch (e) {
-      error("WebGLState:", e);
+    } catch (e2) {
+      error("WebGLState:", e2);
     }
   }
   function texImage3D() {
     try {
       gl.texImage3D(...arguments);
-    } catch (e) {
-      error("WebGLState:", e);
+    } catch (e2) {
+      error("WebGLState:", e2);
     }
   }
   function getParameter(name) {
@@ -30203,9 +30203,9 @@ function WebGLUniformsGroups(gl, info2, capabilities, state2) {
     uniformsGroup.__bindingPointIndex = bindingPointIndex;
     const buffer = gl.createBuffer();
     const size = uniformsGroup.__size;
-    const usage2 = uniformsGroup.usage;
+    const usage3 = uniformsGroup.usage;
     gl.bindBuffer(gl.UNIFORM_BUFFER, buffer);
-    gl.bufferData(gl.UNIFORM_BUFFER, size, usage2);
+    gl.bufferData(gl.UNIFORM_BUFFER, size, usage3);
     gl.bindBuffer(gl.UNIFORM_BUFFER, null);
     gl.bindBufferBase(gl.UNIFORM_BUFFER, bindingPointIndex, buffer);
     return buffer;
@@ -32380,12 +32380,12 @@ void main() {
               cameraXRNeedsUpdate = true;
             }
             for (let i = 0; i < views.length; i++) {
-              const view2 = views[i];
+              const view3 = views[i];
               let viewport = null;
               if (glBaseLayer !== null) {
-                viewport = glBaseLayer.getViewport(view2);
+                viewport = glBaseLayer.getViewport(view3);
               } else {
-                const glSubImage = glBinding.getViewSubImage(glProjLayer, view2);
+                const glSubImage = glBinding.getViewSubImage(glProjLayer, view3);
                 viewport = glSubImage.viewport;
                 if (i === 0) {
                   renderer.setRenderTargetTextures(
@@ -32403,9 +32403,9 @@ void main() {
                 camera.viewport = new Vector4();
                 cameras[i] = camera;
               }
-              camera.matrix.fromArray(view2.transform.matrix);
+              camera.matrix.fromArray(view3.transform.matrix);
               camera.matrix.decompose(camera.position, camera.quaternion, camera.scale);
-              camera.projectionMatrix.fromArray(view2.projectionMatrix);
+              camera.projectionMatrix.fromArray(view3.projectionMatrix);
               camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
               camera.viewport.set(viewport.x, viewport.y, viewport.width, viewport.height);
               if (i === 0) {
@@ -33139,12 +33139,12 @@ void main() {
             }
           }
           initGLContext();
-        } catch (e) {
+        } catch (e2) {
           canvas.removeEventListener("webglcontextlost", onContextLost, false);
           canvas.removeEventListener("webglcontextrestored", onContextRestore, false);
           canvas.removeEventListener("webglcontextcreationerror", onContextCreationError, false);
-          error("WebGLRenderer: " + e.message);
-          throw e;
+          error("WebGLRenderer: " + e2.message);
+          throw e2;
         }
         function initGLContext() {
           extensions = new WebGLExtensions(_gl);
@@ -33868,10 +33868,10 @@ void main() {
           if (currentCameraViewport !== void 0) camera.viewport = currentCameraViewport;
           _this.toneMapping = currentToneMapping;
         }
-        function renderObjects(renderList6, scene, camera) {
+        function renderObjects(renderList7, scene, camera) {
           const overrideMaterial = scene.isScene === true ? scene.overrideMaterial : null;
-          for (let i = 0, l = renderList6.length; i < l; i++) {
-            const renderItem = renderList6[i];
+          for (let i = 0, l = renderList7.length; i < l; i++) {
+            const renderItem = renderList7[i];
             const { object, geometry, group } = renderItem;
             let material = renderItem.material;
             if (material.allowOverride === true && overrideMaterial !== null) {
@@ -35196,34 +35196,34 @@ function h(spec, props = {}, ...kids) {
     props = {};
   }
   const [, tag = "div", rest = ""] = spec.match(/^([a-z0-9]*)(.*)$/i);
-  const el9 = document.createElement(tag || "div");
+  const el10 = document.createElement(tag || "div");
   for (const part of rest.match(/[.#][^.#]+/g) || []) {
-    if (part[0] === ".") el9.classList.add(part.slice(1));
-    else el9.id = part.slice(1);
+    if (part[0] === ".") el10.classList.add(part.slice(1));
+    else el10.id = part.slice(1);
   }
   for (const [k, v] of Object.entries(props)) {
     if (v == null) continue;
     if (v === false) {
-      if (k in el9) el9[k] = false;
+      if (k in el10) el10[k] = false;
       continue;
     }
-    if (k.startsWith("on")) el9.addEventListener(k.slice(2), v);
-    else if (k === "dataset") Object.assign(el9.dataset, v);
-    else if (k === "html") el9.innerHTML = v;
-    else if (k === "value") el9.value = v;
-    else if (k in el9 && typeof v !== "string") el9[k] = v;
-    else el9.setAttribute(k, v === true ? "" : v);
+    if (k.startsWith("on")) el10.addEventListener(k.slice(2), v);
+    else if (k === "dataset") Object.assign(el10.dataset, v);
+    else if (k === "html") el10.innerHTML = v;
+    else if (k === "value") el10.value = v;
+    else if (k in el10 && typeof v !== "string") el10[k] = v;
+    else el10.setAttribute(k, v === true ? "" : v);
   }
-  append(el9, kids);
-  return el9;
+  append(el10, kids);
+  return el10;
 }
-function fill(el9, ...kids) {
-  el9.replaceChildren();
-  append(el9, kids);
-  return el9;
+function fill(el10, ...kids) {
+  el10.replaceChildren();
+  append(el10, kids);
+  return el10;
 }
-function append(el9, kids) {
-  for (const k of kids.flat(Infinity)) if (k != null && k !== false) el9.append(k instanceof Node ? k : String(k));
+function append(el10, kids) {
+  for (const k of kids.flat(Infinity)) if (k != null && k !== false) el10.append(k instanceof Node ? k : String(k));
 }
 function avatar(src, name, cls = "") {
   if (src) return h(`img.avatar${cls ? "." + cls : ""}`, { src, alt: "" });
@@ -35255,8 +35255,8 @@ async function imagesFrom(dt) {
   try {
     const { type, bytes } = await window.desktop.fetchImage(url);
     return [new Blob([bytes], { type })];
-  } catch (e) {
-    throw new Error(String(e.message).replace(/^Error invoking remote method '[^']+': (Error: )?/, ""));
+  } catch (e2) {
+    throw new Error(String(e2.message).replace(/^Error invoking remote method '[^']+': (Error: )?/, ""));
   }
 }
 function imageLink(dt) {
@@ -35281,8 +35281,8 @@ function pictureDrop({ src, name, onImage, onRemove, chooseText = "Choose pictur
       const url = await imageToDataUrl(blob);
       say("");
       onImage(url);
-    } catch (e) {
-      say(e.message, "error");
+    } catch (e2) {
+      say(e2.message, "error");
     }
   };
   const box = h(
@@ -35292,44 +35292,44 @@ function pictureDrop({ src, name, onImage, onRemove, chooseText = "Choose pictur
     h(
       "div",
       h("div.pic-hint", hint),
-      h("label.link", chooseText, h("input", { type: "file", accept: "image/*", hidden: true, onchange: (e) => {
-        if (e.target.files[0]) take({ files: e.target.files, items: [], getData: () => "" });
-        e.target.value = "";
+      h("label.link", chooseText, h("input", { type: "file", accept: "image/*", hidden: true, onchange: (e2) => {
+        if (e2.target.files[0]) take({ files: e2.target.files, items: [], getData: () => "" });
+        e2.target.value = "";
       } })),
       src ? h("button.link", { onclick: onRemove }, "Remove") : null,
       status4
     )
   );
-  box.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  box.addEventListener("dragover", (e2) => {
+    e2.preventDefault();
+    e2.stopPropagation();
     box.classList.add("over");
   });
   box.addEventListener("dragleave", () => box.classList.remove("over"));
-  box.addEventListener("drop", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  box.addEventListener("drop", (e2) => {
+    e2.preventDefault();
+    e2.stopPropagation();
     box.classList.remove("over");
-    take(e.dataTransfer);
+    take(e2.dataTransfer);
   });
-  box.pasteImage = (e) => {
-    if (!hasImage(e.clipboardData)) return false;
-    e.preventDefault();
-    take(e.clipboardData);
+  box.pasteImage = (e2) => {
+    if (!hasImage(e2.clipboardData)) return false;
+    e2.preventDefault();
+    take(e2.clipboardData);
     return true;
   };
-  box.addEventListener("paste", (e) => box.pasteImage(e));
+  box.addEventListener("paste", (e2) => box.pasteImage(e2));
   return box;
 }
 function pasteToPicture(tabEl) {
-  document.addEventListener("paste", (e) => {
-    if (tabEl.hidden || e.defaultPrevented) return;
+  document.addEventListener("paste", (e2) => {
+    if (tabEl.hidden || e2.defaultPrevented) return;
     const box = tabEl.querySelector(".drop-pic");
-    if (!box || box.contains(e.target)) return;
-    const inField = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName);
-    const imageFile = [...e.clipboardData?.items || []].some((it) => it.kind === "file" && it.type.startsWith("image/"));
+    if (!box || box.contains(e2.target)) return;
+    const inField = /^(INPUT|TEXTAREA|SELECT)$/.test(e2.target.tagName);
+    const imageFile = [...e2.clipboardData?.items || []].some((it) => it.kind === "file" && it.type.startsWith("image/"));
     if (inField && !imageFile) return;
-    box.pasteImage(e);
+    box.pasteImage(e2);
   });
 }
 function doRoll(expr, { who = "", label = "", mode: mode2 = "normal", quiet = false } = {}) {
@@ -35370,15 +35370,15 @@ function showDice(r) {
   Promise.resolve().then(() => (init_dice3d(), dice3d_exports)).then(({ createDice: createDice2 }) => {
     dice ??= createDice2(diceStage);
     return dice.show(list, { theme: s.theme, font: s.font, scale: s.scale });
-  }).catch((e) => console.error("Dice animation failed:", e));
+  }).catch((e2) => console.error("Dice animation failed:", e2));
 }
-function rollFromClick(el9, expr, opts2) {
+function rollFromClick(el10, expr, opts2) {
   const s = diceSettings();
   const cd = s.animate ? Number(s.cooldown) || 0 : 0;
   if (cd && Date.now() < coolUntil) {
-    el9?.classList.remove("roll-blocked");
-    void el9?.offsetWidth;
-    el9?.classList.add("roll-blocked");
+    el10?.classList.remove("roll-blocked");
+    void el10?.offsetWidth;
+    el10?.classList.add("roll-blocked");
     return null;
   }
   const entry = doRoll(expr, opts2);
@@ -35387,11 +35387,11 @@ function rollFromClick(el9, expr, opts2) {
     document.body.classList.add("dice-cooling");
     document.body.style.setProperty("--cooldown", `${cd}s`);
     document.querySelectorAll(".cooling").forEach((x) => x.classList.remove("cooling"));
-    el9?.classList.add("cooling");
+    el10?.classList.add("cooling");
     clearTimeout(coolTimer);
     coolTimer = setTimeout(() => {
       document.body.classList.remove("dice-cooling");
-      el9?.classList.remove("cooling");
+      el10?.classList.remove("cooling");
     }, cd * 1e3);
   }
   return entry;
@@ -35438,11 +35438,11 @@ function toast(entry) {
 }
 function notice(text, kind = "", ms = 6e3) {
   noticeEl?.remove();
-  const el9 = noticeEl = h("div.notice" + (kind ? `.${kind}` : ""), { role: "status", onclick: () => el9.remove() }, text);
-  document.body.append(el9);
+  const el10 = noticeEl = h("div.notice" + (kind ? `.${kind}` : ""), { role: "status", onclick: () => el10.remove() }, text);
+  document.body.append(el10);
   setTimeout(() => {
-    if (noticeEl === el9) {
-      el9.remove();
+    if (noticeEl === el10) {
+      el10.remove();
       noticeEl = null;
     }
   }, ms);
@@ -35451,8 +35451,8 @@ function modal(title, body2, actions = []) {
   const close = () => back.remove();
   const back = h(
     "div.modal-back",
-    { onmousedown: (e) => {
-      if (e.target === back) close();
+    { onmousedown: (e2) => {
+      if (e2.target === back) close();
     } },
     h(
       "div.modal",
@@ -35492,14 +35492,14 @@ var init_ui = __esm({
     dice = null;
     diceStage = null;
     coolUntil = 0;
-    document.addEventListener("dragover", (e) => e.preventDefault());
-    document.addEventListener("drop", (e) => e.preventDefault());
-    document.addEventListener("click", (e) => {
-      const b2 = e.target.closest(".roll");
+    document.addEventListener("dragover", (e2) => e2.preventDefault());
+    document.addEventListener("drop", (e2) => e2.preventDefault());
+    document.addEventListener("click", (e2) => {
+      const b2 = e2.target.closest(".roll");
       if (!b2) return;
-      e.preventDefault();
-      e.stopPropagation();
-      const mode2 = e.shiftKey ? "advantage" : e.ctrlKey ? "disadvantage" : "normal";
+      e2.preventDefault();
+      e2.stopPropagation();
+      const mode2 = e2.shiftKey ? "advantage" : e2.ctrlKey ? "disadvantage" : "normal";
       rollFromClick(b2, b2.dataset.expr, { who: b2.dataset.who || "", label: b2.dataset.label || "", mode: mode2 });
     }, true);
     TOAST_DEFAULTS = { position: "bottom-left", size: 2, seconds: 5 };
@@ -35511,8 +35511,8 @@ var init_ui = __esm({
 function partyThresholds(party) {
   const t = { easy: 0, medium: 0, hard: 0, deadly: 0, daily: 0 };
   for (const { level, power } of party.map(member)) {
-    const [e, m, h2, d] = THRESHOLDS[level];
-    t.easy += e * power;
+    const [e2, m, h2, d] = THRESHOLDS[level];
+    t.easy += e2 * power;
     t.medium += m * power;
     t.hard += h2 * power;
     t.deadly += d * power;
@@ -35600,7 +35600,7 @@ var init_rules = __esm({
     CR_ORDER = Object.keys(CR_XP);
     crValue = (cr) => String(cr).includes("/") ? 1 / Number(String(cr).split("/")[1]) : Number(cr) || 0;
     xpFor = (cr) => CR_XP[String(cr)] ?? 0;
-    isMinion = (m) => !!m && (!!m.traits?.some((t) => /^\s*minion\s*$/i.test(t.name || "")) || ["actions", "bonusActions", "reactions"].some((s) => (m[s] || []).some((e) => /\(\s*Group Attack\s*\)/i.test(e.name || ""))));
+    isMinion = (m) => !!m && (!!m.traits?.some((t) => /^\s*minion\s*$/i.test(t.name || "")) || ["actions", "bonusActions", "reactions"].some((s) => (m[s] || []).some((e2) => /\(\s*Group Attack\s*\)/i.test(e2.name || ""))));
     monsterXp = (m) => isMinion(m) ? Number(m.minionXp) || Math.round(xpFor(m.challengeRating) / 4) : xpFor(m?.challengeRating);
     xpItem = (m) => isMinion(m) ? { xp: monsterXp(m) } : m?.challengeRating ?? "0";
     profBonus = (cr) => {
@@ -35877,8 +35877,9 @@ async function loadLibrary() {
   if (!store.srd.length) store.srd = await (await fetch("data/srd-monsters.json")).json();
   if (!store.spells.length) store.spells = await (await fetch("data/srd-spells.json")).json();
   if (!store.rules.length) store.rules = await (await fetch("data/srd-rules.json")).json();
+  if (!store.items.length) store.items = await (await fetch("data/srd-items.json")).json();
   store.errors = [];
-  for (const kind of ["monsters", "party", "encounters", "conditions"]) {
+  for (const kind of ["monsters", "party", "encounters", "conditions", "loot"]) {
     if (!libraryPath) {
       store[kind] = kind === "conditions" ? defaultConditions() : [];
       continue;
@@ -35941,9 +35942,9 @@ function save(kind, item, { delay = 500, touch = true } = {}) {
       await p;
       pending--;
       if (!pending) status("All changes saved");
-    } catch (e) {
+    } catch (e2) {
       pending--;
-      status(`Could not save: ${e.message}`);
+      status(`Could not save: ${e2.message}`);
     } finally {
       writing.delete(p);
     }
@@ -35985,6 +35986,10 @@ var init_store = __esm({
       party: [],
       encounters: [],
       conditions: [],
+      items: [],
+      // SRD equipment and magic items (the loot generator)
+      loot: [],
+      // the user's loot tables: edited or new themes (src/loot-data.js has the built-in ones)
       errors: []
     };
     onChange = (fn) => {
@@ -36006,7 +36011,15 @@ var init_store = __esm({
         text: String(c2.text ?? ""),
         keywords: arr(c2.keywords).filter((k) => k && typeof k.text === "string" && k.text.trim()).map((k) => ({ text: k.text.trim(), caps: !!k.caps }))
       }),
-      encounters: (e) => ({ ...e, name: String(e.name ?? "Untitled"), characterIds: arr(e.characterIds), groups: arr(e.groups).filter((g) => g && g.monsterId && g.count > 0), extraPlayers: e.extraPlayers || { count: 0, level: 1 } })
+      loot: (t) => t.deleted || t.types || t.monsters ? t : {
+        ...t,
+        name: String(t.name || "Unnamed"),
+        keywords: arr(t.keywords).map(String),
+        onlyTypes: arr(t.onlyTypes).map(String),
+        items: arr(t.items).filter((x) => x && typeof x.name === "string"),
+        harvest: arr(t.harvest).filter((x) => x && typeof x.name === "string")
+      },
+      encounters: (e2) => ({ ...e2, name: String(e2.name ?? "Untitled"), characterIds: arr(e2.characterIds), groups: arr(e2.groups).filter((g) => g && g.monsterId && g.count > 0), extraPlayers: e2.extraPlayers || { count: 0, level: 1 } })
     };
     timers = /* @__PURE__ */ new Map();
     writing = /* @__PURE__ */ new Set();
@@ -36128,11 +36141,11 @@ var require_runtime = __commonJS({
       };
       function AsyncIterator(generator, PromiseImpl) {
         function invoke(method, arg, resolve, reject) {
-          var record = tryCatch(generator[method], generator, arg);
-          if (record.type === "throw") {
-            reject(record.arg);
+          var record2 = tryCatch(generator[method], generator, arg);
+          if (record2.type === "throw") {
+            reject(record2.arg);
           } else {
-            var result = record.arg;
+            var result = record2.arg;
             var value = result.value;
             if (value && typeof value === "object" && hasOwn.call(value, "__await")) {
               return PromiseImpl.resolve(value.__await).then(function(value2) {
@@ -36227,20 +36240,20 @@ var require_runtime = __commonJS({
               context.abrupt("return", context.arg);
             }
             state2 = GenStateExecuting;
-            var record = tryCatch(innerFn, self2, context);
-            if (record.type === "normal") {
+            var record2 = tryCatch(innerFn, self2, context);
+            if (record2.type === "normal") {
               state2 = context.done ? GenStateCompleted : GenStateSuspendedYield;
-              if (record.arg === ContinueSentinel) {
+              if (record2.arg === ContinueSentinel) {
                 continue;
               }
               return {
-                value: record.arg,
+                value: record2.arg,
                 done: context.done
               };
-            } else if (record.type === "throw") {
+            } else if (record2.type === "throw") {
               state2 = GenStateCompleted;
               context.method = "throw";
-              context.arg = record.arg;
+              context.arg = record2.arg;
             }
           }
         };
@@ -36266,14 +36279,14 @@ var require_runtime = __commonJS({
           }
           return ContinueSentinel;
         }
-        var record = tryCatch(method, delegate.iterator, context.arg);
-        if (record.type === "throw") {
+        var record2 = tryCatch(method, delegate.iterator, context.arg);
+        if (record2.type === "throw") {
           context.method = "throw";
-          context.arg = record.arg;
+          context.arg = record2.arg;
           context.delegate = null;
           return ContinueSentinel;
         }
-        var info2 = record.arg;
+        var info2 = record2.arg;
         if (!info2) {
           context.method = "throw";
           context.arg = new TypeError("iterator result is not an object");
@@ -36313,10 +36326,10 @@ var require_runtime = __commonJS({
         this.tryEntries.push(entry);
       }
       function resetTryEntry(entry) {
-        var record = entry.completion || {};
-        record.type = "normal";
-        delete record.arg;
-        entry.completion = record;
+        var record2 = entry.completion || {};
+        record2.type = "normal";
+        delete record2.arg;
+        entry.completion = record2;
       }
       function Context(tryLocsList) {
         this.tryEntries = [{ tryLoc: "root" }];
@@ -36408,8 +36421,8 @@ var require_runtime = __commonJS({
           }
           var context = this;
           function handle(loc, caught) {
-            record.type = "throw";
-            record.arg = exception;
+            record2.type = "throw";
+            record2.arg = exception;
             context.next = loc;
             if (caught) {
               context.method = "next";
@@ -36419,7 +36432,7 @@ var require_runtime = __commonJS({
           }
           for (var i = this.tryEntries.length - 1; i >= 0; --i) {
             var entry = this.tryEntries[i];
-            var record = entry.completion;
+            var record2 = entry.completion;
             if (entry.tryLoc === "root") {
               return handle("end");
             }
@@ -36457,27 +36470,27 @@ var require_runtime = __commonJS({
           if (finallyEntry && (type === "break" || type === "continue") && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc) {
             finallyEntry = null;
           }
-          var record = finallyEntry ? finallyEntry.completion : {};
-          record.type = type;
-          record.arg = arg;
+          var record2 = finallyEntry ? finallyEntry.completion : {};
+          record2.type = type;
+          record2.arg = arg;
           if (finallyEntry) {
             this.method = "next";
             this.next = finallyEntry.finallyLoc;
             return ContinueSentinel;
           }
-          return this.complete(record);
+          return this.complete(record2);
         },
-        complete: function(record, afterLoc) {
-          if (record.type === "throw") {
-            throw record.arg;
+        complete: function(record2, afterLoc) {
+          if (record2.type === "throw") {
+            throw record2.arg;
           }
-          if (record.type === "break" || record.type === "continue") {
-            this.next = record.arg;
-          } else if (record.type === "return") {
-            this.rval = this.arg = record.arg;
+          if (record2.type === "break" || record2.type === "continue") {
+            this.next = record2.arg;
+          } else if (record2.type === "return") {
+            this.rval = this.arg = record2.arg;
             this.method = "return";
             this.next = "end";
-          } else if (record.type === "normal" && afterLoc) {
+          } else if (record2.type === "normal" && afterLoc) {
             this.next = afterLoc;
           }
           return ContinueSentinel;
@@ -36496,9 +36509,9 @@ var require_runtime = __commonJS({
           for (var i = this.tryEntries.length - 1; i >= 0; --i) {
             var entry = this.tryEntries[i];
             if (entry.tryLoc === tryLoc) {
-              var record = entry.completion;
-              if (record.type === "throw") {
-                var thrown = record.arg;
+              var record2 = entry.completion;
+              if (record2.type === "throw") {
+                var thrown = record2.arg;
                 resetTryEntry(entry);
               }
               return thrown;
@@ -36829,11 +36842,11 @@ var require_defaultOptions = __commonJS({
 var require_defaultOptions2 = __commonJS({
   "node_modules/tesseract.js/src/worker/browser/defaultOptions.js"(exports, module) {
     "use strict";
-    var version2 = require_package().version;
+    var version3 = require_package().version;
     var defaultOptions = require_defaultOptions();
     module.exports = {
       ...defaultOptions,
-      workerPath: `https://cdn.jsdelivr.net/npm/tesseract.js@v${version2}/dist/worker.min.js`
+      workerPath: `https://cdn.jsdelivr.net/npm/tesseract.js@v${version3}/dist/worker.min.js`
     };
   }
 });
@@ -37343,8 +37356,8 @@ function parseAbilityCell(t) {
   const ok = m[3] != null && Math.floor((score - 10) / 2) === (m[2] === "-" ? -1 : 1) * +m[3];
   return { score, ok };
 }
-function findHeader(words) {
-  const cand = words.filter((w) => KEYS.includes(keyOf(w)));
+function findHeader(words2) {
+  const cand = words2.filter((w) => KEYS.includes(keyOf(w)));
   let best = null;
   for (const w of cand) {
     const h2 = w.bbox.y1 - w.bbox.y0, cy = (w.bbox.y0 + w.bbox.y1) / 2;
@@ -37370,30 +37383,30 @@ function darkToLight(d) {
   }
   return true;
 }
-function findGutter(words, W) {
-  const ws = words.filter((w) => w.confidence > 30 && /[A-Za-z0-9]/.test(w.text));
+function findGutter(words2, W) {
+  const ws = words2.filter((w) => w.confidence > 30 && /[A-Za-z0-9]/.test(w.text));
   if (ws.length < 40) return null;
   const B = 4, cover = new Uint8Array(Math.ceil(W / B) + 1);
   for (const w of ws) for (let x = Math.floor(w.bbox.x0 / B); x <= Math.ceil(w.bbox.x1 / B); x++) cover[x] = 1;
   let best = null;
   for (let x = Math.floor(W * 0.3 / B); x < W * 0.7 / B; x++) {
     if (cover[x]) continue;
-    let e = x;
-    while (e + 1 < cover.length && !cover[e + 1]) e++;
-    if (!best || e - x > best.e - best.x) best = { x, e };
-    x = e;
+    let e2 = x;
+    while (e2 + 1 < cover.length && !cover[e2 + 1]) e2++;
+    if (!best || e2 - x > best.e - best.x) best = { x, e: e2 };
+    x = e2;
   }
   if (!best || (best.e - best.x + 1) * B < W * 0.012) return null;
   const mid = (best.x + best.e + 1) / 2 * B;
   const left = ws.filter((w) => w.bbox.x1 < mid).length, right = ws.length - left;
   return left > ws.length * 0.2 && right > ws.length * 0.2 ? Math.round(mid) : null;
 }
-function find2024Grid(words, W) {
-  const mods = words.filter((w) => /^MOD$/i.test(w.text)).sort((a2, b2) => a2.bbox.x0 - b2.bbox.x0);
-  if (!mods.length || !words.some((w) => /^SAVE$/i.test(w.text))) return null;
+function find2024Grid(words2, W) {
+  const mods = words2.filter((w) => /^MOD$/i.test(w.text)).sort((a2, b2) => a2.bbox.x0 - b2.bbox.x0);
+  if (!mods.length || !words2.some((w) => /^SAVE$/i.test(w.text))) return null;
   const top = Math.min(...mods.map((w) => w.bbox.y0));
   const labels = /* @__PURE__ */ new Map();
-  for (const w of words) {
+  for (const w of words2) {
     const k = keyOf(w);
     if (KEYS.includes(k) && w.text.replace(/[^A-Za-z]/g, "").length === 3 && w.bbox.y0 > top && !labels.has(k)) labels.set(k, w.bbox);
   }
@@ -37506,7 +37519,7 @@ async function readAbilityRow(worker, img, imaging2, hdr) {
   const out = [];
   for (let i = 0; i < 6; i++) {
     const c2 = cx(hdr[idx[0]]) + (i - idx[0]) * step;
-    let pick3 = null;
+    let pick4 = null;
     for (const [wf, dy, hf] of [[0.9, 0.3, 1.9], [0.8, 0.5, 1.6], [1, 0.2, 2.2], [0.7, 0.4, 1.8]]) {
       const x = Math.max(0, Math.round(c2 - step * wf / 2));
       const w = Math.min(W - x, Math.round(step * wf));
@@ -37515,12 +37528,12 @@ async function readAbilityRow(worker, img, imaging2, hdr) {
       const t = (await worker.recognize(await imaging2.input(cell))).data.text.trim();
       const p = parseAbilityCell(t);
       if (p && p.ok) {
-        pick3 = p;
+        pick4 = p;
         break;
       }
-      if (p && !pick3) pick3 = p;
+      if (p && !pick4) pick4 = p;
     }
-    out.push(pick3);
+    out.push(pick4);
   }
   return out;
 }
@@ -37660,9 +37673,9 @@ function getWorker() {
       workerBlobURL: false,
       gzip: true,
       cacheMethod: "none"
-    }).catch((e) => {
+    }).catch((e2) => {
       workerPromise = null;
-      throw e;
+      throw e2;
     });
   }
   return workerPromise;
@@ -38190,7 +38203,7 @@ function parseStatBlock(rawText) {
       continue;
     }
     const slotRow = line.match(SLOT_ROW_RE);
-    const tracker = slotRow || BOX_ROW_RE.test(line) ? [...M[section]].reverse().find((e) => TRACKER_NAME_RE.test(e.name) || /expends spell slots/i.test(e.text)) : null;
+    const tracker = slotRow || BOX_ROW_RE.test(line) ? [...M[section]].reverse().find((e2) => TRACKER_NAME_RE.test(e2.name) || /expends spell slots/i.test(e2.text)) : null;
     if (tracker && (slotRow || /Charges$/i.test(tracker.name) && tracker === entry)) {
       (tracker.rows ??= []).push({ level: slotRow ? slotRow[1] : "", boxes: countBoxes(slotRow ? slotRow[2] : line) });
       prev = ".";
@@ -38223,35 +38236,35 @@ function parseStatBlock(rawText) {
   }
   if (variant !== null) warnings.push('Variant actions were added under Actions with "(\u2026 Variant)" in their names; the variant descriptions are in the Description.');
   const cls = rawText.match(CLASS_RE);
-  for (const e of M.traits.concat(M.actions, M.bonusActions)) {
-    if (!e.rows && !(TRACKER_NAME_RE.test(e.name) && cls)) continue;
-    const rows2 = e.rows || [];
-    if (/Charges$/i.test(e.name)) {
+  for (const e2 of M.traits.concat(M.actions, M.bonusActions)) {
+    if (!e2.rows && !(TRACKER_NAME_RE.test(e2.name) && cls)) continue;
+    const rows2 = e2.rows || [];
+    if (/Charges$/i.test(e2.name)) {
       const seen2 = rows2.reduce((n, r) => n + r.boxes, 0);
-      const rule = cls && /Lay on Hands/i.test(e.name) && /paladin/i.test(cls[2]) ? Number(cls[1]) : 0;
+      const rule = cls && /Lay on Hands/i.test(e2.name) && /paladin/i.test(cls[2]) ? Number(cls[1]) : 0;
       const count = rule || seen2;
-      if (count) e.slots = [{ label: "", count }];
-      if (rule && seen2 && seen2 !== rule) warnings.push(`${e.name}: counted ${seen2} boxes, but a level ${rule} paladin has ${rule}; used ${rule}.`);
-      if (!rule && seen2) warnings.push(`${e.name}: ${seen2} boxes counted from the screenshot; check the number.`);
-      if (!count) warnings.push(`${e.name}: the boxes could not be counted; add them in Creatures (Check boxes).`);
+      if (count) e2.slots = [{ label: "", count }];
+      if (rule && seen2 && seen2 !== rule) warnings.push(`${e2.name}: counted ${seen2} boxes, but a level ${rule} paladin has ${rule}; used ${rule}.`);
+      if (!rule && seen2) warnings.push(`${e2.name}: ${seen2} boxes counted from the screenshot; check the number.`);
+      if (!count) warnings.push(`${e2.name}: the boxes could not be counted; add them in Creatures (Check boxes).`);
       continue;
     }
     const table = cls ? slotTable(cls[2], Number(cls[1]), cls[3] || "") : null;
     if (table) {
-      e.slots = table.map((count, k) => ({ label: `Level ${table.pact ? table.pact : k + 1}`, count }));
+      e2.slots = table.map((count, k) => ({ label: `Level ${table.pact ? table.pact : k + 1}`, count }));
       const read = rows2.map((r) => r.boxes);
       const off = table.map((n, k) => read[k] && read[k] !== n ? `Level ${k + 1}: read ${read[k]}, should be ${n}` : "").filter(Boolean);
       if (rows2.length && rows2.length !== table.length) off.push(`${rows2.length} levels read, ${table.length} expected`);
       warnings.push(`Spell slots set from the ${cap(lc(cls[2]))} level ${cls[1]} table${off.length ? ` (the screenshot's boxes were unclear: ${off.join("; ")})` : ""}.`);
     } else if (rows2.length && rows2.every((r) => r.boxes > 0)) {
-      e.slots = rows2.map((r, k) => ({ label: `Level ${/^\d$/.test(r.level) ? r.level : k + 1}`, count: r.boxes }));
+      e2.slots = rows2.map((r, k) => ({ label: `Level ${/^\d$/.test(r.level) ? r.level : k + 1}`, count: r.boxes }));
       warnings.push("Spell slot boxes were counted from the screenshot; check them in Creatures (Check boxes).");
     } else if (rows2.length) warnings.push("Spell slot boxes could not be counted; add them in Creatures (Check boxes).");
   }
   if (cls) (M.notes ??= []).push({ name: "Class", text: cls[0].trim() });
-  const tidy = (e) => {
-    let t = e.text.trim();
-    if (e.spells) {
+  const tidy = (e2) => {
+    let t = e2.text.trim();
+    if (e2.spells) {
       const sm = t.match(/^([^:]+:)\s*(.*)$/);
       if (sm) t = `${sm[1]} ${splitTop(sm[2]).map((s) => {
         const p = s.match(/^([^(*]+?)(\s*[*(].*)?$/);
@@ -38260,18 +38273,18 @@ function parseStatBlock(rawText) {
     }
     for (const label of ITALIC_LABELS) t = t.split(label).join(`\0${label}`);
     t = t.replace(/\u0000/g, "<em>").replace(/\u0001/g, "</em>").replace(/<em>(<em>)+/g, "<em>").replace(/(<\/em>)+/g, "</em>");
-    return { name: e.name, text: t, ...e.slots ? { slots: e.slots } : {} };
+    return { name: e2.name, text: t, ...e2.slots ? { slots: e2.slots } : {} };
   };
   for (const k of ["traits", "actions", "bonusActions", "reactions", "legendaryActions", "mythicActions", "lairActions", "description"]) {
-    M[k] = M[k].map(tidy).filter((e) => e.name || e.text);
+    M[k] = M[k].map(tidy).filter((e2) => e2.name || e2.text);
   }
   const pb = pbFor(M.challengeRating);
-  for (const e of [...M.traits, ...M.actions]) {
-    const dc = e.text.match(/spell save DC (\d+)/i), ab2 = e.text.match(/spellcasting ability is (\w+)/i);
+  for (const e2 of [...M.traits, ...M.actions]) {
+    const dc = e2.text.match(/spell save DC (\d+)/i), ab2 = e2.text.match(/spellcasting ability is (\w+)/i);
     const abil = ab2 && ABILITIES.find((a2) => lc(a2) === lc(ab2[1]));
     if (dc && abil && M.abilities[abil] != null) {
       const expected = 8 + pb + modOf(M.abilities[abil]);
-      if (Number(dc[1]) !== expected) warnings.push(`${e.name || "Spellcasting"}: spell save DC reads ${dc[1]}, but ${cap(abil)} ${M.abilities[abil]} and proficiency +${pb} give ${expected}. Check it.`);
+      if (Number(dc[1]) !== expected) warnings.push(`${e2.name || "Spellcasting"}: spell save DC reads ${dc[1]}, but ${cap(abil)} ${M.abilities[abil]} and proficiency +${pb} give ${expected}. Check it.`);
     }
   }
   if (!M.actions.length) warnings.push('No actions found. If the stat block has actions, check that an "ACTIONS" heading was read.');
@@ -38367,15 +38380,15 @@ function ensureTip() {
   document.body.append(tip);
   return tip;
 }
-function show(el9) {
-  const html = htmlOf(el9, !!pinned);
+function show(el10) {
+  const html = htmlOf(el10, !!pinned);
   if (!html) return;
   clearTimeout(hideTimer);
   ensureTip();
   tip.innerHTML = html + (pinned ? '<div class="cond-hint">Pinned. Click elsewhere or press Esc to close.</div>' : '<div class="cond-hint">Click the word to pin this open.</div>');
   tip.hidden = false;
   tip.scrollTop = 0;
-  const r = el9.getBoundingClientRect(), tw = tip.offsetWidth;
+  const r = el10.getBoundingClientRect(), tw = tip.offsetWidth;
   const below = window.innerHeight - r.bottom - 14, above = r.top - 14;
   tip.style.maxHeight = "";
   const th = tip.offsetHeight;
@@ -38401,38 +38414,38 @@ var init_tooltip = __esm({
     kinds = /* @__PURE__ */ new Map();
     registerTip = (key2, html) => kinds.set(key2, html);
     linkOf = (target) => target.closest?.([...kinds.keys()].map((k) => `[data-${k}]`).join(",") || null);
-    htmlOf = (el9, pinned2) => {
-      for (const [k, fn] of kinds) if (el9.dataset[k] != null) return fn(el9.dataset[k], pinned2);
+    htmlOf = (el10, pinned2) => {
+      for (const [k, fn] of kinds) if (el10.dataset[k] != null) return fn(el10.dataset[k], pinned2);
       return "";
     };
     pinned = null;
-    document.addEventListener("mouseover", (e) => {
-      const el9 = linkOf(e.target);
-      if (el9 && !pinned) show(el9);
+    document.addEventListener("mouseover", (e2) => {
+      const el10 = linkOf(e2.target);
+      if (el10 && !pinned) show(el10);
     });
-    document.addEventListener("mouseout", (e) => {
-      const el9 = linkOf(e.target);
-      if (el9 && !pinned && !tip?.contains(e.relatedTarget)) hideSoon();
+    document.addEventListener("mouseout", (e2) => {
+      const el10 = linkOf(e2.target);
+      if (el10 && !pinned && !tip?.contains(e2.relatedTarget)) hideSoon();
     });
-    document.addEventListener("focusin", (e) => {
-      if (e.target.matches?.(".cond-link") && !pinned) show(e.target);
+    document.addEventListener("focusin", (e2) => {
+      if (e2.target.matches?.(".cond-link") && !pinned) show(e2.target);
     });
-    document.addEventListener("click", (e) => {
-      const el9 = e.target.closest?.(".cond-link");
-      if (el9 && !tip?.contains(el9)) {
-        e.preventDefault();
-        if (pinned === el9) return unpin();
-        pinned = el9;
-        show(el9);
+    document.addEventListener("click", (e2) => {
+      const el10 = e2.target.closest?.(".cond-link");
+      if (el10 && !tip?.contains(el10)) {
+        e2.preventDefault();
+        if (pinned === el10) return unpin();
+        pinned = el10;
+        show(el10);
         return;
       }
-      if (tip && !tip.contains(e.target)) unpin();
+      if (tip && !tip.contains(e2.target)) unpin();
     }, true);
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && pinned) unpin();
+    document.addEventListener("keydown", (e2) => {
+      if (e2.key === "Escape" && pinned) unpin();
     });
-    document.addEventListener("scroll", (e) => {
-      if (pinned && !tip?.contains(e.target)) unpin();
+    document.addEventListener("scroll", (e2) => {
+      if (pinned && !tip?.contains(e2.target)) unpin();
     }, true);
   }
 });
@@ -38458,8 +38471,8 @@ function rebuild() {
       if (k.caps) capsWords.add(w);
     }
   }
-  const words = store.conditions.flatMap((c2) => c2.keywords.map((k) => k.text)).sort((a2, b2) => b2.length - a2.length);
-  keywordRe = words.length ? new RegExp(`\\b(${words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+")).join("|")})\\b`, "gi") : null;
+  const words2 = store.conditions.flatMap((c2) => c2.keywords.map((k) => k.text)).sort((a2, b2) => b2.length - a2.length);
+  keywordRe = words2.length ? new RegExp(`\\b(${words2.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+")).join("|")})\\b`, "gi") : null;
 }
 function findKeywords(text) {
   if (!keywordRe) rebuild();
@@ -38621,8 +38634,8 @@ var init_spells = __esm({
     setSpellOpener = (fn) => {
       opener = fn;
     };
-    document.addEventListener("click", (e) => {
-      const b2 = e.target.closest?.("[data-open-spell]");
+    document.addEventListener("click", (e2) => {
+      const b2 = e2.target.closest?.("[data-open-spell]");
       if (!b2 || !opener) return;
       unpin();
       opener(b2.dataset.openSpell);
@@ -38917,12 +38930,12 @@ function isValidFetchUrl(url, baseUrl) {
     return false;
   }
 }
-function noContextMenu(e) {
-  e.preventDefault();
+function noContextMenu(e2) {
+  e2.preventDefault();
 }
-function stopEvent(e) {
-  e.preventDefault();
-  e.stopPropagation();
+function stopEvent(e2) {
+  e2.preventDefault();
+  e2.stopPropagation();
 }
 function getXfaPageViewport(xfaPage, {
   scale = 1,
@@ -38971,10 +38984,10 @@ function getCurrentTransform(ctx) {
     b: b2,
     c: c2,
     d,
-    e,
+    e: e2,
     f
   } = ctx.getTransform();
-  return [a2, b2, c2, d, e, f];
+  return [a2, b2, c2, d, e2, f];
 }
 function getCurrentTransformInverse(ctx) {
   const {
@@ -38982,10 +38995,10 @@ function getCurrentTransformInverse(ctx) {
     b: b2,
     c: c2,
     d,
-    e,
+    e: e2,
     f
   } = ctx.getTransform().invertSelf();
-  return [a2, b2, c2, d, e, f];
+  return [a2, b2, c2, d, e2, f];
 }
 function setLayerDimensions(div, viewport, mustFlip = false, mustRotate = true) {
   if (viewport instanceof PageViewport) {
@@ -39280,13 +39293,13 @@ function mirrorContextOperations(ctx, destCtx) {
     destCtx.scale(x, y);
     this.__originalScale(x, y);
   };
-  ctx.transform = function ctxTransform(a2, b2, c2, d, e, f) {
-    destCtx.transform(a2, b2, c2, d, e, f);
-    this.__originalTransform(a2, b2, c2, d, e, f);
+  ctx.transform = function ctxTransform(a2, b2, c2, d, e2, f) {
+    destCtx.transform(a2, b2, c2, d, e2, f);
+    this.__originalTransform(a2, b2, c2, d, e2, f);
   };
-  ctx.setTransform = function ctxSetTransform(a2, b2, c2, d, e, f) {
-    destCtx.setTransform(a2, b2, c2, d, e, f);
-    this.__originalSetTransform(a2, b2, c2, d, e, f);
+  ctx.setTransform = function ctxSetTransform(a2, b2, c2, d, e2, f) {
+    destCtx.setTransform(a2, b2, c2, d, e2, f);
+    this.__originalSetTransform(a2, b2, c2, d, e2, f);
   };
   ctx.resetTransform = function ctxResetTransform() {
     destCtx.resetTransform();
@@ -41019,16 +41032,16 @@ var init_pdf = __esm({
       get div() {
         return this.#toolbar;
       }
-      static #pointerDown(e) {
-        e.stopPropagation();
+      static #pointerDown(e2) {
+        e2.stopPropagation();
       }
-      #focusIn(e) {
+      #focusIn(e2) {
         this.#editor._focusEventsAllowed = false;
-        stopEvent(e);
+        stopEvent(e2);
       }
-      #focusOut(e) {
+      #focusOut(e2) {
         this.#editor._focusEventsAllowed = true;
-        stopEvent(e);
+        stopEvent(e2);
       }
       #addListenersToElement(element) {
         const signal = this.#editor._uiManager._signal;
@@ -41062,7 +41075,7 @@ var init_pdf = __esm({
         button2.tabIndex = 0;
         button2.setAttribute("data-l10n-id", _EditorToolbar.#l10nRemove[editorType]);
         this.#addListenersToElement(button2);
-        button2.addEventListener("click", (e) => {
+        button2.addEventListener("click", (e2) => {
           _uiManager.delete();
         }, {
           signal: _uiManager._signal
@@ -41241,8 +41254,8 @@ var init_pdf = __esm({
             data.bitmap = await createImageBitmap(image);
           }
           data.refCounter = 1;
-        } catch (e) {
-          warn2(e);
+        } catch (e2) {
+          warn2(e2);
           data = null;
         }
         this.#cache.set(key2, data);
@@ -41602,12 +41615,12 @@ var init_pdf = __esm({
         const proto = _AnnotationEditorUIManager.prototype;
         const arrowChecker = (self2) => self2.#container.contains(document.activeElement) && document.activeElement.tagName !== "BUTTON" && self2.hasSomethingToControl();
         const textInputChecker = (_self, {
-          target: el9
+          target: el10
         }) => {
-          if (el9 instanceof HTMLInputElement) {
+          if (el10 instanceof HTMLInputElement) {
             const {
               type
-            } = el9;
+            } = el10;
             return type !== "text" && type !== "number";
           }
           return true;
@@ -41624,12 +41637,12 @@ var init_pdf = __esm({
           checker: textInputChecker
         }], [["Enter", "mac+Enter"], proto.addNewEditorFromKeyboard, {
           checker: (self2, {
-            target: el9
-          }) => !(el9 instanceof HTMLButtonElement) && self2.#container.contains(el9) && !self2.isEnterHandled
+            target: el10
+          }) => !(el10 instanceof HTMLButtonElement) && self2.#container.contains(el10) && !self2.isEnterHandled
         }], [[" ", "mac+ "], proto.addNewEditorFromKeyboard, {
           checker: (self2, {
-            target: el9
-          }) => !(el9 instanceof HTMLButtonElement) && self2.#container.contains(document.activeElement)
+            target: el10
+          }) => !(el10 instanceof HTMLButtonElement) && self2.#container.contains(document.activeElement)
         }], [["Escape", "mac+Escape"], proto.unselectAll], [["ArrowLeft", "mac+ArrowLeft"], proto.translateSelectedEditors, {
           args: [-small, 0],
           checker: arrowChecker
@@ -41749,7 +41762,7 @@ var init_pdf = __esm({
         return shadow(this, "highlightColors", this.#highlightColors ? new Map(this.#highlightColors.split(",").map((pair) => pair.split("=").map((x) => x.trim()))) : null);
       }
       get highlightColorNames() {
-        return shadow(this, "highlightColorNames", this.highlightColors ? new Map(Array.from(this.highlightColors, (e) => e.reverse())) : null);
+        return shadow(this, "highlightColorNames", this.highlightColors ? new Map(Array.from(this.highlightColors, (e2) => e2.reverse())) : null);
       }
       setCurrentDrawingSession(layer) {
         if (layer) {
@@ -41969,13 +41982,13 @@ var init_pdf = __esm({
           activeLayer?.toggleDrawing();
           const ac = new AbortController();
           const signal = this.combinedSignal(ac);
-          const pointerup = (e) => {
-            if (e.type === "pointerup" && e.button !== 0) {
+          const pointerup = (e2) => {
+            if (e2.type === "pointerup" && e2.button !== 0) {
               return;
             }
             ac.abort();
             activeLayer?.toggleDrawing(true);
-            if (e.type === "pointerup") {
+            if (e2.type === "pointerup") {
               this.#onSelectEnd("main_toolbar");
             }
           };
@@ -44185,12 +44198,12 @@ var init_pdf = __esm({
           passive: false,
           signal
         };
-        const cancelDrag = (e) => {
+        const cancelDrag = (e2) => {
           ac.abort();
           this.#dragPointerId = null;
           this.#hasBeenClicked = false;
           if (!this._uiManager.endDragSession()) {
-            this.#selectOnPointerEvent(e);
+            this.#selectOnPointerEvent(e2);
           }
           if (hasDraggingStarted) {
             this._onStopDragging();
@@ -44201,7 +44214,7 @@ var init_pdf = __esm({
           this.#prevDragY = event.clientY;
           this.#dragPointerId = event.pointerId;
           this.#dragPointerType = event.pointerType;
-          window.addEventListener("pointermove", (e) => {
+          window.addEventListener("pointermove", (e2) => {
             if (!hasDraggingStarted) {
               hasDraggingStarted = true;
               this._onStartDragging();
@@ -44210,9 +44223,9 @@ var init_pdf = __esm({
               clientX: x,
               clientY: y,
               pointerId
-            } = e;
+            } = e2;
             if (pointerId !== this.#dragPointerId) {
-              stopEvent(e);
+              stopEvent(e2);
               return;
             }
             const [tx, ty] = this.screenToPageTranslation(x - this.#prevDragX, y - this.#prevDragY);
@@ -44221,21 +44234,21 @@ var init_pdf = __esm({
             this._uiManager.dragSelectedEditors(tx, ty);
           }, opts2);
           window.addEventListener("touchmove", stopEvent, opts2);
-          window.addEventListener("pointerdown", (e) => {
-            if (e.pointerType === this.#dragPointerType) {
-              if (this.#touchManager || e.isPrimary) {
-                cancelDrag(e);
+          window.addEventListener("pointerdown", (e2) => {
+            if (e2.pointerType === this.#dragPointerType) {
+              if (this.#touchManager || e2.isPrimary) {
+                cancelDrag(e2);
               }
             }
-            stopEvent(e);
+            stopEvent(e2);
           }, opts2);
         }
-        const pointerUpCallback = (e) => {
-          if (!this.#dragPointerId || this.#dragPointerId === e.pointerId) {
-            cancelDrag(e);
+        const pointerUpCallback = (e2) => {
+          if (!this.#dragPointerId || this.#dragPointerId === e2.pointerId) {
+            cancelDrag(e2);
             return;
           }
-          stopEvent(e);
+          stopEvent(e2);
         };
         window.addEventListener("pointerup", pointerUpCallback, {
           signal
@@ -47038,8 +47051,8 @@ var init_pdf = __esm({
           this._cachedGetSinglePixelWidth = null;
         }
       }
-      transform(a2, b2, c2, d, e, f) {
-        this.ctx.transform(a2, b2, c2, d, e, f);
+      transform(a2, b2, c2, d, e2, f) {
+        this.ctx.transform(a2, b2, c2, d, e2, f);
         this._cachedScaleForStroking[0] = -1;
         this._cachedGetSinglePixelWidth = null;
       }
@@ -47302,8 +47315,8 @@ var init_pdf = __esm({
         this.setLeading(-y);
         this.moveText(x, y);
       }
-      setTextMatrix(a2, b2, c2, d, e, f) {
-        this.current.textMatrix = [a2, b2, c2, d, e, f];
+      setTextMatrix(a2, b2, c2, d, e2, f) {
+        this.current.textMatrix = [a2, b2, c2, d, e2, f];
         this.current.textMatrixScale = Math.hypot(a2, b2);
         this.current.x = this.current.lineX = 0;
         this.current.y = this.current.lineY = 0;
@@ -48245,14 +48258,14 @@ var init_pdf = __esm({
       constructor(renderingIntent, {
         name,
         intent,
-        usage: usage2,
+        usage: usage3,
         rbGroups
       }) {
         this.#isDisplay = !!(renderingIntent & RenderingIntentFlag.DISPLAY);
         this.#isPrint = !!(renderingIntent & RenderingIntentFlag.PRINT);
         this.name = name;
         this.intent = intent;
-        this.usage = usage2;
+        this.usage = usage3;
         this.rbGroups = rbGroups;
       }
       get visible() {
@@ -48264,10 +48277,10 @@ var init_pdf = __esm({
         }
         const {
           print,
-          view: view2
+          view: view3
         } = this.usage;
         if (this.#isDisplay) {
-          return view2?.viewState !== "OFF";
+          return view3?.viewState !== "OFF";
         } else if (this.#isPrint) {
           return print?.printState !== "OFF";
         }
@@ -51920,8 +51933,8 @@ var init_pdf = __esm({
             childHtml.append(node);
           }
         }
-        for (const el9 of rootDiv.querySelectorAll(".xfaNonInteractive input, .xfaNonInteractive textarea")) {
-          el9.setAttribute("readOnly", true);
+        for (const el10 of rootDiv.querySelectorAll(".xfaNonInteractive input, .xfaNonInteractive textarea")) {
+          el10.setAttribute("readOnly", true);
         }
         return {
           textDivs
@@ -53661,7 +53674,7 @@ var init_pdf = __esm({
         this.#parentRect = parentRect;
         this.#elements = elements;
         this.#dateObj = PDFDateString.toDateObject(modificationDate);
-        this.trigger = elements.flatMap((e) => e.getElementsToTriggerPopup());
+        this.trigger = elements.flatMap((e2) => e2.getElementsToTriggerPopup());
         for (const element of this.trigger) {
           element.addEventListener("click", this.#boundToggle);
           element.addEventListener("mouseenter", this.#boundShow);
@@ -53829,7 +53842,7 @@ var init_pdf = __esm({
         }
         const {
           page: {
-            view: view2
+            view: view3
           },
           viewport: {
             rawDims: {
@@ -53849,7 +53862,7 @@ var init_pdf = __esm({
             break;
           }
         }
-        const normalizedRect = Util.normalizeRect([rect[0], view2[3] - rect[1] + view2[1], rect[2], view2[3] - rect[3] + view2[1]]);
+        const normalizedRect = Util.normalizeRect([rect[0], view3[3] - rect[1] + view3[1], rect[2], view3[3] - rect[3] + view3[1]]);
         const HORIZONTAL_SPACE_AFTER_ANNOTATION = 5;
         const parentWidth = useParentRect ? rect[2] - rect[0] + HORIZONTAL_SPACE_AFTER_ANNOTATION : 0;
         const popupLeft = normalizedRect[0] + parentWidth;
@@ -55654,16 +55667,16 @@ var init_pdf = __esm({
           outline = [x, y2];
           outlines.push(outline);
           while (true) {
-            let e;
+            let e2;
             if (allEdges.has(edge1)) {
-              e = edge1;
+              e2 = edge1;
             } else if (allEdges.has(edge2)) {
-              e = edge2;
+              e2 = edge2;
             } else {
               break;
             }
-            allEdges.delete(e);
-            [x, y1, y2, edge1, edge2] = e;
+            allEdges.delete(e2);
+            [x, y1, y2, edge1, edge2] = e2;
             if (lastPointX !== x) {
               outline.push(lastPointX, lastPointY, x, lastPointY === y1 ? y1 : y2);
               lastPointX = x;
@@ -56616,9 +56629,9 @@ var init_pdf = __esm({
         } = textLayer.getBoundingClientRect();
         const ac = new AbortController();
         const signal = parent.combinedSignal(ac);
-        const pointerUpCallback = (e) => {
+        const pointerUpCallback = (e2) => {
           ac.abort();
-          this.#endHighlight(parent, e);
+          this.#endHighlight(parent, e2);
         };
         window.addEventListener("blur", pointerUpCallback, {
           signal
@@ -57284,29 +57297,29 @@ var init_pdf = __esm({
         const signal = parent.combinedSignal(ac);
         _DrawingEditor.#currentPointerId ||= pointerId;
         _DrawingEditor.#currentPointerType ??= pointerType;
-        window.addEventListener("pointerup", (e) => {
-          if (_DrawingEditor.#currentPointerId === e.pointerId) {
-            this._endDraw(e);
+        window.addEventListener("pointerup", (e2) => {
+          if (_DrawingEditor.#currentPointerId === e2.pointerId) {
+            this._endDraw(e2);
           } else {
-            _DrawingEditor.#currentPointerIds?.delete(e.pointerId);
+            _DrawingEditor.#currentPointerIds?.delete(e2.pointerId);
           }
         }, {
           signal
         });
-        window.addEventListener("pointercancel", (e) => {
-          if (_DrawingEditor.#currentPointerId === e.pointerId) {
+        window.addEventListener("pointercancel", (e2) => {
+          if (_DrawingEditor.#currentPointerId === e2.pointerId) {
             this._currentParent.endDrawingSession();
           } else {
-            _DrawingEditor.#currentPointerIds?.delete(e.pointerId);
+            _DrawingEditor.#currentPointerIds?.delete(e2.pointerId);
           }
         }, {
           signal
         });
-        window.addEventListener("pointerdown", (e) => {
-          if (_DrawingEditor.#currentPointerType !== e.pointerType) {
+        window.addEventListener("pointerdown", (e2) => {
+          if (_DrawingEditor.#currentPointerType !== e2.pointerType) {
             return;
           }
-          (_DrawingEditor.#currentPointerIds ||= /* @__PURE__ */ new Set()).add(e.pointerId);
+          (_DrawingEditor.#currentPointerIds ||= /* @__PURE__ */ new Set()).add(e2.pointerId);
           if (_DrawingEditor.#currentDraw.isCancellable()) {
             _DrawingEditor.#currentDraw.removeLastElement();
             if (_DrawingEditor.#currentDraw.isEmpty()) {
@@ -57326,9 +57339,9 @@ var init_pdf = __esm({
         target.addEventListener("pointermove", this._drawMove.bind(this), {
           signal
         });
-        target.addEventListener("touchmove", (e) => {
-          if (e.timeStamp === _DrawingEditor.#currentMoveTimestamp) {
-            stopEvent(e);
+        target.addEventListener("touchmove", (e2) => {
+          if (e2.timeStamp === _DrawingEditor.#currentMoveTimestamp) {
+            stopEvent(e2);
           }
         }, {
           signal
@@ -57974,17 +57987,17 @@ var init_pdf = __esm({
       }
       get rotationTransform() {
         const [, , width, height] = this.#bbox;
-        let a2 = 0, b2 = 0, c2 = 0, d = 0, e = 0, f = 0;
+        let a2 = 0, b2 = 0, c2 = 0, d = 0, e2 = 0, f = 0;
         switch (this.#currentRotation) {
           case 90:
             b2 = height / width;
             c2 = -width / height;
-            e = width;
+            e2 = width;
             break;
           case 180:
             a2 = -1;
             d = -1;
-            e = width;
+            e2 = width;
             f = height;
             break;
           case 270:
@@ -57995,7 +58008,7 @@ var init_pdf = __esm({
           default:
             return "";
         }
-        return `matrix(${a2} ${b2} ${c2} ${d} ${Outline.svgRound(e)} ${Outline.svgRound(f)})`;
+        return `matrix(${a2} ${b2} ${c2} ${d} ${Outline.svgRound(e2)} ${Outline.svgRound(f)})`;
       }
       getPathResizingSVGProperties([newX, newY, newWidth, newHeight]) {
         const [marginX, marginY] = this.#getMarginComponents();
@@ -60415,7 +60428,7 @@ var require_suggest = __commonJS({
         return a2.localeCompare(b2);
       }
     }
-    function generate2(context, memory, words, edits) {
+    function generate2(context, memory, words2, edits) {
       var characters = context.flags.TRY;
       var data = context.data;
       var flags = context.flags;
@@ -60440,8 +60453,8 @@ var require_suggest = __commonJS({
         }
       }
       index = -1;
-      while (++index < words.length) {
-        word = words[index];
+      while (++index < words2.length) {
+        word = words2[index];
         before = "";
         character = "";
         nextCharacter = word.charAt(0);
@@ -60541,7 +60554,7 @@ var require_apply = __commonJS({
   "node_modules/nspell/lib/util/apply.js"(exports, module) {
     "use strict";
     module.exports = apply;
-    function apply(value, rule, rules, words) {
+    function apply(value, rule, rules, words2) {
       var index = -1;
       var entry;
       var next2;
@@ -60555,18 +60568,18 @@ var require_apply = __commonJS({
         if (!entry.match || entry.match.test(value)) {
           next2 = entry.remove ? value.replace(entry.remove, "") : value;
           next2 = rule.type === "SFX" ? next2 + entry.add : entry.add + next2;
-          words.push(next2);
+          words2.push(next2);
           if (continuation && continuation.length) {
             while (++position < continuation.length) {
               continuationRule = rules[continuation[position]];
               if (continuationRule) {
-                apply(next2, continuationRule, rules, words);
+                apply(next2, continuationRule, rules, words2);
               }
             }
           }
         }
       }
-      return words;
+      return words2;
     }
   }
 });
@@ -60861,12 +60874,12 @@ var require_lib = __commonJS({
 
 // src/platform-web.js
 var DB = "encounter-builder";
-var KINDS = ["monsters", "party", "encounters", "conditions"];
+var KINDS = ["monsters", "party", "encounters", "conditions", "loot"];
 var BROWSER_LIBRARY = "Browser library";
 var dbPromise = null;
 function db() {
   dbPromise ??= new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB, 1);
+    const req = indexedDB.open(DB, 2);
     req.onupgradeneeded = () => {
       for (const k of KINDS) if (!req.result.objectStoreNames.contains(k)) req.result.createObjectStore(k, { keyPath: "id" });
     };
@@ -60950,8 +60963,8 @@ function mountDiceTray() {
   fab = h("button.dice-fab", { title: "Dice tray", "aria-label": "Dice tray", html: D20_ICON, onclick: () => toggle() });
   panel = h("div.dice-panel", { hidden: true });
   document.body.append(panel, fab);
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !panel.hidden) toggle(false);
+  document.addEventListener("keydown", (e2) => {
+    if (e2.key === "Escape" && !panel.hidden) toggle(false);
   });
 }
 function toggle(open2 = panel.hidden) {
@@ -60968,8 +60981,8 @@ var singleD20 = () => pick[20] === 1 && DICE.every((d) => d === 20 || !pick[d]);
 function render() {
   const expr = trayExpression();
   if (!singleD20()) mode = "normal";
-  const rollBtn = h("button.primary.dice-roll", { disabled: !expr, onclick: (e) => {
-    rollFromClick(e.currentTarget, expr, { label: "Dice tray", mode });
+  const rollBtn = h("button.primary.dice-roll", { disabled: !expr, onclick: (e2) => {
+    rollFromClick(e2.currentTarget, expr, { label: "Dice tray", mode });
   } }, expr ? `Roll ${expr.replace(/\+/g, " + ").replace(/-/g, " \u2212 ")}` : "Pick some dice");
   fill(
     panel,
@@ -60980,8 +60993,8 @@ function render() {
         pick[d] = Math.min(99, pick[d] + 1);
         render();
       },
-      oncontextmenu: (e) => {
-        e.preventDefault();
+      oncontextmenu: (e2) => {
+        e2.preventDefault();
         pick[d] = Math.max(0, pick[d] - 1);
         render();
       }
@@ -60993,8 +61006,8 @@ function render() {
         mod2--;
         render();
       } }, "\u2212"),
-      h("input", { type: "number", value: mod2, onchange: (e) => {
-        mod2 = Math.max(-99, Math.min(99, parseInt(e.target.value, 10) || 0));
+      h("input", { type: "number", value: mod2, onchange: (e2) => {
+        mod2 = Math.max(-99, Math.min(99, parseInt(e2.target.value, 10) || 0));
         render();
       } }),
       h("button.icon-btn", { title: "Raise", onclick: () => {
@@ -61026,9 +61039,9 @@ init_store();
 
 // src/library-pack.js
 var PACK_FORMAT = "encounter-builder-library";
-var PACK_KINDS = ["monsters", "party", "encounters", "conditions"];
+var PACK_KINDS = ["monsters", "party", "encounters", "conditions", "loot"];
 var ID = /^[a-z0-9-]{1,80}$/;
-var LABEL = { monsters: "monsters", party: "characters", encounters: "encounters", conditions: "conditions" };
+var LABEL = { monsters: "monsters", party: "characters", encounters: "encounters", conditions: "conditions", loot: "loot tables" };
 function makePack(lists, now = /* @__PURE__ */ new Date()) {
   const pack = { format: PACK_FORMAT, version: 1, exported: now.toISOString() };
   for (const k of PACK_KINDS) pack[k] = (lists[k] || []).map((x) => structuredClone(x));
@@ -61418,13 +61431,13 @@ function liveOf(c2) {
 }
 var sameLive = (a2 = {}, b2 = {}) => (a2.hp ?? null) === (b2.hp ?? null) && (a2.tempHp || 0) === (b2.tempHp || 0) && JSON.stringify(a2.conditions || []) === JSON.stringify(b2.conditions || []) && JSON.stringify(a2.tokens || []) === JSON.stringify(b2.tokens || []);
 var LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-function setupCombat(e, { character, monster, asGroup }) {
+function setupCombat(e2, { character, monster, asGroup }) {
   const list = [];
-  for (const c2 of (e.characterIds || []).map(character).filter(Boolean)) list.push(partyCombatant(c2));
-  for (let i = 0; i < (e.extraPlayers?.count || 0); i++) {
+  for (const c2 of (e2.characterIds || []).map(character).filter(Boolean)) list.push(partyCombatant(c2));
+  for (let i = 0; i < (e2.extraPlayers?.count || 0); i++) {
     list.push({ key: `player-${i}`, kind: "pc", name: `Player ${i + 1}`, ac: null, hp: null, maxHp: null, initBonus: 0, init: null, conditions: [] });
   }
-  const entries = (e.groups || []).map((g, gi) => ({ g, gi, m: monster(g.monsterId) }));
+  const entries = (e2.groups || []).map((g, gi) => ({ g, gi, m: monster(g.monsterId) }));
   for (const x of entries) x.group = !!x.m && asGroup(x.g);
   const groupsOf = (id) => entries.filter((x) => x.group && x.g.monsterId === id);
   const singlesOf = (id) => entries.filter((x) => !x.group && x.g.monsterId === id).reduce((n, x) => n + x.g.count, 0);
@@ -61524,9 +61537,9 @@ function startOfTurn(c2, m, roll3) {
   for (const [k, used] of Object.entries(c2.recharge || {})) {
     if (!used) continue;
     const [section, i] = k.split(":");
-    const e = (m[section] || [])[Number(i)], rc = e && rechargeOf(e.name);
+    const e2 = (m[section] || [])[Number(i)], rc = e2 && rechargeOf(e2.name);
     if (!rc?.min) continue;
-    const r = roll3("1d6", `Recharge: ${e.name.replace(/\s*\(.*$/, "")}`);
+    const r = roll3("1d6", `Recharge: ${e2.name.replace(/\s*\(.*$/, "")}`);
     if (r && r.total >= rc.min) c2.recharge[k] = false;
   }
 }
@@ -61625,34 +61638,34 @@ function rollify(html, label, who) {
 }
 var WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5 };
 function legendaryUses(m) {
-  const text = (m.legendaryActions || []).map((e) => e.text).join(" ").replace(/<[^>]+>/g, "");
+  const text = (m.legendaryActions || []).map((e2) => e2.text).join(" ").replace(/<[^>]+>/g, "");
   const x = text.match(/Legendary Action Uses:\s*(\d+)/i) || text.match(/can take (\w+) legendary actions?/i);
   return x ? Number(x[1]) || WORDS[x[1].toLowerCase()] || 0 : 0;
 }
-function slotsOf(e) {
-  if (e.slots?.length) return e.slots;
-  const d = String(e.name || "").match(/\b(\d{1,2})\s*\/\s*Day\b/i);
+function slotsOf(e2) {
+  if (e2.slots?.length) return e2.slots;
+  const d = String(e2.name || "").match(/\b(\d{1,2})\s*\/\s*Day\b/i);
   return d ? [{ label: "", count: Math.min(10, Number(d[1])) }] : [];
 }
 function entryList(entries, who, section, tracker, recharge, group) {
-  return (entries || []).map((e, i) => {
+  return (entries || []).map((e2, i) => {
     const key2 = `${section}:${i}`;
-    const rc = recharge && rechargeOf(e.name);
-    const chip = (rc ? rechargeChip(key2, recharge.get(key2), rc) : "") + (group && isGroupAttack(e.name) ? `<button class="sb-group-atk" data-gk="${key2}" title="One attack roll for the group; the damage is multiplied by how many join in">Group attack</button>` : "");
-    const name = e.name ? `<strong><em>${esc(e.name)}.</em></strong> ${chip}` : "";
-    return `<p>${name}${glossify(condify(spellify(rollify(richText(e.text), e.name || "Roll", who))))}</p>${boxRows({ ...e, slots: slotsOf(e) }, key2, tracker)}`;
+    const rc = recharge && rechargeOf(e2.name);
+    const chip = (rc ? rechargeChip(key2, recharge.get(key2), rc) : "") + (group && isGroupAttack(e2.name) ? `<button class="sb-group-atk" data-gk="${key2}" title="One attack roll for the group; the damage is multiplied by how many join in">Group attack</button>` : "");
+    const name = e2.name ? `<strong><em>${esc(e2.name)}.</em></strong> ${chip}` : "";
+    return `<p>${name}${glossify(condify(spellify(rollify(richText(e2.text), e2.name || "Roll", who))))}</p>${boxRows({ ...e2, slots: slotsOf(e2) }, key2, tracker)}`;
   }).join("");
 }
 var rechargeChip = (key2, used, rc) => `<button class="sb-recharge${used ? " used" : ""}" data-rk="${key2}" title="${used ? `Used. ${rc.min ? `It recharges on a ${rc.min === 6 ? "6" : `${rc.min}\u20136`}, rolled at the start of its turn. ` : ""}Click when it's available again.` : "Available. Click when it is used."}">${used ? "Used" : "Ready"}</button>`;
-function boxRows(e, key2, tracker) {
-  if (!e.slots?.length) return "";
-  const rows = e.slots.map((row2, r) => {
+function boxRows(e2, key2, tracker) {
+  if (!e2.slots?.length) return "";
+  const rows = e2.slots.map((row2, r) => {
     const k = `${key2}:${r}`, used = tracker.get(k);
     const boxes = Array.from({ length: Math.min(60, row2.count | 0) }, (_, b2) => `<button class="sb-box${b2 < used ? " on" : ""}" data-k="${k}" data-i="${b2}" title="${b2 < used ? "Used: click to get it back" : "Click when used"}" aria-pressed="${b2 < used}"></button>`).join("");
     return `<div class="sb-box-row">${row2.label ? `<span class="sb-box-label">${esc(row2.label)}.</span>` : ""}<span class="sb-boxes">${boxes}</span></div>`;
   }).join("");
-  const any = e.slots.some((_, r) => tracker.get(`${key2}:${r}`) > 0);
-  return `<div class="sb-tracker" data-key="${key2}">${rows}${any ? `<button class="link sb-box-reset" data-reset="${key2}" data-rows="${e.slots.length}">Reset</button>` : ""}</div>`;
+  const any = e2.slots.some((_, r) => tracker.get(`${key2}:${r}`) > 0);
+  return `<div class="sb-tracker" data-key="${key2}">${rows}${any ? `<button class="link sb-box-reset" data-reset="${key2}" data-rows="${e2.slots.length}">Reset</button>` : ""}</div>`;
 }
 var sessionTicks = /* @__PURE__ */ new Map();
 var sessionTracker = (id) => ({
@@ -61668,8 +61681,8 @@ function statBlock(m, opts2 = {}) {
   const legEntry = { slots: [{ label: "Uses", count: legUses }] };
   const entryFor = (k) => k === LEGENDARY_KEY ? legEntry : (() => {
     const [s, i] = k.split(":");
-    const e = (m[s] || [])[Number(i)];
-    return e && { ...e, slots: slotsOf(e) };
+    const e2 = (m[s] || [])[Number(i)];
+    return e2 && { ...e2, slots: slotsOf(e2) };
   })();
   const prop = (label, value) => value ? `<div class="sb-prop"><span class="sb-label">${label}</span> ${value}</div>` : "";
   const linkedList = (text, rx) => esc(text).replace(rx, (x, name, bonus) => `${name} ${rollButton(bonus, `1d20${bonus}`, `${name.trim()} ${rx === SAVE_RX ? "save" : "check"}`, who)}`);
@@ -61710,25 +61723,25 @@ function statBlock(m, opts2 = {}) {
     ${sections.map(([title, list, key2]) => `<div class="sb-section">${title}</div>${key2 === "legendaryActions" && legUses ? boxRows(legEntry, LEGENDARY_KEY, tracker) : ""}<div class="sb-entries">${entryList(list, who, key2, tracker, recharge, group)}</div>`).join("")}
     ${m.description?.length && opts2.description !== false ? `<div class="sb-section">Description</div><div class="sb-entries sb-desc">${entryList(m.description, who, "description", tracker)}</div>` : ""}
     ${m.source && m.source !== "Homebrew" ? `<div class="sb-source">Source: ${esc(m.source)}</div>` : ""}`;
-  const el9 = h("div.statblock", { html });
-  el9.addEventListener("click", (e) => {
-    const atk = e.target.closest(".sb-group-atk");
+  const el10 = h("div.statblock", { html });
+  el10.addEventListener("click", (e2) => {
+    const atk = e2.target.closest(".sb-group-atk");
     if (atk && group) {
-      e.preventDefault();
+      e2.preventDefault();
       group.attack(entryFor(atk.dataset.gk));
       return;
     }
-    const chip = e.target.closest(".sb-recharge");
+    const chip = e2.target.closest(".sb-recharge");
     if (chip && recharge) {
-      e.preventDefault();
+      e2.preventDefault();
       const k2 = chip.dataset.rk, used = !recharge.get(k2);
       recharge.set(k2, used);
       chip.outerHTML = rechargeChip(k2, used, rechargeOf(entryFor(k2)?.name));
       return;
     }
-    const box = e.target.closest(".sb-box"), reset2 = e.target.closest(".sb-box-reset");
+    const box = e2.target.closest(".sb-box"), reset2 = e2.target.closest(".sb-box-reset");
     if (!box && !reset2) return;
-    e.preventDefault();
+    e2.preventDefault();
     if (reset2) {
       for (let r = 0; r < Number(reset2.dataset.rows); r++) tracker.set(`${reset2.dataset.reset}:${r}`, 0);
     } else {
@@ -61738,7 +61751,7 @@ function statBlock(m, opts2 = {}) {
     const k = (box || reset2).closest(".sb-tracker").dataset.key;
     (box || reset2).closest(".sb-tracker").outerHTML = boxRows(entryFor(k), k, tracker);
   });
-  return el9;
+  return el10;
 }
 var SAVE_RX = /(\b(?:Str|Dex|Con|Int|Wis|Cha)\w*)\s([+\-]\d+)/g;
 var SKILL_RX = /([A-Z][A-Za-z' ]+?)\s([+\-]\d+)/g;
@@ -61754,8 +61767,8 @@ var plain = (s) => String(s || "").replace(/<[^>]+>/g, "");
 var ATTACK = /(Melee or Ranged|Melee|Ranged) (?:Weapon |Spell )?Attack(?: Roll)?:/i;
 var entriesOf = (m, keys) => keys.flatMap((k) => m[k] || []);
 var ACTION_KEYS = ["actions", "bonusActions", "legendaryActions"];
-function attackInfo(e) {
-  const t = plain(e.text);
+function attackInfo(e2) {
+  const t = plain(e2.text);
   const a2 = t.match(ATTACK);
   if (!a2) return null;
   const kind = /or Ranged/i.test(a2[1]) ? "both" : /^Melee/i.test(a2[1]) ? "melee" : "ranged";
@@ -61763,12 +61776,12 @@ function attackInfo(e) {
   const dmg = [...hit.matchAll(/(\d+)\s*\(\s*\d+d\d+/g)].reduce((n, x) => n + Number(x[1]), 0) || 1;
   const type = hit.match(/\b(bludgeoning|piercing|slashing|acid|cold|fire|force|lightning|necrotic|poison|psychic|radiant|thunder)\b/i)?.[1].toLowerCase();
   const magic = /Spell Attack/i.test(a2[0]) || type && !["bludgeoning", "piercing", "slashing", "poison", "acid"].includes(type);
-  return { name: String(e.name || "").replace(/\s*\(.*\)$/, "").trim().toLowerCase(), kind, dmg, magic };
+  return { name: String(e2.name || "").replace(/\s*\(.*\)$/, "").trim().toLowerCase(), kind, dmg, magic };
 }
 var SPELL_ACTION = /\b(?:Level \d|\d(?:st|nd|rd|th) Level) Spell\b|\bCantrip\b/i;
-var spellcasting = (m) => entriesOf(m, ["traits", ...ACTION_KEYS]).find((e) => /spellcasting/i.test(e.name || "") || /casts one of the following spells/i.test(plain(e.text)));
-function spellCount(e) {
-  const t = String(e.text || "");
+var spellcasting = (m) => entriesOf(m, ["traits", ...ACTION_KEYS]).find((e2) => /spellcasting/i.test(e2.name || "") || /casts one of the following spells/i.test(plain(e2.text)));
+function spellCount(e2) {
+  const t = String(e2.text || "");
   const marked = (t.match(/<(em|spell)>/g) || []).length;
   if (marked) return marked;
   return plain(t).split("\n").filter((l) => /:/.test(l)).reduce((n, l) => n + l.split(":").pop().split(",").filter((x) => x.trim()).length, 0);
@@ -61776,7 +61789,7 @@ function spellCount(e) {
 function guessStyle(m) {
   const acts = entriesOf(m, ACTION_KEYS);
   const attacks = acts.map(attackInfo).filter(Boolean);
-  const multi = plain(acts.find((e) => /^multiattack/i.test(e.name || ""))?.text).toLowerCase();
+  const multi = plain(acts.find((e2) => /^multiattack/i.test(e2.name || ""))?.text).toLowerCase();
   let melee = 0, ranged = 0, magic = 0;
   for (const a2 of attacks) {
     const w = a2.dmg * (multi && a2.name && multi.includes(a2.name) ? 2 : 1);
@@ -61788,13 +61801,13 @@ function guessStyle(m) {
     }
     if (a2.magic) magic += w;
   }
-  const spellActions = acts.filter((e) => SPELL_ACTION.test(e.name || ""));
-  for (const e of spellActions) {
-    if (attackInfo(e)) {
-      magic += attackInfo(e).dmg;
+  const spellActions = acts.filter((e2) => SPELL_ACTION.test(e2.name || ""));
+  for (const e2 of spellActions) {
+    if (attackInfo(e2)) {
+      magic += attackInfo(e2).dmg;
       continue;
     }
-    const w = [...plain(e.text).matchAll(/(\d+)\s*\(\s*\d+d\d+/g)].reduce((n, x) => n + Number(x[1]), 0) || 1;
+    const w = [...plain(e2.text).matchAll(/(\d+)\s*\(\s*\d+d\d+/g)].reduce((n, x) => n + Number(x[1]), 0) || 1;
     ranged += w;
     magic += w;
   }
@@ -61808,7 +61821,7 @@ function guessStyle(m) {
 var styleOf = (m) => STYLES[m.fightingStyle] ? m.fightingStyle : guessStyle(m);
 function extraTags(m) {
   const tags = [];
-  const all = entriesOf(m, ["traits", ...ACTION_KEYS, "reactions"]).map((e) => plain(e.text)).join("\n");
+  const all = entriesOf(m, ["traits", ...ACTION_KEYS, "reactions"]).map((e2) => plain(e2.text)).join("\n");
   if (/saving throw/i.test(all) && /\b(Cone|Line|Sphere|Emanation|Cube|Cylinder|radius|each creature)\b/i.test(all)) tags.push("Area");
   if (m.legendaryActions?.length) tags.push("Legendary");
   return tags;
@@ -62224,23 +62237,23 @@ function mountMaker(root, navigate) {
     renderThumbs();
   };
   wireDrop($("#mk-drop"), addImages);
-  $("#mk-file").onchange = (e) => {
-    addImages([...e.target.files]);
-    e.target.value = "";
+  $("#mk-file").onchange = (e2) => {
+    addImages([...e2.target.files]);
+    e2.target.value = "";
   };
-  document.addEventListener("paste", async (e) => {
-    if (el.hidden || e.defaultPrevented) return;
-    const files = [...e.clipboardData.items].filter((i) => i.type.startsWith("image/")).map((i) => i.getAsFile());
+  document.addEventListener("paste", async (e2) => {
+    if (el.hidden || e2.defaultPrevented) return;
+    const files = [...e2.clipboardData.items].filter((i) => i.type.startsWith("image/")).map((i) => i.getAsFile());
     if (files.length) {
-      e.preventDefault();
+      e2.preventDefault();
       addImages(files);
       return;
     }
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || !hasImage(e.clipboardData)) return;
-    e.preventDefault();
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e2.target.tagName) || !hasImage(e2.clipboardData)) return;
+    e2.preventDefault();
     try {
       status2("#mk-ocr-status", "Getting the picture\u2026");
-      const blobs = await imagesFrom(e.clipboardData);
+      const blobs = await imagesFrom(e2.clipboardData);
       status2("#mk-ocr-status", "");
       addImages(blobs);
     } catch (err) {
@@ -62258,19 +62271,19 @@ function mountMaker(root, navigate) {
   renderAvatar();
 }
 function wireDrop(zone, onFiles) {
-  zone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  zone.addEventListener("dragover", (e2) => {
+    e2.preventDefault();
+    e2.stopPropagation();
     zone.classList.add("over");
   });
   zone.addEventListener("dragleave", () => zone.classList.remove("over"));
-  zone.addEventListener("drop", async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  zone.addEventListener("drop", async (e2) => {
+    e2.preventDefault();
+    e2.stopPropagation();
     zone.classList.remove("over");
     try {
       status2("#mk-ocr-status", "Getting the picture\u2026");
-      const blobs = await imagesFrom(e.dataTransfer);
+      const blobs = await imagesFrom(e2.dataTransfer);
       status2("#mk-ocr-status", blobs.length ? "" : "That was not a picture.", blobs.length ? "" : "error");
       if (blobs.length) onFiles(blobs);
     } catch (err) {
@@ -62337,8 +62350,8 @@ async function readScreenshots() {
     $("#mk-text").value = texts.join("\n\n");
     status2("#mk-ocr-status", `Text read in ${Math.round((Date.now() - started) / 1e3)}s. Check it below, then the review.`, "ok");
     readText(new Set(unsure.flatMap((u, i) => u ? [i] : [])));
-  } catch (e) {
-    status2("#mk-ocr-status", `Could not read the screenshot: ${e.message || e}`, "error");
+  } catch (e2) {
+    status2("#mk-ocr-status", `Could not read the screenshot: ${e2.message || e2}`, "error");
   } finally {
     $("#mk-ocr").disabled = $("#mk-parse").disabled = false;
   }
@@ -62361,8 +62374,8 @@ function readText(unsure) {
     status2("#mk-parse-status", "");
     renderReview();
     changed(`${prev ? "Updated in your library." : "Saved to your library."} Fighting preference guessed as ${STYLES[monster.fightingStyle]} (change it in Creatures).`);
-  } catch (e) {
-    status2("#mk-parse-status", `Could not read the text: ${e.message || e}`, "error");
+  } catch (e2) {
+    status2("#mk-parse-status", `Could not read the text: ${e2.message || e2}`, "error");
   }
 }
 function changed(message) {
@@ -62507,7 +62520,7 @@ function parseDdbSheet(fields2) {
   for (let i = 0; i < 200; i++) {
     const name = get(`Eq Name${i}`);
     if (!name) continue;
-    const qty = num(get(`Eq Qty${i}`)) || 1, have = equipment.find((e) => e.name === name);
+    const qty = num(get(`Eq Qty${i}`)) || 1, have = equipment.find((e2) => e2.name === name);
     if (have) have.qty += qty;
     else equipment.push({ name, qty });
   }
@@ -62602,7 +62615,7 @@ ${v}`).join("\n\n");
     ${block("Actions", s.actions)}
     ${block("Features & traits", s.features)}
     ${opts2.compact ? "" : block("Proficiencies & languages", s.proficiencies)}
-    ${opts2.compact ? "" : s.equipment?.length ? block("Equipment", s.equipment.map((e) => `${e.name}${e.qty > 1 ? ` \xD7${e.qty}` : ""}`).join(", ")) : ""}
+    ${opts2.compact ? "" : s.equipment?.length ? block("Equipment", s.equipment.map((e2) => `${e2.name}${e2.qty > 1 ? ` \xD7${e2.qty}` : ""}`).join(", ")) : ""}
     ${opts2.compact ? "" : block("Appearance & personality", [look, person].filter(Boolean).join("\n\n"))}`;
   return h("div.sheet", { html });
 }
@@ -62615,9 +62628,9 @@ function blankCharacter() {
 }
 function mountParty(root) {
   el2 = root;
-  const fileInput = h("input", { type: "file", accept: ".pdf,application/pdf", multiple: true, hidden: true, onchange: (e) => {
-    importPdfs([...e.target.files]);
-    e.target.value = "";
+  const fileInput = h("input", { type: "file", accept: ".pdf,application/pdf", multiple: true, hidden: true, onchange: (e2) => {
+    importPdfs([...e2.target.files]);
+    e2.target.value = "";
   } });
   el2.append(
     h("div.page-head", h("h1", "Party"), h("div.page-sub", "Player characters. Add them to encounters in the builder; the runner uses their AC, HP and initiative bonus. Drop D&D Beyond character sheet PDFs anywhere here to add or update characters.")),
@@ -62639,20 +62652,20 @@ function mountParty(root) {
     render2();
     el2.querySelector("#pt-edit input")?.select();
   };
-  el2.addEventListener("dragover", (e) => {
-    if ([...e.dataTransfer.items].some((i) => i.kind === "file")) {
-      e.preventDefault();
+  el2.addEventListener("dragover", (e2) => {
+    if ([...e2.dataTransfer.items].some((i) => i.kind === "file")) {
+      e2.preventDefault();
       el2.classList.add("drop-over");
     }
   });
-  el2.addEventListener("dragleave", (e) => {
-    if (!el2.contains(e.relatedTarget)) el2.classList.remove("drop-over");
+  el2.addEventListener("dragleave", (e2) => {
+    if (!el2.contains(e2.relatedTarget)) el2.classList.remove("drop-over");
   });
-  el2.addEventListener("drop", (e) => {
+  el2.addEventListener("drop", (e2) => {
     el2.classList.remove("drop-over");
-    const pdfs = [...e.dataTransfer.files].filter(isPdf);
+    const pdfs = [...e2.dataTransfer.files].filter(isPdf);
     if (!pdfs.length) return;
-    e.preventDefault();
+    e2.preventDefault();
     importPdfs(pdfs);
   });
   onChange((kind) => {
@@ -62681,8 +62694,8 @@ function renderEdit() {
   const pane = el2.querySelector("#pt-edit");
   const c2 = store.party.find((x) => x.id === selectedId);
   if (!c2) return fill(pane, h("div.empty", store.party.length ? "Select a character." : "Add your party's characters here, or import their D&D Beyond PDFs."));
-  const set2 = (k, num2) => (e) => {
-    c2[k] = num2 ? Number(e.target.value) || 0 : e.target.value;
+  const set2 = (k, num2) => (e2) => {
+    c2[k] = num2 ? Number(e2.target.value) || 0 : e2.target.value;
     save("party", c2);
     if (k === "name" || k === "level" || k === "className" || k === "player") renderList();
   };
@@ -62720,8 +62733,8 @@ function renderEdit() {
       field("Speed (ft.)", "speed", true),
       field("Passive Perception", "passivePerception", true),
       field("Initiative bonus", "initiativeBonus", true),
-      h("label", "Power multiplier", h("input", { type: "number", step: 0.05, min: 0.25, max: 3, value: c2.power ?? 1, oninput: (e) => {
-        const v = Number(e.target.value);
+      h("label", "Power multiplier", h("input", { type: "number", step: 0.05, min: 0.25, max: 3, value: c2.power ?? 1, oninput: (e2) => {
+        const v = Number(e2.target.value);
         if (Number.isFinite(v) && v > 0) {
           c2.power = clampPower(v);
           save("party", c2);
@@ -62775,8 +62788,8 @@ async function importPdfs(files) {
       if (!parsed.basics.name) throw new Error("No character name in it. Is it a D&D Beyond character sheet PDF (character page > Export to PDF)?");
       const match = findMatch(parsed.basics.name);
       results.push({ file: f.name, ...parsed, target: match ? match.id : "new", keep: /* @__PURE__ */ new Set() });
-    } catch (e) {
-      results.push({ file: f.name, error: e.message || String(e) });
+    } catch (e2) {
+      results.push({ file: f.name, error: e2.message || String(e2) });
     }
   }
   reviewImport(results);
@@ -62796,16 +62809,16 @@ function reviewImport(results) {
         diffs.length ? h("div.muted", "Changes (untick any value you want to keep as it is in the app):") : h("div.muted", "Name, class and combat numbers already match."),
         diffs.map(([k, label]) => h(
           "label.check-row",
-          h("input", { type: "checkbox", checked: !r.keep.has(k), onchange: (e) => e.target.checked ? r.keep.delete(k) : r.keep.add(k) }),
+          h("input", { type: "checkbox", checked: !r.keep.has(k), onchange: (e2) => e2.target.checked ? r.keep.delete(k) : r.keep.add(k) }),
           h("span", h("strong", label), `: ${t[k] ?? "\u2014"} \u2192 ${r.basics[k]}`)
         )),
         h("div.muted", `${t.sheet ? "Refreshes" : "Adds"} the full character sheet. Picture, player name and power multiplier stay as they are.`)
       );
     };
-    const select = h(
+    const select2 = h(
       "select",
-      { onchange: (e) => {
-        r.target = e.target.value;
+      { onchange: (e2) => {
+        r.target = e2.target.value;
         r.keep = /* @__PURE__ */ new Set();
         drawChanges();
       } },
@@ -62817,7 +62830,7 @@ function reviewImport(results) {
     return fill(
       box,
       h("div.imp-title", h("strong", r.basics.name), ` \xB7 ${r.sheet.classText} \xB7 ${r.sheet.species}`, h("span.muted", `  (${r.file})`)),
-      h("label.inline", "Import as", select),
+      h("label.inline", "Import as", select2),
       changes
     );
   });
@@ -62903,11 +62916,11 @@ function createChecker(aff, dic, vocabulary2 = /* @__PURE__ */ new Map()) {
   };
 }
 function srdVocabulary(monsters, spells, conditions) {
-  const words = /* @__PURE__ */ new Map();
+  const words2 = /* @__PURE__ */ new Map();
   const take = (s) => {
     for (const w of String(s || "").replace(/<[^>]+>/g, " ").match(WORD) || []) {
       const k = w.replace(/['’]s$/i, "");
-      words.set(k, (words.get(k) || 0) + 1);
+      words2.set(k, (words2.get(k) || 0) + 1);
     }
   };
   for (const m of monsters) {
@@ -62916,9 +62929,9 @@ function srdVocabulary(monsters, spells, conditions) {
     take(m.monsterType);
     take((m.subtypes || []).join(" "));
     take(m.languagesNote);
-    for (const k of ["traits", "actions", "bonusActions", "reactions", "legendaryActions"]) for (const e of m[k] || []) {
-      take(e.name);
-      take(e.text);
+    for (const k of ["traits", "actions", "bonusActions", "reactions", "legendaryActions"]) for (const e2 of m[k] || []) {
+      take(e2.name);
+      take(e2.text);
     }
   }
   for (const s of spells) {
@@ -62931,7 +62944,7 @@ function srdVocabulary(monsters, spells, conditions) {
     take(c2.name);
     take(c2.text);
   }
-  return words;
+  return words2;
 }
 var ENTRY_KEYS = [["traits", "Trait"], ["actions", "Action"], ["bonusActions", "Bonus action"], ["reactions", "Reaction"], ["legendaryActions", "Legendary action"], ["mythicActions", "Mythic action"], ["lairActions", "Lair action"], ["description", "Description"]];
 function fields(m) {
@@ -62949,13 +62962,13 @@ function fields(m) {
       m.languagesNote = v;
     }]
   ];
-  for (const [k, label] of ENTRY_KEYS) (m[k] || []).forEach((e, i) => {
-    const title = e.name || `${label} ${i + 1}`;
-    out.push([`${label} name: ${title}`, () => e.name, (v) => {
-      e.name = v;
+  for (const [k, label] of ENTRY_KEYS) (m[k] || []).forEach((e2, i) => {
+    const title = e2.name || `${label} ${i + 1}`;
+    out.push([`${label} name: ${title}`, () => e2.name, (v) => {
+      e2.name = v;
     }]);
-    out.push([`${label}: ${title}`, () => e.text, (v) => {
-      e.text = v;
+    out.push([`${label}: ${title}`, () => e2.text, (v) => {
+      e2.text = v;
     }]);
   });
   (m.notes || []).forEach((n) => out.push([n.name, () => n.text, (v) => {
@@ -63017,9 +63030,9 @@ function userWords() {
   }
 }
 async function addUserWord(word) {
-  const words = [.../* @__PURE__ */ new Set([...userWords(), word])];
+  const words2 = [.../* @__PURE__ */ new Set([...userWords(), word])];
   try {
-    localStorage.setItem("spellWords", JSON.stringify(words));
+    localStorage.setItem("spellWords", JSON.stringify(words2));
   } catch {
   }
   (await checkerPromise)?.add(word);
@@ -63038,14 +63051,14 @@ async function spellingDialog(monsters, { title = "Spelling", onOpen, onChanged 
   const open2 = /* @__PURE__ */ new Set();
   let shown3 = 40;
   function draw2() {
-    const words = /* @__PURE__ */ new Map();
+    const words2 = /* @__PURE__ */ new Map();
     for (const m of monsters) for (const issue of findIssues(m, checker, [...skipped])) {
-      if (!words.has(issue.word)) words.set(issue.word, { word: issue.word, count: 0, monsters: [] });
-      const w = words.get(issue.word);
+      if (!words2.has(issue.word)) words2.set(issue.word, { word: issue.word, count: 0, monsters: [] });
+      const w = words2.get(issue.word);
       w.count += issue.count;
       w.monsters.push({ m, places: issue.places });
     }
-    const list = [...words.values()].sort((a2, b2) => b2.monsters.length - a2.monsters.length || b2.count - a2.count || a2.word.localeCompare(b2.word));
+    const list = [...words2.values()].sort((a2, b2) => b2.monsters.length - a2.monsters.length || b2.count - a2.count || a2.word.localeCompare(b2.word));
     const fix = (w, to) => {
       if (!to.trim()) return;
       let n = 0;
@@ -63065,8 +63078,8 @@ async function spellingDialog(monsters, { title = "Spelling", onOpen, onChanged 
       body2,
       h("p.muted", list.length ? `${list.length} word${list.length === 1 ? "" : "s"} the dictionary doesn't know${many ? ` in ${new Set(list.flatMap((w) => w.monsters.map((x) => x.m.id))).size} of your ${monsters.length} monsters` : ""}. Words used in the SRD (game terms, monster and spell names) already count as correct. Fixing a word changes it everywhere it's listed.` : `No spelling problems found${many ? ` in your ${monsters.length} monsters` : ""}.`),
       list.slice(0, shown3).map((w) => {
-        const own = h("input.spell-own", { type: "text", placeholder: "Your spelling", onkeydown: (e) => {
-          if (e.key === "Enter") fix(w, e.target.value);
+        const own = h("input.spell-own", { type: "text", placeholder: "Your spelling", onkeydown: (e2) => {
+          if (e2.key === "Enter") fix(w, e2.target.value);
         } });
         const isOpen = open2.has(w.word);
         return h(
@@ -63145,760 +63158,844 @@ function matches(m, f) {
 
 // src/tabs/library.js
 init_rules();
-init_format();
-var el3;
-var selectedId2 = null;
-var shown = 150;
-var filtersOpen = false;
-var filter = emptyFilter();
-var SORTS = {
-  name: ["Name (A\u2013Z)", (a2, b2) => a2.name.localeCompare(b2.name)],
-  crUp: ["CR (low to high)", (a2, b2) => crValue(a2.challengeRating) - crValue(b2.challengeRating) || a2.name.localeCompare(b2.name)],
-  crDown: ["CR (high to low)", (a2, b2) => crValue(b2.challengeRating) - crValue(a2.challengeRating) || a2.name.localeCompare(b2.name)],
-  type: ["Type", (a2, b2) => (a2.monsterType || "").localeCompare(b2.monsterType || "") || a2.name.localeCompare(b2.name)],
-  size: ["Size", (a2, b2) => SIZES.indexOf(a2.size) - SIZES.indexOf(b2.size) || a2.name.localeCompare(b2.name)]
+
+// src/tabs/loot-tables.js
+init_ui();
+init_store();
+init_constants();
+
+// src/loot-data.js
+var LOOT_LEVELS = {
+  full: { label: "Full loot", share: 1 },
+  most: { label: "Most loot", share: 0.75 },
+  some: { label: "Some loot", share: 0.4 },
+  little: { label: "A little loot", share: 0.15 },
+  none: { label: "No loot (harvest only)", share: 0 }
 };
-var sortKey = "name";
-function mountLibrary(root) {
-  el3 = root;
-  el3.append(
-    h("div.page-head", h("h1", "Creatures"), h("div.page-sub", "Your monsters and the SRD 5.2.1 monsters. Click a monster to view it; your own monsters can be edited here and save automatically.")),
-    h(
-      "div.lib-grid",
-      h(
-        "div.card.list-pane",
-        h(
-          "div.list-tools",
-          h("input.search#lb-q", { type: "search", placeholder: "Search name, type or race", oninput: (e) => {
-            filter.q = e.target.value;
-            shown = 150;
-            renderList2();
-          } }),
-          h("button#lb-filter-btn", { onclick: () => {
-            filtersOpen = !filtersOpen;
-            renderFilters();
-          } }, "Filters"),
-          h("button", { title: "Check the spelling of all your monsters", onclick: () => spellingDialog(store.monsters, { title: "Spelling in your monsters", onOpen: (m) => showLibrary(m.id), onChanged: () => {
-            renderList2();
-            renderEdit2();
-          } }) }, "Spelling"),
-          h("button.primary", { onclick: newMonster }, "New")
-        ),
-        h("div.lib-filters#lb-filters", { hidden: true }),
-        h("div.list-count#lb-count"),
-        h("div.list#lb-list")
-      ),
-      h("div.card.edit-pane#lb-edit"),
-      h("div.card.preview-pane#lb-preview")
-    )
-  );
-  onChange((kind) => {
-    if (kind === "all" || kind === "monsters") renderList2();
-  });
-  pasteToPicture(el3);
-}
-function showLibrary(id) {
-  if (id) {
-    selectedId2 = id;
-    Object.assign(filter, emptyFilter());
-    el3.querySelector("#lb-q").value = "";
+var e = (name, value, weight = 1, qty = "") => ({ name, value, weight, qty });
+var THEMES3 = [
+  // ---------------- people ----------------
+  {
+    id: "humanoid",
+    name: "Humanoid (general)",
+    loot: "full",
+    keywords: ["commoner", "villager", "peasant", "farmer"],
+    items: [
+      e("Tarnished silver ring", 5),
+      e("Carved wooden charm", 0.1, 2),
+      e("Pouch of pipe tobacco", 0.2, 2),
+      e("Clay pipe", 0.1),
+      e("Whetstone", 0.01),
+      e("Tin flask of cheap brandy", 0.2, 2),
+      e("Lucky copper coin with a hole punched through", 0.01),
+      e("Bone-handled knife", 0.5),
+      e("Brass buttons", 0.05, 1, "1d4"),
+      e("String of glass beads", 1),
+      e("Horn comb", 0.3),
+      e("Wool scarf", 0.2),
+      e("Wedge of hard cheese wrapped in cloth", 0.1, 2),
+      e("Small hand mirror", 2, 0.5)
+    ],
+    harvest: []
+  },
+  {
+    id: "bandit",
+    name: "Bandit",
+    loot: "full",
+    keywords: ["bandit", "thug", "brigand", "highwayman", "outlaw", "tough", "thief", "cutpurse", "spy", "assassin", "smuggler"],
+    items: [
+      e("Loaded dice", 0.1, 2),
+      e("Stolen silver locket", 15),
+      e("Mismatched earrings", 3),
+      e("Gold tooth", 2),
+      e("Stolen wedding band", 10, 0.7),
+      e("Merchant\u2019s signet ring", 25, 0.4),
+      e("Pouch of pepper", 2),
+      e("Bolt of fine lace", 5, 0.7),
+      e("Brass knuckles", 0.5),
+      e("Wineskin of sour wine", 0.2, 2),
+      e("Faded bandana", 0.05, 2),
+      e("Set of crude lockpicks", 1),
+      e("Silver spoons", 1, 1, "1d4"),
+      e("Cheap tin brooch", 0.2, 2)
+    ],
+    harvest: []
+  },
+  {
+    id: "soldier",
+    name: "Soldier",
+    loot: "full",
+    keywords: ["guard", "soldier", "warrior", "veteran", "infantry", "knight", "gladiator", "scout", "sergeant", "mercenary", "militia", "sentry", "champion"],
+    items: [
+      e("Regimental badge", 1, 2),
+      e("Bone dice", 0.1, 2),
+      e("Tin cup", 0.02, 2),
+      e("Polished brass gorget", 5),
+      e("Oilskin cloak", 1),
+      e("Spare bowstring", 0.1, 2),
+      e("Deck of worn playing cards", 0.5, 2),
+      e("Hip flask of rum", 0.5),
+      e("Silver campaign medal", 10, 0.6),
+      e("Lock of a sweetheart\u2019s hair in a twist of paper", 0, 1),
+      e("Pipe and tobacco", 0.3),
+      e("Field rations", 0.5, 2, "1d3"),
+      e("Whetstone and oil cloth", 0.1)
+    ],
+    harvest: []
+  },
+  {
+    id: "priest",
+    name: "Priest",
+    loot: "full",
+    keywords: ["priest", "acolyte", "cleric", "monk", "nun", "friar", "templar", "paladin", "pilgrim"],
+    items: [
+      e("Wooden prayer beads", 1, 2),
+      e("Small book of hymns", 5),
+      e("Beeswax candles", 0.01, 2, "1d4"),
+      e("Silver offering plate", 15, 0.5),
+      e("Pilgrim\u2019s token", 0.1, 2),
+      e("Pouch of alms", 0.5, 1.5),
+      e("Embroidered stole", 3),
+      e("Sprig of dried sage", 0.01, 2),
+      e("Reliquary with a saint\u2019s finger bone", 25, 0.4)
+    ],
+    harvest: []
+  },
+  {
+    id: "cultist",
+    name: "Cultist",
+    loot: "full",
+    keywords: ["cultist", "cult", "fanatic", "zealot", "heretic"],
+    items: [
+      e("Ritual candle stubs", 0.01, 2, "1d6"),
+      e("Carved obsidian idol", 10, 0.7),
+      e("Stick of black incense", 0.5, 2, "1d4"),
+      e("Prayer book in an unknown script", 5),
+      e("Black wax seal ring", 2),
+      e("Necklace of finger bones", 0.1),
+      e("Silver offering bowl", 15, 0.5),
+      e("Hooded robe stitched with sigils", 1),
+      e("Pouch of grave dirt", 0),
+      e("Amethyst shard", 10, 0.6),
+      e("Stub of red chalk", 0.01),
+      e("Vial of animal blood", 0)
+    ],
+    harvest: []
+  },
+  {
+    id: "noble",
+    name: "Noble",
+    loot: "full",
+    keywords: ["noble", "aristocrat", "merchant", "baron", "baroness", "duke", "duchess", "courtier", "envoy"],
+    items: [
+      e("Gold signet ring", 50, 0.7),
+      e("Jeweled hairpin", 25),
+      e("Perfumed silk handkerchief", 1, 2),
+      e("Silver snuffbox", 20),
+      e("Pearl earring", 15),
+      e("Painted lace fan", 5),
+      e("Silver hip flask", 15),
+      e("Portrait locket", 30, 0.7),
+      e("Kidskin gloves", 3, 2),
+      e("Ivory comb", 10),
+      e("Gold-chained monocle", 40, 0.5),
+      e("Bottle of fine wine", 10, 0.7)
+    ],
+    harvest: []
+  },
+  {
+    id: "caster",
+    name: "Spellcaster",
+    loot: "full",
+    keywords: ["mage", "archmage", "wizard", "sorcerer", "warlock", "druid", "apprentice", "necromancer", "witch", "conjurer", "evoker", "illusionist", "diviner", "enchanter", "magus"],
+    items: [
+      e("Bundle of dried herbs", 0.5, 2),
+      e("Small quartz crystal", 5),
+      e("Pouch of bat guano", 0.1),
+      e("Vial of quicksilver", 5, 0.7),
+      e("Bag of coloured chalk", 0.2, 2),
+      e("Notebook of arcane scribbles", 3),
+      e("Ink-stained quill", 0.02, 2),
+      e("Feather of a rare bird", 2),
+      e("Tiny brass astrolabe", 25, 0.4),
+      e("Pinch of powdered pearl", 10, 0.6),
+      e("Sealed jar of sulfur", 1),
+      e("Spectacles with a cracked lens", 2)
+    ],
+    harvest: []
+  },
+  {
+    id: "raider",
+    name: "Raider",
+    loot: "full",
+    keywords: ["raider", "goblin", "hobgoblin", "bugbear", "gnoll", "kobold", "orc", "lizardfolk", "sahuagin", "berserker", "centaur", "merfolk", "troglodyte", "barbarian", "tribal", "marauder", "reaver"],
+    items: [
+      e("Necklace of teeth", 0.5, 2),
+      e("Scrap of stolen silk", 2),
+      e("Crude iron armband", 0.2, 2),
+      e("Bone dice", 0.1),
+      e("Sack of mismatched cutlery", 0.5),
+      e("Shiny bit of broken glass", 0, 2),
+      e("Pot of war paint", 0.1),
+      e("Strips of dried meat", 0.01, 2, "1d4"),
+      e("Carved bone fetish", 0.2, 2),
+      e("Tarnished silver spoon", 1),
+      e("Copper bracelets", 1, 1, "1d3"),
+      e("Stolen hand mirror", 2, 0.5)
+    ],
+    harvest: []
+  },
+  {
+    id: "pirate",
+    name: "Pirate",
+    loot: "full",
+    keywords: ["pirate", "buccaneer", "corsair", "sailor", "deckhand", "privateer"],
+    items: [
+      e("Gold earring", 5),
+      e("Cracked spyglass lens", 2),
+      e("Bottle of rum", 1, 2),
+      e("Pouch of foreign coins", 3),
+      e("Bosun\u2019s whistle", 0.5),
+      e("Scrimshaw whale tooth", 5),
+      e("String of pearls", 25, 0.4),
+      e("Tarred rope bracelet", 0.01, 2),
+      e("Parrot feather", 0, 1),
+      e("Sailor\u2019s knife", 0.5),
+      e("Tin of ship\u2019s biscuits", 0.1, 2),
+      e("Brass compass", 25, 0.4)
+    ],
+    harvest: []
+  },
+  // ---------------- by creature type ----------------
+  {
+    id: "giant",
+    name: "Giant",
+    loot: "most",
+    keywords: [],
+    items: [
+      e("Giant-sized copper bracelet", 15),
+      e("Sack of sheep bones", 0),
+      e("Hide pouch of small gems", 10, 0.6, "1d3"),
+      e("Huge iron ring", 5),
+      e("Dented helmet used as a cup", 2),
+      e("Club studded with stolen coins", 8),
+      e("String of trophy shields", 10, 0.5),
+      e("Cask of strong ale", 5, 0.5)
+    ],
+    harvest: [e("Giant\u2019s tooth", 5), e("Braid of coarse hair", 1), e("Thick hide", 8, 0.6)]
+  },
+  {
+    id: "undead",
+    name: "Undead",
+    loot: "little",
+    keywords: [],
+    items: [
+      e("Tarnished locket", 5),
+      e("Corroded ring", 2),
+      e("Ancient copper coins", 0.05, 2, "2d6"),
+      e("Grave-goods bracelet", 10, 0.6),
+      e("Funerary coin", 1),
+      e("Scrap of burial shroud", 0, 2),
+      e("Rusted belt buckle", 0.1),
+      e("Rotted leather purse", 0.1)
+    ],
+    harvest: []
+  },
+  {
+    id: "construct",
+    name: "Construct",
+    loot: "none",
+    keywords: [],
+    items: [],
+    harvest: [
+      e("Frame plating", 10, 2),
+      e("Power core", 50, 0.6),
+      e("Servo", 5, 2, "1d4"),
+      e("Logic core", 30, 0.7),
+      e("Optics", 15),
+      e("Gears and springs", 2, 1.5, "2d4")
+    ]
+  },
+  {
+    id: "beast",
+    name: "Beast",
+    loot: "none",
+    keywords: [],
+    items: [],
+    harvest: [
+      e("Pelt", 2, 2),
+      e("Teeth", 0.5, 1.5, "1d6"),
+      e("Claws", 0.5, 1, "1d4"),
+      e("Meat", 0.1, 1.5, "1d4"),
+      e("Bones", 0.1),
+      e("Sinew", 0.2),
+      e("Horns or antlers", 2, 0.6)
+    ]
+  },
+  {
+    id: "bird",
+    name: "Bird",
+    loot: "none",
+    keywords: ["hawk", "eagle", "owl", "raven", "vulture", "crow", "falcon", "bird", "roc", "pteranodon"],
+    onlyTypes: ["Beast", "Monstrosity", "Celestial"],
+    items: [],
+    harvest: [
+      e("Feathers", 0.2, 2, "2d6"),
+      e("Talons", 1, 1.5, "1d4"),
+      e("Beak", 1),
+      e("Meat", 0.1, 1, "1d2")
+    ]
+  },
+  {
+    id: "reptile",
+    name: "Reptile",
+    loot: "none",
+    keywords: ["snake", "lizard", "crocodile", "serpent", "viper", "cobra", "toad", "frog", "tortoise", "turtle", "dinosaur", "allosaurus", "ankylosaurus", "triceratops", "tyrannosaurus", "plesiosaurus"],
+    onlyTypes: ["Beast"],
+    items: [],
+    harvest: [
+      e("Scaled hide", 3, 2),
+      e("Fangs", 1, 1.5, "1d4"),
+      e("Venom sac", 8, 0.7),
+      e("Meat", 0.1, 1, "1d4"),
+      e("Shed skin", 0.5)
+    ]
+  },
+  {
+    id: "sea-creature",
+    name: "Sea creature",
+    loot: "none",
+    keywords: ["shark", "whale", "octopus", "piranha", "seahorse", "crab", "eel", "squid", "fish", "archelon"],
+    onlyTypes: ["Beast", "Monstrosity"],
+    items: [],
+    harvest: [
+      e("Teeth", 0.5, 2, "1d6"),
+      e("Tough hide", 3),
+      e("Ink sac", 5, 0.6),
+      e("Shell fragments", 1, 1, "1d4"),
+      e("Fish oil", 0.5, 1.5)
+    ]
+  },
+  {
+    id: "bug",
+    name: "Bug",
+    loot: "none",
+    keywords: ["spider", "wasp", "centipede", "scorpion", "beetle", "insect", "insects", "ant", "ankheg", "mantis", "tick", "fly", "stirge", "ettercap"],
+    onlyTypes: ["Beast", "Monstrosity"],
+    items: [],
+    harvest: [
+      e("Chitin plates", 2, 2, "1d4"),
+      e("Venom gland", 10, 0.8),
+      e("Mandibles", 1),
+      e("Spool of silk", 5, 0.6),
+      e("Wing membranes", 1, 0.7),
+      e("Compound eye", 3, 0.7)
+    ]
+  },
+  {
+    id: "plant",
+    name: "Plant",
+    loot: "none",
+    keywords: [],
+    items: [],
+    harvest: [
+      e("Sap", 1, 2),
+      e("Bark strips", 0.5, 1.5, "1d4"),
+      e("Spores", 2),
+      e("Seeds", 1, 1, "1d6"),
+      e("Fibre", 0.2),
+      e("Heartwood", 10, 0.5),
+      e("Fungal cap", 2, 0.8)
+    ]
+  },
+  {
+    id: "elemental",
+    name: "Elemental",
+    loot: "none",
+    keywords: [],
+    items: [],
+    harvest: [
+      e("Elemental essence", 25, 1),
+      e("Mote of raw element", 5, 2, "1d4"),
+      e("Planar residue", 2, 1.5)
+    ]
+  },
+  {
+    id: "fire-elemental",
+    name: "Elemental: fire",
+    loot: "none",
+    keywords: ["fire", "flame", "magma", "magmin", "salamander", "efreeti", "azer", "ember", "lava"],
+    onlyTypes: ["Elemental"],
+    items: [],
+    harvest: [
+      e("Cinders", 1, 2, "1d6"),
+      e("Ember core", 25, 0.7),
+      e("Volcanic glass", 3, 1.5, "1d3"),
+      e("Smouldering ash", 0.5)
+    ]
+  },
+  {
+    id: "water-elemental",
+    name: "Elemental: water and ice",
+    loot: "none",
+    keywords: ["water", "ice", "steam", "frost", "mist", "tide"],
+    onlyTypes: ["Elemental"],
+    items: [],
+    harvest: [
+      e("Vial of living water", 10, 1.5, "1d3"),
+      e("Coral fragments", 2, 1.5, "1d4"),
+      e("Ever-cold shard", 15, 0.7),
+      e("Brine crystals", 1)
+    ]
+  },
+  {
+    id: "air-elemental",
+    name: "Elemental: air",
+    loot: "none",
+    keywords: ["air", "djinni", "stalker", "wind", "storm", "cloud"],
+    onlyTypes: ["Elemental"],
+    items: [],
+    harvest: [
+      e("Bottled breeze", 10, 1.5),
+      e("Storm-charged crystal", 25, 0.6),
+      e("Wisps of cloud in a jar", 5, 1.5),
+      e("Static-charged dust", 1)
+    ]
+  },
+  {
+    id: "earth-elemental",
+    name: "Elemental: earth",
+    loot: "none",
+    keywords: ["earth", "gargoyle", "xorn", "dust", "mud", "stone", "galeb"],
+    onlyTypes: ["Elemental"],
+    items: [],
+    harvest: [
+      e("Raw gemstone", 10, 1, "1d3"),
+      e("Ore chunks", 2, 2, "1d4"),
+      e("Crystal geode", 25, 0.5),
+      e("Living clay", 3)
+    ]
+  },
+  {
+    id: "dragon",
+    name: "Dragon",
+    loot: "little",
+    keywords: ["dragon", "wyrmling", "wyvern", "drake", "wyrm"],
+    items: [
+      e("Gemstone wedged between scales", 25),
+      e("Coin of a long-fallen kingdom", 1, 2, "1d6"),
+      e("Crushed golden goblet", 15),
+      e("Broken jeweled scabbard", 20, 0.6)
+    ],
+    harvest: [
+      e("Dragon scales", 5, 2, "2d6"),
+      e("Dragon teeth", 5, 1.5, "1d4"),
+      e("Dragon claws", 5, 1.5, "1d4"),
+      e("Dragon horn", 25, 0.8),
+      e("Vial of dragon blood", 20, 1, "1d3"),
+      e("Breath gland ({breath})", 50, 0.8),
+      e("Wing membrane", 10, 0.8)
+    ]
+  },
+  {
+    id: "fiend",
+    name: "Fiend",
+    loot: "little",
+    keywords: [],
+    items: [
+      e("Blackened iron token", 1, 2),
+      e("Brimstone-scented coins", 0.1, 1, "2d6"),
+      e("Bloodstone", 10, 0.6),
+      e("Jagged obsidian ring", 5)
+    ],
+    harvest: [
+      e("Fiend horn", 10, 1.5),
+      e("Vial of ichor", 5, 2, "1d3"),
+      e("Infernal hide", 10),
+      e("Fiend claws", 5, 1, "1d4"),
+      e("Brimstone ash", 1)
+    ]
+  },
+  {
+    id: "fey",
+    name: "Fey",
+    loot: "little",
+    keywords: [],
+    items: [
+      e("Acorn carved with a tiny face", 0, 2),
+      e("Silver thimble", 2),
+      e("Bell that makes no sound", 5),
+      e("Ribbon that never tangles", 1)
+    ],
+    harvest: [
+      e("Glimmering dust", 5, 2),
+      e("Lock of fey hair", 2),
+      e("Iridescent wing scales", 5),
+      e("Vial of moonlit dew", 10, 0.7)
+    ]
+  },
+  {
+    id: "monstrosity",
+    name: "Monstrosity",
+    loot: "little",
+    keywords: [],
+    items: [
+      e("Half-digested coin purse", 2),
+      e("Bones of an earlier victim, with a ring", 5, 0.7),
+      e("Torn satchel", 0.5)
+    ],
+    harvest: [
+      e("Monstrous hide", 5, 2),
+      e("Fangs", 2, 1.5, "1d4"),
+      e("Venom sac", 10, 0.6),
+      e("Eye", 5, 0.7),
+      e("Quills or spines", 1, 1, "2d6"),
+      e("Claws", 2, 1, "1d4"),
+      e("Beak", 3, 0.5)
+    ]
+  },
+  {
+    id: "aberration",
+    name: "Aberration",
+    loot: "little",
+    keywords: [],
+    items: [
+      e("Strange metal disc", 5),
+      e("Polished stone that hums", 10, 0.6),
+      e("Bones of an earlier victim, with a ring", 5, 0.7)
+    ],
+    harvest: [
+      e("Vial of ichor", 5, 2, "1d3"),
+      e("Tentacle segment", 2, 1.5),
+      e("Eye stalk", 10, 0.8),
+      e("Chitinous plate", 3),
+      e("Jar of brain matter", 15, 0.5)
+    ]
+  },
+  {
+    id: "celestial",
+    name: "Celestial",
+    loot: "little",
+    keywords: [],
+    items: [
+      e("Gold prayer bead", 5),
+      e("Feather-shaped silver pin", 10),
+      e("Small vial of holy oil", 10, 0.7)
+    ],
+    harvest: [
+      e("Radiant feather", 10, 2, "1d4"),
+      e("Vial of luminous blood", 25, 0.7),
+      e("Horn shard", 15, 0.7),
+      e("Strands of shining hair", 5)
+    ]
+  },
+  {
+    id: "ooze",
+    name: "Ooze",
+    loot: "none",
+    keywords: ["ooze", "pudding", "jelly", "cube", "slime"],
+    items: [],
+    harvest: [
+      e("Jar of acidic residue", 5, 2),
+      e("Gelatinous membrane", 2, 1.5),
+      e("Undissolved trinkets", 3),
+      e("Congealed slime", 1)
+    ]
   }
-  renderFilters();
-  renderList2();
-  renderEdit2();
+];
+var DEFAULT_TYPE_THEMES = {
+  Aberration: "aberration",
+  Beast: "beast",
+  Celestial: "celestial",
+  Construct: "construct",
+  Dragon: "dragon",
+  Elemental: "elemental",
+  Fey: "fey",
+  Fiend: "fiend",
+  Giant: "giant",
+  Humanoid: "humanoid",
+  Monstrosity: "monstrosity",
+  Ooze: "ooze",
+  Plant: "plant",
+  Undead: "undead"
+};
+var TYPE_MAP_ID = "loot-type-defaults";
+var MONSTER_LOOT_ID = "loot-monster-settings";
+function defaultLootThemes() {
+  return THEMES3.map((t) => ({ onlyTypes: [], ...structuredClone(t), builtin: true }));
 }
-function newMonster() {
-  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
-  const m = { ...blankMonster(), id: newId("new-monster"), source: "Homebrew" };
-  save("monsters", m, { delay: 0 });
-  showLibrary(m.id);
-}
-function duplicate(m) {
-  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
-  const copy = { ...structuredClone(m), id: newId(m.name), source: "Homebrew", basedOn: m.source, name: `${m.name}` };
-  delete copy.created;
-  save("monsters", copy, { delay: 0 });
-  showLibrary(copy.id);
-}
-function renderFilters() {
-  const box = el3.querySelector("#lb-filters");
-  const n = activeFilters(filter);
-  el3.querySelector("#lb-filter-btn").textContent = n ? `Filters (${n})` : "Filters";
-  el3.querySelector("#lb-filter-btn").classList.toggle("on", filtersOpen || n > 0);
-  box.hidden = !filtersOpen;
-  if (!filtersOpen) return;
-  const changed3 = () => {
-    shown = 150;
-    renderFilters();
-    renderList2();
-  };
-  const sel = (label, key2, options) => h("label", label, h(
-    "select",
-    { onchange: (e) => {
-      filter[key2] = e.target.value;
-      changed3();
-    } },
-    h("option", { value: "" }, "Any"),
-    options.map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => h("option", { value: o.value, selected: filter[key2] === o.value }, o.label))
-  ));
-  const cr = (key2) => h("select", { onchange: (e) => {
-    filter[key2] = e.target.value;
-    changed3();
-  } }, CR_ORDER.map((c2) => h("option", { value: c2, selected: filter[key2] === c2 }, c2)));
-  fill(
-    box,
-    sel("Type", "type", TYPES),
-    sel("Race", "race", raceOptions()),
-    sel("Size", "size", SIZES.slice(0, 6)),
-    sel("Source", "source", [{ value: "homebrew", label: "My monsters" }, { value: "srd", label: "SRD 5.2.1" }]),
-    h("label.wide", "Challenge rating", h("div.cr-range", cr("crMin"), h("span", "to"), cr("crMax"))),
-    h("label.wide", "Sort by", h("select", { onchange: (e) => {
-      sortKey = e.target.value;
-      renderList2();
-    } }, Object.entries(SORTS).map(([k, [label]]) => h("option", { value: k, selected: sortKey === k }, label)))),
-    n ? h("button.link.wide", { onclick: () => {
-      Object.assign(filter, emptyFilter(), { q: filter.q });
-      changed3();
-    } }, "Clear filters") : null
-  );
-}
-function renderList2() {
-  const list = allMonsters().filter((m) => matches(m, filter)).sort(SORTS[sortKey][1]);
-  el3.querySelector("#lb-count").textContent = `${list.length} monster${list.length === 1 ? "" : "s"}${activeFilters(filter) || filter.q ? " match" : ""}`;
-  const rows = list.slice(0, shown).map((m) => h(
-    "button.list-row" + (m.id === selectedId2 ? ".active" : ""),
-    { onclick: () => {
-      selectedId2 = m.id;
-      renderList2();
-      renderEdit2();
-    } },
-    avatar(m.avatar, m.name, "sm"),
-    h("div.list-main", h("div.list-name", m.name, isHomebrew(m) ? null : h("span.tag", "SRD")), h("div.list-sub", `CR ${m.challengeRating} \xB7 ${m.size} ${(m.monsterType || "").toLowerCase()}`))
-  ));
-  if (list.length > shown) rows.push(h("button.load-more", { onclick: () => {
-    shown += 150;
-    renderList2();
-  } }, `Show more (${list.length - shown})`));
-  fill(el3.querySelector("#lb-list"), ...rows.length ? rows : [h("div.empty", "No monsters match.")]);
-}
-var refreshPreview = debounce((m) => fill(el3.querySelector("#lb-preview"), statBlock(m)), 150);
-function renderEdit2() {
-  const pane = el3.querySelector("#lb-edit"), preview = el3.querySelector("#lb-preview");
-  const m = findMonster(selectedId2);
-  if (!m) {
-    fill(pane, h("div.empty", "Select a monster, or click New. Monsters you make in the Monster Maker land here too."));
-    preview.replaceChildren();
-    return;
+
+// src/loot.js
+init_rules();
+init_dice();
+var LOOT_CONFIG = {
+  gold: { base: 10, perXp: 200, power: 0.75 },
+  // gold = base × (xp / perXp)^power × level step × generosity × spread
+  spread: [0.5, 1.5],
+  levelSteps: [[4, 1], [10, 0.85], [16, 0.7], [20, 0.55]],
+  // [up to party level, gold factor]: fight loot shrinks as the party grows
+  minion: 0.25,
+  extra: 2,
+  // a creature set to "Extra": ×2 coins and ×2 gear chance
+  gearChance: 0.2,
+  gearCeiling: 0.9,
+  carriedShare: 0.7,
+  gearCaps: [[4, 75], [10, 400], [20, Infinity]],
+  // [up to party level, gp]: × generosity
+  gearWeights: { gear: 40, weapon: 30, ammo: 15, tool: 10, focus: 5 },
+  damagedShare: 0.1,
+  itemChance: 0.5,
+  itemCeiling: 0.9,
+  // pocket items from the theme
+  harvestPicks: 2,
+  // different harvestables per body at Standard
+  rarityWeights: { Common: 60, Uncommon: 30, Rare: 8, "Very Rare": 2, Legendary: 1 },
+  consumableWeight: 3
+};
+var RARITIES = ["Common", "Uncommon", "Rare", "Very Rare", "Legendary"];
+var RARITY_VALUE = { Common: 100, Uncommon: 400, Rare: 4e3, "Very Rare": 4e4, Legendary: 2e5 };
+var PARTY_CAP = [[4, "Uncommon"], [10, "Rare"], [16, "Very Rare"], [20, "Legendary"]];
+var CR_CAP = [[2, "Uncommon"], [7, "Rare"], [14, "Very Rare"], [Infinity, "Legendary"]];
+var SCROLL_LEVELS = { Common: [0, 1], Uncommon: [2, 3], Rare: [4, 5], "Very Rare": [6, 7, 8], Legendary: [9] };
+var SCROLL_VALUE = [30, 50, 200, 300, 2e3, 3e3, 2e4, 25e3, 3e4, 1e5];
+var GENEROSITY = { min: 0.25, max: 3, stops: [[0.5, "Stingy"], [1, "Standard"], [1.5, "Generous"], [2, "Lavish"]] };
+var generosityName = (g) => GENEROSITY.stops.reduce((best, s) => Math.abs(s[0] - g) < Math.abs(best[0] - g) ? s : best)[1];
+var LOOT_SETTINGS = { auto: "Auto", none: "None", normal: "Normal", extra: "Extra (\xD72 coins and gear chance)" };
+var band = (table, x) => table.find(([upTo]) => x <= upTo)?.[1] ?? table[table.length - 1][1];
+var lowerRarity = (a2, b2) => RARITIES[Math.min(RARITIES.indexOf(a2), RARITIES.indexOf(b2))];
+var rarityCap = (partyLevel, maxCr) => lowerRarity(band(PARTY_CAP, partyLevel), band(CR_CAP, crValue(maxCr)));
+var gearCap = (partyLevel, generosity) => band(LOOT_CONFIG.gearCaps, partyLevel) * generosity;
+function lootTables(defaults3, records = []) {
+  const mine = new Map(records.filter((r) => r.id !== TYPE_MAP_ID && r.id !== MONSTER_LOOT_ID).map((r) => [r.id, r]));
+  const themes = [];
+  for (const d of defaults3) {
+    const r = mine.get(d.id);
+    if (r?.deleted) continue;
+    themes.push(r ? { ...d, ...r, builtin: true } : d);
   }
-  fill(preview, statBlock(m));
-  if (!isHomebrew(m)) {
-    fill(
-      pane,
-      h("div.edit-head", h("h2", m.name), h("button.primary", { onclick: () => duplicate(m) }, "Copy to my monsters")),
-      h("p.muted", "SRD monsters are read-only. Copy one to your monsters to change it (for example to reskin or retune it)."),
-      h("p.muted", `Fighting preference (guessed from the stat block): ${STYLES[guessStyle(m)]}. The encounter generator uses it.`),
-      h("div.pic", avatar(m.avatar, m.name, "lg"))
-    );
-    return;
-  }
-  fill(pane, editor(m));
+  for (const r of mine.values()) if (!r.deleted && !defaults3.some((d) => d.id === r.id)) themes.push({ ...r, builtin: false });
+  const typeMap = { ...DEFAULT_TYPE_THEMES, ...records.find((r) => r.id === TYPE_MAP_ID)?.types || {} };
+  return { themes, typeMap };
 }
-function editor(m) {
-  const changed3 = () => {
-    save("monsters", m);
-    refreshPreview(m);
-  };
-  const text = (label, get, set2, attrs = {}) => h("label", label, h("input", { type: "text", value: get(), ...attrs, oninput: (e) => {
-    set2(e.target.value);
-    changed3();
-  } }));
-  const num2 = (label, k) => h("label", label, h("input", { type: "number", value: m[k] ?? "", oninput: (e) => {
-    m[k] = Number(e.target.value) || 0;
-    changed3();
-  } }));
-  const select = (label, k, options) => h("label", label, h(
-    "select",
-    { onchange: (e) => {
-      m[k] = e.target.value;
-      changed3();
-    } },
-    [.../* @__PURE__ */ new Set([m[k], ...options])].filter((o) => o != null).map((o) => h("option", { value: o, selected: o === m[k] }, o))
-  ));
-  const parsed = (label, get, parse, hint) => h("label", label, h("input", { type: "text", value: get(m), placeholder: hint, onchange: (e) => {
-    parse(e.target.value);
-    e.target.value = get(m);
-    changed3();
-  } }));
-  const section = (title, key2) => {
-    m[key2] ??= [];
-    const box = h("div.entries");
-    const draw2 = () => fill(box, ...m[key2].map((entry, i) => h(
-      "div.entry",
-      h(
-        "div.entry-top",
-        h("input", { type: "text", value: entry.name, placeholder: "Name", oninput: (e) => {
-          entry.name = e.target.value;
-          changed3();
-        } }),
-        h("button.icon-btn", { title: "Move up", disabled: i === 0, onclick: () => {
-          m[key2].splice(i - 1, 0, m[key2].splice(i, 1)[0]);
-          draw2();
-          changed3();
-        } }, "\u2191"),
-        h("button.icon-btn", { title: "Remove", onclick: () => {
-          m[key2].splice(i, 1);
-          draw2();
-          changed3();
-        } }, "\xD7")
-      ),
-      h("textarea", { rows: 3, value: entry.text, placeholder: 'Text. Dice like 2d6 + 3 and "+5 to hit" become clickable rolls.', oninput: (e) => {
-        entry.text = e.target.value;
-        changed3();
-      } }),
-      // spell slots or a pool of charges, shown as boxes to tick off
-      h("label.inline.entry-boxes", "Check boxes", h("input", {
-        type: "text",
-        value: slotsText(entry.slots),
-        placeholder: "e.g. Level 1: 4, Level 2: 3   or   17",
-        onchange: (e) => {
-          const slots = parseSlotsText(e.target.value);
-          if (slots.length) entry.slots = slots;
-          else delete entry.slots;
-          e.target.value = slotsText(entry.slots);
-          changed3();
-        }
-      }))
-    )));
-    draw2();
-    return h(
-      "details.edit-section",
-      { open: m[key2].length > 0 },
-      h("summary", `${title} (${m[key2].length})`),
-      box,
-      h("button", { onclick: () => {
-        m[key2].push({ name: "", text: "" });
-        draw2();
-        changed3();
-        box.lastChild?.querySelector("input")?.focus();
-      } }, `Add ${title.replace(/s$/, "").toLowerCase()}`)
-    );
-  };
-  const json = h("textarea.json", { rows: 14, spellcheck: false });
-  const jsonStatus = h("div.status", { hidden: true });
-  return h(
-    "div.editor",
-    h("div.edit-head", h("h2", m.name), h(
-      "div.row-gap",
-      h("button", { title: "List the words in this monster the dictionary doesn\u2019t know", onclick: () => spellingDialog([m], { title: `Spelling: ${m.name}`, onChanged: () => {
-        renderList2();
-        renderEdit2();
-      } }) }, "Check spelling"),
-      h("button", { onclick: () => duplicate(m) }, "Duplicate"),
-      h("button.danger", { onclick: () => confirmBox(`Delete ${m.name}? The file goes to the Recycle Bin.`, "Delete", async () => {
-        await remove("monsters", m);
-        selectedId2 = null;
-        renderEdit2();
-      }) }, "Delete")
-    )),
-    m.warnings?.length ? h("div.warn-box", h("ul.warnings", m.warnings.map((w) => h("li", w))), h("button.link", { onclick: (e) => {
-      delete m.warnings;
-      changed3();
-      e.target.parentElement.remove();
-    } }, "Dismiss reader notes")) : null,
-    pictureDrop({
-      src: m.avatar,
-      name: m.name,
-      chooseText: "Choose token art",
-      onImage: (url) => {
-        m.avatar = url;
-        changed3();
-        renderEdit2();
-        renderList2();
-      },
-      onRemove: () => {
-        delete m.avatar;
-        changed3();
-        renderEdit2();
-        renderList2();
+var words = (s) => String(s || "").toLowerCase().replace(/[’']/g, "").split(/[^a-z0-9]+/).filter(Boolean);
+function themeFor(m, { themes, typeMap }) {
+  if (m.lootTheme) {
+    const t2 = themes.find((x) => x.id === m.lootTheme);
+    if (t2) return { theme: t2, why: "set on the monster" };
+  }
+  const name = words(m.name);
+  let best = null;
+  for (const t2 of themes) {
+    if (t2.onlyTypes?.length && !t2.onlyTypes.includes(m.monsterType)) continue;
+    for (const k of t2.keywords || []) {
+      const kw = words(k);
+      if (!kw.length) continue;
+      for (let i = 0; i + kw.length <= name.length; i++) {
+        const hit = kw.every((w, j) => name[i + j] === w || j === kw.length - 1 && name[i + j] === `${w}s`);
+        if (hit && (!best || i < best.at || i === best.at && kw.length > best.len)) best = { theme: t2, at: i, len: kw.length, word: k };
       }
-    }),
-    h(
-      "div.form-grid",
-      text("Name", () => m.name, (v) => {
-        m.name = v;
-        el3.querySelector(".edit-head h2").textContent = v;
-        renderList2();
-      }),
-      select("Challenge rating", "challengeRating", CRS),
-      select("Size", "size", SIZES),
-      select("Type", "monsterType", TYPES),
-      text("Subtypes / tags", () => (m.subtypes || []).join(", "), (v) => {
-        m.subtypes = parseList(v);
-      }),
-      select("Alignment", "alignment", ALIGNMENTS),
-      num2("Armor Class", "armorClass"),
-      text("Armor type", () => m.armorClassType || "", (v) => {
-        m.armorClassType = v;
-      }, { placeholder: "natural armor" }),
-      num2("Hit points (average)", "averageHitPoints"),
-      h("div.hp-dice", num2("Hit dice", "hitDiceCount"), select("Die", "hitDieValue", ["d4", "d6", "d8", "d10", "d12", "d20"]), num2("Bonus", "hitPointsModifier")),
-      parsed("Speed", speedText, (v) => {
-        m.movement = parseSpeedText(v);
-      }, "30 ft., fly 60 ft. (hover)"),
-      text("Initiative bonus", () => String(m.initiativeBonus ?? ""), (v) => {
-        m.initiativeBonus = v;
-      }, { placeholder: "blank = DEX modifier" }),
-      // how it fights, for the encounter generator: blank = guessed from the stat block each time
-      h("label", { title: "Used by the fighting style setting of the encounter generator" }, "Fighting preference", h(
-        "select",
-        { onchange: (e) => {
-          if (e.target.value) m.fightingStyle = e.target.value;
-          else delete m.fightingStyle;
-          changed3();
-        } },
-        h("option", { value: "", selected: !STYLES[m.fightingStyle] }, `Auto (guess: ${STYLES[guessStyle(m)]})`),
-        Object.entries(STYLES).map(([k, v]) => h("option", { value: k, selected: m.fightingStyle === k }, v))
-      )),
-      // minions (a "Minion" trait) count this XP in the builder and the generator instead of their CR's
-      isMinion(m) ? h(
-        "label",
-        { title: "Minions are worth far less than their CR. Blank = a quarter of the XP for its CR." },
-        "Minion XP",
-        h("input", { type: "number", min: 0, value: m.minionXp ?? "", placeholder: `blank = ${Math.round(xpFor(m.challengeRating) / 4)}`, oninput: (e) => {
-          if (e.target.value === "") delete m.minionXp;
-          else m.minionXp = Math.max(0, Number(e.target.value) || 0);
-          changed3();
-        } })
-      ) : null
-    ),
-    h("div.abil.abil-edit", ABILITIES.map((a2, i) => h("label", ABBR[i], h("input", { type: "number", value: m.abilities[a2] ?? 10, oninput: (e) => {
-      m.abilities[a2] = Number(e.target.value) || 0;
-      changed3();
-    } })))),
-    h(
-      "div.form-grid",
-      parsed("Saving throws", savesText, (v) => {
-        m.savingThrows = parseSavesText(v);
-      }, "Dex +5, Wis +3"),
-      parsed("Skills", skillsText, (v) => {
-        m.skills = parseSkillsText(v);
-      }, "Perception +4, Stealth +6"),
-      parsed("Damage vulnerabilities", (x) => listText(x.damageVulnerabilities), (v) => {
-        m.damageVulnerabilities = parseList(v);
-      }),
-      parsed("Damage resistances", (x) => listText(x.damageResistances), (v) => {
-        m.damageResistances = parseList(v);
-      }),
-      parsed("Damage immunities", (x) => listText(x.damageImmunities), (v) => {
-        m.damageImmunities = parseList(v);
-      }),
-      parsed("Condition immunities", (x) => listText(x.conditionImmunities), (v) => {
-        m.conditionImmunities = parseList(v);
-      }),
-      parsed("Senses", sensesText, (v) => {
-        m.senses = parseSensesText(v);
-      }, "darkvision 60 ft."),
-      num2("Passive Perception", "passivePerception"),
-      text("Languages", () => m.languagesNote || (m.languages || []).map((l) => `${l.name} ${l.note || ""}`.trim()).join(", "), (v) => {
-        m.languagesNote = v;
-        m.languages = [];
-      })
-    ),
-    section("Traits", "traits"),
-    section("Actions", "actions"),
-    section("Bonus Actions", "bonusActions"),
-    section("Reactions", "reactions"),
-    section("Legendary Actions", "legendaryActions"),
-    h(
-      "details.edit-section",
-      { ontoggle: (e) => {
-        if (e.target.open) json.value = JSON.stringify(m, (k, v) => k === "avatar" ? void 0 : v, 2);
-      } },
-      h("summary", "All data (JSON)"),
-      json,
-      h("button", { onclick: () => {
-        try {
-          const next2 = JSON.parse(json.value);
-          if (!next2?.name) throw new Error('The data needs at least a "name".');
-          Object.keys(m).forEach((k) => {
-            if (!["id", "source", "avatar", "created"].includes(k)) delete m[k];
-          });
-          Object.assign(m, next2, { id: m.id, source: "Homebrew" });
-          changed3();
-          renderEdit2();
-        } catch (e) {
-          jsonStatus.hidden = false;
-          jsonStatus.className = "status error";
-          jsonStatus.textContent = `Could not apply: ${e.message}`;
-        }
-      } }, "Apply JSON"),
-      jsonStatus
-    )
-  );
-}
-
-// src/tabs/conditions.js
-init_ui();
-init_store();
-init_conditions_data();
-init_conditions();
-var el4;
-var go2;
-var selectedId3 = null;
-var usage = /* @__PURE__ */ new Map();
-var query = "";
-function mountConditions(root, navigate) {
-  el4 = root;
-  go2 = navigate;
-  el4.append(
-    h("div.page-head", h("h1", "Conditions"), h("div.page-sub", "The conditions stat blocks link to: the SRD 5.2.1 conditions, plus any you add (marked CUSTOM). Change a description, or the keywords a condition is found by; every monster picks up the change right away.")),
-    h(
-      "div.lib-grid.cond-grid",
-      h(
-        "div.card.list-pane",
-        h(
-          "div.list-tools",
-          h("input.search", { type: "search", placeholder: "Search conditions", oninput: (e) => {
-            query = e.target.value;
-            renderList3();
-          } }),
-          h("button.primary", { onclick: addCondition }, "New")
-        ),
-        h("div.list#cd-list"),
-        h("div#cd-restore")
-      ),
-      h("div.card.edit-pane#cd-edit"),
-      h("div.card.preview-pane#cd-side")
-    )
-  );
-  onChange((kind) => {
-    if (!el4.hidden && (kind === "all" || kind === "monsters")) {
-      countUsage();
-      renderList3();
     }
-  });
-}
-function showConditions(id) {
-  if (id) selectedId3 = id;
-  countUsage();
-  renderList3();
-  renderEdit3();
-}
-var plain2 = (s) => String(s || "").replace(/<[^>]+>/g, "");
-function monsterTexts(m) {
-  return [
-    ...["traits", "actions", "bonusActions", "reactions", "legendaryActions", "mythicActions", "lairActions"].flatMap((k) => (m[k] || []).map((e) => plain2(e.text))),
-    (m.conditionImmunities || []).join(", ")
-  ];
-}
-function countUsage() {
-  usage = new Map(store.conditions.map((c2) => [c2.id, []]));
-  for (const m of allMonsters()) {
-    const seen2 = /* @__PURE__ */ new Map();
-    for (const t of monsterTexts(m)) for (const f of findKeywords(t)) if (!seen2.has(f.condition.id)) seen2.set(f.condition.id, `\u2026${t.slice(Math.max(0, f.index - 45), f.index)}[[${f.word}]]${t.slice(f.index + f.length, f.index + f.length + 45)}\u2026`);
-    for (const [id, snippet] of seen2) usage.get(id)?.push({ monster: m, snippet });
   }
+  if (best) return { theme: best.theme, why: `\u201C${best.word}\u201D in its name` };
+  const t = themes.find((x) => x.id === typeMap[m.monsterType]);
+  return t ? { theme: t, why: `its type (${m.monsterType || "none"})` } : { theme: null, why: "no theme" };
 }
-var recount = debounce(() => {
-  countUsage();
-  renderList3();
-  renderSide();
-}, 400);
-var defaults = () => new Map(defaultConditions().map((c2) => [c2.id, c2]));
-var edited = (c2) => {
-  const d = defaults().get(c2.id);
-  return d && (d.name !== c2.name || d.text !== c2.text || JSON.stringify(d.keywords) !== JSON.stringify(c2.keywords));
+var lc3 = (s) => String(s || "").toLowerCase();
+function carriedGear(m, items) {
+  const found = /* @__PURE__ */ new Set();
+  const named = (text) => items.find((x) => x.category !== "magic" && (lc3(x.name) === text || `${lc3(x.name)}s` === text)) || items.find((x) => x.category !== "magic" && (lc3(x.name).startsWith(`${text} (`) || lc3(x.name).endsWith(`(${text})`)));
+  const gear = (m.notes || []).filter((n) => /^gear$/i.test(n.name || "")).flatMap((n) => String(n.text || "").split(","));
+  for (const g of gear) {
+    const it = named(lc3(g).replace(/\s*\(.*$/, "").trim());
+    if (it) found.add(it);
+  }
+  const attacks = ["actions", "bonusActions", "reactions"].flatMap((k) => (m[k] || []).map((e2) => lc3(e2.name).replace(/\s*\(.*$/, "").trim()));
+  for (const a2 of attacks) {
+    const it = named(a2);
+    if (it?.category === "weapon") found.add(it);
+  }
+  const ac = lc3(m.armorClassType);
+  const armor = items.filter((x) => (x.category === "armor" || x.category === "shield") && ac.includes(lc3(x.name).replace(/ armor$/, "")));
+  for (const a2 of armor) if (!armor.some((b2) => b2 !== a2 && lc3(b2.name).includes(lc3(a2.name).replace(/ armor$/, "")))) found.add(a2);
+  return [...found];
+}
+var isCaster = (m) => ["traits", "actions"].some((k) => (m[k] || []).some((e2) => /spellcasting/i.test(e2.name || "")));
+function breathType(m) {
+  const b2 = [...m.actions || [], ...m.bonusActions || []].find((e2) => /breath/i.test(e2.name || ""));
+  const t = b2 && String(b2.text || "").match(/\b(Acid|Cold|Fire|Lightning|Poison|Necrotic|Radiant|Thunder|Force|Psychic)\b/);
+  return t ? t[1].toLowerCase() : "";
+}
+var qtyOf = (q, r) => {
+  if (q === "" || q == null) return 1;
+  const n = Number(q);
+  return Number.isFinite(n) ? Math.max(1, Math.round(n)) : Math.max(1, roll(String(q), "normal", r)?.total ?? 1);
 };
-function renderList3() {
-  const q = query.trim().toLowerCase();
-  const list = [...store.conditions].filter((c2) => !q || c2.name.toLowerCase().includes(q) || c2.keywords.some((k) => k.text.toLowerCase().includes(q))).sort((a2, b2) => a2.name.localeCompare(b2.name));
-  fill(
-    el4.querySelector("#cd-list"),
-    h("button.list-row" + (selectedId3 === null ? ".active" : ""), { onclick: () => {
-      selectedId3 = null;
-      renderList3();
-      renderEdit3();
-    } }, h("div.list-main", h("div.list-name", "About conditions"))),
-    list.map((c2) => {
-      const n = usage.get(c2.id)?.length || 0;
-      return h(
-        "button.list-row" + (c2.id === selectedId3 ? ".active" : ""),
-        { onclick: () => {
-          selectedId3 = c2.id;
-          renderList3();
-          renderEdit3();
-        } },
-        h(
-          "div.list-main",
-          h("div.list-name", c2.name, edited(c2) ? h("span.tag", "EDITED") : null, !c2.builtin ? h("span.tag", "CUSTOM") : null),
-          h("div.list-sub", c2.keywords.length ? `${n ? `In ${n} monster${n === 1 ? "" : "s"}` : "Not found in any monster"} \xB7 ${c2.keywords.map((k) => k.text).join(", ")}` : "Reference only (no keywords)")
-        )
-      );
-    })
-  );
-  const have = new Set(store.conditions.map((c2) => c2.id));
-  const missing = defaultConditions().filter((c2) => !have.has(c2.id));
-  fill(el4.querySelector("#cd-restore"), missing.length ? h("button.link", { onclick: () => {
-    missing.forEach((c2) => save("conditions", c2, { delay: 0 }));
-    renderList3();
-  } }, `Restore ${missing.length} deleted original${missing.length === 1 ? "" : "s"}`) : null);
+function pick3(r, list, weight = (x) => x.weight ?? 1) {
+  const ws = list.map((x2) => Math.max(0, Number(weight(x2)) || 0));
+  const sum = ws.reduce((a2, b2) => a2 + b2, 0);
+  if (!(sum > 0)) return null;
+  let x = r() * sum;
+  for (let i = 0; i < list.length; i++) if ((x -= ws[i]) <= 0) return list[i];
+  return list[list.length - 1];
 }
-function addCondition() {
-  const c2 = { id: newId("condition"), name: "New Condition", keywords: [{ text: "New Condition", caps: false }], text: "Describe what the condition does.\n\n**Ending the Condition.** How it ends." };
-  save("conditions", c2, { delay: 0 });
-  selectedId3 = c2.id;
-  showConditions();
-  el4.querySelector("#cd-edit input")?.select();
+var round2 = (n) => Math.round(n * 100) / 100;
+var roughly = (gp) => gp >= 100 ? Math.round(gp / 10) * 10 : gp >= 1 ? Math.round(gp) : round2(gp);
+function goldFor(xp, partyLevel, generosity) {
+  const { base, perXp, power } = LOOT_CONFIG.gold;
+  return base * (xp / perXp) ** power * band(LOOT_CONFIG.levelSteps, partyLevel) * generosity;
 }
-function renderEdit3() {
-  const pane = el4.querySelector("#cd-edit");
-  const c2 = store.conditions.find((x) => x.id === selectedId3);
-  if (!c2) {
-    fill(pane, h("div.cond-ref-body", { html: `<div class="cond-name">Conditions</div>${markupHtml(CONDITIONS_INTRO_TEXT)}` }));
-    return renderSide();
+function generateLoot({ enemies, partyLevel, items, spells = [], tables, settings: settings3 = {}, seed = newSeed() }) {
+  const r = rng(seed);
+  const gen = Math.min(GENEROSITY.max, Math.max(GENEROSITY.min, Number(settings3.generosity) || 1));
+  const level = Math.min(20, Math.max(1, Math.round(Number(partyLevel) || 1)));
+  const cap2 = gearCap(level, gen);
+  const C2 = LOOT_CONFIG;
+  let coins = 0;
+  const lines = [], harvest = [], notes = [];
+  const add2 = (list, x) => {
+    const same = list.find((y) => y.kind === x.kind && y.name === x.name && !!y.damaged === !!x.damaged && y.value === x.value);
+    if (same) same.qty += x.qty;
+    else list.push({ ...x });
+  };
+  const pool = items.filter((x) => x.category !== "magic" && x.carried && C2.gearWeights[x.category] && x.price != null);
+  for (const { monster: m, count } of enemies) {
+    if (!m || !(count > 0)) continue;
+    const setting = m.loot || "auto";
+    if (setting === "none") {
+      notes.push(`${m.name}: set to carry no loot`);
+      continue;
+    }
+    const { theme } = themeFor(m, tables);
+    const share = LOOT_LEVELS[theme?.loot]?.share ?? 1;
+    const extra = setting === "extra" ? C2.extra : 1;
+    const xp = xpFor(m.challengeRating), minion = isMinion(m) ? C2.minion : 1;
+    const carried = carriedGear(m, items);
+    const caster = isCaster(m);
+    for (let n = 0; n < count; n++) {
+      if (share > 0) {
+        const [lo, hi] = C2.spread;
+        const gp = goldFor(xp, level, gen) * minion * share * extra * (lo + r() * (hi - lo));
+        coins += gp >= 1 ? Math.round(gp) * 100 : Math.round(gp * 100);
+        if (r() < Math.min(C2.gearCeiling, C2.gearChance * gen * share * extra)) {
+          let it = null;
+          if (carried.length && r() < C2.carriedShare) it = carried[Math.floor(r() * carried.length)];
+          if (it) {
+            if (it.price > cap2) add2(lines, { kind: "gear", name: `${it.name} (damaged)`, qty: 1, value: round2(it.price * C2.damagedShare), damaged: true, scrap: true });
+            else add2(lines, { kind: "gear", name: it.name, qty: 1, value: it.price });
+          } else {
+            const ok = pool.filter((x) => x.price <= cap2 && (x.category !== "focus" || caster));
+            const cat = pick3(r, Object.keys(C2.gearWeights).filter((c2) => ok.some((x) => x.category === c2)), (c2) => C2.gearWeights[c2]);
+            const list = ok.filter((x) => x.category === cat);
+            const got = list[Math.floor(r() * list.length)];
+            if (got) {
+              const qty = got.bundle ? Math.min(got.bundle, roll("2d10", "normal", r).total) : 1;
+              add2(lines, { kind: "gear", name: got.name, qty, value: got.price });
+            }
+          }
+        }
+        const chance = Math.min(C2.itemCeiling, C2.itemChance * gen * share);
+        for (let k = 0; k < 2 && theme?.items?.length && r() < (k ? chance / 2 : chance); k++) {
+          const it = pick3(r, theme.items);
+          if (it) add2(lines, { kind: "item", name: it.name, qty: qtyOf(it.qty, r), value: Number(it.value) || 0 });
+        }
+      }
+      if (theme?.harvest?.length) {
+        const picks2 = Math.max(1, Math.round(C2.harvestPicks * Math.sqrt(gen)));
+        const left = [...theme.harvest];
+        const scale = Math.min(30, Math.max(0.5, Math.sqrt(xpFor(m.challengeRating) / 200)));
+        for (let k = 0; k < picks2 && left.length; k++) {
+          const it = pick3(r, left);
+          if (!it) break;
+          left.splice(left.indexOf(it), 1);
+          const name = it.name.replace(/\s*\(\{breath\}\)/, breathType(m) ? ` (${breathType(m)})` : "").replace("{breath}", breathType(m));
+          const qty = qtyOf(it.qty, r), value = (Number(it.value) || 0) * scale;
+          const same = harvest.find((y) => y.name === name);
+          if (same) {
+            same.total += qty * value;
+            same.qty += qty;
+            if (!same.from.includes(m.name)) same.from.push(m.name);
+          } else harvest.push({ kind: "harvest", name, qty, total: qty * value, from: [m.name] });
+        }
+      }
+    }
   }
-  const changed3 = () => {
-    save("conditions", c2);
-    refreshPreview2();
-    recount();
-  };
-  const kwBox = h("div.kw-list");
-  const drawKeywords = () => fill(
-    kwBox,
-    c2.keywords.map((k, i) => h(
-      "div.kw-row",
-      h("input", { type: "text", value: k.text, placeholder: "word or phrase", oninput: (e) => {
-        k.text = e.target.value;
-        changed3();
-      } }),
-      h("label.check-row", h("input", { type: "checkbox", checked: k.caps, onchange: (e) => {
-        k.caps = e.target.checked;
-        changed3();
-      } }), "Capitalized only"),
-      h("button.icon-btn", { title: "Remove keyword", onclick: () => {
-        c2.keywords.splice(i, 1);
-        drawKeywords();
-        changed3();
-      } }, "\xD7")
-    )),
-    !c2.keywords.length ? h("div.hint", "No keywords: this condition is never linked in stat blocks, only listed here and in the runner.") : null
-  );
-  drawKeywords();
-  const preview = h("div.cond-ref-body.cond-preview");
-  const refreshPreview2 = () => {
-    preview.innerHTML = conditionHtml(c2);
-  };
-  refreshPreview2();
-  const original = defaults().get(c2.id);
-  fill(
-    pane,
-    h("div.edit-head", h("h2", c2.name), h(
-      "div.row-gap",
-      original ? h("button", { title: "Undo your changes to this condition", onclick: () => {
-        if (!edited(c2)) return modal("Reset to original", h("p", `"${c2.name}" is already the original.`));
-        confirmBox(`Put "${c2.name}" back the way it came (name, keywords and description)?`, "Reset", () => {
-          Object.assign(c2, structuredClone(original));
-          save("conditions", c2, { delay: 0 });
-          showConditions();
-        });
-      } }, "Reset to original") : null,
-      h("button.danger", { onclick: () => confirmBox(`Delete "${c2.name}"? The file goes to the Recycle Bin.${original ? " You can restore deleted originals from the list." : ""}`, "Delete", async () => {
-        await remove("conditions", c2);
-        selectedId3 = null;
-        showConditions();
-      }) }, "Delete")
-    )),
-    h(
-      "div.form-grid.one",
-      h("label", "Name", h("input", { type: "text", value: c2.name, oninput: (e) => {
-        c2.name = e.target.value;
-        el4.querySelector("#cd-edit .edit-head h2").textContent = c2.name;
-        changed3();
-        renderList3();
-      } }))
-    ),
-    h("h4", "Keywords and phrases"),
-    h("div.hint", 'Stat block text is searched for these (whole words). Tick "Capitalized only" for ordinary words, so "burning oil" stays plain but "gains Burning (1d10)" links. A capitalized-only word is also skipped at the start of a sentence and when it starts a name ("Hidden Dagger").'),
-    kwBox,
-    h("button", { onclick: () => {
-      c2.keywords.push({ text: "", caps: false });
-      drawKeywords();
-      kwBox.querySelector(".kw-row:last-child input")?.focus();
-    } }, "Add keyword"),
-    h("h4", "Description"),
-    h("textarea.cond-text", { rows: 18, value: c2.text, oninput: (e) => {
-      c2.text = e.target.value;
-      changed3();
-    } }),
-    h("div.hint", 'Format: a blank line starts a new paragraph. **bold**, *italic*. Start lines with "- " for a list, "> " for a variant/design box, "### " for a small heading, and "| a | b |" for table rows (the first row is the header).'),
-    h("h4", "Preview"),
-    preview
-  );
-  renderSide();
+  const magicCount = Math.max(0, Math.round(Number(settings3.magic) || 0));
+  if (magicCount) {
+    const crs = enemies.filter((x) => x.monster && x.monster.loot !== "none").map((x) => x.monster.challengeRating);
+    const maxCr = crs.reduce((a2, b2) => crValue(b2) > crValue(a2) ? b2 : a2, "0");
+    const top = rarityCap(level, maxCr);
+    const allowed = RARITIES.slice(0, RARITIES.indexOf(top) + 1);
+    const magic = items.filter((x) => x.category === "magic" && allowed.includes(x.rarity));
+    for (let n = 0; n < magicCount; n++) {
+      const rarity = pick3(r, allowed, (x) => C2.rarityWeights[x] * (gen > 1 ? gen ** RARITIES.indexOf(x) : 1));
+      const choices = [...magic.filter((x) => x.rarity === rarity), ...spells.length ? [{ scroll: true, rarity, consumable: true }] : []];
+      const it = pick3(r, choices, (x) => x.consumable ? C2.consumableWeight : 1);
+      if (!it) continue;
+      add2(lines, it.scroll ? spellScroll(r, rarity, spells) : magicLine(r, it, items));
+    }
+    notes.push(`Magic items up to ${top} (party level ${level}, strongest enemy CR ${maxCr}).`);
+  }
+  for (const x of harvest) {
+    x.value = roughly(x.total / x.qty);
+    delete x.total;
+  }
+  const worth = (kind) => round2(lines.filter((x) => kind === "magic" === (x.kind === "magic")).reduce((n, x) => n + x.qty * x.value, 0));
+  return { seed, coins, lines, harvest, totalGp: round2(coins / 100 + worth("other")), magicGp: worth("magic"), notes, partyLevel: level, generosity: gen };
 }
-var testText = "The target must succeed on a DC 13 Constitution saving throw or be poisoned for 1 minute, and is knocked prone. A Bloodied target gains the Bleeding (1d6) condition. It wields a Hidden Dagger and some burning oil.";
-function renderSide() {
-  const side = el4.querySelector("#cd-side");
-  const out = h("div.test-out");
-  const draw2 = () => {
-    out.innerHTML = condify(esc(testText)) || "&nbsp;";
-  };
-  draw2();
-  const c2 = store.conditions.find((x) => x.id === selectedId3);
-  const uses = c2 ? usage.get(c2.id) || [] : [];
-  fill(
-    side,
-    h("h3", "Try it"),
-    h("div.hint", "Type or paste stat block text. Linked words use the keywords as they are now; hover them to check."),
-    h("textarea", { rows: 5, value: testText, oninput: (e) => {
-      testText = e.target.value;
-      draw2();
-    } }),
-    out,
-    c2 ? h("h3.uses-head", c2.keywords.length ? `Found in ${uses.length} monster${uses.length === 1 ? "" : "s"}` : "Not linked (no keywords)") : null,
-    c2 && uses.length ? h(
-      "div.uses",
-      uses.slice(0, 60).map((u) => h(
-        "button.use-row",
-        { onclick: () => go2("library", u.monster.id), title: "Open in Creatures" },
-        h("strong", u.monster.name),
-        h("div.use-snip", { html: esc(u.snippet).replace(/\[\[(.+?)\]\]/, "<mark>$1</mark>") })
-      )),
-      uses.length > 60 ? h("div.hint", `\u2026and ${uses.length - 60} more.`) : null
-    ) : null
-  );
+function spellScroll(r, rarity, spells) {
+  const levels = SCROLL_LEVELS[rarity].filter((l) => spells.some((s2) => s2.level === l));
+  const lvl = levels[Math.floor(r() * levels.length)] ?? 1;
+  const list = spells.filter((s2) => s2.level === lvl);
+  const s = list[Math.floor(r() * list.length)];
+  return { kind: "magic", name: `Spell Scroll: ${s?.name || "unknown spell"} (${lvl ? `level ${lvl}` : "cantrip"})`, qty: 1, value: SCROLL_VALUE[lvl], rarity };
+}
+function magicLine(r, it, items) {
+  let value = RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1);
+  let name = it.name;
+  const options = it.base ? baseOptions(it.base, items) : [];
+  if (options.length) {
+    const b2 = options[Math.floor(r() * options.length)];
+    if (b2.category === "ammo") {
+      value = RARITY_VALUE[it.rarity] / 2;
+      name = `${/^\+\d Ammunition$/.test(name) ? `${name.split(" ")[0]} ${b2.name}` : `${name} (${b2.name})`}, 10 pieces`;
+    } else {
+      value += b2.price;
+      if (/^\+\d (Armor|Weapon)$/.test(name)) name = `${name.split(" ")[0]} ${b2.name}`;
+      else if (options.length > 1) name = `${name} (${b2.name})`;
+    }
+  }
+  return { kind: "magic", name, qty: 1, value: round2(value), rarity: it.rarity };
+}
+function baseOptions(text, items) {
+  const t = lc3(text);
+  const [want, except = ""] = t.split(/,?\s*except\s+/);
+  let list;
+  if (/ammunition/.test(want)) list = items.filter((x) => x.category === "ammo");
+  else if (/^shield$/.test(want.trim())) list = items.filter((x) => x.category === "shield");
+  else if (/\bany\b/.test(want)) {
+    const armorKinds = ["light", "medium", "heavy"].filter((k) => new RegExp(`\\b${k}\\b`).test(want));
+    const weaponKinds = ["simple", "martial"].filter((k) => want.includes(k));
+    if (armorKinds.length) list = items.filter((x) => x.category === "armor" && armorKinds.includes(x.armor));
+    else list = items.filter((x) => x.category === "weapon" && (!weaponKinds.length || weaponKinds.includes(x.weapon?.simple ? "simple" : "martial")) && (!/melee/.test(want) || !x.weapon?.ranged) && (!/ranged/.test(want) || x.weapon?.ranged));
+  } else {
+    const named = items.filter((x) => ["weapon", "armor", "shield"].includes(x.category) && new RegExp(`\\b${lc3(x.name)}\\b`).test(want));
+    list = named.filter((x) => !named.some((y) => y !== x && lc3(y.name).includes(lc3(x.name))));
+  }
+  return list.filter((x) => !except || !except.includes(lc3(x.name)));
+}
+function coinText(cp) {
+  const gp = Math.floor(cp / 100), sp = Math.floor(cp % 100 / 10), c2 = cp % 10;
+  return [gp ? `${gp.toLocaleString()} gp` : "", sp ? `${sp} sp` : "", c2 ? `${c2} cp` : ""].filter(Boolean).join(", ") || "none";
+}
+function priceText(gp) {
+  if (!gp) return "worthless";
+  if (gp >= 1) return `${Number(gp.toFixed(2)).toLocaleString()} gp`;
+  return coinText(Math.max(1, Math.round(gp * 100)));
 }
 
-// src/tabs/spells.js
+// src/loot-dialog.js
 init_ui();
 init_store();
-init_conditions();
-init_spells();
-var el5;
-var selectedId4 = null;
-var filter2 = { q: "", level: "", school: "", cls: "", concentration: false, ritual: false };
-var LEVELS = [["0", "Cantrip"], ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => [String(n), `Level ${n}`])];
-function mountSpells(root) {
-  el5 = root;
-  el5.append(
-    h("div.page-head", h("h1", "Spells"), h("div.page-sub", "The SRD 5.2.1 spells. Spell names in stat blocks link here: hover one to read it, click to pin it open.")),
-    h(
-      "div.lib-grid.spell-grid",
-      h(
-        "div.card.list-pane",
-        h(
-          "div.list-tools",
-          h("input.search#sp-q", { type: "search", placeholder: "Search spells", oninput: (e) => {
-            filter2.q = e.target.value;
-            renderList4();
-          } })
-        ),
-        h("div.lib-filters#sp-filters"),
-        h("div.list-count#sp-count"),
-        h("div.list#sp-list")
-      ),
-      h("div.card.spell-pane#sp-view")
-    )
-  );
-}
-function showSpells(id) {
-  if (id) {
-    selectedId4 = id;
-    Object.assign(filter2, { q: "", level: "", school: "", cls: "", concentration: false, ritual: false });
-    el5.querySelector("#sp-q").value = "";
-  }
-  renderFilters2();
-  renderList4();
-  renderSpell();
-  if (id) el5.querySelector("#sp-list .active")?.scrollIntoView({ block: "center" });
-}
-var uniq = (xs) => [...new Set(xs)].sort((a2, b2) => a2.localeCompare(b2));
-function renderFilters2() {
-  const changed3 = () => {
-    renderFilters2();
-    renderList4();
-  };
-  const sel = (label, key2, options) => h("label", label, h(
-    "select",
-    { onchange: (e) => {
-      filter2[key2] = e.target.value;
-      changed3();
-    } },
-    h("option", { value: "" }, "Any"),
-    options.map(([value, text]) => h("option", { value, selected: filter2[key2] === value }, text))
-  ));
-  const check = (label, key2) => h("label.check-row", h("input", { type: "checkbox", checked: filter2[key2], onchange: (e) => {
-    filter2[key2] = e.target.checked;
-    changed3();
-  } }), label);
-  const any = filter2.level || filter2.school || filter2.cls || filter2.concentration || filter2.ritual;
-  fill(
-    el5.querySelector("#sp-filters"),
-    sel("Level", "level", LEVELS),
-    sel("School", "school", uniq(store.spells.map((s) => s.school)).map((s) => [s, s])),
-    sel("Class", "cls", uniq(store.spells.flatMap((s) => s.classes)).map((c2) => [c2, c2])),
-    h("div.spell-checks", check("Concentration", "concentration"), check("Ritual", "ritual")),
-    any ? h("button.link.wide", { onclick: () => {
-      Object.assign(filter2, { level: "", school: "", cls: "", concentration: false, ritual: false });
-      changed3();
-    } }, "Clear filters") : null
-  );
-}
-function matches2(s) {
-  const q = filter2.q.trim().toLowerCase();
-  if (q && !s.name.toLowerCase().includes(q)) return false;
-  if (filter2.level && String(s.level) !== filter2.level) return false;
-  if (filter2.school && s.school !== filter2.school) return false;
-  if (filter2.cls && !s.classes.includes(filter2.cls)) return false;
-  if (filter2.concentration && !s.concentration) return false;
-  if (filter2.ritual && !s.ritual) return false;
-  return true;
-}
-function renderList4() {
-  const list = store.spells.filter(matches2);
-  el5.querySelector("#sp-count").textContent = `${list.length} spell${list.length === 1 ? "" : "s"}`;
-  fill(el5.querySelector("#sp-list"), ...list.length ? list.map((s) => h(
-    "button.list-row" + (s.id === selectedId4 ? ".active" : ""),
-    { onclick: () => {
-      selectedId4 = s.id;
-      renderList4();
-      renderSpell();
-    } },
-    h(
-      "div.list-main",
-      h("div.list-name", s.name, spellTags(s).map((t) => h("span.tag", { title: t }, t === "Concentration" ? "C" : "R"))),
-      h("div.list-sub", spellLevelText(s).replace(/ \(.*\)$/, ""))
-    )
-  )) : [h("div.empty", "No spells match.")]);
-}
-function renderSpell() {
-  const pane = el5.querySelector("#sp-view");
-  const s = spellById(selectedId4);
-  if (!s) {
-    fill(pane, h("div.empty", `Pick a spell from the list. ${store.spells.length} spells from the SRD 5.2.1.`));
-    return;
-  }
-  fill(
-    pane,
-    h("div.cond-ref-body.spell-card", { html: spellHtml(s, { body: (t) => glossify(condify(markupHtml(t))) }) + (spellTags(s).length ? `<div class="spell-tags">${spellTags(s).join(" \xB7 ")}</div>` : "") }),
-    s.creature ? h("div.spell-creature", statBlock(s.creature, { description: false })) : null
-  );
-}
-
-// src/app.js
-init_spells();
-
-// src/tabs/builder.js
-init_ui();
-init_store();
-init_rules();
-init_constants();
-
-// src/tabs/generator.js
-init_ui();
-init_store();
-init_rules();
-init_constants();
 
 // src/encounters.js
 init_ui();
@@ -63949,25 +64046,25 @@ var fmtDate = (t) => t ? new Date(t).toLocaleDateString(void 0, { month: "short"
 var fmtTime = (t) => t ? new Date(t).toLocaleTimeString(void 0, { hour: "numeric", minute: "2-digit" }) : "";
 function encounterTable(opts2) {
   const q = (opts2.query || "").toLowerCase();
-  const list = store.encounters.filter((e) => !q || e.name.toLowerCase().includes(q)).sort((a2, b2) => a2.name.localeCompare(b2.name, void 0, { numeric: true }));
+  const list = store.encounters.filter((e2) => !q || e2.name.toLowerCase().includes(q)).sort((a2, b2) => a2.name.localeCompare(b2.name, void 0, { numeric: true }));
   if (!list.length) return h("div.empty", store.encounters.length ? "No encounters match." : "No encounters yet. Click Create New to build one.");
   return h(
     "div.enc-table",
     h("div.enc-row.enc-headrow", h("div", "Name"), h("div", "Created"), h("div", "Rules"), h("div", "Difficulty"), h("div", "Party"), h("div", "Last saved"), h("div")),
-    list.map((e) => {
-      const r = evaluateEncounter(e);
+    list.map((e2) => {
+      const r = evaluateEncounter(e2);
       return h(
         "div.enc-row",
-        h("button.enc-name", { onclick: () => opts2.onOpen(e) }, e.name || "Untitled"),
-        h("div", fmtDate(e.created)),
-        h("div.muted", e.rules === "2024" ? "2024" : "2014"),
+        h("button.enc-name", { onclick: () => opts2.onOpen(e2) }, e2.name || "Untitled"),
+        h("div", fmtDate(e2.created)),
+        h("div.muted", e2.rules === "2024" ? "2024" : "2014"),
         h(`div.${difficultyClass(r.difficulty)}`, r.difficulty),
-        h("div", partyLabel(encounterLevels(e))),
-        h("div.when", fmtTime(e.updated), h("br"), fmtDate(e.updated)),
+        h("div", partyLabel(encounterLevels(e2))),
+        h("div.when", fmtTime(e2.updated), h("br"), fmtDate(e2.updated)),
         h(
           "div.enc-actions",
-          h("button.outline", { onclick: () => opts2.onRun(e) }, e.combat ? "Resume" : "Run"),
-          opts2.menu ? h("button.icon-btn.kebab", { title: "More", onclick: (ev) => popMenu(ev.currentTarget, opts2.menu(e)) }, "\u22EE") : null
+          h("button.outline", { onclick: () => opts2.onRun(e2) }, e2.combat ? "Resume" : "Run"),
+          opts2.menu ? h("button.icon-btn.kebab", { title: "More", onclick: (ev) => popMenu(ev.currentTarget, opts2.menu(e2)) }, "\u22EE") : null
         )
       );
     })
@@ -64020,16 +64117,1305 @@ function popMenu(anchor, items) {
     } }, label))
   );
   document.body.append(menu);
-  setTimeout(() => document.addEventListener("mousedown", function off(e) {
-    if (!menu.contains(e.target)) {
+  setTimeout(() => document.addEventListener("mousedown", function off(e2) {
+    if (!menu.contains(e2.target)) {
       menu.remove();
       document.removeEventListener("mousedown", off);
     }
   }), 0);
 }
 
-// src/tabs/generator.js
+// src/loot-dialog.js
+var currentTables = () => lootTables(defaultLootThemes(), store.loot);
+function lootOf(m) {
+  const o = !m || isHomebrew(m) ? null : store.loot.find((r) => r.id === MONSTER_LOOT_ID)?.monsters?.[m.id];
+  return o ? { ...m, ...o } : m;
+}
+function setSrdLoot(m, key2, value) {
+  const rec = store.loot.find((r) => r.id === MONSTER_LOOT_ID) || { id: MONSTER_LOOT_ID, monsters: {} };
+  const entry = rec.monsters[m.id] || {};
+  if (!value || value === "auto") delete entry[key2];
+  else entry[key2] = value;
+  if (Object.keys(entry).length) rec.monsters[m.id] = entry;
+  else delete rec.monsters[m.id];
+  save("loot", rec);
+}
+var LOOT_DEFAULTS = { generosity: 1 };
+function lootSettings() {
+  try {
+    return { ...LOOT_DEFAULTS, ...JSON.parse(localStorage.getItem("lootSettings") || "{}") };
+  } catch {
+    return { ...LOOT_DEFAULTS };
+  }
+}
+function setLootSettings(s) {
+  try {
+    localStorage.setItem("lootSettings", JSON.stringify(s));
+  } catch {
+  }
+}
+function encounterEnemies(enc2) {
+  const by = /* @__PURE__ */ new Map();
+  const add2 = (id, n) => {
+    const m = lootOf(findMonster(id));
+    if (m) by.set(id, { monster: m, count: (by.get(id)?.count || 0) + n });
+  };
+  if (enc2.combat?.combatants?.length) {
+    for (const c2 of enc2.combat.combatants) if (c2.kind === "monster" && c2.refId) add2(c2.refId, isGroup(c2) ? c2.members.length : 1);
+  } else for (const g of enc2.groups || []) add2(g.monsterId, g.count);
+  return [...by.values()];
+}
+function encounterLevel(enc2) {
+  const p = encounterParty(enc2);
+  return p.length ? Math.round(p.reduce((n, x) => n + x.level, 0) / p.length) : null;
+}
+function lootDialog(enc2) {
+  const enemies = encounterEnemies(enc2).map((x) => ({ ...x, on: true }));
+  const tables = currentTables();
+  const st = { generosity: lootSettings().generosity, magic: false, magicCount: 1, level: encounterLevel(enc2) ?? 1, seed: newSeed() };
+  const out = h("div.loot-out");
+  const draw2 = () => {
+    const res = generateLoot({
+      enemies: enemies.filter((x) => x.on),
+      partyLevel: st.level,
+      items: store.items,
+      spells: store.spells,
+      tables,
+      settings: { generosity: st.generosity, magic: st.magic ? st.magicCount : 0 },
+      seed: st.seed
+    });
+    const line = (x) => h(
+      "li",
+      x.qty > 1 ? h("span.loot-qty", `${x.qty} \xD7`) : null,
+      ` ${x.name} `,
+      h("span.muted", x.scrap ? `scrap ${priceText(x.value)}` : x.qty > 1 ? `${priceText(x.value)} each` : priceText(x.value)),
+      x.rarity ? h("span.tag", x.rarity.toUpperCase()) : null
+    );
+    const gear = res.lines.filter((x) => x.kind !== "magic"), magic = res.lines.filter((x) => x.kind === "magic");
+    fill(
+      out,
+      h("div.loot-coins", h("span.loot-label", "Coins"), coinText(res.coins)),
+      h("h4", "Items"),
+      gear.length ? h("ul.loot-list", gear.map(line)) : h("p.muted", "Nothing worth taking."),
+      st.magic ? [h("h4", "Magic items"), magic.length ? h("ul.loot-list", magic.map(line)) : h("p.muted", "No magic item could be chosen.")] : null,
+      res.harvest.length ? [
+        h("h4", "Harvestable"),
+        h("p.hint", "Not picked up with the rest: the party has to take the time to harvest these."),
+        h("ul.loot-list", res.harvest.map((x) => h(
+          "li",
+          x.qty > 1 ? h("span.loot-qty", `${x.qty} \xD7`) : null,
+          ` ${x.name} `,
+          h("span.muted", `~${priceText(x.value)}${x.qty > 1 ? " each" : ""} \xB7 ${x.from.join(", ")}`)
+        )))
+      ] : null,
+      h("p.loot-total", `Worth about ${priceText(Math.round(res.totalGp) || res.totalGp)} in coins and items`, res.magicGp ? `, plus ${priceText(res.magicGp)} in magic items` : "", "."),
+      res.notes.map((n) => h("p.hint", n))
+    );
+  };
+  const again = () => {
+    st.seed = newSeed();
+    draw2();
+  };
+  const gLabel = h("strong.loot-gen-label");
+  const showGen = () => {
+    gLabel.textContent = `${generosityName(st.generosity)} (${Number(st.generosity.toFixed(2))}\xD7)`;
+  };
+  const slider = h("input.loot-slider", {
+    type: "range",
+    min: GENEROSITY.min,
+    max: GENEROSITY.max,
+    step: 0.05,
+    value: st.generosity,
+    oninput: (e2) => {
+      st.generosity = Number(e2.target.value);
+      showGen();
+      draw2();
+    }
+  });
+  const stops = h("div.loot-stops", GENEROSITY.stops.map(([g, name]) => h("button.link", { onclick: () => {
+    st.generosity = g;
+    slider.value = g;
+    showGen();
+    draw2();
+  } }, name)));
+  showGen();
+  const count = h("input.loot-count", {
+    type: "number",
+    min: 1,
+    max: 10,
+    value: st.magicCount,
+    disabled: !st.magic,
+    oninput: (e2) => {
+      st.magicCount = Math.min(10, Math.max(1, Number(e2.target.value) || 1));
+      draw2();
+    }
+  });
+  const who = h("div.loot-enemies", enemies.length ? enemies.map((x) => {
+    const t = themeFor(x.monster, tables).theme;
+    const none = x.monster.loot === "none";
+    return h(
+      "label.check-row",
+      { title: none ? "Set to carry no loot in Creatures" : `Loot theme: ${t?.name || "none"} (${LOOT_LEVELS[t?.loot]?.label || "no loot"})` },
+      h("input", { type: "checkbox", checked: x.on, disabled: none, onchange: (e2) => {
+        x.on = e2.target.checked;
+        draw2();
+      } }),
+      `${x.count} \xD7 ${x.monster.name}`,
+      h("span.muted", none ? " (no loot)" : ` \xB7 ${t?.name || "no theme"}`)
+    );
+  }) : h("p.muted", "This encounter has no monsters from Creatures."));
+  const body2 = h(
+    "div.loot-dialog",
+    h(
+      "div.loot-controls",
+      h("div", h("div.loot-row", h("span", "Generosity"), gLabel), slider, stops),
+      h(
+        "div.form-grid",
+        h("label", "Party level", h("input", { type: "number", min: 1, max: 20, value: st.level, oninput: (e2) => {
+          st.level = Math.min(20, Math.max(1, Number(e2.target.value) || 1));
+          draw2();
+        } })),
+        h(
+          "div",
+          h("label.check-row", h("input", { type: "checkbox", checked: st.magic, onchange: (e2) => {
+            st.magic = e2.target.checked;
+            count.disabled = !st.magic;
+            draw2();
+          } }), "Magic items found"),
+          h("div.loot-row", h("span.muted", "How many"), count)
+        )
+      ),
+      h("details", h("summary", `From ${enemies.reduce((n, x) => n + x.count, 0)} enemies`), who)
+    ),
+    out
+  );
+  draw2();
+  modal(`Loot: ${enc2.name}`, body2, [["Close", () => {
+  }], ["Regenerate", () => {
+    again();
+    return false;
+  }, "primary"]]);
+  body2.closest(".modal")?.classList.add("wide");
+}
+
+// src/tabs/loot-tables.js
+init_format();
+var el3;
+var openMonster;
+var selectedId2 = null;
+var query = "";
+var sampleCr = "1";
+var sampleSeed = "sample";
+var TYPE_ROW = "types";
+function mountLootTables(root, onOpenMonster) {
+  el3 = root;
+  openMonster = onOpenMonster;
+  el3.append(
+    h(
+      "div.lib-grid.cond-grid",
+      h(
+        "div.card.list-pane",
+        h(
+          "div.list-tools",
+          h("input.search", { type: "search", placeholder: "Search themes or keywords", oninput: (e2) => {
+            query = e2.target.value;
+            renderList2();
+          } }),
+          h("button.primary", { onclick: addTheme }, "New")
+        ),
+        h("div.list#lt-list"),
+        h("div#lt-restore")
+      ),
+      h("div.card.edit-pane#lt-edit"),
+      h("div.card.preview-pane#lt-side")
+    )
+  );
+  onChange((kind) => {
+    if (!el3.hidden && (kind === "all" || kind === "loot")) renderList2();
+  });
+}
+function showLootTables() {
+  renderList2();
+  renderEdit2();
+}
+var defaults = () => new Map(defaultLootThemes().map((t) => [t.id, t]));
+var record = (id) => store.loot.find((x) => x.id === id);
+var FIELDS = ["name", "loot", "keywords", "onlyTypes", "items", "harvest"];
+var edited = (t) => {
+  const d = defaults().get(t.id);
+  return !!d && !!record(t.id) && FIELDS.some((k) => JSON.stringify(d[k]) !== JSON.stringify(t[k]));
+};
+function usage(tables) {
+  const by = /* @__PURE__ */ new Map();
+  for (const m of allMonsters()) {
+    const { theme, why } = themeFor(lootOf(m), tables);
+    if (theme) (by.get(theme.id) || by.set(theme.id, []).get(theme.id)).push({ monster: m, why });
+  }
+  return by;
+}
+function renderList2() {
+  const tables = currentTables(), used = usage(tables);
+  const q = query.trim().toLowerCase();
+  const list = tables.themes.filter((t) => !q || t.name.toLowerCase().includes(q) || t.keywords.some((k) => k.toLowerCase().includes(q))).sort((a2, b2) => a2.name.localeCompare(b2.name));
+  fill(
+    el3.querySelector("#lt-list"),
+    h(
+      "button.list-row" + (selectedId2 === TYPE_ROW ? ".active" : ""),
+      { onclick: () => select(TYPE_ROW) },
+      h("div.list-main", h("div.list-name", "Creature types"), h("div.list-sub", "The theme each type uses when no keyword matches"))
+    ),
+    list.map((t) => {
+      const n = used.get(t.id)?.length || 0;
+      return h(
+        "button.list-row" + (t.id === selectedId2 ? ".active" : ""),
+        { onclick: () => select(t.id) },
+        h(
+          "div.list-main",
+          h("div.list-name", t.name, edited(t) ? h("span.tag", "EDITED") : null, !t.builtin ? h("span.tag", "CUSTOM") : null),
+          h("div.list-sub", `${LOOT_LEVELS[t.loot]?.label || "?"} \xB7 ${t.items.length} items \xB7 ${t.harvest.length} harvestables \xB7 ${n} monster${n === 1 ? "" : "s"}`)
+        )
+      );
+    })
+  );
+  const gone = store.loot.filter((r) => r.deleted && defaults().has(r.id));
+  fill(el3.querySelector("#lt-restore"), gone.length ? h(
+    "button.link",
+    { onclick: async () => {
+      for (const r of gone) await remove("loot", r);
+      showLootTables();
+    } },
+    `Restore ${gone.length} deleted original${gone.length === 1 ? "" : "s"}`
+  ) : null);
+}
+function select(id) {
+  selectedId2 = id;
+  renderList2();
+  renderEdit2();
+}
+function addTheme() {
+  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
+  const t = { id: newId("loot-theme"), name: "New theme", loot: "full", keywords: [], onlyTypes: [], items: [], harvest: [] };
+  save("loot", t, { delay: 0 });
+  select(t.id);
+  el3.querySelector("#lt-edit input")?.select();
+}
+function renderEdit2() {
+  const pane = el3.querySelector("#lt-edit");
+  if (selectedId2 === TYPE_ROW) {
+    typeEditor(pane);
+    return renderSide();
+  }
+  const shown3 = currentTables().themes.find((t2) => t2.id === selectedId2);
+  if (!shown3) {
+    fill(pane, h(
+      "div.cond-ref-body",
+      h("div.cond-name", "Loot tables"),
+      h("p", "The loot generator (Run Encounter > Loot) uses these themes to decide what each enemy carries and what can be harvested from it."),
+      h("p", 'A creature uses the theme of the earliest keyword in its name ("Bandit Captain" > Bandit), or else the theme of its creature type (see ', h("strong", "Creature types"), "). A homebrew monster can also pick its theme in its own editor."),
+      h("p", "Coins and gear come from the creature\u2019s CR and the party\u2019s level; a theme says how much of them it carries, which pocket items it has, and what its body yields.")
+    ));
+    return renderSide();
+  }
+  const t = record(shown3.id) || structuredClone(shown3);
+  const changed3 = () => {
+    save("loot", t);
+    refresh();
+  };
+  const refresh = debounce(() => {
+    renderList2();
+    renderSide();
+  }, 300);
+  const original = defaults().get(t.id);
+  const entries = (key2, title, help) => {
+    const box = h("div.loot-entries");
+    const draw2 = () => fill(
+      box,
+      t[key2].length ? h("div.loot-entry.head", h("span", "Name"), h("span", "Value (gp)"), h("span", "How often"), h("span", "Quantity"), h("span")) : null,
+      t[key2].map((x, i) => h(
+        "div.loot-entry",
+        h("input", { type: "text", value: x.name, placeholder: "Name", oninput: (e2) => {
+          x.name = e2.target.value;
+          changed3();
+        } }),
+        h("input", { type: "number", min: 0, step: "any", value: x.value ?? 0, title: "Value in gp each: 0.1 = 1 sp, 0.01 = 1 cp", oninput: (e2) => {
+          x.value = Math.max(0, Number(e2.target.value) || 0);
+          changed3();
+        } }),
+        h("input", { type: "number", min: 0, step: 0.1, value: x.weight ?? 1, title: "How often it comes up, compared with the others: 2 = twice as often as 1", oninput: (e2) => {
+          x.weight = Math.max(0, Number(e2.target.value) || 0);
+          changed3();
+        } }),
+        h("input", { type: "text", value: x.qty || "", placeholder: "1", title: "How many: a number or dice, e.g. 1d4", onchange: (e2) => {
+          x.qty = e2.target.value.trim();
+          changed3();
+        } }),
+        h("button.icon-btn", { title: "Remove", onclick: () => {
+          t[key2].splice(i, 1);
+          draw2();
+          changed3();
+        } }, "\xD7")
+      )),
+      !t[key2].length ? h("div.hint", "None.") : null
+    );
+    draw2();
+    return [
+      h("h4", title),
+      h("div.hint", help),
+      box,
+      h("button", { onclick: () => {
+        t[key2].push({ name: "", value: 1, weight: 1, qty: "" });
+        draw2();
+        box.querySelector(".loot-entry:last-child input")?.focus();
+      } }, `Add ${title.toLowerCase().replace(/s$/, "")}`)
+    ];
+  };
+  fill(
+    pane,
+    h("div.edit-head", h("h2", t.name), h(
+      "div.row-gap",
+      original ? h("button", { title: "Undo your changes to this theme", disabled: !edited(t), onclick: () => confirmBox(`Put "${original.name}" back the way it came?`, "Reset", async () => {
+        await remove("loot", t);
+        showLootTables();
+      }) }, "Reset to original") : null,
+      h("button.danger", { onclick: () => confirmBox(`Delete "${t.name}"?${original ? " You can restore deleted originals from the list." : " The file goes to the Recycle Bin."}`, "Delete", async () => {
+        if (original) {
+          for (const k of Object.keys(t)) if (k !== "id") delete t[k];
+          t.deleted = true;
+          save("loot", t, { delay: 0 });
+        } else await remove("loot", t);
+        selectedId2 = null;
+        showLootTables();
+      }) }, "Delete")
+    )),
+    h(
+      "div.form-grid",
+      h("label", "Name", h("input", { type: "text", value: t.name, oninput: (e2) => {
+        t.name = e2.target.value;
+        pane.querySelector(".edit-head h2").textContent = t.name;
+        changed3();
+      } })),
+      h("label", { title: "Scales the coins, the chance of gear and the chance of pocket items" }, "How much loot", h(
+        "select",
+        { onchange: (e2) => {
+          t.loot = e2.target.value;
+          changed3();
+        } },
+        Object.entries(LOOT_LEVELS).map(([k, v]) => h("option", { value: k, selected: t.loot === k }, v.label))
+      ))
+    ),
+    h("h4", "Keywords"),
+    h("div.hint", 'Words in a creature\u2019s name that pick this theme, separated by commas. Whole words; a plural counts too. When a name has keywords of several themes, the one that comes first in the name wins ("Goblin Warrior" is a goblin).'),
+    h("input", { type: "text", value: t.keywords.join(", "), placeholder: "e.g. bandit, thug, brigand", onchange: (e2) => {
+      t.keywords = parseList(e2.target.value);
+      e2.target.value = t.keywords.join(", ");
+      changed3();
+    } }),
+    h(
+      "details.edit-section",
+      { open: t.onlyTypes.length > 0 },
+      h("summary", `Keywords only for these creature types (${t.onlyTypes.length ? t.onlyTypes.join(", ") : "any"})`),
+      h("div.hint", 'Tick types to stop a keyword picking this theme for other creatures: "Fire" should find fire elementals, not Fire Giants. None ticked = any type.'),
+      h("div.loot-types", TYPES.map((ty) => h("label.check-row", h("input", { type: "checkbox", checked: t.onlyTypes.includes(ty), onchange: (e2) => {
+        t.onlyTypes = e2.target.checked ? [...t.onlyTypes, ty] : t.onlyTypes.filter((x) => x !== ty);
+        changed3();
+        e2.target.closest("details").querySelector("summary").textContent = `Keywords only for these creature types (${t.onlyTypes.length ? t.onlyTypes.join(", ") : "any"})`;
+      } }), ty)))
+    ),
+    entries("items", "Pocket items", "Ordinary things a creature of this theme carries, rolled alongside its coins and gear. Value is in gp each (0.1 = 1 sp)."),
+    entries("harvest", "Harvestables", "What the party can take from the body. Values are for a CR 1 creature and grow with CR. Listed apart from the loot. In a name, {breath} becomes the damage type of the creature\u2019s breath weapon.")
+  );
+  renderSide();
+}
+function typeEditor(pane) {
+  const themes = currentTables().themes.sort((a2, b2) => a2.name.localeCompare(b2.name));
+  const rec = record(TYPE_MAP_ID) || { id: TYPE_MAP_ID, types: {} };
+  const map = { ...DEFAULT_TYPE_THEMES, ...rec.types };
+  const changed3 = Object.keys(rec.types).some((k) => rec.types[k] !== DEFAULT_TYPE_THEMES[k]);
+  fill(
+    pane,
+    h("div.edit-head", h("h2", "Creature types"), h("button", { disabled: !record(TYPE_MAP_ID), onclick: () => confirmBox("Put every creature type back on its original theme?", "Reset", async () => {
+      await remove("loot", record(TYPE_MAP_ID));
+      showLootTables();
+    }) }, "Reset to original")),
+    h("p.muted", "The theme a creature uses when no keyword in its name picks one."),
+    h("div.form-grid", TYPES.map((ty) => h("label", ty, h(
+      "select",
+      { onchange: (e2) => {
+        rec.types[ty] = e2.target.value;
+        save("loot", rec);
+        renderSide();
+        renderList2();
+      } },
+      !themes.some((t) => t.id === map[ty]) ? h("option", { value: "", selected: true }, "(none: no loot)") : null,
+      themes.map((t) => h("option", { value: t.id, selected: map[ty] === t.id }, t.name))
+    )))),
+    changed3 ? null : h("div.hint", "All types are on their original themes.")
+  );
+}
+function renderSide() {
+  const side = el3.querySelector("#lt-side");
+  if (!side) return;
+  const tables = currentTables();
+  const t = tables.themes.find((x) => x.id === selectedId2);
+  if (!t) return fill(side, h("h3", "Loot tables"), h("p.muted", selectedId2 === TYPE_ROW ? "Pick a theme on the left to see which monsters use it." : "Pick a theme to see which monsters use it and roll a sample."));
+  const users = usage(tables).get(t.id) || [];
+  const out = h("div.loot-sample");
+  const sample = () => {
+    const m = { name: t.name, monsterType: t.onlyTypes[0] || "Humanoid", challengeRating: sampleCr, lootTheme: t.id };
+    const level = Math.min(20, Math.max(1, Math.round(Number(sampleCr.includes("/") ? 1 : sampleCr) || 1)));
+    const res = generateLoot({ enemies: [{ monster: m, count: 5 }], partyLevel: level, items: store.items, spells: [], tables, settings: { generosity: 1 }, seed: sampleSeed });
+    fill(
+      out,
+      h("div.hint", `5 creatures of CR ${sampleCr}, party level ${level}, Standard generosity:`),
+      h("div", h("strong", "Coins: "), coinText(res.coins)),
+      res.lines.length ? h("ul.loot-list", res.lines.map((x) => h("li", `${x.qty > 1 ? `${x.qty} \xD7 ` : ""}${x.name} `, h("span.muted", priceText(x.value))))) : h("div.muted", "No items."),
+      res.harvest.length ? [h("strong", "Harvestable"), h("ul.loot-list", res.harvest.map((x) => h("li", `${x.qty > 1 ? `${x.qty} \xD7 ` : ""}${x.name} `, h("span.muted", `~${priceText(x.value)}`))))] : null
+    );
+  };
+  sample();
+  fill(
+    side,
+    h("h3", "Try it"),
+    h(
+      "div.row-gap",
+      h("label.inline", "CR", h("select", { onchange: (e2) => {
+        sampleCr = e2.target.value;
+        sample();
+      } }, CRS.map((c2) => h("option", { value: c2, selected: c2 === sampleCr }, c2)))),
+      h("button", { onclick: () => {
+        sampleSeed = Math.random().toString(36).slice(2, 8);
+        sample();
+      } }, "Roll again")
+    ),
+    out,
+    h("h3.uses-head", `Used by ${users.length} monster${users.length === 1 ? "" : "s"}`),
+    users.length ? h("div.uses", users.slice(0, 80).map((u) => h(
+      "button.use-row",
+      { onclick: () => openMonster(u.monster.id), title: "Open in Creatures" },
+      h("strong", u.monster.name),
+      h("div.use-snip", u.why)
+    ))) : h("div.hint", "No monster uses it yet: add a keyword, or pick it for a creature type."),
+    users.length > 80 ? h("div.hint", `\u2026and ${users.length - 80} more.`) : null
+  );
+}
+
+// src/tabs/library.js
+init_format();
+var el4;
+var selectedId3 = null;
+var shown = 150;
+var filtersOpen = false;
+var view = "monsters";
+try {
+  if (localStorage.getItem("creaturesView") === "loot") view = "loot";
+} catch {
+}
+var filter = emptyFilter();
+var SORTS = {
+  name: ["Name (A\u2013Z)", (a2, b2) => a2.name.localeCompare(b2.name)],
+  crUp: ["CR (low to high)", (a2, b2) => crValue(a2.challengeRating) - crValue(b2.challengeRating) || a2.name.localeCompare(b2.name)],
+  crDown: ["CR (high to low)", (a2, b2) => crValue(b2.challengeRating) - crValue(a2.challengeRating) || a2.name.localeCompare(b2.name)],
+  type: ["Type", (a2, b2) => (a2.monsterType || "").localeCompare(b2.monsterType || "") || a2.name.localeCompare(b2.name)],
+  size: ["Size", (a2, b2) => SIZES.indexOf(a2.size) - SIZES.indexOf(b2.size) || a2.name.localeCompare(b2.name)]
+};
+var sortKey = "name";
+function mountLibrary(root) {
+  el4 = root;
+  const lootBox = h("div#lb-loot");
+  el4.append(
+    h(
+      "div.page-head.view-head",
+      h("div", h("h1", "Creatures"), h("div.page-sub#lb-sub")),
+      h("div.view-switch", h("button#lb-view-monsters", { onclick: () => setView("monsters") }, "Monsters"), h("button#lb-view-loot", { onclick: () => setView("loot") }, "Loot tables"))
+    ),
+    lootBox,
+    h(
+      "div.lib-grid#lb-monsters",
+      h(
+        "div.card.list-pane",
+        h(
+          "div.list-tools",
+          h("input.search#lb-q", { type: "search", placeholder: "Search name, type or race", oninput: (e2) => {
+            filter.q = e2.target.value;
+            shown = 150;
+            renderList3();
+          } }),
+          h("button#lb-filter-btn", { onclick: () => {
+            filtersOpen = !filtersOpen;
+            renderFilters();
+          } }, "Filters"),
+          h("button", { title: "Check the spelling of all your monsters", onclick: () => spellingDialog(store.monsters, { title: "Spelling in your monsters", onOpen: (m) => showLibrary(m.id), onChanged: () => {
+            renderList3();
+            renderEdit3();
+          } }) }, "Spelling"),
+          h("button.primary", { onclick: newMonster }, "New")
+        ),
+        h("div.lib-filters#lb-filters", { hidden: true }),
+        h("div.list-count#lb-count"),
+        h("div.list#lb-list")
+      ),
+      h("div.card.edit-pane#lb-edit"),
+      h("div.card.preview-pane#lb-preview")
+    )
+  );
+  mountLootTables(lootBox, (id) => showLibrary(id));
+  onChange((kind) => {
+    if (kind === "all" || kind === "monsters") renderList3();
+  });
+  pasteToPicture(el4);
+}
+var SUBS = {
+  monsters: "Your monsters and the SRD 5.2.1 monsters. Click a monster to view it; your own monsters can be edited here and save automatically.",
+  loot: "What enemies carry and what can be harvested from them, for the loot generator (Run Encounter > Loot). Change a theme, add your own, or choose which theme each creature type uses."
+};
+function setView(v) {
+  view = v;
+  try {
+    localStorage.setItem("creaturesView", v);
+  } catch {
+  }
+  showLibrary();
+}
+function showLibrary(id) {
+  if (id) view = "monsters";
+  el4.querySelector("#lb-sub").textContent = SUBS[view];
+  el4.querySelector("#lb-view-monsters").classList.toggle("on", view === "monsters");
+  el4.querySelector("#lb-view-loot").classList.toggle("on", view === "loot");
+  el4.querySelector("#lb-monsters").hidden = view !== "monsters";
+  el4.querySelector("#lb-loot").hidden = view !== "loot";
+  if (view === "loot") return showLootTables();
+  if (id) {
+    selectedId3 = id;
+    Object.assign(filter, emptyFilter());
+    el4.querySelector("#lb-q").value = "";
+  }
+  renderFilters();
+  renderList3();
+  renderEdit3();
+}
+function newMonster() {
+  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
+  const m = { ...blankMonster(), id: newId("new-monster"), source: "Homebrew" };
+  save("monsters", m, { delay: 0 });
+  showLibrary(m.id);
+}
+function duplicate(m) {
+  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
+  const copy = { ...structuredClone(m), id: newId(m.name), source: "Homebrew", basedOn: m.source, name: `${m.name}` };
+  delete copy.created;
+  save("monsters", copy, { delay: 0 });
+  showLibrary(copy.id);
+}
+function renderFilters() {
+  const box = el4.querySelector("#lb-filters");
+  const n = activeFilters(filter);
+  el4.querySelector("#lb-filter-btn").textContent = n ? `Filters (${n})` : "Filters";
+  el4.querySelector("#lb-filter-btn").classList.toggle("on", filtersOpen || n > 0);
+  box.hidden = !filtersOpen;
+  if (!filtersOpen) return;
+  const changed3 = () => {
+    shown = 150;
+    renderFilters();
+    renderList3();
+  };
+  const sel = (label, key2, options) => h("label", label, h(
+    "select",
+    { onchange: (e2) => {
+      filter[key2] = e2.target.value;
+      changed3();
+    } },
+    h("option", { value: "" }, "Any"),
+    options.map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => h("option", { value: o.value, selected: filter[key2] === o.value }, o.label))
+  ));
+  const cr = (key2) => h("select", { onchange: (e2) => {
+    filter[key2] = e2.target.value;
+    changed3();
+  } }, CR_ORDER.map((c2) => h("option", { value: c2, selected: filter[key2] === c2 }, c2)));
+  fill(
+    box,
+    sel("Type", "type", TYPES),
+    sel("Race", "race", raceOptions()),
+    sel("Size", "size", SIZES.slice(0, 6)),
+    sel("Source", "source", [{ value: "homebrew", label: "My monsters" }, { value: "srd", label: "SRD 5.2.1" }]),
+    h("label.wide", "Challenge rating", h("div.cr-range", cr("crMin"), h("span", "to"), cr("crMax"))),
+    h("label.wide", "Sort by", h("select", { onchange: (e2) => {
+      sortKey = e2.target.value;
+      renderList3();
+    } }, Object.entries(SORTS).map(([k, [label]]) => h("option", { value: k, selected: sortKey === k }, label)))),
+    n ? h("button.link.wide", { onclick: () => {
+      Object.assign(filter, emptyFilter(), { q: filter.q });
+      changed3();
+    } }, "Clear filters") : null
+  );
+}
+function renderList3() {
+  const list = allMonsters().filter((m) => matches(m, filter)).sort(SORTS[sortKey][1]);
+  el4.querySelector("#lb-count").textContent = `${list.length} monster${list.length === 1 ? "" : "s"}${activeFilters(filter) || filter.q ? " match" : ""}`;
+  const rows = list.slice(0, shown).map((m) => h(
+    "button.list-row" + (m.id === selectedId3 ? ".active" : ""),
+    { onclick: () => {
+      selectedId3 = m.id;
+      renderList3();
+      renderEdit3();
+    } },
+    avatar(m.avatar, m.name, "sm"),
+    h("div.list-main", h("div.list-name", m.name, isHomebrew(m) ? null : h("span.tag", "SRD")), h("div.list-sub", `CR ${m.challengeRating} \xB7 ${m.size} ${(m.monsterType || "").toLowerCase()}`))
+  ));
+  if (list.length > shown) rows.push(h("button.load-more", { onclick: () => {
+    shown += 150;
+    renderList3();
+  } }, `Show more (${list.length - shown})`));
+  fill(el4.querySelector("#lb-list"), ...rows.length ? rows : [h("div.empty", "No monsters match.")]);
+}
+var refreshPreview = debounce((m) => fill(el4.querySelector("#lb-preview"), statBlock(m)), 150);
+function renderEdit3() {
+  const pane = el4.querySelector("#lb-edit"), preview = el4.querySelector("#lb-preview");
+  const m = findMonster(selectedId3);
+  if (!m) {
+    fill(pane, h("div.empty", "Select a monster, or click New. Monsters you make in the Monster Maker land here too."));
+    preview.replaceChildren();
+    return;
+  }
+  fill(preview, statBlock(m));
+  if (!isHomebrew(m)) {
+    fill(
+      pane,
+      h("div.edit-head", h("h2", m.name), h("button.primary", { onclick: () => duplicate(m) }, "Copy to my monsters")),
+      h("p.muted", "SRD monsters are read-only. Copy one to your monsters to change it (for example to reskin or retune it)."),
+      h("p.muted", `Fighting preference (guessed from the stat block): ${STYLES[guessStyle(m)]}. The encounter generator uses it.`),
+      h("div.form-grid", lootFields(lootOf(m), (key2, value) => {
+        setSrdLoot(m, key2, value);
+        renderEdit3();
+      })),
+      h("p.hint", "Loot settings work on SRD monsters too: they are kept in your library, not in the monster."),
+      h("div.pic", avatar(m.avatar, m.name, "lg"))
+    );
+    return;
+  }
+  fill(pane, editor(m));
+}
+function editor(m) {
+  const changed3 = () => {
+    save("monsters", m);
+    refreshPreview(m);
+  };
+  const text = (label, get, set2, attrs = {}) => h("label", label, h("input", { type: "text", value: get(), ...attrs, oninput: (e2) => {
+    set2(e2.target.value);
+    changed3();
+  } }));
+  const num2 = (label, k) => h("label", label, h("input", { type: "number", value: m[k] ?? "", oninput: (e2) => {
+    m[k] = Number(e2.target.value) || 0;
+    changed3();
+  } }));
+  const select2 = (label, k, options) => h("label", label, h(
+    "select",
+    { onchange: (e2) => {
+      m[k] = e2.target.value;
+      changed3();
+    } },
+    [.../* @__PURE__ */ new Set([m[k], ...options])].filter((o) => o != null).map((o) => h("option", { value: o, selected: o === m[k] }, o))
+  ));
+  const parsed = (label, get, parse, hint) => h("label", label, h("input", { type: "text", value: get(m), placeholder: hint, onchange: (e2) => {
+    parse(e2.target.value);
+    e2.target.value = get(m);
+    changed3();
+  } }));
+  const section = (title, key2) => {
+    m[key2] ??= [];
+    const box = h("div.entries");
+    const draw2 = () => fill(box, ...m[key2].map((entry, i) => h(
+      "div.entry",
+      h(
+        "div.entry-top",
+        h("input", { type: "text", value: entry.name, placeholder: "Name", oninput: (e2) => {
+          entry.name = e2.target.value;
+          changed3();
+        } }),
+        h("button.icon-btn", { title: "Move up", disabled: i === 0, onclick: () => {
+          m[key2].splice(i - 1, 0, m[key2].splice(i, 1)[0]);
+          draw2();
+          changed3();
+        } }, "\u2191"),
+        h("button.icon-btn", { title: "Remove", onclick: () => {
+          m[key2].splice(i, 1);
+          draw2();
+          changed3();
+        } }, "\xD7")
+      ),
+      h("textarea", { rows: 3, value: entry.text, placeholder: 'Text. Dice like 2d6 + 3 and "+5 to hit" become clickable rolls.', oninput: (e2) => {
+        entry.text = e2.target.value;
+        changed3();
+      } }),
+      // spell slots or a pool of charges, shown as boxes to tick off
+      h("label.inline.entry-boxes", "Check boxes", h("input", {
+        type: "text",
+        value: slotsText(entry.slots),
+        placeholder: "e.g. Level 1: 4, Level 2: 3   or   17",
+        onchange: (e2) => {
+          const slots = parseSlotsText(e2.target.value);
+          if (slots.length) entry.slots = slots;
+          else delete entry.slots;
+          e2.target.value = slotsText(entry.slots);
+          changed3();
+        }
+      }))
+    )));
+    draw2();
+    return h(
+      "details.edit-section",
+      { open: m[key2].length > 0 },
+      h("summary", `${title} (${m[key2].length})`),
+      box,
+      h("button", { onclick: () => {
+        m[key2].push({ name: "", text: "" });
+        draw2();
+        changed3();
+        box.lastChild?.querySelector("input")?.focus();
+      } }, `Add ${title.replace(/s$/, "").toLowerCase()}`)
+    );
+  };
+  const json = h("textarea.json", { rows: 14, spellcheck: false });
+  const jsonStatus = h("div.status", { hidden: true });
+  return h(
+    "div.editor",
+    h("div.edit-head", h("h2", m.name), h(
+      "div.row-gap",
+      h("button", { title: "List the words in this monster the dictionary doesn\u2019t know", onclick: () => spellingDialog([m], { title: `Spelling: ${m.name}`, onChanged: () => {
+        renderList3();
+        renderEdit3();
+      } }) }, "Check spelling"),
+      h("button", { onclick: () => duplicate(m) }, "Duplicate"),
+      h("button.danger", { onclick: () => confirmBox(`Delete ${m.name}? The file goes to the Recycle Bin.`, "Delete", async () => {
+        await remove("monsters", m);
+        selectedId3 = null;
+        renderEdit3();
+      }) }, "Delete")
+    )),
+    m.warnings?.length ? h("div.warn-box", h("ul.warnings", m.warnings.map((w) => h("li", w))), h("button.link", { onclick: (e2) => {
+      delete m.warnings;
+      changed3();
+      e2.target.parentElement.remove();
+    } }, "Dismiss reader notes")) : null,
+    pictureDrop({
+      src: m.avatar,
+      name: m.name,
+      chooseText: "Choose token art",
+      onImage: (url) => {
+        m.avatar = url;
+        changed3();
+        renderEdit3();
+        renderList3();
+      },
+      onRemove: () => {
+        delete m.avatar;
+        changed3();
+        renderEdit3();
+        renderList3();
+      }
+    }),
+    h(
+      "div.form-grid",
+      text("Name", () => m.name, (v) => {
+        m.name = v;
+        el4.querySelector(".edit-head h2").textContent = v;
+        renderList3();
+      }),
+      select2("Challenge rating", "challengeRating", CRS),
+      select2("Size", "size", SIZES),
+      select2("Type", "monsterType", TYPES),
+      text("Subtypes / tags", () => (m.subtypes || []).join(", "), (v) => {
+        m.subtypes = parseList(v);
+      }),
+      select2("Alignment", "alignment", ALIGNMENTS),
+      num2("Armor Class", "armorClass"),
+      text("Armor type", () => m.armorClassType || "", (v) => {
+        m.armorClassType = v;
+      }, { placeholder: "natural armor" }),
+      num2("Hit points (average)", "averageHitPoints"),
+      h("div.hp-dice", num2("Hit dice", "hitDiceCount"), select2("Die", "hitDieValue", ["d4", "d6", "d8", "d10", "d12", "d20"]), num2("Bonus", "hitPointsModifier")),
+      parsed("Speed", speedText, (v) => {
+        m.movement = parseSpeedText(v);
+      }, "30 ft., fly 60 ft. (hover)"),
+      text("Initiative bonus", () => String(m.initiativeBonus ?? ""), (v) => {
+        m.initiativeBonus = v;
+      }, { placeholder: "blank = DEX modifier" }),
+      // how it fights, for the encounter generator: blank = guessed from the stat block each time
+      h("label", { title: "Used by the fighting style setting of the encounter generator" }, "Fighting preference", h(
+        "select",
+        { onchange: (e2) => {
+          if (e2.target.value) m.fightingStyle = e2.target.value;
+          else delete m.fightingStyle;
+          changed3();
+        } },
+        h("option", { value: "", selected: !STYLES[m.fightingStyle] }, `Auto (guess: ${STYLES[guessStyle(m)]})`),
+        Object.entries(STYLES).map(([k, v]) => h("option", { value: k, selected: m.fightingStyle === k }, v))
+      )),
+      // the loot generator: whether it carries loot at all, and which theme (blank = keyword or creature type)
+      lootFields(m, (key2, value) => {
+        if (!value || value === "auto") delete m[key2];
+        else m[key2] = value;
+        changed3();
+      }),
+      // minions (a "Minion" trait) count this XP in the builder and the generator instead of their CR's
+      isMinion(m) ? h(
+        "label",
+        { title: "Minions are worth far less than their CR. Blank = a quarter of the XP for its CR." },
+        "Minion XP",
+        h("input", { type: "number", min: 0, value: m.minionXp ?? "", placeholder: `blank = ${Math.round(xpFor(m.challengeRating) / 4)}`, oninput: (e2) => {
+          if (e2.target.value === "") delete m.minionXp;
+          else m.minionXp = Math.max(0, Number(e2.target.value) || 0);
+          changed3();
+        } })
+      ) : null
+    ),
+    h("div.abil.abil-edit", ABILITIES.map((a2, i) => h("label", ABBR[i], h("input", { type: "number", value: m.abilities[a2] ?? 10, oninput: (e2) => {
+      m.abilities[a2] = Number(e2.target.value) || 0;
+      changed3();
+    } })))),
+    h(
+      "div.form-grid",
+      parsed("Saving throws", savesText, (v) => {
+        m.savingThrows = parseSavesText(v);
+      }, "Dex +5, Wis +3"),
+      parsed("Skills", skillsText, (v) => {
+        m.skills = parseSkillsText(v);
+      }, "Perception +4, Stealth +6"),
+      parsed("Damage vulnerabilities", (x) => listText(x.damageVulnerabilities), (v) => {
+        m.damageVulnerabilities = parseList(v);
+      }),
+      parsed("Damage resistances", (x) => listText(x.damageResistances), (v) => {
+        m.damageResistances = parseList(v);
+      }),
+      parsed("Damage immunities", (x) => listText(x.damageImmunities), (v) => {
+        m.damageImmunities = parseList(v);
+      }),
+      parsed("Condition immunities", (x) => listText(x.conditionImmunities), (v) => {
+        m.conditionImmunities = parseList(v);
+      }),
+      parsed("Senses", sensesText, (v) => {
+        m.senses = parseSensesText(v);
+      }, "darkvision 60 ft."),
+      num2("Passive Perception", "passivePerception"),
+      text("Languages", () => m.languagesNote || (m.languages || []).map((l) => `${l.name} ${l.note || ""}`.trim()).join(", "), (v) => {
+        m.languagesNote = v;
+        m.languages = [];
+      })
+    ),
+    section("Traits", "traits"),
+    section("Actions", "actions"),
+    section("Bonus Actions", "bonusActions"),
+    section("Reactions", "reactions"),
+    section("Legendary Actions", "legendaryActions"),
+    h(
+      "details.edit-section",
+      { ontoggle: (e2) => {
+        if (e2.target.open) json.value = JSON.stringify(m, (k, v) => k === "avatar" ? void 0 : v, 2);
+      } },
+      h("summary", "All data (JSON)"),
+      json,
+      h("button", { onclick: () => {
+        try {
+          const next2 = JSON.parse(json.value);
+          if (!next2?.name) throw new Error('The data needs at least a "name".');
+          Object.keys(m).forEach((k) => {
+            if (!["id", "source", "avatar", "created"].includes(k)) delete m[k];
+          });
+          Object.assign(m, next2, { id: m.id, source: "Homebrew" });
+          changed3();
+          renderEdit3();
+        } catch (e2) {
+          jsonStatus.hidden = false;
+          jsonStatus.className = "status error";
+          jsonStatus.textContent = `Could not apply: ${e2.message}`;
+        }
+      } }, "Apply JSON"),
+      jsonStatus
+    )
+  );
+}
+function lootFields(m, set2) {
+  return [
+    h("label", { title: "Used by Run Encounter > Loot. Every creature carries loot unless you set None here." }, "Carries loot", h(
+      "select",
+      { onchange: (e2) => set2("loot", e2.target.value) },
+      Object.entries(LOOT_SETTINGS).map(([k, v]) => h("option", { value: k, selected: (m.loot || "auto") === k }, v))
+    )),
+    h("label", { title: "What it carries and what can be harvested from it (Creatures > Loot tables)" }, "Loot theme", h(
+      "select",
+      { onchange: (e2) => set2("lootTheme", e2.target.value) },
+      h("option", { value: "", selected: !m.lootTheme }, `Auto (${lootGuess({ ...m, lootTheme: "" })})`),
+      currentTables().themes.sort((a2, b2) => a2.name.localeCompare(b2.name)).map((t) => h("option", { value: t.id, selected: m.lootTheme === t.id }, t.name))
+    ))
+  ];
+}
+function lootGuess(m) {
+  const { theme, why } = themeFor(m, currentTables());
+  return theme ? `${theme.name}, from ${why}` : "none";
+}
+
+// src/tabs/conditions.js
+init_ui();
+init_store();
+init_conditions_data();
+init_conditions();
+var el5;
+var go2;
+var selectedId4 = null;
+var usage2 = /* @__PURE__ */ new Map();
+var query2 = "";
+function mountConditions(root, navigate) {
+  el5 = root;
+  go2 = navigate;
+  el5.append(
+    h("div.page-head", h("h1", "Conditions"), h("div.page-sub", "The conditions stat blocks link to: the SRD 5.2.1 conditions, plus any you add (marked CUSTOM). Change a description, or the keywords a condition is found by; every monster picks up the change right away.")),
+    h(
+      "div.lib-grid.cond-grid",
+      h(
+        "div.card.list-pane",
+        h(
+          "div.list-tools",
+          h("input.search", { type: "search", placeholder: "Search conditions", oninput: (e2) => {
+            query2 = e2.target.value;
+            renderList4();
+          } }),
+          h("button.primary", { onclick: addCondition }, "New")
+        ),
+        h("div.list#cd-list"),
+        h("div#cd-restore")
+      ),
+      h("div.card.edit-pane#cd-edit"),
+      h("div.card.preview-pane#cd-side")
+    )
+  );
+  onChange((kind) => {
+    if (!el5.hidden && (kind === "all" || kind === "monsters")) {
+      countUsage();
+      renderList4();
+    }
+  });
+}
+function showConditions(id) {
+  if (id) selectedId4 = id;
+  countUsage();
+  renderList4();
+  renderEdit4();
+}
+var plain2 = (s) => String(s || "").replace(/<[^>]+>/g, "");
+function monsterTexts(m) {
+  return [
+    ...["traits", "actions", "bonusActions", "reactions", "legendaryActions", "mythicActions", "lairActions"].flatMap((k) => (m[k] || []).map((e2) => plain2(e2.text))),
+    (m.conditionImmunities || []).join(", ")
+  ];
+}
+function countUsage() {
+  usage2 = new Map(store.conditions.map((c2) => [c2.id, []]));
+  for (const m of allMonsters()) {
+    const seen2 = /* @__PURE__ */ new Map();
+    for (const t of monsterTexts(m)) for (const f of findKeywords(t)) if (!seen2.has(f.condition.id)) seen2.set(f.condition.id, `\u2026${t.slice(Math.max(0, f.index - 45), f.index)}[[${f.word}]]${t.slice(f.index + f.length, f.index + f.length + 45)}\u2026`);
+    for (const [id, snippet] of seen2) usage2.get(id)?.push({ monster: m, snippet });
+  }
+}
+var recount = debounce(() => {
+  countUsage();
+  renderList4();
+  renderSide2();
+}, 400);
+var defaults2 = () => new Map(defaultConditions().map((c2) => [c2.id, c2]));
+var edited2 = (c2) => {
+  const d = defaults2().get(c2.id);
+  return d && (d.name !== c2.name || d.text !== c2.text || JSON.stringify(d.keywords) !== JSON.stringify(c2.keywords));
+};
+function renderList4() {
+  const q = query2.trim().toLowerCase();
+  const list = [...store.conditions].filter((c2) => !q || c2.name.toLowerCase().includes(q) || c2.keywords.some((k) => k.text.toLowerCase().includes(q))).sort((a2, b2) => a2.name.localeCompare(b2.name));
+  fill(
+    el5.querySelector("#cd-list"),
+    h("button.list-row" + (selectedId4 === null ? ".active" : ""), { onclick: () => {
+      selectedId4 = null;
+      renderList4();
+      renderEdit4();
+    } }, h("div.list-main", h("div.list-name", "About conditions"))),
+    list.map((c2) => {
+      const n = usage2.get(c2.id)?.length || 0;
+      return h(
+        "button.list-row" + (c2.id === selectedId4 ? ".active" : ""),
+        { onclick: () => {
+          selectedId4 = c2.id;
+          renderList4();
+          renderEdit4();
+        } },
+        h(
+          "div.list-main",
+          h("div.list-name", c2.name, edited2(c2) ? h("span.tag", "EDITED") : null, !c2.builtin ? h("span.tag", "CUSTOM") : null),
+          h("div.list-sub", c2.keywords.length ? `${n ? `In ${n} monster${n === 1 ? "" : "s"}` : "Not found in any monster"} \xB7 ${c2.keywords.map((k) => k.text).join(", ")}` : "Reference only (no keywords)")
+        )
+      );
+    })
+  );
+  const have = new Set(store.conditions.map((c2) => c2.id));
+  const missing = defaultConditions().filter((c2) => !have.has(c2.id));
+  fill(el5.querySelector("#cd-restore"), missing.length ? h("button.link", { onclick: () => {
+    missing.forEach((c2) => save("conditions", c2, { delay: 0 }));
+    renderList4();
+  } }, `Restore ${missing.length} deleted original${missing.length === 1 ? "" : "s"}`) : null);
+}
+function addCondition() {
+  const c2 = { id: newId("condition"), name: "New Condition", keywords: [{ text: "New Condition", caps: false }], text: "Describe what the condition does.\n\n**Ending the Condition.** How it ends." };
+  save("conditions", c2, { delay: 0 });
+  selectedId4 = c2.id;
+  showConditions();
+  el5.querySelector("#cd-edit input")?.select();
+}
+function renderEdit4() {
+  const pane = el5.querySelector("#cd-edit");
+  const c2 = store.conditions.find((x) => x.id === selectedId4);
+  if (!c2) {
+    fill(pane, h("div.cond-ref-body", { html: `<div class="cond-name">Conditions</div>${markupHtml(CONDITIONS_INTRO_TEXT)}` }));
+    return renderSide2();
+  }
+  const changed3 = () => {
+    save("conditions", c2);
+    refreshPreview2();
+    recount();
+  };
+  const kwBox = h("div.kw-list");
+  const drawKeywords = () => fill(
+    kwBox,
+    c2.keywords.map((k, i) => h(
+      "div.kw-row",
+      h("input", { type: "text", value: k.text, placeholder: "word or phrase", oninput: (e2) => {
+        k.text = e2.target.value;
+        changed3();
+      } }),
+      h("label.check-row", h("input", { type: "checkbox", checked: k.caps, onchange: (e2) => {
+        k.caps = e2.target.checked;
+        changed3();
+      } }), "Capitalized only"),
+      h("button.icon-btn", { title: "Remove keyword", onclick: () => {
+        c2.keywords.splice(i, 1);
+        drawKeywords();
+        changed3();
+      } }, "\xD7")
+    )),
+    !c2.keywords.length ? h("div.hint", "No keywords: this condition is never linked in stat blocks, only listed here and in the runner.") : null
+  );
+  drawKeywords();
+  const preview = h("div.cond-ref-body.cond-preview");
+  const refreshPreview2 = () => {
+    preview.innerHTML = conditionHtml(c2);
+  };
+  refreshPreview2();
+  const original = defaults2().get(c2.id);
+  fill(
+    pane,
+    h("div.edit-head", h("h2", c2.name), h(
+      "div.row-gap",
+      original ? h("button", { title: "Undo your changes to this condition", onclick: () => {
+        if (!edited2(c2)) return modal("Reset to original", h("p", `"${c2.name}" is already the original.`));
+        confirmBox(`Put "${c2.name}" back the way it came (name, keywords and description)?`, "Reset", () => {
+          Object.assign(c2, structuredClone(original));
+          save("conditions", c2, { delay: 0 });
+          showConditions();
+        });
+      } }, "Reset to original") : null,
+      h("button.danger", { onclick: () => confirmBox(`Delete "${c2.name}"? The file goes to the Recycle Bin.${original ? " You can restore deleted originals from the list." : ""}`, "Delete", async () => {
+        await remove("conditions", c2);
+        selectedId4 = null;
+        showConditions();
+      }) }, "Delete")
+    )),
+    h(
+      "div.form-grid.one",
+      h("label", "Name", h("input", { type: "text", value: c2.name, oninput: (e2) => {
+        c2.name = e2.target.value;
+        el5.querySelector("#cd-edit .edit-head h2").textContent = c2.name;
+        changed3();
+        renderList4();
+      } }))
+    ),
+    h("h4", "Keywords and phrases"),
+    h("div.hint", 'Stat block text is searched for these (whole words). Tick "Capitalized only" for ordinary words, so "burning oil" stays plain but "gains Burning (1d10)" links. A capitalized-only word is also skipped at the start of a sentence and when it starts a name ("Hidden Dagger").'),
+    kwBox,
+    h("button", { onclick: () => {
+      c2.keywords.push({ text: "", caps: false });
+      drawKeywords();
+      kwBox.querySelector(".kw-row:last-child input")?.focus();
+    } }, "Add keyword"),
+    h("h4", "Description"),
+    h("textarea.cond-text", { rows: 18, value: c2.text, oninput: (e2) => {
+      c2.text = e2.target.value;
+      changed3();
+    } }),
+    h("div.hint", 'Format: a blank line starts a new paragraph. **bold**, *italic*. Start lines with "- " for a list, "> " for a variant/design box, "### " for a small heading, and "| a | b |" for table rows (the first row is the header).'),
+    h("h4", "Preview"),
+    preview
+  );
+  renderSide2();
+}
+var testText = "The target must succeed on a DC 13 Constitution saving throw or be poisoned for 1 minute, and is knocked prone. A Bloodied target gains the Bleeding (1d6) condition. It wields a Hidden Dagger and some burning oil.";
+function renderSide2() {
+  const side = el5.querySelector("#cd-side");
+  const out = h("div.test-out");
+  const draw2 = () => {
+    out.innerHTML = condify(esc(testText)) || "&nbsp;";
+  };
+  draw2();
+  const c2 = store.conditions.find((x) => x.id === selectedId4);
+  const uses = c2 ? usage2.get(c2.id) || [] : [];
+  fill(
+    side,
+    h("h3", "Try it"),
+    h("div.hint", "Type or paste stat block text. Linked words use the keywords as they are now; hover them to check."),
+    h("textarea", { rows: 5, value: testText, oninput: (e2) => {
+      testText = e2.target.value;
+      draw2();
+    } }),
+    out,
+    c2 ? h("h3.uses-head", c2.keywords.length ? `Found in ${uses.length} monster${uses.length === 1 ? "" : "s"}` : "Not linked (no keywords)") : null,
+    c2 && uses.length ? h(
+      "div.uses",
+      uses.slice(0, 60).map((u) => h(
+        "button.use-row",
+        { onclick: () => go2("library", u.monster.id), title: "Open in Creatures" },
+        h("strong", u.monster.name),
+        h("div.use-snip", { html: esc(u.snippet).replace(/\[\[(.+?)\]\]/, "<mark>$1</mark>") })
+      )),
+      uses.length > 60 ? h("div.hint", `\u2026and ${uses.length - 60} more.`) : null
+    ) : null
+  );
+}
+
+// src/tabs/spells.js
+init_ui();
+init_store();
+init_conditions();
+init_spells();
 var el6;
+var selectedId5 = null;
+var filter2 = { q: "", level: "", school: "", cls: "", concentration: false, ritual: false };
+var LEVELS = [["0", "Cantrip"], ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => [String(n), `Level ${n}`])];
+function mountSpells(root) {
+  el6 = root;
+  el6.append(
+    h("div.page-head", h("h1", "Spells"), h("div.page-sub", "The SRD 5.2.1 spells. Spell names in stat blocks link here: hover one to read it, click to pin it open.")),
+    h(
+      "div.lib-grid.spell-grid",
+      h(
+        "div.card.list-pane",
+        h(
+          "div.list-tools",
+          h("input.search#sp-q", { type: "search", placeholder: "Search spells", oninput: (e2) => {
+            filter2.q = e2.target.value;
+            renderList5();
+          } })
+        ),
+        h("div.lib-filters#sp-filters"),
+        h("div.list-count#sp-count"),
+        h("div.list#sp-list")
+      ),
+      h("div.card.spell-pane#sp-view")
+    )
+  );
+}
+function showSpells(id) {
+  if (id) {
+    selectedId5 = id;
+    Object.assign(filter2, { q: "", level: "", school: "", cls: "", concentration: false, ritual: false });
+    el6.querySelector("#sp-q").value = "";
+  }
+  renderFilters2();
+  renderList5();
+  renderSpell();
+  if (id) el6.querySelector("#sp-list .active")?.scrollIntoView({ block: "center" });
+}
+var uniq = (xs) => [...new Set(xs)].sort((a2, b2) => a2.localeCompare(b2));
+function renderFilters2() {
+  const changed3 = () => {
+    renderFilters2();
+    renderList5();
+  };
+  const sel = (label, key2, options) => h("label", label, h(
+    "select",
+    { onchange: (e2) => {
+      filter2[key2] = e2.target.value;
+      changed3();
+    } },
+    h("option", { value: "" }, "Any"),
+    options.map(([value, text]) => h("option", { value, selected: filter2[key2] === value }, text))
+  ));
+  const check = (label, key2) => h("label.check-row", h("input", { type: "checkbox", checked: filter2[key2], onchange: (e2) => {
+    filter2[key2] = e2.target.checked;
+    changed3();
+  } }), label);
+  const any = filter2.level || filter2.school || filter2.cls || filter2.concentration || filter2.ritual;
+  fill(
+    el6.querySelector("#sp-filters"),
+    sel("Level", "level", LEVELS),
+    sel("School", "school", uniq(store.spells.map((s) => s.school)).map((s) => [s, s])),
+    sel("Class", "cls", uniq(store.spells.flatMap((s) => s.classes)).map((c2) => [c2, c2])),
+    h("div.spell-checks", check("Concentration", "concentration"), check("Ritual", "ritual")),
+    any ? h("button.link.wide", { onclick: () => {
+      Object.assign(filter2, { level: "", school: "", cls: "", concentration: false, ritual: false });
+      changed3();
+    } }, "Clear filters") : null
+  );
+}
+function matches2(s) {
+  const q = filter2.q.trim().toLowerCase();
+  if (q && !s.name.toLowerCase().includes(q)) return false;
+  if (filter2.level && String(s.level) !== filter2.level) return false;
+  if (filter2.school && s.school !== filter2.school) return false;
+  if (filter2.cls && !s.classes.includes(filter2.cls)) return false;
+  if (filter2.concentration && !s.concentration) return false;
+  if (filter2.ritual && !s.ritual) return false;
+  return true;
+}
+function renderList5() {
+  const list = store.spells.filter(matches2);
+  el6.querySelector("#sp-count").textContent = `${list.length} spell${list.length === 1 ? "" : "s"}`;
+  fill(el6.querySelector("#sp-list"), ...list.length ? list.map((s) => h(
+    "button.list-row" + (s.id === selectedId5 ? ".active" : ""),
+    { onclick: () => {
+      selectedId5 = s.id;
+      renderList5();
+      renderSpell();
+    } },
+    h(
+      "div.list-main",
+      h("div.list-name", s.name, spellTags(s).map((t) => h("span.tag", { title: t }, t === "Concentration" ? "C" : "R"))),
+      h("div.list-sub", spellLevelText(s).replace(/ \(.*\)$/, ""))
+    )
+  )) : [h("div.empty", "No spells match.")]);
+}
+function renderSpell() {
+  const pane = el6.querySelector("#sp-view");
+  const s = spellById(selectedId5);
+  if (!s) {
+    fill(pane, h("div.empty", `Pick a spell from the list. ${store.spells.length} spells from the SRD 5.2.1.`));
+    return;
+  }
+  fill(
+    pane,
+    h("div.cond-ref-body.spell-card", { html: spellHtml(s, { body: (t) => glossify(condify(markupHtml(t))) }) + (spellTags(s).length ? `<div class="spell-tags">${spellTags(s).join(" \xB7 ")}</div>` : "") }),
+    s.creature ? h("div.spell-creature", statBlock(s.creature, { description: false })) : null
+  );
+}
+
+// src/app.js
+init_spells();
+
+// src/tabs/builder.js
+init_ui();
+init_store();
+init_rules();
+init_constants();
+
+// src/tabs/generator.js
+init_ui();
+init_store();
+init_rules();
+init_constants();
+var el7;
 var opts;
 var params = null;
 var expanded = null;
@@ -64066,12 +65452,12 @@ var set = (k, v, redraw = true) => {
   if (redraw) renderParams();
 };
 function renderGenerator(root, options) {
-  el6 = root;
+  el7 = root;
   opts = options;
   params ??= loadParams();
   params.characterIds = params.characterIds.filter((id) => store.party.some((c2) => c2.id === id));
   fill(
-    el6,
+    el7,
     h("div.crumbs", h("button.link", { onclick: opts.back }, "My Encounters"), h("span", "\u203A"), h("span", "Encounter Generator")),
     h("div.page-head", h("h1", "Encounter Generator"), h("div.page-sub", "Set what you want, press Generate, and regenerate until you like the mix. Nothing is saved until you choose Save as encounter or Open in the editor.")),
     h("div.gen-grid", h("div.gen-params#gn-params"), h("div.gen-result#gn-result"))
@@ -64091,10 +65477,10 @@ function monsterLabels() {
 var monsterName = (id) => findMonster(id)?.name || "Missing monster";
 function chipPicker(key2, placeholder, options, labelOf) {
   const listId = `gn-dl-${key2}`;
-  const input = h("input", { type: "text", placeholder, list: listId, onchange: (e) => {
-    const v = options instanceof Map ? options.get(e.target.value) : e.target.value.trim().toLowerCase();
+  const input = h("input", { type: "text", placeholder, list: listId, onchange: (e2) => {
+    const v = options instanceof Map ? options.get(e2.target.value) : e2.target.value.trim().toLowerCase();
     if (v && !params[key2].includes(v)) set(key2, [...params[key2], v]);
-    else e.target.value = "";
+    else e2.target.value = "";
   } });
   return h(
     "div.chip-picker",
@@ -64104,16 +65490,16 @@ function chipPicker(key2, placeholder, options, labelOf) {
   );
 }
 function renderParams() {
-  const box = el6.querySelector("#gn-params");
+  const box = el7.querySelector("#gn-params");
   if (!box) return;
   const p = params;
   const sel = (label, key2, options, conv = (x) => x) => h("label", label, h(
     "select",
-    { onchange: (e) => set(key2, conv(e.target.value)) },
+    { onchange: (e2) => set(key2, conv(e2.target.value)) },
     options.map(([value, text]) => h("option", { value, selected: String(p[key2]) === String(value) }, text))
   ));
-  const num2 = (key2, min, max) => h("input.num", { type: "number", min, max, value: p[key2], onchange: (e) => set(key2, Math.min(max, Math.max(min, Number(e.target.value) || min))) });
-  const crSel = (key2) => h("select", { onchange: (e) => set(key2, e.target.value) }, CR_ORDER.map((c2) => h("option", { value: c2, selected: p[key2] === c2 }, c2)));
+  const num2 = (key2, min, max) => h("input.num", { type: "number", min, max, value: p[key2], onchange: (e2) => set(key2, Math.min(max, Math.max(min, Number(e2.target.value) || min))) });
+  const crSel = (key2) => h("select", { onchange: (e2) => set(key2, e2.target.value) }, CR_ORDER.map((c2) => h("option", { value: c2, selected: p[key2] === c2 }, c2)));
   const levels = encounterLevels(p);
   const labels = monsterLabels();
   fill(
@@ -64141,7 +65527,7 @@ function renderParams() {
       h("h3", "Creatures"),
       h("label", "Number of creatures", h(
         "div.gen-count",
-        h("select", { onchange: (e) => set("countMode", e.target.value) }, [["any", "Any"], ["exact", "Exactly"], ["range", "Between"]].map(([v, t]) => h("option", { value: v, selected: p.countMode === v }, t))),
+        h("select", { onchange: (e2) => set("countMode", e2.target.value) }, [["any", "Any"], ["exact", "Exactly"], ["range", "Between"]].map(([v, t]) => h("option", { value: v, selected: p.countMode === v }, t))),
         p.countMode === "exact" ? num2("count", 1, 30) : null,
         p.countMode === "range" ? [num2("countMin", 1, 30), h("span", "and"), num2("countMax", 1, 30)] : null
       )),
@@ -64154,7 +65540,7 @@ function renderParams() {
       h("label", "Creature types", h("div.toggle-chips", TYPES.map((t) => h("button.tchip" + (p.types.includes(t) ? ".on" : ""), { onclick: () => set("types", p.types.includes(t) ? p.types.filter((x) => x !== t) : [...p.types, t]) }, t)))),
       h("div.hint", p.types.length ? "" : "None picked = any type."),
       h("label", "Races / subtypes", chipPicker("races", "Add a race (e.g. elf, goblinoid)", raceOptions().map((o) => o.value), (v) => v.replace(/\b\w/g, (c2) => c2.toUpperCase()))),
-      h("label.check-row", h("input", { type: "checkbox", checked: p.skipCr0, onchange: (e) => set("skipCr0", e.target.checked) }), "Skip CR 0 creatures")
+      h("label.check-row", h("input", { type: "checkbox", checked: p.skipCr0, onchange: (e2) => set("skipCr0", e2.target.checked) }), "Skip CR 0 creatures")
     ),
     h(
       "div.card.gen-card",
@@ -64177,7 +65563,7 @@ function renderParams() {
         "details.gen-adv",
         h("summary", "Advanced: seed"),
         h("div.hint", "Each result has a seed. The same settings and seed give the same encounter."),
-        h("div.row-gap", h("input#gn-seed", { type: "text", placeholder: "e.g. k3x9qa", value: current()?.seed || "" }), h("button", { onclick: () => run2(el6.querySelector("#gn-seed").value.trim() || newSeed()) }, "Generate from seed"))
+        h("div.row-gap", h("input#gn-seed", { type: "text", placeholder: "e.g. k3x9qa", value: current()?.seed || "" }), h("button", { onclick: () => run2(el7.querySelector("#gn-seed").value.trim() || newSeed()) }, "Generate from seed"))
       )
     ),
     h("button.primary.big.gen-go", { onclick: () => run2() }, current() ? "Regenerate" : "Generate")
@@ -64201,7 +65587,7 @@ function run2(seed = newSeed()) {
   renderResult();
 }
 function renderResult() {
-  const box = el6.querySelector("#gn-result");
+  const box = el7.querySelector("#gn-result");
   if (!box) return;
   const res = current();
   const nav2 = h(
@@ -64285,7 +65671,7 @@ function row(res, g) {
           redraw();
         } }, "\u2212")
       ),
-      h("button.icon-btn.kebab", { title: "More", onclick: (e) => popMenu(e.currentTarget, [
+      h("button.icon-btn.kebab", { title: "More", onclick: (e2) => popMenu(e2.currentTarget, [
         ["Always include", () => {
           if (!params.include.includes(m.id)) set("include", [...params.include, m.id]);
         }],
@@ -64318,7 +65704,7 @@ function saveAs(openAfter) {
   const res = current();
   const nameInput = h("input", { type: "text", value: suggestedName(res) });
   const make = () => {
-    const e = {
+    const e2 = {
       ...newEncounter(),
       name: nameInput.value.trim() || "Generated encounter",
       rules: res.rules,
@@ -64330,9 +65716,9 @@ function saveAs(openAfter) {
       }),
       summary: `Generated: ${res.why}.`
     };
-    save("encounters", e, { delay: 0 });
-    if (openAfter) return opts.openInEditor(e);
-    status3 = `Saved as <strong>${esc(e.name)}</strong> in My Encounters.`;
+    save("encounters", e2, { delay: 0 });
+    if (openAfter) return opts.openInEditor(e2);
+    status3 = `Saved as <strong>${esc(e2.name)}</strong> in My Encounters.`;
     renderResult();
   };
   modal(openAfter ? "Open in the editor" : "Save as encounter", h(
@@ -64348,10 +65734,10 @@ function saveAs(openAfter) {
 }
 
 // src/tabs/builder.js
-var el7;
+var el8;
 var go3;
 var current2 = null;
-var view = "list";
+var view2 = "list";
 var tab = "monsters";
 var shown2 = 40;
 var expanded2 = null;
@@ -64359,77 +65745,77 @@ var listQuery = "";
 var filters = emptyFilter();
 var sort = { key: "name", dir: 1 };
 function mountBuilder(root, navigate) {
-  el7 = root;
+  el8 = root;
   go3 = navigate;
   onChange((kind) => {
-    if (el7.hidden) return;
-    if (view === "list") renderList5();
+    if (el8.hidden) return;
+    if (view2 === "list") renderList6();
     else if (kind === "all") {
-      current2 = store.encounters.find((e) => e.id === current2?.id) || null;
+      current2 = store.encounters.find((e2) => e2.id === current2?.id) || null;
       render3();
     }
   });
 }
 function showBuilder(id) {
   if (id) {
-    current2 = store.encounters.find((e) => e.id === id) || null;
-    view = current2 ? "edit" : "list";
+    current2 = store.encounters.find((e2) => e2.id === id) || null;
+    view2 = current2 ? "edit" : "list";
   }
   render3();
 }
 function render3() {
-  if (view === "generator") renderGenerator(el7, { back: () => {
-    view = "list";
+  if (view2 === "generator") renderGenerator(el8, { back: () => {
+    view2 = "list";
     render3();
-  }, openInEditor: (e) => {
-    current2 = e;
-    view = "edit";
+  }, openInEditor: (e2) => {
+    current2 = e2;
+    view2 = "edit";
     tab = "monsters";
     render3();
   } });
-  else if (view === "edit" && current2) renderEditor();
+  else if (view2 === "edit" && current2) renderEditor();
   else {
-    view = "list";
-    renderList5();
+    view2 = "list";
+    renderList6();
   }
 }
-function renderList5() {
+function renderList6() {
   const table = h("div.enc-table-wrap");
   const draw2 = () => fill(table, encounterTable({
     query: listQuery,
-    onOpen: (e) => {
-      current2 = e;
-      view = "edit";
+    onOpen: (e2) => {
+      current2 = e2;
+      view2 = "edit";
       render3();
     },
-    onRun: (e) => go3("runner", e.id),
-    menu: (e) => [
+    onRun: (e2) => go3("runner", e2.id),
+    menu: (e2) => [
       ["Edit", () => {
-        current2 = e;
-        view = "edit";
+        current2 = e2;
+        view2 = "edit";
         render3();
       }],
       ["Duplicate", () => {
-        const c2 = { ...structuredClone(e), id: newId(e.name), name: `${e.name} (copy)`, combat: null };
+        const c2 = { ...structuredClone(e2), id: newId(e2.name), name: `${e2.name} (copy)`, combat: null };
         delete c2.created;
         save("encounters", c2, { delay: 0 });
-        renderList5();
+        renderList6();
       }],
-      ["Delete", () => confirmBox(`Delete "${e.name}"? The file goes to the Recycle Bin.`, "Delete", async () => {
-        await remove("encounters", e);
-        renderList5();
+      ["Delete", () => confirmBox(`Delete "${e2.name}"? The file goes to the Recycle Bin.`, "Delete", async () => {
+        await remove("encounters", e2);
+        renderList6();
       }), "danger"]
     ]
   }));
   fill(
-    el7,
+    el8,
     h("div.crumbs", h("span", "My Encounters")),
     h("div.page-head.with-action", h("h1", "My Encounters"), h("div.row-gap", h("button.outline.big", { title: "Generate an encounter from your monsters and the SRD", onclick: () => {
-      view = "generator";
+      view2 = "generator";
       render3();
     } }, "Generate"), h("button.outline.big", { onclick: create }, "Create New"))),
-    h("div.list-tools", h("input.search", { type: "search", placeholder: "Search", value: listQuery, oninput: (e) => {
-      listQuery = e.target.value;
+    h("div.list-tools", h("input.search", { type: "search", placeholder: "Search", value: listQuery, oninput: (e2) => {
+      listQuery = e2.target.value;
       draw2();
     } })),
     table
@@ -64440,52 +65826,52 @@ function create() {
   if (!store.libraryPath) return alert("Choose a library folder first (top right).");
   current2 = newEncounter();
   save("encounters", current2, { delay: 0 });
-  view = "edit";
+  view2 = "edit";
   tab = "monsters";
   render3();
-  el7.querySelector(".enc-title")?.select();
+  el8.querySelector(".enc-title")?.select();
 }
 function changed2() {
   save("encounters", current2);
   renderSummary();
 }
 function renderEditor() {
-  const e = current2;
-  const levels = encounterLevels(e);
+  const e2 = current2;
+  const levels = encounterLevels(e2);
   const avg = levels.length ? levels.reduce((a2, b2) => a2 + b2, 0) / levels.length : 0;
   fill(
-    el7,
+    el8,
     h(
       "div.builder",
       h(
         "div.builder-main",
         h("div.crumbs", h("button.link", { onclick: () => {
-          view = "list";
+          view2 = "list";
           render3();
         } }, "My Encounters"), h("span", "\u203A"), h("span", "Encounter Builder")),
         h("div.name-label", "Name your encounter"),
-        h("input.enc-title", { type: "text", value: e.name, oninput: (ev) => {
-          e.name = ev.target.value;
-          save("encounters", e);
+        h("input.enc-title", { type: "text", value: e2.name, oninput: (ev) => {
+          e2.name = ev.target.value;
+          save("encounters", e2);
         } }),
         h(
           "div.party-bar",
           h("label.inline", "Rules", h(
             "select",
             { onchange: (ev) => {
-              e.rules = ev.target.value;
+              e2.rules = ev.target.value;
               try {
-                localStorage.setItem("rules", e.rules);
+                localStorage.setItem("rules", e2.rules);
               } catch {
               }
               changed2();
               renderMonsters();
             } },
-            Object.entries(RULES).map(([k, v]) => h("option", { value: k, selected: (e.rules || "2014") === k }, v))
+            Object.entries(RULES).map(([k, v]) => h("option", { value: k, selected: (e2.rules || "2014") === k }, v))
           )),
           h("div.party-stat", "# of characters: ", h("strong", levels.length)),
           h("div.party-stat", "Average party level: ", h("strong", levels.length ? Number.isInteger(avg) ? avg : avg.toFixed(1) : "\u2014")),
-          partyPower(e) !== 1 ? h("div.party-stat", { title: "Average of the characters\u2019 power multipliers (set on the Party tab). Thresholds are scaled per character." }, "Party power: ", h("strong", powerText(partyPower(e)))) : null,
+          partyPower(e2) !== 1 ? h("div.party-stat", { title: "Average of the characters\u2019 power multipliers (set on the Party tab). Thresholds are scaled per character." }, "Party power: ", h("strong", powerText(partyPower(e2)))) : null,
           h("button.dark", { onclick: manageCharacters }, "Manage characters")
         ),
         h(
@@ -64499,14 +65885,14 @@ function renderEditor() {
             renderEditor();
           } }, "Summary"),
           h("div.spacer"),
-          h("button.dark", { onclick: () => confirmBox(`Delete "${e.name}"? The file goes to the Recycle Bin.`, "Delete", async () => {
-            await remove("encounters", e);
+          h("button.dark", { onclick: () => confirmBox(`Delete "${e2.name}"? The file goes to the Recycle Bin.`, "Delete", async () => {
+            await remove("encounters", e2);
             current2 = null;
-            view = "list";
+            view2 = "list";
             render3();
           }) }, "Delete"),
           h("button.primary", { onclick: () => {
-            view = "list";
+            view2 = "list";
             render3();
           } }, "Done")
         ),
@@ -64514,9 +65900,9 @@ function renderEditor() {
           filters.q = ev.target.value;
           shown2 = 40;
           renderMonsters();
-        } }), h("div#bd-monsters"))) : h("div.card.summary-tab", h("h2", "Short summary"), h("textarea", { rows: 12, value: e.summary || "", placeholder: "Notes for this encounter: setting, tactics, treasure\u2026", oninput: (ev) => {
-          e.summary = ev.target.value;
-          save("encounters", e);
+        } }), h("div#bd-monsters"))) : h("div.card.summary-tab", h("h2", "Short summary"), h("textarea", { rows: 12, value: e2.summary || "", placeholder: "Notes for this encounter: setting, tactics, treasure\u2026", oninput: (ev) => {
+          e2.summary = ev.target.value;
+          save("encounters", e2);
         } }))
       ),
       h("aside.enc-summary#bd-summary")
@@ -64565,7 +65951,7 @@ function filteredMonsters() {
   });
 }
 function renderMonsters() {
-  const box = el7.querySelector("#bd-monsters");
+  const box = el8.querySelector("#bd-monsters");
   if (!box) return;
   const levels = encounterLevels(current2);
   const party = encounterParty(current2);
@@ -64631,14 +66017,14 @@ function splitDialog(i) {
   n.select();
 }
 function renderSummary() {
-  const box = el7.querySelector("#bd-summary");
+  const box = el8.querySelector("#bd-summary");
   if (!box) return;
-  const e = current2;
-  const r = evaluateEncounter(e);
-  const levels = encounterLevels(e);
+  const e2 = current2;
+  const r = evaluateEncounter(e2);
+  const levels = encounterLevels(e2);
   const top = r.steps[r.steps.length - 1].xp || 1;
   const pct = Math.min(100, r.adjusted / top * 100);
-  const over = e.rules === "2024" && levels.length && r.total > top ? r.total - top : 0;
+  const over = e2.rules === "2024" && levels.length && r.total > top ? r.total - top : 0;
   fill(
     box,
     h("h2", "Encounter summary"),
@@ -64650,7 +66036,7 @@ function renderSummary() {
         h(`div.v.big.${difficultyClass(r.difficulty)}`, { title: DIFF_HELP[r.difficulty] || "" }, levels.length ? r.difficulty : "\u2014"),
         h("div.k", "Total XP"),
         h("div.v", r.total.toLocaleString()),
-        e.rules === "2024" ? [h("div.k", "XP per player"), h("div.v", r.perPlayer.toLocaleString())] : [h("div.k", "Adjusted XP"), h("div.v", `${r.adjusted.toLocaleString()} XP (x${r.multiplier})`)]
+        e2.rules === "2024" ? [h("div.k", "XP per player"), h("div.v", r.perPlayer.toLocaleString())] : [h("div.k", "Adjusted XP"), h("div.v", `${r.adjusted.toLocaleString()} XP (x${r.multiplier})`)]
       ),
       h(
         "div.sum-right",
@@ -64663,9 +66049,9 @@ function renderSummary() {
     !levels.length ? h("div.hint", "Add characters (Manage characters) to see the difficulty.") : null,
     h(
       "div.sum-list",
-      e.groups.length ? e.groups.map((g, i) => {
+      e2.groups.length ? e2.groups.map((g, i) => {
         const m = findMonster(g.monsterId);
-        const same = e.groups.filter((x) => x.monsterId === g.monsterId);
+        const same = e2.groups.filter((x) => x.monsterId === g.monsterId);
         return h(
           "div.sum-mon" + (m ? "" : ".missing"),
           avatar(m?.avatar, g.name, "md"),
@@ -64679,7 +66065,7 @@ function renderSummary() {
               { title: isMinion(m) ? "Run them as one row with a count of how many are left" : "Run them as one row; damage rolls over from one creature to the next" },
               h("input", { type: "checkbox", checked: runsAsGroup(g), onchange: (ev) => {
                 g.runAsGroup = ev.target.checked;
-                save("encounters", e);
+                save("encounters", e2);
               } }),
               "One group"
             ) : null,
@@ -64688,7 +66074,7 @@ function renderSummary() {
               same.length > 1 ? h("span.muted", `Group ${same.indexOf(g) + 1} of ${same.length}`) : null,
               g.count > 1 ? h("button.link", { title: "Move some of them into a separate entry, e.g. two packs", onclick: () => splitDialog(i) }, "Split\u2026") : null,
               same.length > 1 ? h("button.link", { title: `Put all the ${m?.name || g.name} entries back together`, onclick: () => {
-                mergeEntries(e.groups, i);
+                mergeEntries(e2.groups, i);
                 changed2();
               } }, "Merge") : null
             ) : null
@@ -64702,22 +66088,22 @@ function renderSummary() {
             } }, "+"),
             h("div", g.count),
             h("button", { title: g.count > 1 ? "Remove one" : "Remove", onclick: () => {
-              if (--g.count <= 0) e.groups.splice(i, 1);
+              if (--g.count <= 0) e2.groups.splice(i, 1);
               changed2();
             } }, "\u2212")
           )
         );
       }) : h("div.empty", "Add monsters from the list.")
     ),
-    levels.length ? h("div.sum-party", h("h3", "Characters"), partyChips(e)) : null
+    levels.length ? h("div.sum-party", h("h3", "Characters"), partyChips(e2)) : null
   );
 }
-function partyChips(e) {
-  const chars = (e.characterIds || []).map(findCharacter).filter(Boolean);
+function partyChips(e2) {
+  const chars = (e2.characterIds || []).map(findCharacter).filter(Boolean);
   return h(
     "div.chips",
     chars.map((c2) => h("span.chip", avatar(c2.avatar, c2.name, "xs"), `${c2.name} (${c2.level})`, (c2.power ?? 1) !== 1 ? h("strong.power", powerText(c2.power)) : null)),
-    e.extraPlayers?.count > 0 ? h("span.chip", `${e.extraPlayers.count} \xD7 level ${e.extraPlayers.level}`) : null
+    e2.extraPlayers?.count > 0 ? h("span.chip", `${e2.extraPlayers.count} \xD7 level ${e2.extraPlayers.level}`) : null
   );
 }
 function manageCharacters() {
@@ -64744,16 +66130,16 @@ function iconOf(name, conditions = []) {
   return CONDITION_ICONS.has(id) ? id : CONDITION_ICONS.has(slug(name)) ? slug(name) : null;
 }
 function iconLetters(name) {
-  const words = String(name).split("/")[0].trim().split(/\s+/).filter(Boolean);
-  if (!words.length) return "?";
-  return words.length > 1 ? (words[0][0] + words[1][0]).toUpperCase() : words[0][0].toUpperCase() + (words[0][1] || "").toLowerCase();
+  const words2 = String(name).split("/")[0].trim().split(/\s+/).filter(Boolean);
+  if (!words2.length) return "?";
+  return words2.length > 1 ? (words2[0][0] + words2[1][0]).toUpperCase() : words2[0][0].toUpperCase() + (words2[0][1] || "").toLowerCase();
 }
 var iconPath = (id, size = 64) => `conditions%20symbols/png-${size}/${id}.png`;
 
 // src/tabs/runner.js
 init_format();
 init_rules();
-var el8;
+var el9;
 var go4;
 var enc = null;
 var sameInit = true;
@@ -64764,20 +66150,20 @@ var undoStack = () => {
   return undoStacks.get(enc.id);
 };
 function mountRunner(root, navigate) {
-  el8 = root;
+  el9 = root;
   go4 = navigate;
   onRoll(() => {
-    if (!el8.hidden && enc) renderLog();
+    if (!el9.hidden && enc) renderLog();
   });
   onChange((kind) => {
-    if (el8.hidden) return;
-    if (kind === "all") enc = enc && store.encounters.find((e) => e.id === enc.id);
+    if (el9.hidden) return;
+    if (kind === "all") enc = enc && store.encounters.find((e2) => e2.id === enc.id);
     if (!enc) render4();
   });
 }
 function showRunner(id) {
   if (id) {
-    enc = store.encounters.find((e) => e.id === id) || null;
+    enc = store.encounters.find((e2) => e2.id === id) || null;
     if (enc && !enc.combat) enc.combat = setupCombat2(enc);
     if (enc) setLive(enc.id);
   }
@@ -64795,11 +66181,11 @@ function setLive(id) {
   } catch {
   }
 }
-var liveEncounter = () => store.encounters.find((e) => e.id === live) || null;
+var liveEncounter = () => store.encounters.find((e2) => e2.id === live) || null;
 function runnerCommand(cmd) {
-  const e = liveEncounter();
-  if (e?.combat?.phase !== "active") return false;
-  enc = e;
+  const e2 = liveEncounter();
+  if (e2?.combat?.phase !== "active") return false;
+  enc = e2;
   if (cmd === "next") next();
   else if (cmd === "undo") undo();
   else return false;
@@ -64812,11 +66198,11 @@ function render4() {
 }
 function renderPicker() {
   const table = h("div.enc-table-wrap");
-  let query2 = "";
-  const draw2 = () => fill(table, encounterTable({ query: query2, onOpen: (e) => go4("builder", e.id), onRun: (e) => showRunner(e.id) }));
+  let query3 = "";
+  const draw2 = () => fill(table, encounterTable({ query: query3, onOpen: (e2) => go4("builder", e2.id), onRun: (e2) => showRunner(e2.id) }));
   const party = activeParty();
   fill(
-    el8,
+    el9,
     h("div.page-head", h("h1", "Run Encounter"), h("div.page-sub", "Your active party, and the encounters to run. A fight in progress shows Resume.")),
     h(
       "div.run-home",
@@ -64837,8 +66223,8 @@ function renderPicker() {
       h(
         "div.run-encounters",
         h("h2", "Encounters"),
-        h("div.list-tools", h("input.search", { type: "search", placeholder: "Search", oninput: (e) => {
-          query2 = e.target.value;
+        h("div.list-tools", h("input.search", { type: "search", placeholder: "Search", oninput: (e2) => {
+          query3 = e2.target.value;
           draw2();
         } })),
         table
@@ -64854,19 +66240,19 @@ var condIcon = (name) => {
 function condChips(c2, { add: add2, remove: remove2 }) {
   return h(
     "div.conds",
-    c2.conditions.map((cond) => h("button.cond", { title: "Click to remove", dataset: { cond }, onclick: (e) => {
-      e.stopPropagation();
+    c2.conditions.map((cond) => h("button.cond", { title: "Click to remove", dataset: { cond }, onclick: (e2) => {
+      e2.stopPropagation();
       remove2(cond);
     } }, condIcon(cond), cond, " \xD7")),
     // shown by HP, not set by hand: the skull for a monster at 0 HP, Unconscious for a player at 0 HP
     rowMarks(c2).filter((q) => !c2.conditions.includes(q)).map((q) => h("span.cond.auto", { title: q === "Dead" ? "At 0 HP. Healing it above 0 removes this." : "At 0 HP: unconscious until healed.", dataset: { cond: q } }, condIcon(q), q)),
-    isOut(c2) ? null : h("button.cond.add", { title: "Add a condition", onclick: (e) => {
-      e.stopPropagation();
-      popMenu(e.currentTarget, [...conditionNames(), "Concentrating", "Dodging"].filter((q) => !c2.conditions.includes(q)).map((q) => [[condIcon(q), q], () => add2(q), "", { dataset: { cond: q } }]));
+    isOut(c2) ? null : h("button.cond.add", { title: "Add a condition", onclick: (e2) => {
+      e2.stopPropagation();
+      popMenu(e2.currentTarget, [...conditionNames(), "Concentrating", "Dodging"].filter((q) => !c2.conditions.includes(q)).map((q) => [[condIcon(q), q], () => add2(q), "", { dataset: { cond: q } }]));
     } }, "+ Condition")
   );
 }
-var setupCombat2 = (e) => setupCombat(e, { character: findCharacter, monster: findMonster, asGroup: runsAsGroup });
+var setupCombat2 = (e2) => setupCombat(e2, { character: findCharacter, monster: findMonster, asGroup: runsAsGroup });
 var C = () => enc.combat;
 var ordered2 = () => ordered(C());
 function act(fn, { redraw = true } = {}) {
@@ -64914,7 +66300,7 @@ function rollFor(which) {
 function renderSetup() {
   const s = C();
   fill(
-    el8,
+    el9,
     header(),
     h(
       "div.run-grid",
@@ -64922,16 +66308,16 @@ function renderSetup() {
         "div.card.tracker",
         h("div.tracker-head", h("h2", "Roll initiative"), h("button.outline", { onclick: addCombatant }, "Manual entry")),
         h("p.muted", "Type each initiative, or roll. Players usually roll their own; monsters can be rolled here."),
-        h("label.check-row", h("input", { type: "checkbox", checked: sameInit, onchange: (e) => {
-          sameInit = e.target.checked;
+        h("label.check-row", h("input", { type: "checkbox", checked: sameInit, onchange: (e2) => {
+          sameInit = e2.target.checked;
         } }), "Identical monsters share one initiative roll"),
         h("div.setup-list", s.combatants.map((c2) => h(
           "div.setup-row",
-          { oncontextmenu: (e) => tokenMenu(e, c2) },
+          { oncontextmenu: (e2) => tokenMenu(e2, c2) },
           avatarFor(c2, "sm"),
           h("div.setup-name", c2.name, linkTag(c2), h("div.muted", `${c2.kind === "pc" ? "Character" : isGroup(c2) ? `Group of ${c2.members.length} ${c2.group === "minion" ? "minions" : "(pack)"}` : "Monster"} \xB7 init ${signed(c2.initBonus)}`)),
-          h("input.init-input", { type: "number", value: c2.init ?? "", placeholder: "\u2014", oninput: (e) => {
-            c2.init = e.target.value === "" ? null : Number(e.target.value);
+          h("input.init-input", { type: "number", value: c2.init ?? "", placeholder: "\u2014", oninput: (e2) => {
+            c2.init = e2.target.value === "" ? null : Number(e2.target.value);
             save("encounters", enc);
             updateStart();
           } }),
@@ -64956,7 +66342,7 @@ function renderSetup() {
   updateStart();
   function updateStart() {
     const n = s.combatants.filter((c2) => c2.init == null).length;
-    el8.querySelector("#run-missing").textContent = n ? `${n} without initiative: they will roll automatically when you start.` : "";
+    el9.querySelector("#run-missing").textContent = n ? `${n} without initiative: they will roll automatically when you start.` : "";
   }
 }
 function start() {
@@ -64978,22 +66364,36 @@ function header() {
     h(
       "div.row-gap",
       h("button.outline", { onclick: () => go4("builder", enc.id) }, "Edit encounter"),
-      h("button.dark", { onclick: () => confirmBox("End this combat? HP, initiative and turns are cleared (the encounter itself stays).", "End combat", () => {
-        enc.combat = null;
-        undoStacks.delete(enc.id);
-        save("encounters", enc, { delay: 0 });
-        enc = null;
-        render4();
-      }) }, "End combat")
+      h("button.outline", { title: "Roll the loot for every enemy in this fight", onclick: () => lootDialog(enc) }, "Loot"),
+      h("button.dark", { onclick: endCombat }, "End combat")
     )
   );
+}
+function endCombat() {
+  const end = () => {
+    enc.combat = null;
+    undoStacks.delete(enc.id);
+    save("encounters", enc, { delay: 0 });
+    enc = null;
+    render4();
+  };
+  modal("Are you sure?", h("p", "End this combat? HP, initiative and turns are cleared (the encounter itself stays)."), [
+    ["Cancel", () => {
+    }],
+    ["End and roll loot", () => {
+      const e2 = enc;
+      lootDialog(structuredClone(e2));
+      end();
+    }],
+    ["End combat", end, "danger"]
+  ]);
 }
 function renderTracker() {
   const s = C();
   const order = ordered2();
   const turnIndex = Math.max(0, order.findIndex((c2) => c2.key === s.turnKey));
   fill(
-    el8,
+    el9,
     header(),
     h(
       "div.run-grid",
@@ -65015,7 +66415,7 @@ function renderTracker() {
   );
   renderBlock();
   renderLog();
-  el8.querySelector(".turn-row.current")?.scrollIntoView({ block: "nearest" });
+  el9.querySelector(".turn-row.current")?.scrollIntoView({ block: "nearest" });
 }
 function avatarFor(c2, size) {
   const src = c2.kind === "pc" ? findCharacter(c2.refId)?.avatar : findMonster(c2.refId)?.avatar;
@@ -65046,9 +66446,9 @@ function combatantRow(c2, current3) {
   ].filter(Boolean);
   return h(
     "div.turn-row" + (current3 ? ".current" : "") + (c2.key === s.selectedKey ? ".selected" : "") + (isOut(c2) ? ".out" : "") + (c2.kind === "pc" ? ".pc" : ""),
-    { oncontextmenu: (e) => tokenMenu(e, c2) },
-    h("div.init-box", h("div.lbl", "Initiative"), h("input", { type: "number", value: c2.init ?? "", onchange: (e) => act((x) => {
-      x.combatants.find((y) => y.key === c2.key).init = Number(e.target.value) || 0;
+    { oncontextmenu: (e2) => tokenMenu(e2, c2) },
+    h("div.init-box", h("div.lbl", "Initiative"), h("input", { type: "number", value: c2.init ?? "", onchange: (e2) => act((x) => {
+      x.combatants.find((y) => y.key === c2.key).init = Number(e2.target.value) || 0;
     }) })),
     h(
       "div.turn-main",
@@ -65075,7 +66475,7 @@ function combatantRow(c2, current3) {
       )
     ),
     hpBox,
-    h("button.icon-btn.kebab", { title: "More", onclick: (e) => popMenu(e.currentTarget, [
+    h("button.icon-btn.kebab", { title: "More", onclick: (e2) => popMenu(e2.currentTarget, [
       ["Make it their turn", () => act((x) => {
         x.turnKey = c2.key;
       })],
@@ -65119,10 +66519,10 @@ function concentrationPrompt(c2, damage, end) {
     "div.conc",
     h("p", `${c2.name} took ${damage} damage while concentrating.`),
     h("div.conc-dc", "Constitution saving throw ", h("strong", `DC ${dc}`)),
-    bonus != null ? h("button.primary", { onclick: (e) => {
+    bonus != null ? h("button.primary", { onclick: (e2) => {
       const r = doRoll(`1d20${signed(bonus)}`, { who: c2.name, label: "Concentration save" });
       if (!r) return;
-      e.currentTarget.disabled = true;
+      e2.currentTarget.disabled = true;
       const kept = r.total >= dc;
       fill(result, h(`strong.${kept ? "ok-text" : "bad-text"}`, `${r.total}: ${kept ? "concentration holds" : "concentration is lost"}`));
       body2.closest(".modal").querySelector(kept ? ".keep" : ".end")?.focus();
@@ -65157,8 +66557,8 @@ function hpDialog(c2, onApply) {
     ["Heal", () => apply("heal"), "ok"],
     ["Damage", () => apply("damage"), "danger"]
   ]);
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && apply(e.ctrlKey ? "temp" : e.shiftKey ? "heal" : "damage") !== false) close();
+  input.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && apply(e2.ctrlKey ? "temp" : e2.shiftKey ? "heal" : "damage") !== false) close();
   });
 }
 var find = (s, key2) => s.combatants.find((z) => z.key === key2);
@@ -65167,7 +66567,7 @@ function pips(c2) {
   const minion = c2.group === "minion";
   return h(
     "div.pips",
-    { onclick: (e) => e.stopPropagation() },
+    { onclick: (e2) => e2.stopPropagation() },
     c2.members.map((mem, i) => {
       const dead = mem.hp <= 0;
       const title = `${c2.name} ${i + 1}: ${dead ? "down" : minion ? "standing" : `${mem.hp}/${c2.maxHp} HP`}${mem.conditions.length ? ` \xB7 ${mem.conditions.join(", ")}` : ""}
@@ -65182,10 +66582,10 @@ ${minion ? "Click: down / back up" : "Click: change just its HP"}. Right-click: 
             m.conditions = [];
           } else m.hp = y.maxHp ?? 1;
         }) : memberHp(c2, i),
-        oncontextmenu: (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          memberConditions(e.currentTarget, c2, i);
+        oncontextmenu: (e2) => {
+          e2.preventDefault();
+          e2.stopPropagation();
+          memberConditions(e2.currentTarget, c2, i);
         }
       }, minion ? null : h("span.pip-fill", { style: `width:${Math.max(0, Math.min(100, mem.hp / (c2.maxHp || 1) * 100))}%` }));
     }),
@@ -65241,8 +66641,8 @@ function minionDialog(c2) {
     })]] : [],
     ["Kill", kill, "danger"]
   ]);
-  killN.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && kill() !== false) close();
+  killN.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && kill() !== false) close();
   });
   killN.select();
 }
@@ -65283,8 +66683,8 @@ function packDialog(c2) {
     ["Heal", () => apply("heal"), "ok"],
     ["Damage", () => apply("damage"), "danger"]
   ]);
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && apply(e.ctrlKey ? "temp" : e.shiftKey ? "heal" : "damage") !== false) close();
+  input.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && apply(e2.ctrlKey ? "temp" : e2.shiftKey ? "heal" : "damage") !== false) close();
   });
 }
 function memberHp(c2, i) {
@@ -65312,8 +66712,8 @@ function memberHp(c2, i) {
     ["Heal", () => apply("heal"), "ok"],
     ["Damage", () => apply("damage"), "danger"]
   ]);
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && apply(e.shiftKey ? "heal" : "damage") !== false) close();
+  input.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && apply(e2.shiftKey ? "heal" : "damage") !== false) close();
   });
 }
 function splitDialog2(c2) {
@@ -65373,7 +66773,7 @@ function groupAttack(key2, entry) {
       a2.damage != null ? h("div", "On a hit: ", h("strong", `${a2.damage} \xD7 ${k} = ${a2.damage * k}`), ` ${a2.type} damage`) : h("div.muted", "This attack has no fixed damage: its hit effect is in the stat block.")
     );
   };
-  const btn = h("button.primary", { onclick: (e) => run3(e.shiftKey ? "advantage" : e.ctrlKey ? "disadvantage" : "normal") }, a2.bonus ? `Roll the attack (${a2.bonus})` : "Work out the damage");
+  const btn = h("button.primary", { onclick: (e2) => run3(e2.shiftKey ? "advantage" : e2.ctrlKey ? "disadvantage" : "normal") }, a2.bonus ? `Roll the attack (${a2.bonus})` : "Work out the damage");
   modal(`${c2.name}: ${name}`, h(
     "div.hp-edit.group-edit",
     h("label.mg-row", "How many join in:", n),
@@ -65382,9 +66782,9 @@ function groupAttack(key2, entry) {
     result
   ), [["Done", () => {
   }]]);
-  n.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
+  n.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter") {
+      e2.preventDefault();
       btn.click();
     }
   });
@@ -65447,17 +66847,17 @@ function tokenItems(c2) {
     ...c2.kind === "pc" && c2.refId ? messageItem(c2.refId, c2.name) : []
   ];
 }
-function tokenMenu(e, c2) {
+function tokenMenu(e2, c2) {
   if (!linker) return;
-  e.preventDefault();
-  popMenu(e.currentTarget.querySelector(".turn-name, .setup-name") || e.currentTarget, tokenItems(c2));
+  e2.preventDefault();
+  popMenu(e2.currentTarget.querySelector(".turn-name, .setup-name") || e2.currentTarget, tokenItems(c2));
 }
 function actOn(encId, fn) {
   if (enc?.id === encId) return act(fn);
-  const e = store.encounters.find((x) => x.id === encId);
-  if (!e?.combat) return;
-  fn(e.combat);
-  save("encounters", e);
+  const e2 = store.encounters.find((x) => x.id === encId);
+  if (!e2?.combat) return;
+  fn(e2.combat);
+  save("encounters", e2);
 }
 function startLink(c2) {
   if (!linker.available()) return notice('Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".', "error");
@@ -65495,8 +66895,8 @@ function partyAct(id, fn) {
 function setPartyLive(ch, next2) {
   ch.live = next2;
   save("party", ch);
-  const e = liveEncounter();
-  const c2 = e?.combat?.combatants.find((x) => x.key === `pc-${ch.id}`);
+  const e2 = liveEncounter();
+  const c2 = e2?.combat?.combatants.find((x) => x.key === `pc-${ch.id}`);
   if (!c2 || sameLive(liveOf(c2), next2)) return;
   c2.hp = next2.hp ?? c2.hp;
   c2.conditions = [...next2.conditions || []];
@@ -65504,7 +66904,7 @@ function setPartyLive(ch, next2) {
   else delete c2.tempHp;
   if (next2.tokens?.length) c2.tokens = [...next2.tokens];
   else delete c2.tokens;
-  save("encounters", e);
+  save("encounters", e2);
 }
 function partyUndoLast() {
   const u = partyUndo.pop();
@@ -65517,10 +66917,10 @@ function partyCard(ch) {
   const menu = (anchor) => popMenu(anchor, partyTokenItems(ch));
   return h(
     "div.party-card" + (c2.hp != null && c2.hp <= 0 ? ".down" : ""),
-    { oncontextmenu: (e) => {
+    { oncontextmenu: (e2) => {
       if (!linker) return;
-      e.preventDefault();
-      menu(e.currentTarget.querySelector(".party-name"));
+      e2.preventDefault();
+      menu(e2.currentTarget.querySelector(".party-name"));
     } },
     avatar(ch.avatar, ch.name, "md"),
     h(
@@ -65544,7 +66944,7 @@ function partyCard(ch) {
       h("span.hp-max", c2.maxHp ?? "\u2014"),
       c2.tempHp ? h("span.hp-temp", `+${c2.tempHp}`) : null
     ),
-    linker ? h("button.icon-btn.kebab", { title: "More", onclick: (e) => menu(e.currentTarget) }, "\u22EE") : null
+    linker ? h("button.icon-btn.kebab", { title: "More", onclick: (e2) => menu(e2.currentTarget) }, "\u22EE") : null
   );
 }
 function partyHp(ch) {
@@ -65609,7 +67009,7 @@ function unlinkParty(ch) {
   if (ids.length && linker.available()) linker.unlink(ids);
 }
 function renderBlock() {
-  const box = el8.querySelector("#run-block");
+  const box = el9.querySelector("#run-block");
   if (!box) return;
   const c2 = C().combatants.find((x) => x.key === C().selectedKey);
   if (!c2) return fill(box, h("div.empty", "Click a creature to see its stat block. Click any bonus or dice in it to roll."));
@@ -65656,7 +67056,7 @@ function renderBlock() {
   );
 }
 function renderLog() {
-  const box = el8.querySelector("#run-log");
+  const box = el9.querySelector("#run-log");
   if (!box) return;
   fill(box, h("h3", "Roll log"), rollLog.length ? h("div.log-list", rollLog.slice(0, 40).map((r) => h(
     "div.log-row" + (r.natural20 ? ".crit" : r.natural1 ? ".fumble" : ""),
@@ -65665,6 +67065,9 @@ function renderLog() {
     h("div.log-total", r.total)
   ))) : h("div.empty", "Rolls show here. Click dice in a stat block; Shift-click rolls with advantage, Ctrl-click with disadvantage."));
 }
+
+// src/obr/manifest.json
+var version2 = "1.1.0";
 
 // src/app.js
 var TABS = [
@@ -65679,7 +67082,7 @@ var TABS = [
 var nav = h("nav.tabs");
 var main = h("main");
 var saveStatus = h("span.save-status");
-var libButton = h("button.lib-btn", { onclick: (e) => libraryMenu(e.currentTarget) });
+var libButton = h("button.lib-btn", { onclick: (e2) => libraryMenu(e2.currentTarget) });
 var settingsButton = h("button.icon-btn.settings-btn", { title: "Settings", onclick: () => settings() }, "\u2699");
 var active = null;
 function go5(id, arg) {
@@ -65714,7 +67117,7 @@ function renderGhButton() {
   ghButton.classList.toggle("dirty", !!s.dirty && !ghBusy);
   ghButton.title = s.dirty ? `Changes not saved to GitHub (${s.repo}). Click to save now.${s.auto ? " Autosave is on." : ""}` : `Library saved to GitHub (${s.repo})${s.savedAt ? `, ${new Date(s.savedAt).toLocaleString()}` : ""}. Click for the GitHub library settings.`;
 }
-var USER_KINDS = /* @__PURE__ */ new Set(["monsters", "party", "encounters", "conditions"]);
+var USER_KINDS = /* @__PURE__ */ new Set(["monsters", "party", "encounters", "conditions", "loot"]);
 function watchGithub() {
   onChange((kind) => {
     if (!USER_KINDS.has(kind) || !ghReady()) return;
@@ -65751,8 +67154,8 @@ async function githubSave({ auto = false, overwrite = false } = {}) {
     const sha = await ghSave(JSON.stringify(pack), remote, `Library: ${countText(pack)} (${(/* @__PURE__ */ new Date()).toLocaleString()})`, s);
     setGhSettings({ ...ghSettings(), sha, savedAt: Date.now(), dirty: false });
     if (!auto) notice(`Saved to GitHub: ${countText(pack)}.`);
-  } catch (e) {
-    notice(`Not saved to GitHub: ${e.message}`, "error", 1e4);
+  } catch (e2) {
+    notice(`Not saved to GitHub: ${e2.message}`, "error", 1e4);
   } finally {
     ghBusy = false;
     renderGhButton();
@@ -65770,8 +67173,8 @@ async function githubLoad() {
         renderGhButton();
       }
     });
-  } catch (e) {
-    notice(`Could not load from GitHub: ${e.message}`, "error", 1e4);
+  } catch (e2) {
+    notice(`Could not load from GitHub: ${e2.message}`, "error", 1e4);
   }
 }
 function githubDialog() {
@@ -65810,8 +67213,8 @@ function githubDialog() {
         r.private ? "It is private. " : h("strong", "It is PUBLIC: anyone can read your library. Make it private on GitHub (Settings > General > Danger Zone). "),
         r.fileExists ? `${next2.path} is there: Load from GitHub brings it in.` : `${next2.path} isn't there yet: Save to GitHub creates it.`
       );
-    } catch (e) {
-      fill(result, h("span.bad-text", e.message));
+    } catch (e2) {
+      fill(result, h("span.bad-text", e2.message));
     }
   };
   const close = modal("GitHub library", h(
@@ -65997,18 +67400,18 @@ var SIZES2 = [[1, "Small (1\xD7)"], [1.5, "Medium (1.5\xD7)"], [2, "Large (2\xD7
 var SECONDS = [[3, "3 seconds"], [5, "5 seconds"], [8, "8 seconds"], [12, "12 seconds"]];
 function settings() {
   const s = toastSettings(), d = diceSettings();
-  const pick3 = (label, key2, options) => h("label", label, h(
+  const pick4 = (label, key2, options) => h("label", label, h(
     "select",
-    { onchange: (e) => {
-      s[key2] = key2 === "position" ? e.target.value : Number(e.target.value);
+    { onchange: (e2) => {
+      s[key2] = key2 === "position" ? e2.target.value : Number(e2.target.value);
       setToastSettings(s);
     } },
     options.map(([value, text]) => h("option", { value, selected: s[key2] === value }, text))
   ));
   const dicePick = (label, key2, options, conv = (x) => x) => h("label", label, h(
     "select",
-    { onchange: (e) => {
-      d[key2] = conv(e.target.value);
+    { onchange: (e2) => {
+      d[key2] = conv(e2.target.value);
       setDiceSettings(d);
     } },
     options.map(([value, text]) => h("option", { value, selected: String(d[key2]) === String(value) }, text))
@@ -66016,8 +67419,8 @@ function settings() {
   const preview = h("div.font-preview", { style: fontStyle(d.font) }, "20 \xB7 17 \xB7 9 \xB7 6 \xB7 1");
   const fontSel = h(
     "select",
-    { onchange: (e) => {
-      d.font = e.target.value;
+    { onchange: (e2) => {
+      d.font = e2.target.value;
       setDiceSettings(d);
       preview.setAttribute("style", fontStyle(d.font));
     } },
@@ -66035,11 +67438,11 @@ function settings() {
     "div.settings",
     h("h4", "Roll pop-ups"),
     h("p.muted", "The result card that appears when you click a dice roll."),
-    h("div.form-grid", pick3("Position", "position", POSITIONS), pick3("Size", "size", SIZES2), pick3("Stays for", "seconds", SECONDS)),
+    h("div.form-grid", pick4("Position", "position", POSITIONS), pick4("Size", "size", SIZES2), pick4("Stays for", "seconds", SECONDS)),
     h("h4", "Dice"),
     h("p.muted", "3D dice roll across the window and land on the result. Rolls for a whole table at once (initiative) never show dice."),
-    h("label.check-row", h("input", { type: "checkbox", checked: d.animate, onchange: (e) => {
-      d.animate = e.target.checked;
+    h("label.check-row", h("input", { type: "checkbox", checked: d.animate, onchange: (e2) => {
+      d.animate = e2.target.checked;
       setDiceSettings(d);
     } }), "Show 3D dice"),
     h(
@@ -66058,10 +67461,18 @@ function settings() {
       h("button.link", { onclick: () => {
         setToastSettings({ ...TOAST_DEFAULTS });
         setDiceSettings({ ...DICE_DEFAULTS });
+        setLootSettings({ ...LOOT_DEFAULTS });
         close();
         settings();
       } }, "Reset to defaults")
-    )
+    ),
+    h("h4", "Loot"),
+    h("p.muted", "Where the generosity slider starts when you roll loot (Run Encounter > Loot). You can still move it for each fight."),
+    h("div.form-grid", h("label", "Generosity", h(
+      "select",
+      { onchange: (e2) => setLootSettings({ ...lootSettings(), generosity: Number(e2.target.value) }) },
+      GENEROSITY.stops.map(([g, name]) => h("option", { value: g, selected: lootSettings().generosity === g }, `${name} (${g}\xD7)`))
+    )))
   );
   const close = modal("Settings", body2, [["Done", () => {
   }, "primary"]]);
@@ -66133,7 +67544,7 @@ var COMMON_FONTS = [
 function about() {
   modal("About", h(
     "div.about",
-    h("p", h("strong", "Kimble's Encounter Manager 5/5.5e"), " \u2013 monster maker, party, creatures, conditions, spells, encounter builder and combat tracker."),
+    h("p", h("strong", "Kimble's Encounter Manager 5/5.5e"), h("span.muted", ` \xB7 version ${version2}`), h("br"), "Monster maker, party, creatures, conditions, spells, encounter builder and combat tracker."),
     h("p", "Encounter difficulty uses the 2014 XP thresholds and multipliers, or the 2024 XP budgets."),
     h(
       "p.license",
@@ -66168,7 +67579,7 @@ async function init() {
   setSpellOpener((id) => go5("spells", id));
   mountDiceTray();
   renderLibButton();
-  if (store.errors.length) modal("Some files could not be read", h("ul.warnings", store.errors.map((e) => h("li", e))));
+  if (store.errors.length) modal("Some files could not be read", h("ul.warnings", store.errors.map((e2) => h("li", e2))));
   let start2 = "maker";
   try {
     start2 = localStorage.getItem("tab") || "maker";
@@ -66314,9 +67725,9 @@ function compose({ charId, character }) {
       openPanel(`pc-${charId}`);
     }, "primary"]
   ]);
-  text.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
+  text.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && (e2.ctrlKey || e2.metaKey)) {
+      e2.preventDefault();
       close();
       sendMessage(charId, character, from.value.trim() || "GM", text.value.trim());
       openPanel(`pc-${charId}`);
@@ -66358,9 +67769,9 @@ function draw() {
     if (!t || !text.value.trim()) return;
     sendMessage(t.charId, t.character, from.value.trim() || "GM", text.value.trim());
   };
-  text.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
+  text.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && !e2.shiftKey) {
+      e2.preventDefault();
       go6();
     }
   });
@@ -66457,8 +67868,8 @@ var mark = (name) => {
 };
 function publish(force = false) {
   if (!bridge) return;
-  const e = liveEncounter(), opts2 = { showPartyHp: !!settings2.showPartyHp, mark, party: activeParty() };
-  const state2 = e?.combat ? publicState(e, opts2) : partyState(opts2.party, opts2);
+  const e2 = liveEncounter(), opts2 = { showPartyHp: !!settings2.showPartyHp, mark, party: activeParty() };
+  const state2 = e2?.combat ? publicState(e2, opts2) : partyState(opts2.party, opts2);
   const text = JSON.stringify(state2);
   if (!force && text === lastSent) return;
   lastSent = text;
@@ -66469,16 +67880,16 @@ var schedule = () => {
   clearTimeout(timer);
   timer = setTimeout(() => publish(), 120);
 };
-window.addEventListener("message", (e) => {
-  if (e.origin !== location.origin || !e.data?.eb) return;
-  const m = e.data;
+window.addEventListener("message", (e2) => {
+  if (e2.origin !== location.origin || !e2.data?.eb) return;
+  const m = e2.data;
   if (m.type === "attach") {
-    obr = e.source.top;
+    obr = e2.source.top;
     bridge = null;
     setBadge();
     hello();
   } else if (m.type === "welcome") {
-    bridge = e.source;
+    bridge = e2.source;
     lastPong = Date.now();
     settings2 = m.settings || {};
     setBadge();
