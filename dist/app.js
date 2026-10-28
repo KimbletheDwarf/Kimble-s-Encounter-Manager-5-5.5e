@@ -28934,7 +28934,7 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
       const useTexStorage = texture.isVideoTexture !== true;
       const allocateMemory = sourceProperties.__version === void 0 || forceUpload === true;
       const dataReady = source.dataReady;
-      const levels = getMipLevels(texture, image);
+      const levels2 = getMipLevels(texture, image);
       if (texture.isDepthTexture) {
         glInternalFormat = getInternalDepthFormat(texture.format === DepthStencilFormat, texture.type);
         if (allocateMemory) {
@@ -28947,7 +28947,7 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
       } else if (texture.isDataTexture) {
         if (mipmaps.length > 0) {
           if (useTexStorage && allocateMemory) {
-            state2.texStorage2D(_gl.TEXTURE_2D, levels, glInternalFormat, mipmaps[0].width, mipmaps[0].height);
+            state2.texStorage2D(_gl.TEXTURE_2D, levels2, glInternalFormat, mipmaps[0].width, mipmaps[0].height);
           }
           for (let i = 0, il = mipmaps.length; i < il; i++) {
             mipmap = mipmaps[i];
@@ -28963,7 +28963,7 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
         } else {
           if (useTexStorage) {
             if (allocateMemory) {
-              state2.texStorage2D(_gl.TEXTURE_2D, levels, glInternalFormat, image.width, image.height);
+              state2.texStorage2D(_gl.TEXTURE_2D, levels2, glInternalFormat, image.width, image.height);
             }
             if (dataReady) {
               updateTexture(texture, image, glFormat, glType);
@@ -28975,7 +28975,7 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
       } else if (texture.isCompressedTexture) {
         if (texture.isCompressedArrayTexture) {
           if (useTexStorage && allocateMemory) {
-            state2.texStorage3D(_gl.TEXTURE_2D_ARRAY, levels, glInternalFormat, mipmaps[0].width, mipmaps[0].height, image.depth);
+            state2.texStorage3D(_gl.TEXTURE_2D_ARRAY, levels2, glInternalFormat, mipmaps[0].width, mipmaps[0].height, image.depth);
           }
           for (let i = 0, il = mipmaps.length; i < il; i++) {
             mipmap = mipmaps[i];
@@ -29015,7 +29015,7 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
           if (texture.layerUpdates.size > 0) texture.clearLayerUpdates();
         } else {
           if (useTexStorage && allocateMemory) {
-            state2.texStorage2D(_gl.TEXTURE_2D, levels, glInternalFormat, mipmaps[0].width, mipmaps[0].height);
+            state2.texStorage2D(_gl.TEXTURE_2D, levels2, glInternalFormat, mipmaps[0].width, mipmaps[0].height);
           }
           for (let i = 0, il = mipmaps.length; i < il; i++) {
             mipmap = mipmaps[i];
@@ -29045,7 +29045,7 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
       } else if (texture.isDataArrayTexture) {
         if (useTexStorage) {
           if (allocateMemory) {
-            state2.texStorage3D(_gl.TEXTURE_2D_ARRAY, levels, glInternalFormat, image.width, image.height, image.depth);
+            state2.texStorage3D(_gl.TEXTURE_2D_ARRAY, levels2, glInternalFormat, image.width, image.height, image.depth);
           }
           if (dataReady) {
             if (texture.layerUpdates.size > 0) {
@@ -29068,7 +29068,7 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
       } else if (texture.isData3DTexture) {
         if (useTexStorage) {
           if (allocateMemory) {
-            state2.texStorage3D(_gl.TEXTURE_3D, levels, glInternalFormat, image.width, image.height, image.depth);
+            state2.texStorage3D(_gl.TEXTURE_3D, levels2, glInternalFormat, image.width, image.height, image.depth);
           }
           if (dataReady) {
             state2.texSubImage3D(_gl.TEXTURE_3D, 0, 0, 0, 0, image.width, image.height, image.depth, glFormat, glType, image.data);
@@ -29079,10 +29079,10 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
       } else if (texture.isFramebufferTexture) {
         if (allocateMemory) {
           if (useTexStorage) {
-            state2.texStorage2D(_gl.TEXTURE_2D, levels, glInternalFormat, image.width, image.height);
+            state2.texStorage2D(_gl.TEXTURE_2D, levels2, glInternalFormat, image.width, image.height);
           } else {
             let width = image.width, height = image.height;
-            for (let i = 0; i < levels; i++) {
+            for (let i = 0; i < levels2; i++) {
               state2.texImage2D(_gl.TEXTURE_2D, i, glInternalFormat, width, height, 0, glFormat, glType, null);
               width >>= 1;
               height >>= 1;
@@ -29126,7 +29126,7 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
         if (mipmaps.length > 0) {
           if (useTexStorage && allocateMemory) {
             const dimensions = getDimensions(mipmaps[0]);
-            state2.texStorage2D(_gl.TEXTURE_2D, levels, glInternalFormat, dimensions.width, dimensions.height);
+            state2.texStorage2D(_gl.TEXTURE_2D, levels2, glInternalFormat, dimensions.width, dimensions.height);
           }
           for (let i = 0, il = mipmaps.length; i < il; i++) {
             mipmap = mipmaps[i];
@@ -29143,7 +29143,7 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
           if (useTexStorage) {
             if (allocateMemory) {
               const dimensions = getDimensions(image);
-              state2.texStorage2D(_gl.TEXTURE_2D, levels, glInternalFormat, dimensions.width, dimensions.height);
+              state2.texStorage2D(_gl.TEXTURE_2D, levels2, glInternalFormat, dimensions.width, dimensions.height);
             }
             if (dataReady) {
               state2.texSubImage2D(_gl.TEXTURE_2D, 0, 0, 0, glFormat, glType, image);
@@ -29191,12 +29191,12 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
       const useTexStorage = texture.isVideoTexture !== true;
       const allocateMemory = sourceProperties.__version === void 0 || forceUpload === true;
       const dataReady = source.dataReady;
-      let levels = getMipLevels(texture, image);
+      let levels2 = getMipLevels(texture, image);
       setTextureParameters(_gl.TEXTURE_CUBE_MAP, texture);
       let mipmaps;
       if (isCompressed) {
         if (useTexStorage && allocateMemory) {
-          state2.texStorage2D(_gl.TEXTURE_CUBE_MAP, levels, glInternalFormat, image.width, image.height);
+          state2.texStorage2D(_gl.TEXTURE_CUBE_MAP, levels2, glInternalFormat, image.width, image.height);
         }
         for (let i = 0; i < 6; i++) {
           mipmaps = cubeImage[i].mipmaps;
@@ -29228,9 +29228,9 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
       } else {
         mipmaps = texture.mipmaps;
         if (useTexStorage && allocateMemory) {
-          if (mipmaps.length > 0) levels++;
+          if (mipmaps.length > 0) levels2++;
           const dimensions = getDimensions(cubeImage[0]);
-          state2.texStorage2D(_gl.TEXTURE_CUBE_MAP, levels, glInternalFormat, dimensions.width, dimensions.height);
+          state2.texStorage2D(_gl.TEXTURE_CUBE_MAP, levels2, glInternalFormat, dimensions.width, dimensions.height);
         }
         for (let i = 0; i < 6; i++) {
           if (isDataTexture) {
@@ -34941,8 +34941,8 @@ function dieMesh(sides, labels, theme, font, tens) {
     const c2 = vs.reduce((s, v) => s.clone().add(v), new Vector3()).divideScalar(vs.length);
     let u = new Vector3().subVectors(vs[1], vs[0]).normalize();
     if (sides === 10) {
-      const tip2 = vs.reduce((a2, v) => v.distanceTo(c2) > a2.distanceTo(c2) ? v : a2);
-      u = new Vector3().subVectors(tip2, c2).normalize().cross(n).normalize();
+      const tip = vs.reduce((a2, v) => v.distanceTo(c2) > a2.distanceTo(c2) ? v : a2);
+      u = new Vector3().subVectors(tip, c2).normalize().cross(n).normalize();
     }
     const w = new Vector3().crossVectors(n, u);
     let faceUV, tex;
@@ -35553,10 +35553,10 @@ function evaluate(crs, party, rules = "2014") {
   });
   return { total, multiplier: mult, adjusted, steps, rank, difficulty: names[rank], maxRank: steps.length, daily, perPlayer };
 }
-function partyLabel(levels) {
-  if (!levels.length) return "No characters";
-  const avg = levels.reduce((a2, b2) => a2 + b2, 0) / levels.length;
-  return `${levels.length} level ${Number.isInteger(avg) ? avg : avg.toFixed(1)}s`;
+function partyLabel(levels2) {
+  if (!levels2.length) return "No characters";
+  const avg = levels2.reduce((a2, b2) => a2 + b2, 0) / levels2.length;
+  return `${levels2.length} level ${Number.isInteger(avg) ? avg : avg.toFixed(1)}s`;
 }
 var CR_XP, CR_ORDER, crValue, xpFor, isMinion, monsterXp, xpItem, profBonus, THRESHOLDS, DAILY, MULTIPLIERS, BUDGET_2024, RULES, DIFFICULTIES, DIFFICULTIES_2024, clampLevel, member, clampPower;
 var init_rules = __esm({
@@ -38459,22 +38459,38 @@ var init_snapshot = __esm({
 });
 
 // src/tooltip.js
-function ensureTip() {
-  if (tip) return tip;
-  tip = h("div.cond-tip", { hidden: true });
-  tip.addEventListener("mouseenter", () => clearTimeout(hideTimer));
-  tip.addEventListener("mouseleave", () => {
-    if (!pinned) hideSoon();
-  });
-  document.body.append(tip);
-  return tip;
+function tipAt(n) {
+  while (levels.length <= n) {
+    const level = { tip: h("div.cond-tip", { hidden: true }), pinned: null, hideTimer: null };
+    level.tip.style.zIndex = 70 + levels.length;
+    level.tip.addEventListener("mouseenter", () => clearTimeout(level.hideTimer));
+    level.tip.addEventListener("mouseleave", (e2) => {
+      if (!level.pinned && !levels.some((l) => l.tip.contains(e2.relatedTarget))) hideSoon(levels.indexOf(level));
+    });
+    document.body.append(level.tip);
+    levels.push(level);
+  }
+  return levels[n];
 }
-function show(el11) {
-  const html = htmlOf(el11, !!pinned);
+function closeFrom(n) {
+  for (let i = Math.max(0, n); i < levels.length; i++) {
+    const l = levels[i];
+    clearTimeout(l.hideTimer);
+    l.pinned = null;
+    l.tip.hidden = true;
+  }
+}
+function unpin() {
+  closeFrom(0);
+}
+function show(el11, n) {
+  const level = tipAt(n), pinned = level.pinned === el11;
+  const html = htmlOf(el11, pinned);
   if (!html) return;
-  clearTimeout(hideTimer);
-  ensureTip();
-  tip.innerHTML = `<div class="tip-body">${html}</div>${pinned ? '<div class="tip-actions"><button class="tip-copy" data-copy-tip title="A picture of this card, to paste into a chat">Copy as image</button><span class="cond-hint">Pinned. Click elsewhere or press Esc to close.</span></div>' : '<div class="cond-hint">Click the word to pin this open (and copy it as an image).</div>'}`;
+  clearTimeout(level.hideTimer);
+  closeFrom(n + 1);
+  const tip = level.tip;
+  tip.innerHTML = `<div class="tip-body">${html}</div>${pinned ? '<div class="tip-actions"><button class="tip-copy" data-copy-tip title="A picture of this card, to paste into a chat">Copy as image</button><span class="cond-hint">Pinned. Links in it open their own cards. Click elsewhere or press Esc to close.</span></div>' : '<div class="cond-hint">Click the word to pin this open (and copy it as an image).</div>'}`;
   tip.hidden = false;
   tip.scrollTop = 0;
   const r = el11.getBoundingClientRect(), tw = tip.offsetWidth;
@@ -38486,17 +38502,15 @@ function show(el11) {
   tip.style.left = `${Math.min(Math.max(8, r.left), window.innerWidth - tw - 8)}px`;
   tip.style.top = `${under ? r.bottom + 6 : r.top - 6 - tip.offsetHeight}px`;
 }
-function hideSoon() {
-  clearTimeout(hideTimer);
-  hideTimer = setTimeout(() => {
-    if (!pinned && tip) tip.hidden = true;
+function hideSoon(n) {
+  const level = levels[n];
+  if (!level) return;
+  clearTimeout(level.hideTimer);
+  level.hideTimer = setTimeout(() => {
+    if (!level.pinned) closeFrom(n);
   }, 180);
 }
-function unpin() {
-  pinned = null;
-  if (tip) tip.hidden = true;
-}
-var kinds, registerTip, linkOf, htmlOf, tip, pinned, hideTimer;
+var kinds, registerTip, linkOf, htmlOf, levels, levelOfTip, levelFor;
 var init_tooltip = __esm({
   "src/tooltip.js"() {
     init_ui();
@@ -38504,47 +38518,62 @@ var init_tooltip = __esm({
     kinds = /* @__PURE__ */ new Map();
     registerTip = (key2, html) => kinds.set(key2, html);
     linkOf = (target) => target.closest?.([...kinds.keys()].map((k) => `[data-${k}]`).join(",") || null);
-    htmlOf = (el11, pinned2) => {
-      for (const [k, fn] of kinds) if (el11.dataset[k] != null) return fn(el11.dataset[k], pinned2);
+    htmlOf = (el11, pinned) => {
+      for (const [k, fn] of kinds) if (el11.dataset[k] != null) return fn(el11.dataset[k], pinned);
       return "";
     };
-    pinned = null;
+    levels = [];
+    levelOfTip = (node) => levels.findIndex((l) => l.tip.contains(node));
+    levelFor = (link2) => levelOfTip(link2) + 1;
     document.addEventListener("mouseover", (e2) => {
       const el11 = linkOf(e2.target);
-      if (el11 && !pinned) show(el11);
+      if (!el11) return;
+      const n = levelFor(el11);
+      if (!levels[n]?.pinned) show(el11, n);
     });
     document.addEventListener("mouseout", (e2) => {
       const el11 = linkOf(e2.target);
-      if (el11 && !pinned && !tip?.contains(e2.relatedTarget)) hideSoon();
+      if (!el11) return;
+      const n = levelFor(el11);
+      if (!levels[n]?.pinned && !levels.slice(n).some((l) => l.tip.contains(e2.relatedTarget))) hideSoon(n);
     });
     document.addEventListener("focusin", (e2) => {
-      if (e2.target.matches?.(".cond-link") && !pinned) show(e2.target);
+      if (!e2.target.matches?.(".cond-link")) return;
+      const n = levelFor(e2.target);
+      if (!levels[n]?.pinned) show(e2.target, n);
     });
     document.addEventListener("click", (e2) => {
       const el11 = e2.target.closest?.(".cond-link");
-      if (el11 && !tip?.contains(el11)) {
+      if (el11 && linkOf(el11)) {
         e2.preventDefault();
-        if (pinned === el11) return unpin();
-        pinned = el11;
-        show(el11);
+        const n = levelFor(el11), level = tipAt(n);
+        if (level.pinned === el11) return closeFrom(n);
+        level.pinned = el11;
+        show(el11, n);
         return;
       }
-      if (tip && !tip.contains(e2.target)) unpin();
+      const inside = levelOfTip(e2.target);
+      if (!e2.target.closest?.("[data-copy-tip]")) closeFrom(inside + 1);
     }, true);
     document.addEventListener("keydown", (e2) => {
-      if (e2.key === "Escape" && pinned) unpin();
+      if (e2.key !== "Escape") return;
+      const top = levels.map((l) => !l.tip.hidden).lastIndexOf(true);
+      if (top >= 0) closeFrom(top);
     });
+    document.addEventListener("scroll", (e2) => {
+      if (!levels.some((l) => l.pinned)) return;
+      closeFrom(levelOfTip(e2.target) + 1);
+    }, true);
     document.addEventListener("click", (e2) => {
-      if (!e2.target.closest?.("[data-copy-tip]") || !tip) return;
-      const body2 = tip.querySelector(".tip-body");
-      const t = getComputedStyle(tip);
+      const b2 = e2.target.closest?.("[data-copy-tip]");
+      const level = b2 && levels.find((l) => l.tip.contains(b2));
+      if (!level) return;
+      const body2 = level.tip.querySelector(".tip-body");
+      const t = getComputedStyle(level.tip);
       copyElementImage(body2, body2.querySelector(".cond-name")?.textContent || "card", {
         box: { background: t.backgroundColor, color: t.color, padding: t.padding, border: t.border, borderRadius: t.borderRadius }
       });
     });
-    document.addEventListener("scroll", (e2) => {
-      if (pinned && !tip?.contains(e2.target)) unpin();
-    }, true);
   }
 });
 
@@ -38696,7 +38725,7 @@ function spellHtml(s, { body: body2 = (t) => markupHtml(t) } = {}) {
     <div class="spell-props">${prop("Casting Time", s.castingTime + (s.ritual ? " or Ritual" : ""))}${prop("Range", s.range)}${prop("Components", s.components)}${prop("Duration", s.duration)}</div>
     ${body2(s.text)}`;
 }
-var norm, escRe, byName, byId, plainRe, findSpell, spellById, link, CASTS, spellLevelText, spellTags, opener2, setSpellOpener;
+var norm, escRe, byName, byId, plainRe, findSpell, spellById, link, CASTS, spellLevelText, spellTags, opener, setSpellOpener;
 var init_spells = __esm({
   "src/spells.js"() {
     init_ui();
@@ -38723,20 +38752,20 @@ var init_spells = __esm({
     CASTS = /(?:\bcast(?:s|ing)?\s+(?:the\s+)?|(?:at will|\d+\/day(?: each)?):\s+(?:[^.\n]*,\s*)?)$/i;
     spellLevelText = (s) => (s.level ? `Level ${s.level} ${s.school}` : `${s.school} Cantrip`) + (s.classes?.length ? ` (${s.classes.join(", ")})` : "");
     spellTags = (s) => [s.concentration ? "Concentration" : "", s.ritual ? "Ritual" : ""].filter(Boolean);
-    registerTip("spell", (name, pinned2) => {
+    registerTip("spell", (name, pinned) => {
       const s = findSpell(name);
       if (!s) return "";
-      return spellHtml(s) + (s.creature ? `<p class="spell-more">This spell has a stat block (${esc(s.creature.name)}) on the Spells tab.</p>` : "") + (pinned2 && opener2 ? `<button class="tip-open" data-open-spell="${esc(s.id)}">Open in the Spells tab</button>` : "");
+      return spellHtml(s) + (s.creature ? `<p class="spell-more">This spell has a stat block (${esc(s.creature.name)}) on the Spells tab.</p>` : "") + (pinned && opener ? `<button class="tip-open" data-open-spell="${esc(s.id)}">Open in the Spells tab</button>` : "");
     });
-    opener2 = null;
+    opener = null;
     setSpellOpener = (fn) => {
-      opener2 = fn;
+      opener = fn;
     };
     document.addEventListener("click", (e2) => {
       const b2 = e2.target.closest?.("[data-open-spell]");
-      if (!b2 || !opener2) return;
+      if (!b2 || !opener) return;
       unpin();
-      opener2(b2.dataset.openSpell);
+      opener(b2.dataset.openSpell);
     });
   }
 });
@@ -61515,6 +61544,7 @@ registerTip("rule", (name) => {
 });
 
 // src/items.js
+init_spells();
 init_store();
 init_tooltip();
 
@@ -62739,8 +62769,8 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
   return { seed, coins, lines, harvest, totalGp: round2(coins / 100 + worth("other")), magicGp: worth("magic"), notes, partyLevel: level, generosity: gen };
 }
 function spellScroll(r, rarity, spells) {
-  const levels = SCROLL_LEVELS[rarity].filter((l) => spells.some((s2) => s2.level === l));
-  const lvl = levels[Math.floor(r() * levels.length)] ?? 1;
+  const levels2 = SCROLL_LEVELS[rarity].filter((l) => spells.some((s2) => s2.level === l));
+  const lvl = levels2[Math.floor(r() * levels2.length)] ?? 1;
   const list = spells.filter((s2) => s2.level === lvl);
   const s = list[Math.floor(r() * list.length)];
   return { kind: "magic", name: `Spell Scroll: ${s?.name || "unknown spell"} (${lvl ? `level ${lvl}` : "cantrip"})`, qty: 1, value: SCROLL_VALUE[lvl], rarity, ...s ? { spell: s.name } : {} };
@@ -62810,7 +62840,7 @@ function itemTypeLine(it) {
 function itemHtml(it) {
   const value = itemValue(it);
   const stat = (label, v) => v ? `<div class="item-stat"><strong>${label}</strong> ${esc2(v)}</div>` : "";
-  return `<div class="cond-name">${esc2(it.name)}</div><div class="spell-meta">${esc2(itemTypeLine(it))}</div>` + stat(it.category === "magic" && !(Number(it.price) > 0) ? "Value (by rarity)" : "Cost", value != null ? `${priceText(value)}${it.bundle ? ` each (${it.bundle} to a bundle)` : ""}` : "") + stat("Armor Class", it.ac) + stat("Damage", it.damage) + stat("Properties", it.properties) + stat("Mastery", it.mastery) + stat("Strength", it.strength) + stat("Stealth", it.stealth) + stat("Weight", it.weight) + stat("Comes from", (it.creatures || []).join(", ")) + stat("Source", it.book) + (it.text ? `<div class="item-text">${glossify(condify(markupHtml(it.text)))}</div>` : "") + (it.loot === false ? '<div class="spell-tags">Never drops as loot</div>' : "");
+  return `<div class="cond-name">${esc2(it.name)}</div><div class="spell-meta">${esc2(itemTypeLine(it))}</div>` + stat(it.category === "magic" && !(Number(it.price) > 0) ? "Value (by rarity)" : "Cost", value != null ? `${priceText(value)}${it.bundle ? ` each (${it.bundle} to a bundle)` : ""}` : "") + stat("Armor Class", it.ac) + stat("Damage", it.damage) + stat("Properties", it.properties) + stat("Mastery", it.mastery) + stat("Strength", it.strength) + stat("Stealth", it.stealth) + stat("Weight", it.weight) + stat("Comes from", (it.creatures || []).join(", ")) + stat("Source", it.book) + (it.text ? `<div class="item-text">${glossify(condify(spellify(markupHtml(it.text))))}</div>` : "") + (it.loot === false ? '<div class="spell-tags">Never drops as loot</div>' : "");
 }
 var blankItem = (name = "New Item") => ({ name, category: "magic", magic: "wondrous", rarity: "Uncommon", price: null, consumable: false, carried: true, text: "", source: "Homebrew" });
 function itemEditor(it, { changed: changed3, redraw }) {
@@ -62926,20 +62956,20 @@ function itemEditor(it, { changed: changed3, redraw }) {
     h("div.hint", 'A blank line starts a new paragraph. **bold**, *italic*, "| a | b |" rows for a table.')
   );
 }
-registerTip("item", (id, pinned2) => {
+registerTip("item", (id, pinned) => {
   const it = findItem(id);
   if (!it) return "";
-  return itemHtml(it) + (pinned2 && opener ? `<button class="tip-open" data-open-item="${esc2(it.id)}">Open in the Items tab</button>` : "");
+  return itemHtml(it) + (pinned && opener2 ? `<button class="tip-open" data-open-item="${esc2(it.id)}">Open in the Items tab</button>` : "");
 });
-var opener = null;
+var opener2 = null;
 var setItemOpener = (fn) => {
-  opener = fn;
+  opener2 = fn;
 };
 document.addEventListener("click", (e2) => {
   const b2 = e2.target.closest?.("[data-open-item]");
-  if (!b2 || !opener) return;
+  if (!b2 || !opener2) return;
   unpin();
-  opener(b2.dataset.openItem);
+  opener2(b2.dataset.openItem);
 });
 
 // src/tabs/maker.js
@@ -64095,8 +64125,8 @@ function characterSheet(c2, opts2 = {}) {
   const saves = s.saves.map((x) => `<span class="sh-chip${x.proficient ? " prof" : ""}" title="${x.proficient ? "Proficient" : ""}">${x.ability} ${roll2(sign(x.bonus), `1d20${sign(x.bonus)}`, `${x.ability} save`, who)}</span>`).join("");
   const skills = s.skills.map((k) => `<div class="sh-skill${k.proficiency ? ` ${k.proficiency}` : ""}"><span class="sh-mark" title="${k.proficiency}">${k.proficiency === "expertise" ? "E" : k.proficiency === "proficient" ? "P" : k.proficiency === "half" ? "\xBD" : ""}</span><span>${esc(k.name)} <small>${k.ability}</small></span>${roll2(sign(k.bonus), `1d20${sign(k.bonus)}`, k.name, who)}</div>`).join("");
   const attacks = s.attacks.length ? `<table class="sh-table"><thead><tr><th>Attack</th><th>Hit</th><th>Damage</th><th>Notes</th></tr></thead><tbody>${s.attacks.map((a2) => `<tr><td>${esc(a2.name)}</td><td>${roll2(a2.hit, bonusExpr(a2.hit), `${a2.name}: to hit`, who)}</td><td>${a2.damageDice && /d/.test(a2.damageDice) ? rollButton(a2.damageDice, a2.damageDice, `${a2.name}: damage`, who) : esc(a2.damageDice)} ${esc(a2.damageType)}</td><td class="sh-notes">${esc(a2.notes)}</td></tr>`).join("")}</tbody></table>` : "";
-  const levels = [...new Set(s.spells.map((x) => x.level))];
-  const spells = levels.map((lv, i) => {
+  const levels2 = [...new Set(s.spells.map((x) => x.level))];
+  const spells = levels2.map((lv, i) => {
     const list = s.spells.filter((x) => x.level === lv);
     return `<details class="sh-spells"${i < 2 ? " open" : ""}><summary>${esc(lv)} <span class="muted">${esc(s.slots[lv] || "")} \xB7 ${list.length}</span></summary><table class="sh-table"><tbody>${list.map((x) => `<tr><td>${spellLink(x.name)}${x.prepared ? ' <span class="tag">ALWAYS</span>' : ""}</td><td>${/^[+\-]\d/.test(x.saveHit) ? roll2(x.saveHit, bonusExpr(x.saveHit), `${x.name}: spell attack`, who) : esc(x.saveHit)}</td><td>${esc(x.time)}</td><td>${esc(x.range)}</td><td class="sh-notes">${esc(x.duration)}</td></tr>`).join("")}</tbody></table></details>`;
   }).join("");
@@ -66185,14 +66215,14 @@ function renderParams() {
   ));
   const num2 = (key2, min, max) => h("input.num", { type: "number", min, max, value: p[key2], onchange: (e2) => set(key2, Math.min(max, Math.max(min, Number(e2.target.value) || min))) });
   const crSel = (key2) => h("select", { onchange: (e2) => set(key2, e2.target.value) }, CR_ORDER.map((c2) => h("option", { value: c2, selected: p[key2] === c2 }, c2)));
-  const levels = encounterLevels(p);
+  const levels2 = encounterLevels(p);
   const labels = monsterLabels();
   fill(
     box,
     h(
       "div.card.gen-card",
       h("h3", "Party and difficulty"),
-      h("div.gen-party", h("span", levels.length ? partyLabel(levels) : "No characters picked"), h("button.dark", { onclick: () => manageCharactersDialog(p, () => {
+      h("div.gen-party", h("span", levels2.length ? partyLabel(levels2) : "No characters picked"), h("button.dark", { onclick: () => manageCharactersDialog(p, () => {
         saveParams();
         renderParams();
         renderResult();
@@ -66522,8 +66552,8 @@ function changed2() {
 }
 function renderEditor() {
   const e2 = current2;
-  const levels = encounterLevels(e2);
-  const avg = levels.length ? levels.reduce((a2, b2) => a2 + b2, 0) / levels.length : 0;
+  const levels2 = encounterLevels(e2);
+  const avg = levels2.length ? levels2.reduce((a2, b2) => a2 + b2, 0) / levels2.length : 0;
   fill(
     el9,
     h(
@@ -66554,8 +66584,8 @@ function renderEditor() {
             } },
             Object.entries(RULES).map(([k, v]) => h("option", { value: k, selected: (e2.rules || "2014") === k }, v))
           )),
-          h("div.party-stat", "# of characters: ", h("strong", levels.length)),
-          h("div.party-stat", "Average party level: ", h("strong", levels.length ? Number.isInteger(avg) ? avg : avg.toFixed(1) : "\u2014")),
+          h("div.party-stat", "# of characters: ", h("strong", levels2.length)),
+          h("div.party-stat", "Average party level: ", h("strong", levels2.length ? Number.isInteger(avg) ? avg : avg.toFixed(1) : "\u2014")),
           partyPower(e2) !== 1 ? h("div.party-stat", { title: "Average of the characters\u2019 power multipliers (set on the Party tab). Thresholds are scaled per character." }, "Party power: ", h("strong", powerText(partyPower(e2)))) : null,
           h("button.dark", { onclick: manageCharacters }, "Manage characters")
         ),
@@ -66638,7 +66668,7 @@ function filteredMonsters() {
 function renderMonsters() {
   const box = el9.querySelector("#bd-monsters");
   if (!box) return;
-  const levels = encounterLevels(current2);
+  const levels2 = encounterLevels(current2);
   const party = encounterParty(current2);
   const list = filteredMonsters();
   const head = (label, key2) => h("button.sort" + (sort.key === key2 ? ".on" : ""), { onclick: () => {
@@ -66658,7 +66688,7 @@ function renderMonsters() {
         h("div", m.monsterType),
         h("div", m.size),
         h("div", m.challengeRating),
-        h("div", { title: levels.length ? `${r.difficulty} on its own for this party` : "Add characters to see difficulty" }, dots(r.rank, r.maxRank)),
+        h("div", { title: levels2.length ? `${r.difficulty} on its own for this party` : "Add characters to see difficulty" }, dots(r.rank, r.maxRank)),
         h("button.add", { onclick: () => addMonster(m) }, "+ Add"),
         h("button.icon-btn.chev", { title: open2 ? "Hide stat block" : "Show stat block", onclick: () => {
           expanded2 = open2 ? null : m.id;
@@ -66706,10 +66736,10 @@ function renderSummary() {
   if (!box) return;
   const e2 = current2;
   const r = evaluateEncounter(e2);
-  const levels = encounterLevels(e2);
+  const levels2 = encounterLevels(e2);
   const top = r.steps[r.steps.length - 1].xp || 1;
   const pct = Math.min(100, r.adjusted / top * 100);
-  const over = e2.rules === "2024" && levels.length && r.total > top ? r.total - top : 0;
+  const over = e2.rules === "2024" && levels2.length && r.total > top ? r.total - top : 0;
   fill(
     box,
     h("h2", "Encounter summary"),
@@ -66718,7 +66748,7 @@ function renderSummary() {
       h(
         "div.sum-left",
         h("div.k", "Difficulty"),
-        h(`div.v.big.${difficultyClass(r.difficulty)}`, { title: DIFF_HELP[r.difficulty] || "" }, levels.length ? r.difficulty : "\u2014"),
+        h(`div.v.big.${difficultyClass(r.difficulty)}`, { title: DIFF_HELP[r.difficulty] || "" }, levels2.length ? r.difficulty : "\u2014"),
         h("div.k", "Total XP"),
         h("div.v", r.total.toLocaleString()),
         e2.rules === "2024" ? [h("div.k", "XP per player"), h("div.v", r.perPlayer.toLocaleString())] : [h("div.k", "Adjusted XP"), h("div.v", `${r.adjusted.toLocaleString()} XP (x${r.multiplier})`)]
@@ -66731,7 +66761,7 @@ function renderSummary() {
     ),
     h("div.bar", h(`div.bar-fill.${difficultyClass(r.difficulty)}`, { style: `width:${pct}%` })),
     over ? h("div.over", `${over.toLocaleString()} XP over the High budget`) : null,
-    !levels.length ? h("div.hint", "Add characters (Manage characters) to see the difficulty.") : null,
+    !levels2.length ? h("div.hint", "Add characters (Manage characters) to see the difficulty.") : null,
     h(
       "div.sum-list",
       e2.groups.length ? e2.groups.map((g, i) => {
@@ -66780,7 +66810,7 @@ function renderSummary() {
         );
       }) : h("div.empty", "Add monsters from the list.")
     ),
-    levels.length ? h("div.sum-party", h("h3", "Characters"), partyChips(e2)) : null
+    levels2.length ? h("div.sum-party", h("h3", "Characters"), partyChips(e2)) : null
   );
 }
 function partyChips(e2) {
@@ -67752,7 +67782,7 @@ function renderLog() {
 }
 
 // src/obr/manifest.json
-var version2 = "1.3.0";
+var version2 = "1.4.0";
 
 // src/app.js
 var TABS = [

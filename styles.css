@@ -767,5 +767,5 @@ button.temp { background: #13283a; border-color: #2b5a80; color: #8fd0ff; }
 @media (max-width: 1250px) { .maker-item { grid-template-columns: 1fr; } }
 .tip-actions { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
 .tip-actions .cond-hint { margin-top: 0; }
-.tip-copy { font: 12px "Segoe UI", sans-serif; padding: 4px 10px; background: #e6dcc4; color: #2a2016; border-color: #c9a96b; }
+.tip-copy { font: 12px "Segoe UI", sans-serif; padding: 4px 10px; white-space: nowrap; flex-shrink: 0; background: #e6dcc4; color: #2a2016; border-color: #c9a96b; }
 .tip-copy:hover:not(:disabled) { background: #dccfb0; border-color: #a8884d; }
