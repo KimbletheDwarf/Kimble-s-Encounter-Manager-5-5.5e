@@ -3710,6 +3710,24 @@ function gmControls() {
       h("input", { type: "checkbox", checked: settings.showTurnDie !== false, onchange: (e) => lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings, showTurnDie: e.target.checked } }) }),
       "Show the turn d20 on the active token"
     ),
+    h(
+      "label.check",
+      { title: 'A green trail with a dot every 5 ft and "15 / 30 ft" on the token whose turn it is. Right-click the token > Reset movement to start its turn again.' },
+      h("input", { type: "checkbox", checked: settings.trackMovement !== false, onchange: (e) => lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings, trackMovement: e.target.checked } }) }),
+      "Track movement on the active token"
+    ),
+    settings.trackMovement !== false ? h(
+      "label.check",
+      { title: "The trail follows the drag square by square. Off: players keep Owlbear\u2019s normal Move tool (one straight line per drop)." },
+      h("input", { type: "checkbox", checked: settings.dragTrail !== false, onchange: (e) => lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings, dragTrail: e.target.checked } }) }),
+      "Switch players to \u201CMove with trail\u201D during fights"
+    ) : null,
+    settings.trackMovement !== false ? h(
+      "label.check",
+      { title: "A drop that goes past the token\u2019s speed is undone, and its player is told how far it can still go." },
+      h("input", { type: "checkbox", checked: !!settings.stopAtSpeed, onchange: (e) => lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings, stopAtSpeed: e.target.checked } }) }),
+      "Stop movement at its speed"
+    ) : null,
     h(`div.status${connected ? ".on" : ""}`, {}, connected ? "\u25CF GM window linked" : "\u25CB GM window not linked"),
     h("button", { onclick: openGmWindow }, connected ? "Show the GM window" : "Open / reconnect GM window"),
     note ? h("div.status", {}, note) : null

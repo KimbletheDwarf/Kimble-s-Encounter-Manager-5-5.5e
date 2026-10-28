@@ -34848,8 +34848,8 @@ function throwOnce(sides, { w, h: h2 }, rng2) {
     b2.quaternion.setFromEuler(rng2() * 6.28, rng2() * 6.28, rng2() * 6.28);
     const toMid = new Vec3(-b2.position.x, 0, -b2.position.z);
     toMid.normalize();
-    const speed = 10 + rng2() * 6;
-    b2.velocity.set(toMid.x * speed + (rng2() - 0.5) * 6, -2 - rng2() * 4, toMid.z * speed + (rng2() - 0.5) * 6);
+    const speed2 = 10 + rng2() * 6;
+    b2.velocity.set(toMid.x * speed2 + (rng2() - 0.5) * 6, -2 - rng2() * 4, toMid.z * speed2 + (rng2() - 0.5) * 6);
     b2.angularVelocity.set((rng2() - 0.5) * 30, (rng2() - 0.5) * 30, (rng2() - 0.5) * 30);
     world.addBody(b2);
     return b2;
@@ -35057,7 +35057,7 @@ function createTray(container) {
      * dice: [{ sides, labels, dropped?, tens? }]; frames: the recording; opts: { theme, font, speed, hold, more }.
      * Resolves when the dice have faded (or were replaced by a newer throw).
      */
-    play(dice2, frames2, { theme = THEMES.ivory, font = "", speed = 1.3, hold = 2e3, more = 0 } = {}) {
+    play(dice2, frames2, { theme = THEMES.ivory, font = "", speed: speed2 = 1.3, hold = 2e3, more = 0 } = {}) {
       clear();
       resize();
       meshes = dice2.map((d) => {
@@ -35075,7 +35075,7 @@ function createTray(container) {
         mine2.resolve = resolve;
         const frame = (now) => {
           if (playing !== mine2) return resolve();
-          const i = Math.max(0, Math.min(frames2.length - 1, Math.floor((now - t0) / 1e3 * 60 * speed)));
+          const i = Math.max(0, Math.min(frames2.length - 1, Math.floor((now - t0) / 1e3 * 60 * speed2)));
           const f = frames2[i];
           meshes.forEach((m, k) => {
             m.position.set(f[k * 7], f[k * 7 + 1], f[k * 7 + 2]);
@@ -35748,7 +35748,7 @@ function blankMonster(name = "New Monster") {
     description: []
   };
 }
-var ABBR, typeLine, hpFormula, hpDice, initBonus, crXpText, pbText, speedText, savesText, skillsText, sensesText, languagesText, listText, parseList, slotsText;
+var ABBR, typeLine, hpFormula, hpDice, initBonus, crXpText, pbText, walkSpeed, speedText, savesText, skillsText, sensesText, languagesText, listText, parseList, slotsText;
 var init_format = __esm({
   "src/format.js"() {
     init_dice();
@@ -35764,6 +35764,7 @@ var init_format = __esm({
     };
     crXpText = (m) => `${m.challengeRating} (${isMinion(m) ? `Minion, ${monsterXp(m).toLocaleString()}` : xpFor(m.challengeRating).toLocaleString()} XP)`;
     pbText = (m) => signed(profBonus(m.challengeRating));
+    walkSpeed = (m) => (m.movement || []).find((s) => s.type === "Walk")?.speed ?? 30;
     speedText = (m) => (m.movement || []).map((s) => `${s.type === "Walk" ? "" : s.type.toLowerCase() + " "}${s.speed} ft.${s.note ? " " + s.note : ""}`).join(", ");
     savesText = (m) => (m.savingThrows || []).map((s) => `${s.ability[0]}${s.ability.slice(1).toLowerCase()} ${signed(s.bonus)}`).join(", ");
     skillsText = (m) => (m.skills || []).map((s) => `${s.skill} ${signed(s.bonus)}`).join(", ");
@@ -38524,7 +38525,7 @@ var init_tooltip = __esm({
     };
     levels = [];
     levelOfTip = (node) => levels.findIndex((l) => l.tip.contains(node));
-    levelFor = (link2) => levelOfTip(link2) + 1;
+    levelFor = (link3) => levelOfTip(link3) + 1;
     document.addEventListener("mouseover", (e2) => {
       const el11 = linkOf(e2.target);
       if (!el11) return;
@@ -52664,49 +52665,49 @@ var init_pdf = __esm({
           data,
           linkService
         } = this;
-        const link2 = document.createElement("a");
-        link2.setAttribute("data-element-id", data.id);
+        const link3 = document.createElement("a");
+        link3.setAttribute("data-element-id", data.id);
         let isBound = false;
         if (data.url) {
-          linkService.addLinkAttributes(link2, data.url, data.newWindow);
+          linkService.addLinkAttributes(link3, data.url, data.newWindow);
           isBound = true;
         } else if (data.action) {
-          this._bindNamedAction(link2, data.action);
+          this._bindNamedAction(link3, data.action);
           isBound = true;
         } else if (data.attachment) {
-          this.#bindAttachment(link2, data.attachment, data.attachmentDest);
+          this.#bindAttachment(link3, data.attachment, data.attachmentDest);
           isBound = true;
         } else if (data.setOCGState) {
-          this.#bindSetOCGState(link2, data.setOCGState);
+          this.#bindSetOCGState(link3, data.setOCGState);
           isBound = true;
         } else if (data.dest) {
-          this._bindLink(link2, data.dest);
+          this._bindLink(link3, data.dest);
           isBound = true;
         } else {
           if (data.actions && (data.actions.Action || data.actions["Mouse Up"] || data.actions["Mouse Down"]) && this.enableScripting && this.hasJSActions) {
-            this._bindJSAction(link2, data);
+            this._bindJSAction(link3, data);
             isBound = true;
           }
           if (data.resetForm) {
-            this._bindResetFormAction(link2, data.resetForm);
+            this._bindResetFormAction(link3, data.resetForm);
             isBound = true;
           } else if (this.isTooltipOnly && !isBound) {
-            this._bindLink(link2, "");
+            this._bindLink(link3, "");
             isBound = true;
           }
         }
         this.container.classList.add("linkAnnotation");
         if (isBound) {
-          this.container.append(link2);
+          this.container.append(link3);
         }
         return this.container;
       }
       #setInternalLink() {
         this.container.setAttribute("data-internal-link", "");
       }
-      _bindLink(link2, destination) {
-        link2.href = this.linkService.getDestinationHash(destination);
-        link2.onclick = () => {
+      _bindLink(link3, destination) {
+        link3.href = this.linkService.getDestinationHash(destination);
+        link3.onclick = () => {
           if (destination) {
             this.linkService.goToDestination(destination);
           }
@@ -52716,42 +52717,42 @@ var init_pdf = __esm({
           this.#setInternalLink();
         }
       }
-      _bindNamedAction(link2, action) {
-        link2.href = this.linkService.getAnchorUrl("");
-        link2.onclick = () => {
+      _bindNamedAction(link3, action) {
+        link3.href = this.linkService.getAnchorUrl("");
+        link3.onclick = () => {
           this.linkService.executeNamedAction(action);
           return false;
         };
         this.#setInternalLink();
       }
-      #bindAttachment(link2, attachment, dest = null) {
-        link2.href = this.linkService.getAnchorUrl("");
+      #bindAttachment(link3, attachment, dest = null) {
+        link3.href = this.linkService.getAnchorUrl("");
         if (attachment.description) {
-          link2.title = attachment.description;
+          link3.title = attachment.description;
         }
-        link2.onclick = () => {
+        link3.onclick = () => {
           this.downloadManager?.openOrDownloadData(attachment.content, attachment.filename, dest);
           return false;
         };
         this.#setInternalLink();
       }
-      #bindSetOCGState(link2, action) {
-        link2.href = this.linkService.getAnchorUrl("");
-        link2.onclick = () => {
+      #bindSetOCGState(link3, action) {
+        link3.href = this.linkService.getAnchorUrl("");
+        link3.onclick = () => {
           this.linkService.executeSetOCGState(action);
           return false;
         };
         this.#setInternalLink();
       }
-      _bindJSAction(link2, data) {
-        link2.href = this.linkService.getAnchorUrl("");
+      _bindJSAction(link3, data) {
+        link3.href = this.linkService.getAnchorUrl("");
         const map = /* @__PURE__ */ new Map([["Action", "onclick"], ["Mouse Up", "onmouseup"], ["Mouse Down", "onmousedown"]]);
         for (const name of Object.keys(data.actions)) {
           const jsName = map.get(name);
           if (!jsName) {
             continue;
           }
-          link2[jsName] = () => {
+          link3[jsName] = () => {
             this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
               source: this,
               detail: {
@@ -52762,25 +52763,25 @@ var init_pdf = __esm({
             return false;
           };
         }
-        if (!link2.onclick) {
-          link2.onclick = () => false;
+        if (!link3.onclick) {
+          link3.onclick = () => false;
         }
         this.#setInternalLink();
       }
-      _bindResetFormAction(link2, resetForm) {
-        const otherClickAction = link2.onclick;
+      _bindResetFormAction(link3, resetForm) {
+        const otherClickAction = link3.onclick;
         if (!otherClickAction) {
-          link2.href = this.linkService.getAnchorUrl("");
+          link3.href = this.linkService.getAnchorUrl("");
         }
         this.#setInternalLink();
         if (!this._fieldObjects) {
           warn2(`_bindResetFormAction - "resetForm" action not supported, ensure that the \`fieldObjects\` parameter is provided.`);
           if (!otherClickAction) {
-            link2.onclick = () => false;
+            link3.onclick = () => false;
           }
           return;
         }
-        link2.onclick = () => {
+        link3.onclick = () => {
           otherClickAction?.();
           const {
             fields: resetFormFields,
@@ -62532,7 +62533,8 @@ var LOOT_CONFIG = {
   // pocket items from the theme
   harvestPicks: 2,
   // different harvestables per body at Standard
-  rarityWeights: { Common: 60, Uncommon: 30, Rare: 8, "Very Rare": 2, Legendary: 1 },
+  // "Magic items found" starts at Uncommon: Common magic is minor magic, found in regular loot instead
+  rarityWeights: { Uncommon: 30, Rare: 8, "Very Rare": 2, Legendary: 1 },
   consumableWeight: 3,
   linkedWeight: 10,
   // an item that comes from a creature in the fight (item.creatures)
@@ -62589,6 +62591,7 @@ function comesFrom(item, monsters, tables = null) {
 }
 var isPart = (x) => x.category !== "magic" && (x.component || x.creatures?.length && x.category !== "trinket");
 var isTrueMagic = (x) => x.category === "magic" && x.loot !== false && !!String(x.text || "").trim();
+var isToggleMagic = (x) => isTrueMagic(x) && x.rarity !== "Common";
 var isMinorMagic = (x) => x.loot !== false && !isPart(x) && (x.category === "trinket" || isTrueMagic(x) && x.rarity === "Common");
 function themeFor(m, { themes, typeMap }) {
   if (m.lootTheme) {
@@ -62749,8 +62752,8 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
     const crs = enemies.filter((x) => x.monster && x.monster.loot !== "none").map((x) => x.monster.challengeRating);
     const maxCr = crs.reduce((a2, b2) => crValue(b2) > crValue(a2) ? b2 : a2, "0");
     const top = rarityCap(level, maxCr);
-    const allowed = RARITIES.slice(0, RARITIES.indexOf(top) + 1);
-    const magic = items.filter((x) => isTrueMagic(x) && allowed.includes(x.rarity));
+    const allowed = RARITIES.slice(1, RARITIES.indexOf(top) + 1);
+    const magic = items.filter((x) => isToggleMagic(x) && allowed.includes(x.rarity));
     const foes = enemies.filter((x) => x.monster).map((x) => x.monster);
     for (let n = 0; n < magicCount; n++) {
       const rarity = pick3(r, allowed, (x) => C2.rarityWeights[x] * (gen > 1 ? gen ** RARITIES.indexOf(x) : 1));
@@ -67781,8 +67784,28 @@ function renderLog() {
   ))) : h("div.empty", "Rolls show here. Click dice in a stat block; Shift-click rolls with advantage, Ctrl-click with disadvantage."));
 }
 
+// src/owlbear-settings.js
+var link2 = null;
+var registerOwlbearSettings = (l) => {
+  link2 = l;
+};
+var owlbearLinked = () => !!link2?.linked();
+var owlbearSettings = () => link2?.get() || {};
+var setOwlbearSettings = (patch) => link2?.set(patch);
+var OWLBEAR_SWITCHES = [
+  ["showPartyHp", "Show party HP to players", false, ""],
+  ["showTurnDie", "Show the turn d20 on the active token", true, ""],
+  ["trackMovement", "Track movement on the active token", true, 'A green trail with a dot every 5 ft and "15 / 30 ft" on the linked token whose turn it is. Right-click the token > Reset movement to start its turn again.'],
+  ["dragTrail", 'Switch players to "Move with trail" during fights', true, "The trail follows the drag square by square. Off: players keep Owlbear\u2019s normal Move tool (the trail is drawn one straight line per drop)."],
+  ["stopAtSpeed", "Stop movement at its speed", false, "A token can\u2019t be moved past its speed this turn."]
+];
+var switchOn = (settings3, key2) => {
+  const s = OWLBEAR_SWITCHES.find((x) => x[0] === key2);
+  return settings3[key2] ?? s?.[2] ?? false;
+};
+
 // src/obr/manifest.json
-var version2 = "1.4.0";
+var version2 = "1.4.1";
 
 // src/app.js
 var TABS = [
@@ -68188,10 +68211,38 @@ function settings() {
       "select",
       { onchange: (e2) => setLootSettings({ ...lootSettings(), generosity: Number(e2.target.value) }) },
       GENEROSITY.stops.map(([g, name]) => h("option", { value: g, selected: lootSettings().generosity === g }, `${name} (${g}\xD7)`))
-    )))
+    ))),
+    owlbearSection()
   );
   const close = modal("Settings", body2, [["Done", () => {
   }, "primary"]]);
+}
+function owlbearSection() {
+  if (!WEB) return null;
+  if (!owlbearLinked()) return [h("h4", "Owlbear"), h("p.muted", "Link this window to Owlbear (open the Encounter Builder panel there) to change the room\u2019s settings here.")];
+  const box = h("div.owlbear-switches");
+  const draw2 = () => {
+    const s = owlbearSettings();
+    fill(box, OWLBEAR_SWITCHES.map(([key2, label, , hint]) => {
+      const under = key2 === "dragTrail" || key2 === "stopAtSpeed";
+      return h(
+        `label.check-row${under ? ".indent" : ""}`,
+        { title: hint },
+        h("input", {
+          type: "checkbox",
+          checked: switchOn(s, key2),
+          disabled: under && !switchOn(s, "trackMovement"),
+          onchange: (e2) => {
+            setOwlbearSettings({ [key2]: e2.target.checked });
+            draw2();
+          }
+        }),
+        label
+      );
+    }));
+  };
+  draw2();
+  return [h("h4", "Owlbear"), h("p.muted", "The room\u2019s settings, the same switches as the GM panel in Owlbear. They apply to everyone in the room straight away."), box];
 }
 var fontStyle = (f) => `font-family: ${f ? `"${f.replace(/"/g, "")}", ` : ""}"Segoe UI", system-ui, sans-serif`;
 var fontList = null;
@@ -68314,12 +68365,13 @@ init();
 
 // src/obr/link.js
 init_store();
+init_format();
 init_ui();
 
 // src/obr/tracker-state.js
 var STATE_VERSION = 1;
 var MAX_BYTES = 12e3;
-function publicState(enc2, { showPartyHp = false, mark: mark2 = (n) => ({ n }), party = [] } = {}) {
+function publicState(enc2, { showPartyHp = false, mark: mark2 = (n) => ({ n }), party = [], speed: speed2 = () => null } = {}) {
   const s = enc2?.combat;
   if (!s) return null;
   const state2 = {
@@ -68330,7 +68382,7 @@ function publicState(enc2, { showPartyHp = false, mark: mark2 = (n) => ({ n }), 
     round: s.round,
     turn: s.turnKey,
     showPartyHp: !!showPartyHp,
-    order: ordered(s).map((c2) => rowOf(c2, showPartyHp, mark2))
+    order: ordered(s).map((c2) => rowOf(c2, showPartyHp, mark2, speed2))
   };
   const inFight = new Set(s.combatants.map((c2) => c2.key));
   const extra = party.map(partyCombatant).filter((c2) => !inFight.has(c2.key)).flatMap((c2) => tokenMarks(c2)).filter((x) => x.marks.length);
@@ -68342,13 +68394,15 @@ function partyState(characters, { showPartyHp = false, mark: mark2 = (n) => ({ n
   const rows = characters.map(partyCombatant).sort((a2, b2) => a2.name.localeCompare(b2.name)).map((c2) => rowOf(c2, showPartyHp, mark2));
   return fit({ v: STATE_VERSION, phase: "party", name: "Party", showPartyHp: !!showPartyHp, order: rows });
 }
-function rowOf(c2, showPartyHp, mark2) {
+function rowOf(c2, showPartyHp, mark2, speed2 = () => null) {
   const row2 = { key: c2.key, name: isGroup(c2) ? `${c2.name} \xD7${standing(c2).length}` : c2.name, kind: c2.kind };
   if (c2.init != null) row2.init = c2.init;
   if (isOut(c2)) row2.down = true;
   if (showPartyHp && c2.kind === "pc" && c2.hp != null) row2.hp = `${c2.hp}/${c2.maxHp ?? "?"}${c2.tempHp ? ` +${c2.tempHp}` : ""}`;
   const tokens = tokensOf(c2);
   if (tokens.length) row2.tokens = tokens;
+  const sp = Number(speed2(c2));
+  if (tokens.length && sp > 0) row2.sp = sp;
   const marks = rowMarks(c2);
   if (marks.length) row2.marks = marks.map(mark2);
   const tm = tokenMarks(c2).filter((x) => x.marks.length);
@@ -68583,9 +68637,17 @@ var mark = (name) => {
   const i = iconOf(name, store.conditions);
   return i ? { n: name, i } : { n: name, t: iconLetters(name) };
 };
+var speed = (c2) => {
+  if (c2.kind === "pc") {
+    const ch = c2.refId && findCharacter(c2.refId);
+    return ch ? Number(ch.speed) || null : null;
+  }
+  const m = c2.refId && findMonster(c2.refId);
+  return m && m.movement?.length ? walkSpeed(m) : null;
+};
 function publish(force = false) {
   if (!bridge) return;
-  const e2 = liveEncounter(), opts2 = { showPartyHp: !!settings2.showPartyHp, mark, party: activeParty() };
+  const e2 = liveEncounter(), opts2 = { showPartyHp: !!settings2.showPartyHp, mark, party: activeParty(), speed };
   const state2 = e2?.combat ? publicState(e2, opts2) : partyState(opts2.party, opts2);
   const text = JSON.stringify(state2);
   if (!force && text === lastSent) return;
@@ -68623,6 +68685,16 @@ window.addEventListener("message", (e2) => {
   } else if (m.type === "whisperResult") chat.result(m);
   else if (m.type === "whisperAck") chat.ack(m);
   else if (m.type === "whisperReply") chat.reply(m);
+});
+registerOwlbearSettings({
+  linked: () => !!bridge,
+  get: () => ({ ...settings2 }),
+  set: (patch) => {
+    if (!bridge) return;
+    settings2 = { ...settings2, ...patch };
+    post(bridge, { type: "setSettings", settings: settings2 });
+    publish();
+  }
 });
 var chat = initChat({ send: (msg) => {
   if (!bridge) return false;
