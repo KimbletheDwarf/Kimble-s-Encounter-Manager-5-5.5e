@@ -35880,7 +35880,7 @@ async function loadLibrary() {
   if (!store.srd.length) store.srd = await (await fetch("data/srd-monsters.json")).json();
   if (!store.spells.length) store.spells = await (await fetch("data/srd-spells.json")).json();
   if (!store.rules.length) store.rules = await (await fetch("data/srd-rules.json")).json();
-  if (!store.srdItems.length) store.srdItems = await (await fetch("data/srd-items.json")).json();
+  if (!store.srdItems.length) store.srdItems = [...await (await fetch("data/srd-items.json")).json(), ...await (await fetch("data/components.json")).json()];
   store.errors = [];
   for (const kind of ["monsters", "party", "encounters", "conditions", "loot", "items"]) {
     if (!libraryPath) {
@@ -36039,7 +36039,7 @@ var init_store = __esm({
     isHomebrew = (m) => !m.source || m.source === "Homebrew";
     allItems = () => [...store.items, ...store.srdItems];
     findItem = (id) => store.items.find((x) => x.id === id) || store.srdItems.find((x) => x.id === id);
-    ITEM_CATEGORIES = ["weapon", "armor", "shield", "ammo", "gear", "tool", "focus", "magic"];
+    ITEM_CATEGORIES = ["weapon", "armor", "shield", "ammo", "gear", "tool", "focus", "trinket", "magic"];
   }
 });
 
@@ -38378,6 +38378,86 @@ var init_parse = __esm({
   }
 });
 
+// src/snapshot.js
+var snapshot_exports = {};
+__export(snapshot_exports, {
+  copyElementImage: () => copyElementImage,
+  elementPng: () => elementPng
+});
+async function elementPng(el11, { skip = "button", box = {}, scale = 2 } = {}) {
+  const hidden = [...el11.querySelectorAll(skip)];
+  const before = hidden.map((x) => x.style.display);
+  hidden.forEach((x) => {
+    x.style.display = "none";
+  });
+  try {
+    const width = Math.ceil(el11.getBoundingClientRect().width);
+    const clone = el11.cloneNode(true);
+    inlineStyles(el11, clone);
+    clone.querySelectorAll(skip).forEach((x) => x.remove());
+    Object.assign(clone.style, { position: "static", left: "auto", top: "auto", margin: "0", maxHeight: "none", height: "auto", overflow: "visible", boxShadow: "none", width: `${width}px`, boxSizing: "content-box", display: "inline-block", ...box });
+    const probe = document.createElement("div");
+    Object.assign(probe.style, { position: "fixed", left: "-10000px", top: "0" });
+    probe.append(clone);
+    document.body.append(probe);
+    const size = clone.getBoundingClientRect();
+    probe.remove();
+    const full = Math.ceil(size.width), height = Math.ceil(size.height);
+    const xhtml = new XMLSerializer().serializeToString(clone);
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${full}" height="${height}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml">${xhtml}</div></foreignObject></svg>`;
+    const img = new Image();
+    img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    await img.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = full * scale;
+    canvas.height = height * scale;
+    const g = canvas.getContext("2d");
+    g.scale(scale, scale);
+    g.drawImage(img, 0, 0);
+    return await new Promise((resolve, reject) => canvas.toBlob((b2) => b2 ? resolve(b2) : reject(new Error("The picture could not be made.")), "image/png"));
+  } finally {
+    hidden.forEach((x, i) => {
+      x.style.display = before[i];
+    });
+  }
+}
+function inlineStyles(src, dst) {
+  const cs = getComputedStyle(src);
+  let css = "";
+  for (let i = 0; i < cs.length; i++) {
+    const p = cs[i];
+    css += `${p}:${cs.getPropertyValue(p)};`;
+  }
+  dst.setAttribute("style", css);
+  const a2 = src.children, b2 = dst.children;
+  for (let i = 0; i < a2.length; i++) inlineStyles(a2[i], b2[i]);
+}
+async function copyElementImage(el11, name = "card", opts2) {
+  try {
+    const png = await elementPng(el11, opts2);
+    try {
+      if (window.desktop?.copyImage) await window.desktop.copyImage(new Uint8Array(await png.arrayBuffer()));
+      else await navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
+      notice("Copied as an image: paste it into a chat (Ctrl+V).");
+    } catch {
+      const url = URL.createObjectURL(png);
+      const a2 = Object.assign(document.createElement("a"), { href: url, download: `${name.replace(/[^\w -]+/g, "").trim() || "card"}.png` });
+      document.body.append(a2);
+      a2.click();
+      a2.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1e4);
+      notice("The clipboard would not take a picture here, so it was saved as a file instead.");
+    }
+  } catch (e2) {
+    notice(`Could not make the picture: ${e2.message}`, "error");
+  }
+}
+var init_snapshot = __esm({
+  "src/snapshot.js"() {
+    init_ui();
+  }
+});
+
 // src/tooltip.js
 function ensureTip() {
   if (tip) return tip;
@@ -38394,7 +38474,7 @@ function show(el11) {
   if (!html) return;
   clearTimeout(hideTimer);
   ensureTip();
-  tip.innerHTML = html + (pinned ? '<div class="cond-hint">Pinned. Click elsewhere or press Esc to close.</div>' : '<div class="cond-hint">Click the word to pin this open.</div>');
+  tip.innerHTML = `<div class="tip-body">${html}</div>${pinned ? '<div class="tip-actions"><button class="tip-copy" data-copy-tip title="A picture of this card, to paste into a chat">Copy as image</button><span class="cond-hint">Pinned. Click elsewhere or press Esc to close.</span></div>' : '<div class="cond-hint">Click the word to pin this open (and copy it as an image).</div>'}`;
   tip.hidden = false;
   tip.scrollTop = 0;
   const r = el11.getBoundingClientRect(), tw = tip.offsetWidth;
@@ -38420,6 +38500,7 @@ var kinds, registerTip, linkOf, htmlOf, tip, pinned, hideTimer;
 var init_tooltip = __esm({
   "src/tooltip.js"() {
     init_ui();
+    init_snapshot();
     kinds = /* @__PURE__ */ new Map();
     registerTip = (key2, html) => kinds.set(key2, html);
     linkOf = (target) => target.closest?.([...kinds.keys()].map((k) => `[data-${k}]`).join(",") || null);
@@ -38452,6 +38533,14 @@ var init_tooltip = __esm({
     }, true);
     document.addEventListener("keydown", (e2) => {
       if (e2.key === "Escape" && pinned) unpin();
+    });
+    document.addEventListener("click", (e2) => {
+      if (!e2.target.closest?.("[data-copy-tip]") || !tip) return;
+      const body2 = tip.querySelector(".tip-body");
+      const t = getComputedStyle(tip);
+      copyElementImage(body2, body2.querySelector(".cond-name")?.textContent || "card", {
+        box: { background: t.backgroundColor, color: t.color, padding: t.padding, border: t.border, borderRadius: t.borderRadius }
+      });
     });
     document.addEventListener("scroll", (e2) => {
       if (pinned && !tip?.contains(e2.target)) unpin();
@@ -38607,7 +38696,7 @@ function spellHtml(s, { body: body2 = (t) => markupHtml(t) } = {}) {
     <div class="spell-props">${prop("Casting Time", s.castingTime + (s.ritual ? " or Ritual" : ""))}${prop("Range", s.range)}${prop("Components", s.components)}${prop("Duration", s.duration)}</div>
     ${body2(s.text)}`;
 }
-var norm, escRe, byName, byId, plainRe, findSpell, spellById, link, CASTS, spellLevelText, spellTags, opener, setSpellOpener;
+var norm, escRe, byName, byId, plainRe, findSpell, spellById, link, CASTS, spellLevelText, spellTags, opener2, setSpellOpener;
 var init_spells = __esm({
   "src/spells.js"() {
     init_ui();
@@ -38637,17 +38726,17 @@ var init_spells = __esm({
     registerTip("spell", (name, pinned2) => {
       const s = findSpell(name);
       if (!s) return "";
-      return spellHtml(s) + (s.creature ? `<p class="spell-more">This spell has a stat block (${esc(s.creature.name)}) on the Spells tab.</p>` : "") + (pinned2 && opener ? `<button class="tip-open" data-open-spell="${esc(s.id)}">Open in the Spells tab</button>` : "");
+      return spellHtml(s) + (s.creature ? `<p class="spell-more">This spell has a stat block (${esc(s.creature.name)}) on the Spells tab.</p>` : "") + (pinned2 && opener2 ? `<button class="tip-open" data-open-spell="${esc(s.id)}">Open in the Spells tab</button>` : "");
     });
-    opener = null;
+    opener2 = null;
     setSpellOpener = (fn) => {
-      opener = fn;
+      opener2 = fn;
     };
     document.addEventListener("click", (e2) => {
       const b2 = e2.target.closest?.("[data-open-spell]");
-      if (!b2 || !opener) return;
+      if (!b2 || !opener2) return;
       unpin();
-      opener(b2.dataset.openSpell);
+      opener2(b2.dataset.openSpell);
     });
   }
 });
@@ -61427,6 +61516,7 @@ registerTip("rule", (name) => {
 
 // src/items.js
 init_store();
+init_tooltip();
 
 // src/loot.js
 init_rules();
@@ -62255,12 +62345,10 @@ var THEMES3 = [
       e("Broken jeweled scabbard", 20, 0.6)
     ],
     harvest: [
-      e("Dragon scales", 5, 2, "2d6"),
-      e("Dragon teeth", 5, 1.5, "1d4"),
+      // scales, teeth and blood are creature parts in data/components.json (always one of them per dragon)
       e("Dragon claws", 5, 1.5, "1d4"),
       e("Dragon horn", 25, 0.8),
-      e("Vial of dragon blood", 20, 1, "1d3"),
-      e("Breath gland ({breath})", 50, 0.8),
+      e("Breath gland ({breath})", 50, 1),
       e("Wing membrane", 10, 0.8)
     ]
   },
@@ -62416,8 +62504,13 @@ var LOOT_CONFIG = {
   // different harvestables per body at Standard
   rarityWeights: { Common: 60, Uncommon: 30, Rare: 8, "Very Rare": 2, Legendary: 1 },
   consumableWeight: 3,
-  linkedWeight: 10
+  linkedWeight: 10,
   // an item that comes from a creature in the fight (item.creatures)
+  minorChance: 0.04,
+  minorCeiling: 0.15,
+  // now and then a minor magic item (a trinket, or a Common magic item) in regular loot
+  minorLinkedWeight: 4
+  // which one: an item that comes from this creature (item.creatures) is 4x as likely
 };
 var RARITIES = ["Common", "Uncommon", "Rare", "Very Rare", "Legendary"];
 var RARITY_VALUE = { Common: 100, Uncommon: 400, Rare: 4e3, "Very Rare": 4e4, Legendary: 2e5 };
@@ -62451,7 +62544,22 @@ function nameHas(name, phrase) {
   for (let i = 0; i + k.length <= n.length; i++) if (k.every((w, j) => n[i + j] === w || j === k.length - 1 && n[i + j] === `${w}s`)) return true;
   return false;
 }
-var comesFrom = (item, names) => (item.creatures || []).some((c2) => names.some((n) => nameHas(n, c2)));
+function comesFrom(item, monsters, tables = null) {
+  return (item.creatures || []).some((c2) => monsters.some((m) => {
+    const name = typeof m === "string" ? m : m?.name, type = typeof m === "string" ? null : m?.monsterType;
+    const [, kind, value] = String(c2).match(/^\s*(type|theme)\s*:\s*(.+?)\s*$/i) || [];
+    if (kind?.toLowerCase() === "type") return !!type && type.toLowerCase() === value.toLowerCase();
+    if (kind) {
+      if (!tables || typeof m === "string") return false;
+      const t = themeFor(m, tables).theme;
+      return !!t && [t.name, t.id].some((x) => String(x).toLowerCase() === value.toLowerCase());
+    }
+    return nameHas(name, c2) && (!item.onlyTypes?.length || !type || item.onlyTypes.includes(type));
+  }));
+}
+var isPart = (x) => x.category !== "magic" && (x.component || x.creatures?.length && x.category !== "trinket");
+var isTrueMagic = (x) => x.category === "magic" && x.loot !== false && !!String(x.text || "").trim();
+var isMinorMagic = (x) => x.loot !== false && !isPart(x) && (x.category === "trinket" || isTrueMagic(x) && x.rarity === "Common");
 function themeFor(m, { themes, typeMap }) {
   if (m.lootTheme) {
     const t2 = themes.find((x) => x.id === m.lootTheme);
@@ -62531,7 +62639,9 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
     if (same) same.qty += x.qty;
     else list.push({ ...x });
   };
-  const pool = items.filter((x) => x.category !== "magic" && x.carried && x.loot !== false && C2.gearWeights[x.category] && x.price != null);
+  const pool = items.filter((x) => x.category !== "magic" && x.carried && x.loot !== false && !isPart(x) && C2.gearWeights[x.category] && x.price != null);
+  const minorPool = items.filter(isMinorMagic);
+  const parts = items.filter(isPart);
   for (const { monster: m, count } of enemies) {
     if (!m || !(count > 0)) continue;
     const setting = m.loot || "auto";
@@ -62554,8 +62664,8 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
           let it = null;
           if (carried.length && r() < C2.carriedShare) it = carried[Math.floor(r() * carried.length)];
           if (it) {
-            if (it.price > cap3) add2(lines, { kind: "gear", name: `${it.name} (damaged)`, qty: 1, value: round2(it.price * C2.damagedShare), damaged: true, scrap: true });
-            else add2(lines, { kind: "gear", name: it.name, qty: 1, value: it.price });
+            if (it.price > cap3) add2(lines, { kind: "gear", name: `${it.name} (damaged)`, qty: 1, value: round2(it.price * C2.damagedShare), damaged: true, scrap: true, id: it.id });
+            else add2(lines, { kind: "gear", name: it.name, qty: 1, value: it.price, id: it.id });
           } else {
             const ok = pool.filter((x) => x.price <= cap3 && (x.category !== "focus" || caster));
             const cat = pick3(r, Object.keys(C2.gearWeights).filter((c2) => ok.some((x) => x.category === c2)), (c2) => C2.gearWeights[c2]);
@@ -62563,7 +62673,7 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
             const got = list[Math.floor(r() * list.length)];
             if (got) {
               const qty = got.bundle ? Math.min(got.bundle, roll("2d10", "normal", r).total) : 1;
-              add2(lines, { kind: "gear", name: got.name, qty, value: got.price });
+              add2(lines, { kind: "gear", name: got.name, qty, value: got.price, id: got.id });
             }
           }
         }
@@ -62572,9 +62682,26 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
           const it = pick3(r, theme.items);
           if (it) add2(lines, { kind: "item", name: it.name, qty: qtyOf(it.qty, r), value: Number(it.value) || 0 });
         }
+        if (minorPool.length && r() < Math.min(C2.minorCeiling, C2.minorChance * gen * share * extra)) {
+          const it = pick3(r, minorPool, (x) => x.creatures?.length && comesFrom(x, [m], tables) ? C2.minorLinkedWeight : 1);
+          add2(lines, { kind: "minor", id: it.id, name: it.name, qty: 1, value: Number(it.price) > 0 ? Number(it.price) : RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1) || 0 });
+        }
+      }
+      const own = parts.filter((x) => comesFrom(x, [m], tables));
+      const harvested = (name, qty, value, id) => {
+        const same = harvest.find((y) => y.name === name);
+        if (same) {
+          same.total += qty * value;
+          same.qty += qty;
+          if (!same.from.includes(m.name)) same.from.push(m.name);
+        } else harvest.push({ kind: "harvest", name, qty, total: qty * value, from: [m.name], ...id ? { id } : {} });
+      };
+      if (own.length) {
+        const it = own[Math.floor(r() * own.length)];
+        harvested(it.name, qtyOf(it.qty, r), Number(it.price) || 0, it.id);
       }
       if (theme?.harvest?.length) {
-        const picks2 = Math.max(1, Math.round(C2.harvestPicks * Math.sqrt(gen)));
+        const picks2 = Math.max(1, Math.round(C2.harvestPicks * Math.sqrt(gen)) - (own.length ? 1 : 0));
         const left = [...theme.harvest];
         const scale = Math.min(30, Math.max(0.5, Math.sqrt(xpFor(m.challengeRating) / 200)));
         for (let k = 0; k < picks2 && left.length; k++) {
@@ -62582,13 +62709,7 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
           if (!it) break;
           left.splice(left.indexOf(it), 1);
           const name = it.name.replace(/\s*\(\{breath\}\)/, breathType(m) ? ` (${breathType(m)})` : "").replace("{breath}", breathType(m));
-          const qty = qtyOf(it.qty, r), value = (Number(it.value) || 0) * scale;
-          const same = harvest.find((y) => y.name === name);
-          if (same) {
-            same.total += qty * value;
-            same.qty += qty;
-            if (!same.from.includes(m.name)) same.from.push(m.name);
-          } else harvest.push({ kind: "harvest", name, qty, total: qty * value, from: [m.name] });
+          harvested(name, qtyOf(it.qty, r), (Number(it.value) || 0) * scale);
         }
       }
     }
@@ -62599,12 +62720,12 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
     const maxCr = crs.reduce((a2, b2) => crValue(b2) > crValue(a2) ? b2 : a2, "0");
     const top = rarityCap(level, maxCr);
     const allowed = RARITIES.slice(0, RARITIES.indexOf(top) + 1);
-    const magic = items.filter((x) => x.category === "magic" && x.loot !== false && allowed.includes(x.rarity));
-    const foes = enemies.filter((x) => x.monster).map((x) => x.monster.name);
+    const magic = items.filter((x) => isTrueMagic(x) && allowed.includes(x.rarity));
+    const foes = enemies.filter((x) => x.monster).map((x) => x.monster);
     for (let n = 0; n < magicCount; n++) {
       const rarity = pick3(r, allowed, (x) => C2.rarityWeights[x] * (gen > 1 ? gen ** RARITIES.indexOf(x) : 1));
       const choices = [...magic.filter((x) => x.rarity === rarity), ...spells.length ? [{ scroll: true, rarity, consumable: true }] : []];
-      const it = pick3(r, choices, (x) => (x.consumable ? C2.consumableWeight : 1) * (comesFrom(x, foes) ? C2.linkedWeight : 1));
+      const it = pick3(r, choices, (x) => (x.consumable ? C2.consumableWeight : 1) * (comesFrom(x, foes, tables) ? C2.linkedWeight : 1));
       if (!it) continue;
       add2(lines, it.scroll ? spellScroll(r, rarity, spells) : magicLine(r, it, items));
     }
@@ -62622,7 +62743,7 @@ function spellScroll(r, rarity, spells) {
   const lvl = levels[Math.floor(r() * levels.length)] ?? 1;
   const list = spells.filter((s2) => s2.level === lvl);
   const s = list[Math.floor(r() * list.length)];
-  return { kind: "magic", name: `Spell Scroll: ${s?.name || "unknown spell"} (${lvl ? `level ${lvl}` : "cantrip"})`, qty: 1, value: SCROLL_VALUE[lvl], rarity };
+  return { kind: "magic", name: `Spell Scroll: ${s?.name || "unknown spell"} (${lvl ? `level ${lvl}` : "cantrip"})`, qty: 1, value: SCROLL_VALUE[lvl], rarity, ...s ? { spell: s.name } : {} };
 }
 function magicLine(r, it, items) {
   let value = Number(it.price) > 0 ? Number(it.price) : RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1);
@@ -62639,7 +62760,7 @@ function magicLine(r, it, items) {
       else if (options.length > 1) name = `${name} (${b2.name})`;
     }
   }
-  return { kind: "magic", name, qty: 1, value: round2(value), rarity: it.rarity };
+  return { kind: "magic", name, qty: 1, value: round2(value), rarity: it.rarity, id: it.id };
 }
 function baseOptions(text, items) {
   const t = lc3(text);
@@ -62669,7 +62790,7 @@ function priceText(gp) {
 }
 
 // src/items.js
-var CATEGORY_LABELS = { weapon: "Weapon", armor: "Armor", shield: "Shield", ammo: "Ammunition", gear: "Adventuring gear", tool: "Tool", focus: "Spellcasting focus", magic: "Magic item" };
+var CATEGORY_LABELS = { weapon: "Weapon", armor: "Armor", shield: "Shield", ammo: "Ammunition", gear: "Adventuring gear", tool: "Tool", focus: "Spellcasting focus", trinket: "Magic trinket", magic: "Magic item" };
 var MAGIC_KINDS = { armor: "Armor", potion: "Potion", ring: "Ring", rod: "Rod", scroll: "Scroll", staff: "Staff", wand: "Wand", weapon: "Weapon", wondrous: "Wondrous Item" };
 var esc2 = (s) => String(s ?? "").replace(/[&<>"]/g, (c2) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c2]);
 var title = (s) => String(s || "").replace(/\b\w/g, (c2) => c2.toUpperCase());
@@ -62683,6 +62804,7 @@ function itemTypeLine(it) {
   }
   if (it.category === "weapon") return `${it.weapon?.simple ? "Simple" : "Martial"} ${it.weapon?.ranged ? "Ranged" : "Melee"} Weapon`;
   if (it.category === "armor") return `${title(it.armor || "light")} Armor`;
+  if (it.component) return "Creature part";
   return CATEGORY_LABELS[it.category] || "Item";
 }
 function itemHtml(it) {
@@ -62764,9 +62886,9 @@ function itemEditor(it, { changed: changed3, redraw }) {
       text("Weight", "weight", { placeholder: "3 lb." }),
       h(
         "label",
-        { title: "Creatures it is made from or carried by. When they are in a fight, Loot picks this item ten times as often for its magic items." },
+        { title: 'Who it comes from, separated by commas: a creature name or part of one (Exonid), "type: Humanoid", or "theme: Bandit" (every creature using that loot theme). When they are in a fight, Loot picks this item more often: \xD710 for "Magic items found", \xD74 for minor magic. A creature part is harvested from them.' },
         "Comes from (creatures)",
-        h("input", { type: "text", value: (it.creatures || []).join(", "), placeholder: "e.g. Cloud Shark, Exonid", onchange: (e2) => {
+        h("input", { type: "text", value: (it.creatures || []).join(", "), placeholder: "e.g. Cloud Shark, type: Fey, theme: Bandit", onchange: (e2) => {
           const list = e2.target.value.split(",").map((x) => x.trim()).filter(Boolean);
           if (list.length) it.creatures = list;
           else delete it.creatures;
@@ -62787,6 +62909,11 @@ function itemEditor(it, { changed: changed3, redraw }) {
         changed3();
         redraw();
       }),
+      !magic ? check("Creature part (harvested from its creatures)", !!it.component, (on) => {
+        if (on) it.component = true;
+        else delete it.component;
+        changed3();
+      }, "Listed as a harvestable when a creature it comes from is in the fight; never found on a body as gear") : null,
       !magic ? check("Small enough to carry on a body", it.carried !== false, (on) => {
         it.carried = on;
         changed3();
@@ -62799,6 +62926,21 @@ function itemEditor(it, { changed: changed3, redraw }) {
     h("div.hint", 'A blank line starts a new paragraph. **bold**, *italic*, "| a | b |" rows for a table.')
   );
 }
+registerTip("item", (id, pinned2) => {
+  const it = findItem(id);
+  if (!it) return "";
+  return itemHtml(it) + (pinned2 && opener ? `<button class="tip-open" data-open-item="${esc2(it.id)}">Open in the Items tab</button>` : "");
+});
+var opener = null;
+var setItemOpener = (fn) => {
+  opener = fn;
+};
+document.addEventListener("click", (e2) => {
+  const b2 = e2.target.closest?.("[data-open-item]");
+  if (!b2 || !opener) return;
+  unpin();
+  opener(b2.dataset.openItem);
+});
 
 // src/tabs/maker.js
 init_constants();
@@ -63672,7 +63814,7 @@ function renderFilters() {
     el2.querySelector("#it-filters"),
     sel("Category", "category", Object.entries(CATEGORY_LABELS)),
     sel("Rarity", "rarity", RARITIES.map((r) => [r, r])),
-    sel("Source", "source", [["mine", "My items"], ["srd", "SRD 5.2.1"]]),
+    sel("Source", "source", [["mine", "My items"], ["srd", "SRD 5.2.1 and built-in"]]),
     filter.category || filter.rarity || filter.source ? h("button.link.wide", { onclick: () => {
       Object.assign(filter, { category: "", rarity: "", source: "" });
       changed3();
@@ -63699,7 +63841,7 @@ function renderList() {
     } },
     h(
       "div.list-main",
-      h("div.list-name", x.name, mine(x) ? null : h("span.tag", "SRD"), x.loot === false ? h("span.tag", { title: "Never drops as loot" }, "NO LOOT") : null),
+      h("div.list-name", x.name, mine(x) ? null : h("span.tag", x.source === "Built-in" ? "BUILT-IN" : "SRD"), x.loot === false ? h("span.tag", { title: "Never drops as loot" }, "NO LOOT") : null),
       h("div.list-sub", itemTypeLine(x))
     )
   ));
@@ -63740,7 +63882,7 @@ function renderEdit() {
     fill(
       pane,
       h("div.edit-head", h("h2", x.name), h("button.primary", { onclick: () => duplicate(x) }, "Copy to my items")),
-      h("p.muted", "SRD items are read-only. Copy one to your items to change it (for example a +1 weapon with your own description).")
+      h("p.muted", x.source === "Built-in" ? "A creature part that comes with the app: harvested from the creatures it names. Copy it to your items to change it." : "SRD items are read-only. Copy one to your items to change it (for example a +1 weapon with your own description).")
     );
     return;
   }
@@ -64721,12 +64863,15 @@ function lootDialog(enc2) {
       settings: { generosity: st.generosity, magic: st.magic ? st.magicCount : 0 },
       seed: st.seed
     });
+    const nameOf = (x) => x.id ? h("span.cond-link", { tabindex: 0, dataset: { item: x.id } }, x.name) : x.spell ? h("span.cond-link", { tabindex: 0, dataset: { spell: x.spell } }, x.name) : x.name;
     const line = (x) => h(
       "li",
       x.qty > 1 ? h("span.loot-qty", `${x.qty} \xD7`) : null,
-      ` ${x.name} `,
+      " ",
+      nameOf(x),
+      " ",
       h("span.muted", x.scrap ? `scrap ${priceText(x.value)}` : x.qty > 1 ? `${priceText(x.value)} each` : priceText(x.value)),
-      x.rarity ? h("span.tag", x.rarity.toUpperCase()) : null
+      x.rarity ? h("span.tag", x.rarity.toUpperCase()) : x.kind === "minor" ? h("span.tag", "MINOR MAGIC") : null
     );
     const gear = res.lines.filter((x) => x.kind !== "magic"), magic = res.lines.filter((x) => x.kind === "magic");
     fill(
@@ -64741,10 +64886,13 @@ function lootDialog(enc2) {
         h("ul.loot-list", res.harvest.map((x) => h(
           "li",
           x.qty > 1 ? h("span.loot-qty", `${x.qty} \xD7`) : null,
-          ` ${x.name} `,
+          " ",
+          nameOf(x),
+          " ",
           h("span.muted", `~${priceText(x.value)}${x.qty > 1 ? " each" : ""} \xB7 ${x.from.join(", ")}`)
         )))
       ] : null,
+      h("p.hint", "Hover an underlined name to read it; click to pin it, then Copy as image."),
       h("p.loot-total", res.totalGp ? `Worth about ${priceText(Math.round(res.totalGp) || res.totalGp)} in coins and items` : "No coins or items", res.magicGp ? `, plus ${priceText(res.magicGp)} in magic items` : "", "."),
       res.notes.map((n) => h("p.hint", n))
     );
@@ -67604,7 +67752,7 @@ function renderLog() {
 }
 
 // src/obr/manifest.json
-var version2 = "1.2.0";
+var version2 = "1.3.0";
 
 // src/app.js
 var TABS = [
@@ -68115,6 +68263,7 @@ async function init() {
   await loadLibrary();
   for (const t of TABS) t.mount(t.el, go6);
   setSpellOpener((id) => go6("spells", id));
+  setItemOpener((id) => go6("items", id));
   mountDiceTray();
   renderLibButton();
   if (store.errors.length) modal("Some files could not be read", h("ul.warnings", store.errors.map((e2) => h("li", e2))));
@@ -68127,8 +68276,8 @@ async function init() {
   if (!store.libraryPath) welcome();
 }
 if (location.search.includes("test")) {
-  Promise.all([Promise.resolve().then(() => (init_ocr(), ocr_exports)), Promise.resolve().then(() => (init_parse(), parse_exports)), Promise.resolve().then(() => (init_store(), store_exports)), Promise.resolve().then(() => (init_conditions(), conditions_exports)), Promise.resolve().then(() => (init_spells(), spells_exports))]).then(([ocr, parse, st, cond, sp]) => {
-    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, condify: cond.condify, spellify: sp.spellify, go: go6, importLibrary, flushSaves: st.flushSaves };
+  Promise.all([Promise.resolve().then(() => (init_ocr(), ocr_exports)), Promise.resolve().then(() => (init_parse(), parse_exports)), Promise.resolve().then(() => (init_store(), store_exports)), Promise.resolve().then(() => (init_conditions(), conditions_exports)), Promise.resolve().then(() => (init_spells(), spells_exports)), Promise.resolve().then(() => (init_snapshot(), snapshot_exports))]).then(([ocr, parse, st, cond, sp, snap]) => {
+    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, condify: cond.condify, spellify: sp.spellify, go: go6, importLibrary, flushSaves: st.flushSaves, elementPng: snap.elementPng };
   });
 }
 init();

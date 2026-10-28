@@ -1,0 +1,570 @@
+[
+ {
+  "id": "part-dragon-scales",
+  "name": "Dragon Scales",
+  "category": "gear",
+  "price": 50,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Dragon"
+  ],
+  "onlyTypes": [
+   "Dragon"
+  ],
+  "qty": "1d6",
+  "source": "Built-in",
+  "text": "Overlapping scales pried from a dragon’s hide, still faintly warm or cold to the touch depending on its kind. Prized by armorers and by enchanters working protective magic."
+ },
+ {
+  "id": "part-vial-of-dragon-blood",
+  "name": "Vial of Dragon Blood",
+  "category": "gear",
+  "price": 120,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Dragon"
+  ],
+  "onlyTypes": [
+   "Dragon"
+  ],
+  "qty": "1d2",
+  "source": "Built-in",
+  "text": "Thick blood drawn from a dragon and stoppered quickly. Alchemists use it in potions of strength and resistance."
+ },
+ {
+  "id": "part-dragon-teeth",
+  "name": "Dragon Teeth",
+  "category": "gear",
+  "price": 25,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Dragon"
+  ],
+  "onlyTypes": [
+   "Dragon"
+  ],
+  "qty": "1d4",
+  "source": "Built-in",
+  "text": "Fangs the length of a dagger. Carved into charms, set into weapons, or ground for reagents."
+ },
+ {
+  "id": "part-vampire-fang",
+  "name": "Vampire Fang",
+  "category": "gear",
+  "price": 80,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Vampire"
+  ],
+  "onlyTypes": [
+   "Undead"
+  ],
+  "qty": "1d2",
+  "source": "Built-in",
+  "text": "A long canine taken from a destroyed vampire. A sought-after component for necromancy and blood magic."
+ },
+ {
+  "id": "part-basilisk-eye",
+  "name": "Basilisk Eye",
+  "category": "gear",
+  "price": 120,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Basilisk"
+  ],
+  "qty": "1d2",
+  "source": "Built-in",
+  "text": "A dull, heavy eye that has turned partly to stone. Used in transmutation and in reagents against petrification."
+ },
+ {
+  "id": "part-unicorn-hair",
+  "name": "Unicorn Hair",
+  "category": "gear",
+  "price": 150,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Unicorn"
+  ],
+  "qty": "1d4",
+  "source": "Built-in",
+  "text": "A shining strand from a unicorn’s mane. Rare and potent in healing and protective magic. Taking it from a slain unicorn is a grave act in most lands."
+ },
+ {
+  "id": "part-unicorn-horn-shavings",
+  "name": "Unicorn Horn Shavings",
+  "category": "gear",
+  "price": 300,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Unicorn"
+  ],
+  "source": "Built-in",
+  "text": "Fine curls shaved from a unicorn’s horn, kept in a sealed vial. Legendary as a cure for poison and disease."
+ },
+ {
+  "id": "part-gorgon-blood",
+  "name": "Gorgon Blood",
+  "category": "gear",
+  "price": 90,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Gorgon"
+  ],
+  "qty": "1d2",
+  "source": "Built-in",
+  "text": "Metallic, grey-green blood that hardens in the air. Alchemists use it in stoneskin draughts."
+ },
+ {
+  "id": "part-manticore-spines",
+  "name": "Manticore Spines",
+  "category": "gear",
+  "price": 15,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Manticore"
+  ],
+  "qty": "2d4",
+  "source": "Built-in",
+  "text": "Barbed tail spikes, still sharp enough to cut. Used as darts, arrowheads, or a reagent for poisons."
+ },
+ {
+  "id": "part-lich-dust",
+  "name": "Lich Dust",
+  "category": "gear",
+  "price": 400,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Lich"
+  ],
+  "onlyTypes": [
+   "Undead"
+  ],
+  "source": "Built-in",
+  "text": "A handful of grey ash from a destroyed lich, cold to the touch. Necromancers pay well for it, and most temples want it destroyed."
+ },
+ {
+  "id": "part-bat-wings",
+  "name": "Bat Wings",
+  "category": "gear",
+  "price": 0.5,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Bat"
+  ],
+  "qty": "1d4",
+  "source": "Built-in",
+  "text": "Dried leathery wings. A common component for flight and darkvision magic."
+ },
+ {
+  "id": "part-chimera-scales",
+  "name": "Chimera Scales",
+  "category": "gear",
+  "price": 60,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Chimera"
+  ],
+  "qty": "1d4",
+  "source": "Built-in",
+  "text": "Mismatched scales from a chimera’s hide, each a different color. Used in transmutation and polymorph magic."
+ },
+ {
+  "id": "part-djinnis-tear",
+  "name": "Djinni’s Tear",
+  "category": "gear",
+  "price": 200,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Djinni"
+  ],
+  "source": "Built-in",
+  "text": "A single drop of glowing water caught in a crystal bead. Used in powerful air and wish-related magic."
+ },
+ {
+  "id": "part-ectoplasm",
+  "name": "Ectoplasm",
+  "category": "gear",
+  "price": 40,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Ghost"
+  ],
+  "onlyTypes": [
+   "Undead"
+  ],
+  "source": "Built-in",
+  "text": "Glistening, faintly glowing residue left where a ghost was destroyed. Kept in a stoppered jar; used in spells that touch the Ethereal Plane."
+ },
+ {
+  "id": "part-spectral-dust",
+  "name": "Spectral Dust",
+  "category": "gear",
+  "price": 35,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Specter",
+   "Wraith",
+   "Shadow"
+  ],
+  "onlyTypes": [
+   "Undead"
+  ],
+  "source": "Built-in",
+  "text": "Grey, weightless dust that drifts upward when the jar is opened. Used in necromancy and in wards against the undead."
+ },
+ {
+  "id": "part-celestial-feather",
+  "name": "Celestial Feather",
+  "category": "gear",
+  "price": 250,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Deva",
+   "Planetar",
+   "Solar",
+   "Pegasus",
+   "Couatl"
+  ],
+  "onlyTypes": [
+   "Celestial"
+  ],
+  "qty": "1d2",
+  "source": "Built-in",
+  "text": "A feather that gives off a soft light. Used in radiant and healing magic, and as an offering in temples."
+ },
+ {
+  "id": "part-giants-toenail",
+  "name": "Giant’s Toenail",
+  "category": "gear",
+  "price": 20,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Giant"
+  ],
+  "onlyTypes": [
+   "Giant"
+  ],
+  "source": "Built-in",
+  "text": "A toenail the size of a shield, thick as horn. Ground into powder for strength potions."
+ },
+ {
+  "id": "part-will-o-wisp-essence",
+  "name": "Will-o’-Wisp Essence",
+  "category": "gear",
+  "price": 60,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Will-o’-Wisp"
+  ],
+  "source": "Built-in",
+  "text": "The last flicker of a destroyed will-o’-wisp, trapped in a corked bottle. Used in light and illusion magic."
+ },
+ {
+  "id": "part-owlbear-feathers",
+  "name": "Owlbear Feathers",
+  "category": "gear",
+  "price": 5,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Owlbear"
+  ],
+  "qty": "2d4",
+  "source": "Built-in",
+  "text": "Coarse brown feathers, half fur at the root. Fletchers like them, and they make fine trophies."
+ },
+ {
+  "id": "part-troll-blood",
+  "name": "Troll Blood",
+  "category": "gear",
+  "price": 100,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Troll"
+  ],
+  "qty": "1d2",
+  "source": "Built-in",
+  "text": "Dark green blood that keeps trying to clot into flesh. The key reagent in potions of regeneration."
+ },
+ {
+  "id": "part-hydra-tooth",
+  "name": "Hydra Tooth",
+  "category": "gear",
+  "price": 30,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Hydra"
+  ],
+  "qty": "1d6",
+  "source": "Built-in",
+  "text": "A curved tooth from one of a hydra’s heads. Used in growth and regeneration reagents."
+ },
+ {
+  "id": "part-cockatrice-feather",
+  "name": "Cockatrice Feather",
+  "category": "gear",
+  "price": 25,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Cockatrice"
+  ],
+  "qty": "1d4",
+  "source": "Built-in",
+  "text": "A stiff grey feather that feels like cold stone. Used in petrification magic and its cures."
+ },
+ {
+  "id": "part-hell-hound-ember-gland",
+  "name": "Hell Hound Ember Gland",
+  "category": "gear",
+  "price": 120,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Hell Hound"
+  ],
+  "onlyTypes": [
+   "Fiend"
+  ],
+  "source": "Built-in",
+  "text": "The gland behind a hell hound’s throat that fuels its fiery breath, still smoldering. Used in fire magic and alchemist’s fire."
+ },
+ {
+  "id": "part-medusas-petrified-snakes",
+  "name": "Medusa’s Petrified Snakes",
+  "category": "gear",
+  "price": 150,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Medusa"
+  ],
+  "qty": "1d4",
+  "source": "Built-in",
+  "text": "Snakes from a medusa’s head that turned to stone when she died. Used in petrification magic and its cures."
+ },
+ {
+  "id": "part-phase-spider-silk",
+  "name": "Phase Spider Silk",
+  "category": "gear",
+  "price": 75,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Phase Spider"
+  ],
+  "source": "Built-in",
+  "text": "A spool of silk that flickers in and out of sight. Weavers and enchanters use it for ethereal and teleportation magic."
+ },
+ {
+  "id": "part-griffon-feather",
+  "name": "Griffon Feather",
+  "category": "gear",
+  "price": 20,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Griffon"
+  ],
+  "qty": "1d4",
+  "source": "Built-in",
+  "text": "A broad golden-brown flight feather. Used for flight magic and prized by fletchers."
+ },
+ {
+  "id": "part-harpy-feather",
+  "name": "Harpy Feather",
+  "category": "gear",
+  "price": 5,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Harpy"
+  ],
+  "qty": "1d4",
+  "source": "Built-in",
+  "text": "A greasy, foul-smelling feather. Bards say it is used in charm magic; most people just say it stinks."
+ },
+ {
+  "id": "part-wyvern-stinger",
+  "name": "Wyvern Stinger",
+  "category": "gear",
+  "price": 150,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Wyvern"
+  ],
+  "source": "Built-in",
+  "text": "The venomous tail barb of a wyvern, with its venom sac still attached. A potent poison reagent; handle with care."
+ },
+ {
+  "id": "part-rust-monster-antenna",
+  "name": "Rust Monster Antenna",
+  "category": "gear",
+  "price": 40,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Rust Monster"
+  ],
+  "qty": "1d2",
+  "source": "Built-in",
+  "text": "A feathery antenna that still corrodes metal it touches. Smiths and alchemists use it to dissolve locks and chains."
+ },
+ {
+  "id": "part-mimic-adhesive",
+  "name": "Mimic Adhesive",
+  "category": "gear",
+  "price": 50,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Mimic"
+  ],
+  "source": "Built-in",
+  "text": "A jar of the sticky substance a mimic uses to hold its prey. Bonds almost anything together."
+ },
+ {
+  "id": "part-treant-heartwood",
+  "name": "Treant Heartwood",
+  "category": "gear",
+  "price": 200,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Treant"
+  ],
+  "source": "Built-in",
+  "text": "A piece of living wood from the heart of a treant. Druids use it for staffs and powerful nature magic, and few will forgive whoever took it."
+ },
+ {
+  "id": "part-salamander-scale",
+  "name": "Salamander Scale",
+  "category": "gear",
+  "price": 45,
+  "carried": true,
+  "bundle": null,
+  "rarity": null,
+  "consumable": false,
+  "component": true,
+  "creatures": [
+   "Salamander"
+  ],
+  "qty": "1d4",
+  "source": "Built-in",
+  "text": "A scale that stays hot enough to light tinder. Used in fire magic and fire-resistant gear."
+ }
+]
