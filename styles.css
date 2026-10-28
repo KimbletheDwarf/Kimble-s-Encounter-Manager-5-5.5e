@@ -756,3 +756,12 @@ button.temp { background: #13283a; border-color: #2b5a80; color: #8fd0ff; }
 .loot-list .tag { margin-left: 6px; }
 .loot-total { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
 @media (max-width: 760px) { .loot-dialog { grid-template-columns: 1fr; } .loot-entry { grid-template-columns: minmax(0, 1fr) 64px 56px 56px 30px; } }
+/* ---------- items: the Items tab, and the Maker's Item mode ---------- */
+.item-stat { font-size: 14px; margin: 2px 0; }
+.item-text { margin-top: 10px; }
+.item-editor .form-grid { margin-bottom: 8px; }
+.item-checks { margin: 4px 0 10px; }
+.item-checks .check-row { padding: 2px 0; font-size: 13px; }
+.item-desc { width: 100%; font: 13px/1.5 Consolas, "Cascadia Mono", monospace; }
+.maker-item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 420px); gap: 16px; align-items: start; }
+@media (max-width: 1250px) { .maker-item { grid-template-columns: 1fr; } }

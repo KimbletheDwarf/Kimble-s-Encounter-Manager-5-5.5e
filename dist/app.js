@@ -49,7 +49,7 @@ function parseDice(expr) {
   }
   return terms.length ? terms : null;
 }
-function roll(expr, mode2 = "normal", rng2 = Math.random) {
+function roll(expr, mode3 = "normal", rng2 = Math.random) {
   const terms = parseDice(expr);
   if (!terms) return null;
   const d20s = terms.filter((t) => t.sides === 20).reduce((n, t) => n + t.count, 0);
@@ -59,9 +59,9 @@ function roll(expr, mode2 = "normal", rng2 = Math.random) {
       total += t.sign * t.flat;
       return { flat: t.sign * t.flat };
     }
-    if (t.sides === 20 && t.count === 1 && d20s === 1 && mode2 !== "normal") {
+    if (t.sides === 20 && t.count === 1 && d20s === 1 && mode3 !== "normal") {
       const a2 = die(20, rng2), b2 = die(20, rng2);
-      const kept = mode2 === "advantage" ? Math.max(a2, b2) : Math.min(a2, b2);
+      const kept = mode3 === "advantage" ? Math.max(a2, b2) : Math.min(a2, b2);
       total += t.sign * kept;
       natural20 = kept === 20;
       natural1 = kept === 1;
@@ -75,7 +75,7 @@ function roll(expr, mode2 = "normal", rng2 = Math.random) {
     }
     return { sides: t.sides, sign: t.sign, rolls };
   });
-  return { expr: String(expr).replace(/\s+/g, ""), mode: mode2, total, parts, natural20, natural1 };
+  return { expr: String(expr).replace(/\s+/g, ""), mode: mode3, total, parts, natural20, natural1 };
 }
 function describe(r) {
   return r.parts.map((p, i) => {
@@ -22738,18 +22738,18 @@ var init_three_core = __esm({
        * @return {Object} The parsed track name as an object.
        */
       static parseTrackName(trackName) {
-        const matches3 = _trackRe.exec(trackName);
-        if (matches3 === null) {
+        const matches4 = _trackRe.exec(trackName);
+        if (matches4 === null) {
           throw new Error("THREE.PropertyBinding: Cannot parse trackName: " + trackName);
         }
         const results = {
           // directoryName: matches[ 1 ], // (tschw) currently unused
-          nodeName: matches3[2],
-          objectName: matches3[3],
-          objectIndex: matches3[4],
-          propertyName: matches3[5],
+          nodeName: matches4[2],
+          objectName: matches4[3],
+          objectIndex: matches4[4],
+          propertyName: matches4[5],
           // required
-          propertyIndex: matches3[6]
+          propertyIndex: matches4[6]
         };
         const lastDot = results.nodeName && results.nodeName.lastIndexOf(".");
         if (lastDot !== void 0 && lastDot !== -1) {
@@ -23339,7 +23339,7 @@ function WebGLBackground(renderer, environments, state2, objects, alpha, premult
       renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
     }
   }
-  function addToRenderList(renderList7, scene) {
+  function addToRenderList(renderList8, scene) {
     const background = getBackground(scene);
     if (background && (background.isCubeTexture || background.mapping === CubeUVReflectionMapping)) {
       if (boxMesh === void 0) {
@@ -23384,7 +23384,7 @@ function WebGLBackground(renderer, environments, state2, objects, alpha, premult
         currentTonemapping = renderer.toneMapping;
       }
       boxMesh.layers.enableAll();
-      renderList7.unshift(boxMesh, boxMesh.geometry, boxMesh.material, 0, 0, null);
+      renderList8.unshift(boxMesh, boxMesh.geometry, boxMesh.material, 0, 0, null);
     } else if (background && background.isTexture) {
       if (planeMesh === void 0) {
         planeMesh = new Mesh(
@@ -23423,7 +23423,7 @@ function WebGLBackground(renderer, environments, state2, objects, alpha, premult
         currentTonemapping = renderer.toneMapping;
       }
       planeMesh.layers.enableAll();
-      renderList7.unshift(planeMesh, planeMesh.geometry, planeMesh.material, 0, 0, null);
+      renderList8.unshift(planeMesh, planeMesh.geometry, planeMesh.material, 0, 0, null);
     }
   }
   function setClear(color, alpha2) {
@@ -23828,30 +23828,30 @@ function WebGLBindingStates(gl, attributes) {
   };
 }
 function WebGLBufferRenderer(gl, extensions, info2) {
-  let mode2;
-  function setMode(value) {
-    mode2 = value;
+  let mode3;
+  function setMode2(value) {
+    mode3 = value;
   }
   function render5(start2, count) {
-    gl.drawArrays(mode2, start2, count);
-    info2.update(count, mode2, 1);
+    gl.drawArrays(mode3, start2, count);
+    info2.update(count, mode3, 1);
   }
   function renderInstances(start2, count, primcount) {
     if (primcount === 0) return;
-    gl.drawArraysInstanced(mode2, start2, count, primcount);
-    info2.update(count, mode2, primcount);
+    gl.drawArraysInstanced(mode3, start2, count, primcount);
+    info2.update(count, mode3, primcount);
   }
   function renderMultiDraw(starts, counts, drawCount) {
     if (drawCount === 0) return;
     const extension = extensions.get("WEBGL_multi_draw");
-    extension.multiDrawArraysWEBGL(mode2, starts, 0, counts, 0, drawCount);
+    extension.multiDrawArraysWEBGL(mode3, starts, 0, counts, 0, drawCount);
     let elementCount = 0;
     for (let i = 0; i < drawCount; i++) {
       elementCount += counts[i];
     }
-    info2.update(elementCount, mode2, 1);
+    info2.update(elementCount, mode3, 1);
   }
-  this.setMode = setMode;
+  this.setMode = setMode2;
   this.render = render5;
   this.renderInstances = renderInstances;
   this.renderMultiDraw = renderMultiDraw;
@@ -24640,9 +24640,9 @@ function WebGLGeometries(gl, attributes, info2, bindingStates) {
   };
 }
 function WebGLIndexedBufferRenderer(gl, extensions, info2) {
-  let mode2;
-  function setMode(value) {
-    mode2 = value;
+  let mode3;
+  function setMode2(value) {
+    mode3 = value;
   }
   let type, bytesPerElement;
   function setIndex(value) {
@@ -24650,25 +24650,25 @@ function WebGLIndexedBufferRenderer(gl, extensions, info2) {
     bytesPerElement = value.bytesPerElement;
   }
   function render5(start2, count) {
-    gl.drawElements(mode2, count, type, start2 * bytesPerElement);
-    info2.update(count, mode2, 1);
+    gl.drawElements(mode3, count, type, start2 * bytesPerElement);
+    info2.update(count, mode3, 1);
   }
   function renderInstances(start2, count, primcount) {
     if (primcount === 0) return;
-    gl.drawElementsInstanced(mode2, count, type, start2 * bytesPerElement, primcount);
-    info2.update(count, mode2, primcount);
+    gl.drawElementsInstanced(mode3, count, type, start2 * bytesPerElement, primcount);
+    info2.update(count, mode3, primcount);
   }
   function renderMultiDraw(starts, counts, drawCount) {
     if (drawCount === 0) return;
     const extension = extensions.get("WEBGL_multi_draw");
-    extension.multiDrawElementsWEBGL(mode2, counts, 0, type, starts, 0, drawCount);
+    extension.multiDrawElementsWEBGL(mode3, counts, 0, type, starts, 0, drawCount);
     let elementCount = 0;
     for (let i = 0; i < drawCount; i++) {
       elementCount += counts[i];
     }
-    info2.update(elementCount, mode2, 1);
+    info2.update(elementCount, mode3, 1);
   }
-  this.setMode = setMode;
+  this.setMode = setMode2;
   this.setIndex = setIndex;
   this.render = render5;
   this.renderInstances = renderInstances;
@@ -24686,9 +24686,9 @@ function WebGLInfo(gl) {
     points: 0,
     lines: 0
   };
-  function update(count, mode2, instanceCount) {
+  function update(count, mode3, instanceCount) {
     render5.calls++;
-    switch (mode2) {
+    switch (mode3) {
       case gl.TRIANGLES:
         render5.triangles += instanceCount * (count / 3);
         break;
@@ -24705,7 +24705,7 @@ function WebGLInfo(gl) {
         render5.points += instanceCount * count;
         break;
       default:
-        error("WebGLInfo: Unknown draw mode:", mode2);
+        error("WebGLInfo: Unknown draw mode:", mode3);
         break;
     }
   }
@@ -26750,9 +26750,9 @@ function WebGLRenderList() {
     return variant;
   }
   function getNextRenderItem(object, geometry, material, groupOrder, z, group) {
-    let renderItem = renderItems[renderItemsIndex];
-    if (renderItem === void 0) {
-      renderItem = {
+    let renderItem2 = renderItems[renderItemsIndex];
+    if (renderItem2 === void 0) {
+      renderItem2 = {
         id: object.id,
         object,
         geometry,
@@ -26763,40 +26763,40 @@ function WebGLRenderList() {
         z,
         group
       };
-      renderItems[renderItemsIndex] = renderItem;
+      renderItems[renderItemsIndex] = renderItem2;
     } else {
-      renderItem.id = object.id;
-      renderItem.object = object;
-      renderItem.geometry = geometry;
-      renderItem.material = material;
-      renderItem.materialVariant = materialVariant(object);
-      renderItem.groupOrder = groupOrder;
-      renderItem.renderOrder = object.renderOrder;
-      renderItem.z = z;
-      renderItem.group = group;
+      renderItem2.id = object.id;
+      renderItem2.object = object;
+      renderItem2.geometry = geometry;
+      renderItem2.material = material;
+      renderItem2.materialVariant = materialVariant(object);
+      renderItem2.groupOrder = groupOrder;
+      renderItem2.renderOrder = object.renderOrder;
+      renderItem2.z = z;
+      renderItem2.group = group;
     }
     renderItemsIndex++;
-    return renderItem;
+    return renderItem2;
   }
   function push(object, geometry, material, groupOrder, z, group, camera) {
     if (camera.reversedDepth === true) z = -z;
-    const renderItem = getNextRenderItem(object, geometry, material, groupOrder, z, group);
+    const renderItem2 = getNextRenderItem(object, geometry, material, groupOrder, z, group);
     if (material.transmission > 0) {
-      transmissive.push(renderItem);
+      transmissive.push(renderItem2);
     } else if (material.transparent === true) {
-      transparent.push(renderItem);
+      transparent.push(renderItem2);
     } else {
-      opaque.push(renderItem);
+      opaque.push(renderItem2);
     }
   }
   function unshift(object, geometry, material, groupOrder, z, group) {
-    const renderItem = getNextRenderItem(object, geometry, material, groupOrder, z, group);
+    const renderItem2 = getNextRenderItem(object, geometry, material, groupOrder, z, group);
     if (material.transmission > 0) {
-      transmissive.unshift(renderItem);
+      transmissive.unshift(renderItem2);
     } else if (material.transparent === true) {
-      transparent.unshift(renderItem);
+      transparent.unshift(renderItem2);
     } else {
-      opaque.unshift(renderItem);
+      opaque.unshift(renderItem2);
     }
   }
   function sort2(customOpaqueSort, customTransparentSort) {
@@ -26806,13 +26806,13 @@ function WebGLRenderList() {
   }
   function finish2() {
     for (let i = renderItemsIndex, il = renderItems.length; i < il; i++) {
-      const renderItem = renderItems[i];
-      if (renderItem.id === null) break;
-      renderItem.id = null;
-      renderItem.object = null;
-      renderItem.geometry = null;
-      renderItem.material = null;
-      renderItem.group = null;
+      const renderItem2 = renderItems[i];
+      if (renderItem2.id === null) break;
+      renderItem2.id = null;
+      renderItem2.object = null;
+      renderItem2.geometry = null;
+      renderItem2.material = null;
+      renderItem2.group = null;
     }
   }
   return {
@@ -33846,8 +33846,8 @@ void main() {
           if (extensions.has("WEBGL_multisampled_render_to_texture") === false) {
             let renderTargetNeedsUpdate = false;
             for (let i = 0, l = transmissiveObjects.length; i < l; i++) {
-              const renderItem = transmissiveObjects[i];
-              const { object, geometry, material, group } = renderItem;
+              const renderItem2 = transmissiveObjects[i];
+              const { object, geometry, material, group } = renderItem2;
               if (material.side === DoubleSide && object.layers.test(camera.layers)) {
                 const currentSide = material.side;
                 material.side = BackSide;
@@ -33868,12 +33868,12 @@ void main() {
           if (currentCameraViewport !== void 0) camera.viewport = currentCameraViewport;
           _this.toneMapping = currentToneMapping;
         }
-        function renderObjects(renderList7, scene, camera) {
+        function renderObjects(renderList8, scene, camera) {
           const overrideMaterial = scene.isScene === true ? scene.overrideMaterial : null;
-          for (let i = 0, l = renderList7.length; i < l; i++) {
-            const renderItem = renderList7[i];
-            const { object, geometry, group } = renderItem;
-            let material = renderItem.material;
+          for (let i = 0, l = renderList8.length; i < l; i++) {
+            const renderItem2 = renderList8[i];
+            const { object, geometry, group } = renderItem2;
+            let material = renderItem2.material;
             if (material.allowOverride === true && overrideMaterial !== null) {
               material = overrideMaterial;
             }
@@ -35069,12 +35069,12 @@ function createTray(container) {
       badge2.hidden = !more;
       canvas.style.transition = "none";
       canvas.style.opacity = "1";
-      const t0 = performance.now(), mine = {};
-      playing = mine;
+      const t0 = performance.now(), mine2 = {};
+      playing = mine2;
       return new Promise((resolve) => {
-        mine.resolve = resolve;
+        mine2.resolve = resolve;
         const frame = (now) => {
-          if (playing !== mine) return resolve();
+          if (playing !== mine2) return resolve();
           const i = Math.max(0, Math.min(frames2.length - 1, Math.floor((now - t0) / 1e3 * 60 * speed)));
           const f = frames2[i];
           meshes.forEach((m, k) => {
@@ -35086,7 +35086,7 @@ function createTray(container) {
             raf = requestAnimationFrame(frame);
             return;
           }
-          mine.settled = true;
+          mine2.settled = true;
           dice2.forEach((d, k) => {
             if (d.dropped) meshes[k].material.forEach((x) => {
               x.opacity = 0.3;
@@ -35094,12 +35094,12 @@ function createTray(container) {
           });
           renderer.render(scene, camera);
           setTimeout(() => {
-            if (playing !== mine) return resolve();
+            if (playing !== mine2) return resolve();
             canvas.style.transition = "opacity .45s";
             canvas.style.opacity = "0";
             badge2.hidden = true;
             setTimeout(() => {
-              if (playing === mine) clear();
+              if (playing === mine2) clear();
               resolve();
             }, 480);
           }, hold);
@@ -35164,13 +35164,13 @@ function createDice(container) {
     async show(dice2, { theme = "ivory", font = "", scale = "medium", max = 10 } = {}) {
       const all = dice2.flatMap(expand);
       if (!all.length) return null;
-      const shown3 = all.slice(0, max);
+      const shown4 = all.slice(0, max);
       tray ??= createTray(container);
       const r = container.getBoundingClientRect();
       tray.setScale(Math.max(32, Math.min(SCALES[scale] || SCALES.medium, r.width / 16, r.height / 10)));
-      const { frames: frames2, tops } = simulate(shown3.map((d) => d.sides), tray.bounds());
-      const labelled = shown3.map((d, i) => ({ ...d, labels: relabel(dieShape(d.sides), tops[i].index, d.digit) }));
-      await tray.play(labelled, frames2, { theme: THEMES[theme] || THEMES.ivory, font, more: all.length - shown3.length });
+      const { frames: frames2, tops } = simulate(shown4.map((d) => d.sides), tray.bounds());
+      const labelled = shown4.map((d, i) => ({ ...d, labels: relabel(dieShape(d.sides), tops[i].index, d.digit) }));
+      await tray.play(labelled, frames2, { theme: THEMES[theme] || THEMES.ivory, font, more: all.length - shown4.length });
       return { dice: labelled, frames: frames2 };
     },
     clear() {
@@ -35196,34 +35196,34 @@ function h(spec, props = {}, ...kids) {
     props = {};
   }
   const [, tag = "div", rest = ""] = spec.match(/^([a-z0-9]*)(.*)$/i);
-  const el10 = document.createElement(tag || "div");
+  const el11 = document.createElement(tag || "div");
   for (const part of rest.match(/[.#][^.#]+/g) || []) {
-    if (part[0] === ".") el10.classList.add(part.slice(1));
-    else el10.id = part.slice(1);
+    if (part[0] === ".") el11.classList.add(part.slice(1));
+    else el11.id = part.slice(1);
   }
   for (const [k, v] of Object.entries(props)) {
     if (v == null) continue;
     if (v === false) {
-      if (k in el10) el10[k] = false;
+      if (k in el11) el11[k] = false;
       continue;
     }
-    if (k.startsWith("on")) el10.addEventListener(k.slice(2), v);
-    else if (k === "dataset") Object.assign(el10.dataset, v);
-    else if (k === "html") el10.innerHTML = v;
-    else if (k === "value") el10.value = v;
-    else if (k in el10 && typeof v !== "string") el10[k] = v;
-    else el10.setAttribute(k, v === true ? "" : v);
+    if (k.startsWith("on")) el11.addEventListener(k.slice(2), v);
+    else if (k === "dataset") Object.assign(el11.dataset, v);
+    else if (k === "html") el11.innerHTML = v;
+    else if (k === "value") el11.value = v;
+    else if (k in el11 && typeof v !== "string") el11[k] = v;
+    else el11.setAttribute(k, v === true ? "" : v);
   }
-  append(el10, kids);
-  return el10;
+  append(el11, kids);
+  return el11;
 }
-function fill(el10, ...kids) {
-  el10.replaceChildren();
-  append(el10, kids);
-  return el10;
+function fill(el11, ...kids) {
+  el11.replaceChildren();
+  append(el11, kids);
+  return el11;
 }
-function append(el10, kids) {
-  for (const k of kids.flat(Infinity)) if (k != null && k !== false) el10.append(k instanceof Node ? k : String(k));
+function append(el11, kids) {
+  for (const k of kids.flat(Infinity)) if (k != null && k !== false) el11.append(k instanceof Node ? k : String(k));
 }
 function avatar(src, name, cls = "") {
   if (src) return h(`img.avatar${cls ? "." + cls : ""}`, { src, alt: "" });
@@ -35332,8 +35332,8 @@ function pasteToPicture(tabEl) {
     box.pasteImage(e2);
   });
 }
-function doRoll(expr, { who = "", label = "", mode: mode2 = "normal", quiet = false } = {}) {
-  const r = roll(expr, mode2);
+function doRoll(expr, { who = "", label = "", mode: mode3 = "normal", quiet = false } = {}) {
+  const r = roll(expr, mode3);
   if (!r) return null;
   const entry = { ...r, who, label, detail: describe(r), at: Date.now() };
   rollLog.unshift(entry);
@@ -35372,13 +35372,13 @@ function showDice(r) {
     return dice.show(list, { theme: s.theme, font: s.font, scale: s.scale });
   }).catch((e2) => console.error("Dice animation failed:", e2));
 }
-function rollFromClick(el10, expr, opts2) {
+function rollFromClick(el11, expr, opts2) {
   const s = diceSettings();
   const cd = s.animate ? Number(s.cooldown) || 0 : 0;
   if (cd && Date.now() < coolUntil) {
-    el10?.classList.remove("roll-blocked");
-    void el10?.offsetWidth;
-    el10?.classList.add("roll-blocked");
+    el11?.classList.remove("roll-blocked");
+    void el11?.offsetWidth;
+    el11?.classList.add("roll-blocked");
     return null;
   }
   const entry = doRoll(expr, opts2);
@@ -35387,11 +35387,11 @@ function rollFromClick(el10, expr, opts2) {
     document.body.classList.add("dice-cooling");
     document.body.style.setProperty("--cooldown", `${cd}s`);
     document.querySelectorAll(".cooling").forEach((x) => x.classList.remove("cooling"));
-    el10?.classList.add("cooling");
+    el11?.classList.add("cooling");
     clearTimeout(coolTimer);
     coolTimer = setTimeout(() => {
       document.body.classList.remove("dice-cooling");
-      el10?.classList.remove("cooling");
+      el11?.classList.remove("cooling");
     }, cd * 1e3);
   }
   return entry;
@@ -35438,16 +35438,16 @@ function toast(entry) {
 }
 function notice(text, kind = "", ms = 6e3) {
   noticeEl?.remove();
-  const el10 = noticeEl = h("div.notice" + (kind ? `.${kind}` : ""), { role: "status", onclick: () => el10.remove() }, text);
-  document.body.append(el10);
+  const el11 = noticeEl = h("div.notice" + (kind ? `.${kind}` : ""), { role: "status", onclick: () => el11.remove() }, text);
+  document.body.append(el11);
   setTimeout(() => {
-    if (noticeEl === el10) {
-      el10.remove();
+    if (noticeEl === el11) {
+      el11.remove();
       noticeEl = null;
     }
   }, ms);
 }
-function modal(title, body2, actions = []) {
+function modal(title2, body2, actions = []) {
   const close = () => back.remove();
   const back = h(
     "div.modal-back",
@@ -35456,7 +35456,7 @@ function modal(title, body2, actions = []) {
     } },
     h(
       "div.modal",
-      h("div.modal-head", h("h3", title), h("button.icon-btn", { title: "Close", onclick: close }, "\xD7")),
+      h("div.modal-head", h("h3", title2), h("button.icon-btn", { title: "Close", onclick: close }, "\xD7")),
       h("div.modal-body", body2),
       actions.length ? h("div.modal-foot", actions.map(([text, fn, cls = ""]) => h(`button${cls ? "." + cls : ""}`, { onclick: () => {
         if (fn() !== false) close();
@@ -35499,8 +35499,8 @@ var init_ui = __esm({
       if (!b2) return;
       e2.preventDefault();
       e2.stopPropagation();
-      const mode2 = e2.shiftKey ? "advantage" : e2.ctrlKey ? "disadvantage" : "normal";
-      rollFromClick(b2, b2.dataset.expr, { who: b2.dataset.who || "", label: b2.dataset.label || "", mode: mode2 });
+      const mode3 = e2.shiftKey ? "advantage" : e2.ctrlKey ? "disadvantage" : "normal";
+      rollFromClick(b2, b2.dataset.expr, { who: b2.dataset.who || "", label: b2.dataset.label || "", mode: mode3 });
     }, true);
     TOAST_DEFAULTS = { position: "bottom-left", size: 2, seconds: 5 };
     noticeEl = null;
@@ -35853,9 +35853,12 @@ var init_conditions_data = __esm({
 var store_exports = {};
 __export(store_exports, {
   CONDITIONS_SRD: () => CONDITIONS_SRD,
+  ITEM_CATEGORIES: () => ITEM_CATEGORIES,
+  allItems: () => allItems,
   allMonsters: () => allMonsters,
   chooseLibrary: () => chooseLibrary,
   findCharacter: () => findCharacter,
+  findItem: () => findItem,
   findMonster: () => findMonster,
   flushSaves: () => flushSaves,
   isHomebrew: () => isHomebrew,
@@ -35877,9 +35880,9 @@ async function loadLibrary() {
   if (!store.srd.length) store.srd = await (await fetch("data/srd-monsters.json")).json();
   if (!store.spells.length) store.spells = await (await fetch("data/srd-spells.json")).json();
   if (!store.rules.length) store.rules = await (await fetch("data/srd-rules.json")).json();
-  if (!store.items.length) store.items = await (await fetch("data/srd-items.json")).json();
+  if (!store.srdItems.length) store.srdItems = await (await fetch("data/srd-items.json")).json();
   store.errors = [];
-  for (const kind of ["monsters", "party", "encounters", "conditions", "loot"]) {
+  for (const kind of ["monsters", "party", "encounters", "conditions", "loot", "items"]) {
     if (!libraryPath) {
       store[kind] = kind === "conditions" ? defaultConditions() : [];
       continue;
@@ -35968,7 +35971,7 @@ async function remove(kind, item) {
   await window.desktop.remove(kind, item.id);
   emit(kind);
 }
-var CONDITIONS_SRD, listeners, store, onChange, emit, arr, NORMALIZE, timers, writing, pending, statusListeners, onSaveStatus, status, allMonsters, findMonster, findCharacter, isHomebrew;
+var CONDITIONS_SRD, listeners, store, onChange, emit, arr, NORMALIZE, timers, writing, pending, statusListeners, onSaveStatus, status, allMonsters, findMonster, findCharacter, isHomebrew, allItems, findItem, ITEM_CATEGORIES;
 var init_store = __esm({
   "src/store.js"() {
     init_format();
@@ -35986,8 +35989,10 @@ var init_store = __esm({
       party: [],
       encounters: [],
       conditions: [],
+      srdItems: [],
+      // SRD equipment and magic items (Items tab, the loot generator)
       items: [],
-      // SRD equipment and magic items (the loot generator)
+      // the user's own items (made in the Maker or the Items tab)
       loot: [],
       // the user's loot tables: edited or new themes (src/loot-data.js has the built-in ones)
       errors: []
@@ -36019,6 +36024,7 @@ var init_store = __esm({
         items: arr(t.items).filter((x) => x && typeof x.name === "string"),
         harvest: arr(t.harvest).filter((x) => x && typeof x.name === "string")
       },
+      items: (x) => ({ ...x, name: String(x.name || "Unnamed"), category: ITEM_CATEGORIES.includes(x.category) ? x.category : "gear", text: String(x.text ?? ""), carried: x.carried !== false }),
       encounters: (e2) => ({ ...e2, name: String(e2.name ?? "Untitled"), characterIds: arr(e2.characterIds), groups: arr(e2.groups).filter((g) => g && g.monsterId && g.count > 0), extraPlayers: e2.extraPlayers || { count: 0, level: 1 } })
     };
     timers = /* @__PURE__ */ new Map();
@@ -36031,6 +36037,9 @@ var init_store = __esm({
     findMonster = (id) => store.monsters.find((m) => m.id === id) || store.srd.find((m) => m.id === id);
     findCharacter = (id) => store.party.find((c2) => c2.id === id);
     isHomebrew = (m) => !m.source || m.source === "Homebrew";
+    allItems = () => [...store.items, ...store.srdItems];
+    findItem = (id) => store.items.find((x) => x.id === id) || store.srdItems.find((x) => x.id === id);
+    ITEM_CATEGORIES = ["weapon", "armor", "shield", "ammo", "gear", "tool", "focus", "magic"];
   }
 });
 
@@ -37542,7 +37551,7 @@ async function ocrStatBlock(worker, src, imaging2, onProgress = () => {
   const W0 = imaging2.width(src);
   const scaleFor = (target) => Math.max(1, Math.min(6, Math.ceil(target / W0)));
   const passes = [];
-  for (const [mode2, target] of [
+  for (const [mode3, target] of [
     ["gray", TARGET_WIDTH],
     ["min", TARGET_WIDTH],
     ["gray", 1400],
@@ -37554,7 +37563,7 @@ async function ocrStatBlock(worker, src, imaging2, onProgress = () => {
     ["gray-keep", 1400]
   ]) {
     const scale = scaleFor(target);
-    if (!passes.some((p) => p.mode === mode2 && p.scale === scale)) passes.push({ mode: mode2, scale });
+    if (!passes.some((p) => p.mode === mode3 && p.scale === scale)) passes.push({ mode: mode3, scale });
   }
   const readings = [[], [], [], [], [], []];
   const confirmed = (i) => {
@@ -37563,10 +37572,10 @@ async function ocrStatBlock(worker, src, imaging2, onProgress = () => {
     return top && top[1] >= 2 && top[1] > ok.length - top[1] ? top[0] : null;
   };
   let text = "", confidence = 0, grid = null, dark = false;
-  for (const [n, { mode: mode2, scale }] of passes.entries()) {
-    if (mode2.endsWith("-keep") && !dark) continue;
+  for (const [n, { mode: mode3, scale }] of passes.entries()) {
+    if (mode3.endsWith("-keep") && !dark) continue;
     onProgress(n === 0 ? "Reading text\u2026" : `Double-checking ability scores (${n}/${passes.length - 1})\u2026`);
-    const img = imaging2.prepare(src, scale, mode2);
+    const img = imaging2.prepare(src, scale, mode3);
     if (n === 0) dark = !!img.inverted;
     await worker.setParameters({ tessedit_pageseg_mode: "3", tessedit_char_whitelist: "" });
     const { data } = await worker.recognize(await imaging2.input(img), {}, { blocks: true, text: true });
@@ -37697,15 +37706,15 @@ var init_ocr = __esm({
     workerPromise = null;
     imaging = {
       width: (c2) => c2.width,
-      prepare(src, scale, mode2) {
+      prepare(src, scale, mode3) {
         const c2 = new OffscreenCanvas(Math.round(src.width * scale), Math.round(src.height * scale));
         const x = c2.getContext("2d", { willReadFrequently: true });
         x.imageSmoothingQuality = "high";
         x.drawImage(src, 0, 0, c2.width, c2.height);
         const img = x.getImageData(0, 0, c2.width, c2.height), d = img.data;
-        const inverted = !mode2.endsWith("-keep") && darkToLight(d);
+        const inverted = !mode3.endsWith("-keep") && darkToLight(d);
         for (let i = 0; i < d.length; i += 4) {
-          const v = mode2.startsWith("min") ? Math.min(d[i], d[i + 1], d[i + 2]) : Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]);
+          const v = mode3.startsWith("min") ? Math.min(d[i], d[i + 1], d[i + 2]) : Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]);
           d[i] = d[i + 1] = d[i + 2] = v;
         }
         x.putImageData(img, 0, 0);
@@ -38380,15 +38389,15 @@ function ensureTip() {
   document.body.append(tip);
   return tip;
 }
-function show(el10) {
-  const html = htmlOf(el10, !!pinned);
+function show(el11) {
+  const html = htmlOf(el11, !!pinned);
   if (!html) return;
   clearTimeout(hideTimer);
   ensureTip();
   tip.innerHTML = html + (pinned ? '<div class="cond-hint">Pinned. Click elsewhere or press Esc to close.</div>' : '<div class="cond-hint">Click the word to pin this open.</div>');
   tip.hidden = false;
   tip.scrollTop = 0;
-  const r = el10.getBoundingClientRect(), tw = tip.offsetWidth;
+  const r = el11.getBoundingClientRect(), tw = tip.offsetWidth;
   const below = window.innerHeight - r.bottom - 14, above = r.top - 14;
   tip.style.maxHeight = "";
   const th = tip.offsetHeight;
@@ -38414,29 +38423,29 @@ var init_tooltip = __esm({
     kinds = /* @__PURE__ */ new Map();
     registerTip = (key2, html) => kinds.set(key2, html);
     linkOf = (target) => target.closest?.([...kinds.keys()].map((k) => `[data-${k}]`).join(",") || null);
-    htmlOf = (el10, pinned2) => {
-      for (const [k, fn] of kinds) if (el10.dataset[k] != null) return fn(el10.dataset[k], pinned2);
+    htmlOf = (el11, pinned2) => {
+      for (const [k, fn] of kinds) if (el11.dataset[k] != null) return fn(el11.dataset[k], pinned2);
       return "";
     };
     pinned = null;
     document.addEventListener("mouseover", (e2) => {
-      const el10 = linkOf(e2.target);
-      if (el10 && !pinned) show(el10);
+      const el11 = linkOf(e2.target);
+      if (el11 && !pinned) show(el11);
     });
     document.addEventListener("mouseout", (e2) => {
-      const el10 = linkOf(e2.target);
-      if (el10 && !pinned && !tip?.contains(e2.relatedTarget)) hideSoon();
+      const el11 = linkOf(e2.target);
+      if (el11 && !pinned && !tip?.contains(e2.relatedTarget)) hideSoon();
     });
     document.addEventListener("focusin", (e2) => {
       if (e2.target.matches?.(".cond-link") && !pinned) show(e2.target);
     });
     document.addEventListener("click", (e2) => {
-      const el10 = e2.target.closest?.(".cond-link");
-      if (el10 && !tip?.contains(el10)) {
+      const el11 = e2.target.closest?.(".cond-link");
+      if (el11 && !tip?.contains(el11)) {
         e2.preventDefault();
-        if (pinned === el10) return unpin();
-        pinned = el10;
-        show(el10);
+        if (pinned === el11) return unpin();
+        pinned = el11;
+        show(el11);
         return;
       }
       if (tip && !tip.contains(e2.target)) unpin();
@@ -38550,14 +38559,14 @@ __export(spells_exports, {
   spellTags: () => spellTags,
   spellify: () => spellify
 });
-function rebuild2() {
+function rebuild3() {
   byName = new Map(store.spells.map((s) => [norm(s.name), s]));
   byId = new Map(store.spells.map((s) => [s.id, s]));
   const names = store.spells.map((s) => s.name).sort((a2, b2) => b2.length - a2.length);
   plainRe = names.length ? new RegExp(`\\b(${names.map(escRe).join("|")})\\b`, "gi") : null;
 }
 function spellify(html) {
-  if (!plainRe) rebuild2();
+  if (!plainRe) rebuild3();
   if (!plainRe) return html;
   let out = html.replace(/(^|>)([^<]+)/g, (all, gt, text, offset) => {
     let changed3 = false;
@@ -38611,14 +38620,14 @@ var init_spells = __esm({
     byId = /* @__PURE__ */ new Map();
     plainRe = null;
     onChange((kind) => {
-      if (kind === "all") rebuild2();
+      if (kind === "all") rebuild3();
     });
     findSpell = (name) => {
-      if (!plainRe) rebuild2();
+      if (!plainRe) rebuild3();
       return byName.get(norm(name));
     };
     spellById = (id) => {
-      if (!plainRe) rebuild2();
+      if (!plainRe) rebuild3();
       return byId.get(id);
     };
     link = (s, text) => `<span class="cond-link spell-link" data-spell="${esc(s.name)}" tabindex="0">${text}</span>`;
@@ -39649,9 +39658,9 @@ function resetCtxToDefault(ctx) {
   }
   if (!isNodeJS) {
     const {
-      filter: filter3
+      filter: filter4
     } = ctx;
-    if (filter3 !== "none" && filter3 !== "") {
+    if (filter4 !== "none" && filter4 !== "") {
       ctx.filter = "none";
     }
   }
@@ -39719,26 +39728,26 @@ function getFilenameFromContentDispositionHeader(contentDisposition) {
     return value;
   }
   function rfc2231getparam(contentDispositionStr) {
-    const matches3 = [];
+    const matches4 = [];
     let match;
     const iter = toParamRegExp("filename\\*((?!0\\d)\\d+)(\\*?)", "ig");
     while ((match = iter.exec(contentDispositionStr)) !== null) {
       let [, n, quot, part] = match;
       n = parseInt(n, 10);
-      if (n in matches3) {
+      if (n in matches4) {
         if (n === 0) {
           break;
         }
         continue;
       }
-      matches3[n] = [quot, part];
+      matches4[n] = [quot, part];
     }
     const parts = [];
-    for (let n = 0; n < matches3.length; ++n) {
-      if (!(n in matches3)) {
+    for (let n = 0; n < matches4.length; ++n) {
+      if (!(n in matches4)) {
         break;
       }
-      let [quot, part] = matches3[n];
+      let [quot, part] = matches4[n];
       part = rfc2616unquote(part);
       if (quot) {
         part = unescape(part);
@@ -39779,7 +39788,7 @@ function getFilenameFromContentDispositionHeader(contentDisposition) {
     if (!value.startsWith("=?") || /[\x00-\x19\x80-\xff]/.test(value)) {
       return value;
     }
-    return value.replaceAll(/=\?([\w-]*)\?([QqBb])\?((?:[^?]|\?(?!=))*)\?=/g, function(matches3, charset, encoding, text) {
+    return value.replaceAll(/=\?([\w-]*)\?([QqBb])\?((?:[^?]|\?(?!=))*)\?=/g, function(matches4, charset, encoding, text) {
       if (encoding === "q" || encoding === "Q") {
         text = text.replaceAll("_", " ");
         text = text.replaceAll(/=([0-9a-fA-F]{2})/g, function(match, hex) {
@@ -40944,25 +40953,25 @@ var init_pdf = __esm({
           return null;
         }
         this.#regex ||= new RegExp("^D:(\\d{4})(\\d{2})?(\\d{2})?(\\d{2})?(\\d{2})?(\\d{2})?([Z|+|-])?(\\d{2})?'?(\\d{2})?'?");
-        const matches3 = this.#regex.exec(input);
-        if (!matches3) {
+        const matches4 = this.#regex.exec(input);
+        if (!matches4) {
           return null;
         }
-        const year = parseInt(matches3[1], 10);
-        let month = parseInt(matches3[2], 10);
+        const year = parseInt(matches4[1], 10);
+        let month = parseInt(matches4[2], 10);
         month = month >= 1 && month <= 12 ? month - 1 : 0;
-        let day = parseInt(matches3[3], 10);
+        let day = parseInt(matches4[3], 10);
         day = day >= 1 && day <= 31 ? day : 1;
-        let hour = parseInt(matches3[4], 10);
+        let hour = parseInt(matches4[4], 10);
         hour = hour >= 0 && hour <= 23 ? hour : 0;
-        let minute = parseInt(matches3[5], 10);
+        let minute = parseInt(matches4[5], 10);
         minute = minute >= 0 && minute <= 59 ? minute : 0;
-        let second = parseInt(matches3[6], 10);
+        let second = parseInt(matches4[6], 10);
         second = second >= 0 && second <= 59 ? second : 0;
-        const universalTimeRelation = matches3[7] || "Z";
-        let offsetHour = parseInt(matches3[8], 10);
+        const universalTimeRelation = matches4[7] || "Z";
+        let offsetHour = parseInt(matches4[8], 10);
         offsetHour = offsetHour >= 0 && offsetHour <= 23 ? offsetHour : 0;
-        let offsetMinute = parseInt(matches3[9], 10) || 0;
+        let offsetMinute = parseInt(matches4[9], 10) || 0;
         offsetMinute = offsetMinute >= 0 && offsetMinute <= 59 ? offsetMinute : 0;
         if (universalTimeRelation === "-") {
           hour += offsetHour;
@@ -41615,12 +41624,12 @@ var init_pdf = __esm({
         const proto = _AnnotationEditorUIManager.prototype;
         const arrowChecker = (self2) => self2.#container.contains(document.activeElement) && document.activeElement.tagName !== "BUTTON" && self2.hasSomethingToControl();
         const textInputChecker = (_self, {
-          target: el10
+          target: el11
         }) => {
-          if (el10 instanceof HTMLInputElement) {
+          if (el11 instanceof HTMLInputElement) {
             const {
               type
-            } = el10;
+            } = el11;
             return type !== "text" && type !== "number";
           }
           return true;
@@ -41637,12 +41646,12 @@ var init_pdf = __esm({
           checker: textInputChecker
         }], [["Enter", "mac+Enter"], proto.addNewEditorFromKeyboard, {
           checker: (self2, {
-            target: el10
-          }) => !(el10 instanceof HTMLButtonElement) && self2.#container.contains(el10) && !self2.isEnterHandled
+            target: el11
+          }) => !(el11 instanceof HTMLButtonElement) && self2.#container.contains(el11) && !self2.isEnterHandled
         }], [[" ", "mac+ "], proto.addNewEditorFromKeyboard, {
           checker: (self2, {
-            target: el10
-          }) => !(el10 instanceof HTMLButtonElement) && self2.#container.contains(document.activeElement)
+            target: el11
+          }) => !(el11 instanceof HTMLButtonElement) && self2.#container.contains(document.activeElement)
         }], [["Escape", "mac+Escape"], proto.unselectAll], [["ArrowLeft", "mac+ArrowLeft"], proto.translateSelectedEditors, {
           args: [-small, 0],
           checker: arrowChecker
@@ -41779,14 +41788,14 @@ var init_pdf = __esm({
       editAltText(editor2, firstTime = false) {
         this.#altTextManager?.editAltText(this, editor2, firstTime);
       }
-      switchToMode(mode2, callback) {
+      switchToMode(mode3, callback) {
         this._eventBus.on("annotationeditormodechanged", callback, {
           once: true,
           signal: this._signal
         });
         this._eventBus.dispatch("showannotationeditorui", {
           source: this,
-          mode: mode2
+          mode: mode3
         });
       }
       setPreference(name, value) {
@@ -42322,8 +42331,8 @@ var init_pdf = __esm({
       removeLayer(layer) {
         this.#allLayers.delete(layer.pageIndex);
       }
-      async updateMode(mode2, editId = null, isFromKeyboard = false) {
-        if (this.#mode === mode2) {
+      async updateMode(mode3, editId = null, isFromKeyboard = false) {
+        if (this.#mode === mode3) {
           return;
         }
         if (this.#updateModeCapability) {
@@ -42333,8 +42342,8 @@ var init_pdf = __esm({
           }
         }
         this.#updateModeCapability = Promise.withResolvers();
-        this.#mode = mode2;
-        if (mode2 === AnnotationEditorType.NONE) {
+        this.#mode = mode3;
+        if (mode3 === AnnotationEditorType.NONE) {
           this.setEditingState(false);
           this.#disableAll();
           this._editorUndoBar?.hide();
@@ -42345,7 +42354,7 @@ var init_pdf = __esm({
         await this.#enableAll();
         this.unselectAll();
         for (const layer of this.#allLayers.values()) {
-          layer.updateMode(mode2);
+          layer.updateMode(mode3);
         }
         if (!editId) {
           if (isFromKeyboard) {
@@ -42369,13 +42378,13 @@ var init_pdf = __esm({
           this.currentLayer.addNewEditor();
         }
       }
-      updateToolbar(mode2) {
-        if (mode2 === this.#mode) {
+      updateToolbar(mode3) {
+        if (mode3 === this.#mode) {
           return;
         }
         this._eventBus.dispatch("switchannotationeditormode", {
           source: this,
-          mode: mode2
+          mode: mode3
         });
       }
       updateParams(type, value) {
@@ -45842,8 +45851,8 @@ var init_pdf = __esm({
         const url = this.#createUrl(id);
         this.#cache.set(maps, url);
         this.#cache.set(key2, url);
-        const filter3 = this.#createFilter(id);
-        this.#addTransferMapConversion(tableR, tableG, tableB, filter3);
+        const filter4 = this.#createFilter(id);
+        this.#addTransferMapConversion(tableR, tableG, tableB, filter4);
         return url;
       }
       addHCMFilter(fgColor, bgColor) {
@@ -45884,9 +45893,9 @@ var init_pdf = __esm({
         }
         const table = map.join(",");
         const id = `g_${this.#docId}_hcm_filter`;
-        const filter3 = info2.filter = this.#createFilter(id);
-        this.#addTransferMapConversion(table, table, table, filter3);
-        this.#addGrayConversion(filter3);
+        const filter4 = info2.filter = this.#createFilter(id);
+        this.#addTransferMapConversion(table, table, table, filter4);
+        this.#addGrayConversion(filter4);
         const getSteps = (c2, n) => {
           const start2 = fgRGB[c2] / 255;
           const end = bgRGB[c2] / 255;
@@ -45896,7 +45905,7 @@ var init_pdf = __esm({
           }
           return arr2.join(",");
         };
-        this.#addTransferMapConversion(getSteps(0, 5), getSteps(1, 5), getSteps(2, 5), filter3);
+        this.#addTransferMapConversion(getSteps(0, 5), getSteps(1, 5), getSteps(2, 5), filter4);
         info2.url = this.#createUrl(id);
         return info2.url;
       }
@@ -45916,8 +45925,8 @@ var init_pdf = __esm({
         const url = this.#createUrl(id);
         this.#cache.set(map, url);
         this.#cache.set(key2, url);
-        const filter3 = this.#createFilter(id);
-        this.#addTransferMapAlphaConversion(tableA, filter3);
+        const filter4 = this.#createFilter(id);
+        this.#addTransferMapAlphaConversion(tableA, filter4);
         return url;
       }
       addLuminosityFilter(map) {
@@ -45941,10 +45950,10 @@ var init_pdf = __esm({
         const url = this.#createUrl(id);
         this.#cache.set(map, url);
         this.#cache.set(key2, url);
-        const filter3 = this.#createFilter(id);
-        this.#addLuminosityConversion(filter3);
+        const filter4 = this.#createFilter(id);
+        this.#addLuminosityConversion(filter4);
         if (map) {
-          this.#addTransferMapAlphaConversion(tableA, filter3);
+          this.#addTransferMapAlphaConversion(tableA, filter4);
         }
         return url;
       }
@@ -45998,9 +46007,9 @@ var init_pdf = __esm({
           return arr2.join(",");
         };
         const id = `g_${this.#docId}_hcm_${filterName}_filter`;
-        const filter3 = info2.filter = this.#createFilter(id);
-        this.#addGrayConversion(filter3);
-        this.#addTransferMapConversion(getSteps(newFgRGB[0], newBgRGB[0], 5), getSteps(newFgRGB[1], newBgRGB[1], 5), getSteps(newFgRGB[2], newBgRGB[2], 5), filter3);
+        const filter4 = info2.filter = this.#createFilter(id);
+        this.#addGrayConversion(filter4);
+        this.#addTransferMapConversion(getSteps(newFgRGB[0], newBgRGB[0], 5), getSteps(newFgRGB[1], newBgRGB[1], 5), getSteps(newFgRGB[2], newBgRGB[2], 5), filter4);
         info2.url = this.#createUrl(id);
         return info2.url;
       }
@@ -46016,24 +46025,24 @@ var init_pdf = __esm({
         this.#_hcmCache = null;
         this.#id = 0;
       }
-      #addLuminosityConversion(filter3) {
+      #addLuminosityConversion(filter4) {
         const feColorMatrix = this.#document.createElementNS(SVG_NS, "feColorMatrix");
         feColorMatrix.setAttribute("type", "matrix");
         feColorMatrix.setAttribute("values", "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0.59 0.11 0 0");
-        filter3.append(feColorMatrix);
+        filter4.append(feColorMatrix);
       }
-      #addGrayConversion(filter3) {
+      #addGrayConversion(filter4) {
         const feColorMatrix = this.#document.createElementNS(SVG_NS, "feColorMatrix");
         feColorMatrix.setAttribute("type", "matrix");
         feColorMatrix.setAttribute("values", "0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0 0 0 1 0");
-        filter3.append(feColorMatrix);
+        filter4.append(feColorMatrix);
       }
       #createFilter(id) {
-        const filter3 = this.#document.createElementNS(SVG_NS, "filter");
-        filter3.setAttribute("color-interpolation-filters", "sRGB");
-        filter3.setAttribute("id", id);
-        this.#defs.append(filter3);
-        return filter3;
+        const filter4 = this.#document.createElementNS(SVG_NS, "filter");
+        filter4.setAttribute("color-interpolation-filters", "sRGB");
+        filter4.setAttribute("id", id);
+        this.#defs.append(filter4);
+        return filter4;
       }
       #appendFeFunc(feComponentTransfer, func, table) {
         const feFunc = this.#document.createElementNS(SVG_NS, func);
@@ -46041,16 +46050,16 @@ var init_pdf = __esm({
         feFunc.setAttribute("tableValues", table);
         feComponentTransfer.append(feFunc);
       }
-      #addTransferMapConversion(rTable, gTable, bTable, filter3) {
+      #addTransferMapConversion(rTable, gTable, bTable, filter4) {
         const feComponentTransfer = this.#document.createElementNS(SVG_NS, "feComponentTransfer");
-        filter3.append(feComponentTransfer);
+        filter4.append(feComponentTransfer);
         this.#appendFeFunc(feComponentTransfer, "feFuncR", rTable);
         this.#appendFeFunc(feComponentTransfer, "feFuncG", gTable);
         this.#appendFeFunc(feComponentTransfer, "feFuncB", bTable);
       }
-      #addTransferMapAlphaConversion(aTable, filter3) {
+      #addTransferMapAlphaConversion(aTable, filter4) {
         const feComponentTransfer = this.#document.createElementNS(SVG_NS, "feComponentTransfer");
-        filter3.append(feComponentTransfer);
+        filter4.append(feComponentTransfer);
         this.#appendFeFunc(feComponentTransfer, "feFuncA", aTable);
       }
       #getRGB(color) {
@@ -47301,8 +47310,8 @@ var init_pdf = __esm({
         this.current.fontSizeScale = size / browserFontSize;
         this.ctx.font = `${italic} ${bold} ${browserFontSize}px ${typeface}`;
       }
-      setTextRenderingMode(mode2) {
-        this.current.textRenderingMode = mode2;
+      setTextRenderingMode(mode3) {
+        this.current.textRenderingMode = mode3;
       }
       setTextRise(rise) {
         this.current.textRise = rise;
@@ -47992,9 +48001,9 @@ var init_pdf = __esm({
         this.save();
         if (!isNodeJS) {
           const {
-            filter: filter3
+            filter: filter4
           } = ctx;
-          if (filter3 !== "none" && filter3 !== "") {
+          if (filter4 !== "none" && filter4 !== "") {
             ctx.filter = "none";
           }
         }
@@ -49031,10 +49040,10 @@ var init_pdf = __esm({
         const chunk = network_getArrayBuffer(xhr);
         if (xhrStatus === PARTIAL_CONTENT_RESPONSE) {
           const rangeHeader = xhr.getResponseHeader("Content-Range");
-          const matches3 = /bytes (\d+)-(\d+)\/(\d+)/.exec(rangeHeader);
-          if (matches3) {
+          const matches4 = /bytes (\d+)-(\d+)\/(\d+)/.exec(rangeHeader);
+          if (matches4) {
             pendingRequest.onDone({
-              begin: parseInt(matches3[1], 10),
+              begin: parseInt(matches4[1], 10),
               chunk
             });
           } else {
@@ -51933,8 +51942,8 @@ var init_pdf = __esm({
             childHtml.append(node);
           }
         }
-        for (const el10 of rootDiv.querySelectorAll(".xfaNonInteractive input, .xfaNonInteractive textarea")) {
-          el10.setAttribute("readOnly", true);
+        for (const el11 of rootDiv.querySelectorAll(".xfaNonInteractive input, .xfaNonInteractive textarea")) {
+          el11.setAttribute("readOnly", true);
         }
         return {
           textDivs
@@ -52509,7 +52518,7 @@ var init_pdf = __esm({
           return;
         }
         const {
-          annotationEditorType: mode2,
+          annotationEditorType: mode3,
           data: {
             id: editId
           }
@@ -52517,7 +52526,7 @@ var init_pdf = __esm({
         this.container.addEventListener("dblclick", () => {
           this.linkService.eventBus?.dispatch("switchannotationeditormode", {
             source: this,
-            mode: mode2,
+            mode: mode3,
             editId
           });
         });
@@ -53706,11 +53715,11 @@ var init_pdf = __esm({
         }
         const header2 = document.createElement("span");
         header2.className = "header";
-        const title = document.createElement("h1");
-        header2.append(title);
+        const title2 = document.createElement("h1");
+        header2.append(title2);
         ({
-          dir: title.dir,
-          str: title.textContent
+          dir: title2.dir,
+          str: title2.textContent
         } = this.#titleObj);
         popup.append(header2);
         if (this.#dateObj) {
@@ -59042,12 +59051,12 @@ var init_pdf = __esm({
       get isInvisible() {
         return this.isEmpty && this.#uiManager.getMode() === AnnotationEditorType.NONE;
       }
-      updateToolbar(mode2) {
-        this.#uiManager.updateToolbar(mode2);
+      updateToolbar(mode3) {
+        this.#uiManager.updateToolbar(mode3);
       }
-      updateMode(mode2 = this.#uiManager.getMode()) {
+      updateMode(mode3 = this.#uiManager.getMode()) {
         this.#cleanup();
-        switch (mode2) {
+        switch (mode3) {
           case AnnotationEditorType.NONE:
             this.disableTextSelection();
             this.togglePointerEvents(false);
@@ -59074,7 +59083,7 @@ var init_pdf = __esm({
           classList
         } = this.div;
         for (const editorType of _AnnotationEditorLayer.#editorTypes.values()) {
-          classList.toggle(`${editorType._type}Editing`, mode2 === editorType._editorType);
+          classList.toggle(`${editorType._type}Editing`, mode3 === editorType._editorType);
         }
         this.div.hidden = false;
       }
@@ -59392,9 +59401,9 @@ var init_pdf = __esm({
       canCreateNewEmptyEditor() {
         return this.#currentEditorType?.canCreateNewEmptyEditor();
       }
-      pasteEditor(mode2, params2) {
-        this.#uiManager.updateToolbar(mode2);
-        this.#uiManager.updateMode(mode2);
+      pasteEditor(mode3, params2) {
+        this.#uiManager.updateToolbar(mode3);
+        this.#uiManager.updateMode(mode3);
         const {
           offsetX,
           offsetY
@@ -60874,12 +60883,12 @@ var require_lib = __commonJS({
 
 // src/platform-web.js
 var DB = "encounter-builder";
-var KINDS = ["monsters", "party", "encounters", "conditions", "loot"];
+var KINDS = ["monsters", "party", "encounters", "conditions", "loot", "items"];
 var BROWSER_LIBRARY = "Browser library";
 var dbPromise = null;
 function db() {
   dbPromise ??= new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB, 2);
+    const req = indexedDB.open(DB, 3);
     req.onupgradeneeded = () => {
       for (const k of KINDS) if (!req.result.objectStoreNames.contains(k)) req.result.createObjectStore(k, { keyPath: "id" });
     };
@@ -60891,9 +60900,9 @@ function db() {
   });
   return dbPromise;
 }
-async function run(kind, mode2, fn) {
+async function run(kind, mode3, fn) {
   if (!KINDS.includes(kind)) throw new Error(`Unknown library section "${kind}".`);
-  const tx = (await db()).transaction(kind, mode2);
+  const tx = (await db()).transaction(kind, mode3);
   const req = fn(tx.objectStore(kind));
   return new Promise((resolve, reject) => {
     tx.oncomplete = () => resolve(req?.result);
@@ -61039,9 +61048,9 @@ init_store();
 
 // src/library-pack.js
 var PACK_FORMAT = "encounter-builder-library";
-var PACK_KINDS = ["monsters", "party", "encounters", "conditions", "loot"];
+var PACK_KINDS = ["monsters", "party", "encounters", "conditions", "loot", "items"];
 var ID = /^[a-z0-9-]{1,80}$/;
-var LABEL = { monsters: "monsters", party: "characters", encounters: "encounters", conditions: "conditions", loot: "loot tables" };
+var LABEL = { monsters: "monsters", party: "characters", encounters: "encounters", conditions: "conditions", loot: "loot tables", items: "items" };
 function makePack(lists, now = /* @__PURE__ */ new Date()) {
   const pack = { format: PACK_FORMAT, version: 1, exported: now.toISOString() };
   for (const k of PACK_KINDS) pack[k] = (lists[k] || []).map((x) => structuredClone(x));
@@ -61069,10 +61078,10 @@ function readPack(text) {
 function planImport(pack, current3) {
   const plan = {};
   for (const k of PACK_KINDS) {
-    const mine = new Map((current3[k] || []).map((x) => [x.id, x]));
+    const mine2 = new Map((current3[k] || []).map((x) => [x.id, x]));
     const p = plan[k] = { add: [], newer: [], older: [], same: [] };
     for (const x of pack[k] || []) {
-      const have = mine.get(x.id);
+      const have = mine2.get(x.id);
       if (!have) p.add.push(x);
       else if ((x.updated || 0) > (have.updated || 0)) p.newer.push(x);
       else if ((x.updated || 0) < (have.updated || 0)) p.older.push(x);
@@ -61081,7 +61090,7 @@ function planImport(pack, current3) {
   }
   return plan;
 }
-var toImport = (plan, mode2) => Object.fromEntries(PACK_KINDS.map((k) => [k, [...plan[k].add, ...plan[k].newer, ...mode2 === "all" ? plan[k].older : []]]));
+var toImport = (plan, mode3) => Object.fromEntries(PACK_KINDS.map((k) => [k, [...plan[k].add, ...plan[k].newer, ...mode3 === "all" ? plan[k].older : []]]));
 function countText(by) {
   const parts = PACK_KINDS.map((k) => [k, Array.isArray(by[k]) ? by[k].length : by[k] || 0]).filter(([, n]) => n).map(([k, n]) => `${n} ${n === 1 ? LABEL[k].slice(0, -1) : LABEL[k]}`);
   return parts.length ? parts.join(", ") : "nothing";
@@ -61164,13 +61173,123 @@ function base64(text) {
 // src/tabs/maker.js
 init_ocr();
 init_parse();
-init_constants();
-init_ui();
 
-// src/statblock.js
+// src/maker/parse-item.js
+var RARITY = /\b(very rare|uncommon|common|rare|legendary|artifact)\b/i;
+var MAGIC_TYPES = { armor: "armor", potion: "potion", ring: "ring", rod: "rod", scroll: "scroll", staff: "staff", wand: "wand", weapon: "weapon", "wondrous item": "wondrous", wondrous: "wondrous" };
+var TYPE_START = /^(wondrous item|wondrous|armor|potion|ring|rod|scroll|staff|wand|weapon|shield|ammunition|adventuring gear|gear|tools?|equipment|(?:simple|martial)\s+(?:melee|ranged)\s+weapon|(?:light|medium|heavy)\s+armor|spellcasting focus|arcane focus|holy symbol|druidic focus|musical instrument|gaming set|trade good|treasure)\b/i;
+var DAMAGE_TYPES2 = "acid|bludgeoning|cold|fire|force|lightning|necrotic|piercing|poison|psychic|radiant|slashing|thunder";
+var cap2 = (s) => s.toLowerCase().replace(/\b\w/g, (c2) => c2.toUpperCase()).replace(/(?!^)\b(Of|The|Or|And|A|An|That)\b/g, (w) => w.toLowerCase());
+var rarityName = (r) => cap2(r).replace("Very rare", "Very Rare");
+var STATS = [
+  ["price", /^(?:cost|price|value)\b\s*:?\s*([\d,.]+)\s*(pp|gp|sp|cp)\b.*$/i],
+  ["weight", /^weight\b\s*:?\s*(.+)$/i],
+  ["damage", new RegExp(`^damage\\b\\s*:?\\s*(\\d+(?:d\\d+)?(?:\\s*[+-]\\s*\\d+)?\\s+(?:${DAMAGE_TYPES2}))\\b.*$`, "i")],
+  ["properties", /^properties\b\s*:?\s*(.+)$/i],
+  ["mastery", /^mastery\b\s*:?\s*(.+)$/i],
+  ["ac", /^(?:armor class|ac)\b\s*:?\s*(.+)$/i],
+  ["strength", /^strength\b\s*:?\s*(str\s*\d+|\d+)\s*$/i],
+  ["stealth", /^stealth\b\s*:?\s*(disadvantage)\s*$/i],
+  ["rarity", new RegExp(`^rarity\\b\\s*:?\\s*${RARITY.source}`, "i")],
+  ["attunement", /^attunement\b\s*:?\s*(.+)$/i],
+  ["type", /^(?:type|item type|category)\b\s*:?\s*(.+)$/i]
+];
+var COINS = { pp: 10, gp: 1, sp: 0.1, cp: 0.01 };
+function parseItem(text) {
+  const warnings = [];
+  const raw = String(text || "").replace(/\r/g, "").replace(/[‘’]/g, "\u2019").replace(/[“”]/g, '"').replace(/[ \t]+/g, " ");
+  const lines = raw.split("\n").map((l) => l.trim());
+  const nonEmpty = lines.map((l, i) => [l, i]).filter(([l]) => l);
+  if (!nonEmpty.length) throw new Error("There is no text to read.");
+  const used = /* @__PURE__ */ new Set();
+  let [name, nameAt] = nonEmpty[0];
+  if (TYPE_START.test(name) && /,|\(/.test(name)) {
+    name = "";
+    nameAt = -1;
+  } else used.add(nameAt);
+  let price = null;
+  const inName = name.match(/^(.*?)\s*\(([\d,.]+)\s*(pp|gp|sp|cp)\)\s*$/i);
+  if (inName) {
+    name = inName[1];
+    price = Number(inName[2].replace(/,/g, "")) * COINS[inName[3].toLowerCase()];
+  }
+  const stats = {};
+  lines.forEach((l, i) => {
+    for (const [key2, re2] of STATS) {
+      const m = l.match(re2);
+      if (!m || stats[key2] != null) continue;
+      stats[key2] = key2 === "price" ? Number(m[1].replace(/,/g, "")) * COINS[m[2].toLowerCase()] : m[1].trim();
+      used.add(i);
+      break;
+    }
+  });
+  if (stats.price != null) price = stats.price;
+  let typeLine2 = stats.type || "";
+  if (!typeLine2) {
+    for (const [l, i] of nonEmpty.slice(nameAt < 0 ? 0 : 1, 5)) {
+      if (used.has(i)) continue;
+      if (TYPE_START.test(l) || RARITY.test(l) && l.length < 80 && /,/.test(l)) {
+        typeLine2 = l;
+        used.add(i);
+        const next2 = nonEmpty.find(([, k]) => k > i);
+        if (next2 && (/[,(]\s*$|\bor\s*$/.test(l) || l.split("(").length > l.split(")").length)) {
+          typeLine2 += ` ${next2[0]}`;
+          used.add(next2[1]);
+        }
+        break;
+      }
+    }
+  }
+  const rarityMatch = stats.rarity && stats.rarity.match(RARITY) || typeLine2.match(RARITY);
+  const rarity = rarityMatch ? rarityName(rarityMatch[1]) : null;
+  const attune = stats.attunement && !/^no\b/i.test(stats.attunement) ? `Requires Attunement${/^yes\b/i.test(stats.attunement) ? "" : ` ${stats.attunement}`}` : null;
+  const attunement = attune || typeLine2.match(/\((requires attunement[^)]*)\)?/i)?.[1].replace(/^requires attunement/i, "Requires Attunement").trim() || null;
+  const kind = (typeLine2.match(TYPE_START)?.[1] || "").toLowerCase();
+  const base = typeLine2.match(/^(?:weapon|armor)\s*\(([^)]*)\)/i)?.[1]?.trim() || null;
+  const item = { name: name.trim(), category: "gear", rarity: null, price, text: "", warnings };
+  if (rarity && rarity !== "Artifact") {
+    item.category = "magic";
+    item.rarity = rarity;
+    item.magic = MAGIC_TYPES[kind] || (/\bweapon\b/.test(kind) ? "weapon" : /\barmor\b/.test(kind) ? "armor" : "wondrous");
+    if (base) item.base = cap2(base);
+    if (attunement) item.attunement = attunement;
+    item.consumable = item.magic === "potion" || item.magic === "scroll" || /ammunition/i.test(base || "");
+  } else {
+    if (rarity === "Artifact") warnings.push("Artifacts are priceless and never drop as loot: saved as an ordinary item. Change it in Items if you like.");
+    item.category = /weapon/.test(kind) ? "weapon" : /armor/.test(kind) ? "armor" : /shield/.test(kind) ? "shield" : /ammunition/.test(kind) ? "ammo" : /tool|instrument|gaming/.test(kind) ? "tool" : /focus|holy symbol/.test(kind) ? "focus" : "gear";
+    if (item.category === "weapon") item.weapon = { simple: !/martial/.test(typeLine2.toLowerCase()), ranged: /ranged/i.test(typeLine2) || /ammunition|range \d/i.test(stats.properties || "") };
+    if (item.category === "armor") item.armor = (typeLine2.match(/\b(light|medium|heavy)\b/i)?.[1] || "light").toLowerCase();
+  }
+  for (const k of ["damage", "properties", "mastery", "ac", "weight", "strength", "stealth"]) if (stats[k]) item[k] = stats[k];
+  if (item.ac && item.category === "gear") item.category = /^\+/.test(item.ac) ? "shield" : "armor";
+  if (item.damage && item.category === "gear") {
+    item.category = "weapon";
+    item.weapon = { simple: true, ranged: /ammunition|range \d/i.test(stats.properties || "") };
+  }
+  const paras = [];
+  let para = "";
+  lines.forEach((l, i) => {
+    if (used.has(i)) return;
+    if (!l) {
+      if (para && /[.!?:"”)]$/.test(para)) {
+        paras.push(para);
+        para = "";
+      }
+      return;
+    }
+    para = /[a-z]-$/.test(para) && /^[a-z]/.test(l) ? para.slice(0, -1) + l : para ? `${para} ${l}` : l;
+  });
+  if (para) paras.push(para);
+  item.text = paras.join("\n\n");
+  if (!item.name) warnings.push("No name found: type one in.");
+  if (!typeLine2 && !item.damage && !item.ac) warnings.push('No type line found (like "Wondrous Item, Rare"): check the category and rarity.');
+  if (item.category !== "magic" && item.price == null) warnings.push("No price found: add one, or it won\u2019t drop as random gear.");
+  return item;
+}
+
+// src/items.js
 init_ui();
 init_conditions();
-init_spells();
 
 // src/glossary.js
 init_ui();
@@ -61264,7 +61383,7 @@ var EXTRA = {
 };
 var byTerm = /* @__PURE__ */ new Map();
 var re = null;
-function rebuild3() {
+function rebuild2() {
   byTerm = /* @__PURE__ */ new Map();
   for (const r of store.rules || []) {
     if (SKIP.has(r.name)) continue;
@@ -61274,14 +61393,14 @@ function rebuild3() {
   re = terms.length ? new RegExp(`(?<![\\w\u2019'-])(${terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(?![\\w\u2019'-])`, "g") : null;
 }
 onChange((kind) => {
-  if (kind === "all") rebuild3();
+  if (kind === "all") rebuild2();
 });
 var findRule = (name) => {
-  if (!re) rebuild3();
+  if (!re) rebuild2();
   return byTerm.get(name) || (store.rules || []).find((r) => r.name === name);
 };
 function glossify(html) {
-  if (!re) rebuild3();
+  if (!re) rebuild2();
   if (!re) return html;
   let depth = 0;
   return html.replace(/(<[^>]+>)|([^<]+)/g, (all, tag, text) => {
@@ -61306,459 +61425,12 @@ registerTip("rule", (name) => {
   return r ? ruleHtml(r) : "";
 });
 
-// src/groups.js
-var isGroup = (c2) => Array.isArray(c2?.members);
-var standing = (c2) => c2.members.filter((m) => m.hp > 0);
-var groupOut = (c2) => !c2.members.some((m) => m.hp > 0);
-var hurtFirst = (c2) => standing(c2).sort((a2, b2) => a2.hp - b2.hp);
-function makeGroup(base, count, minion) {
-  return { ...base, group: minion ? "minion" : "pack", members: Array.from({ length: count }, () => ({ hp: base.maxHp ?? 1, conditions: [] })), conditions: [] };
-}
-function down(member2) {
-  member2.hp = 0;
-  member2.conditions = [];
-}
-function killMinions(c2, n) {
-  const list = standing(c2).slice(0, Math.max(0, n));
-  list.forEach(down);
-  return list.length;
-}
-function minionOtherDamage(c2, damage, n) {
-  return damage >= (c2.maxHp ?? 1) ? killMinions(c2, n) : 0;
-}
-function damagePack(c2, damage) {
-  let left = Math.max(0, Math.round(damage));
-  const absorbed = Math.min(c2.tempHp || 0, left);
-  c2.tempHp = (c2.tempHp || 0) - absorbed;
-  if (!c2.tempHp) delete c2.tempHp;
-  left -= absorbed;
-  let killed = 0;
-  for (const m of hurtFirst(c2)) {
-    if (left <= 0) break;
-    const take = Math.min(m.hp, left);
-    m.hp -= take;
-    left -= take;
-    if (m.hp <= 0) {
-      down(m);
-      killed++;
-    }
-  }
-  return { killed, absorbed };
-}
-function damageEach(c2, damage, n) {
-  let killed = 0;
-  for (const m of hurtFirst(c2).slice(0, Math.max(0, n))) {
-    m.hp = Math.max(0, m.hp - Math.max(0, Math.round(damage)));
-    if (m.hp <= 0) {
-      down(m);
-      killed++;
-    }
-  }
-  return killed;
-}
-function healPack(c2, amount) {
-  let left = Math.max(0, Math.round(amount));
-  for (const m of hurtFirst(c2)) {
-    if (left <= 0) break;
-    const take = Math.min((c2.maxHp ?? m.hp) - m.hp, left);
-    m.hp += take;
-    left -= take;
-  }
-}
-function revive(c2, hp) {
-  const m = c2.members.find((x) => x.hp <= 0);
-  if (!m) return false;
-  m.hp = c2.group === "minion" ? c2.maxHp ?? 1 : Math.max(1, Math.min(c2.maxHp ?? 1, hp ?? 1));
-  return true;
-}
-var totalHp = (c2) => c2.members.reduce((n, m) => n + Math.max(0, m.hp), 0);
-function splitOff(c2, n, key2, name) {
-  const moving = standing(c2).slice(-Math.max(1, Math.min(n, standing(c2).length - 1)));
-  c2.members = c2.members.filter((m) => !moving.includes(m));
-  return { ...structuredClone({ ...c2, members: [] }), key: key2, name, members: moving };
-}
-function mergeInto(c2, others) {
-  for (const o of others) {
-    if (isGroup(o)) c2.members.push(...o.members);
-    else {
-      const m = { hp: c2.group === "minion" ? (o.hp ?? 1) > 0 ? c2.maxHp ?? 1 : 0 : Math.max(0, o.hp ?? c2.maxHp ?? 1), conditions: [...o.conditions || []] };
-      if (o.tokens?.[0]) m.token = o.tokens[0];
-      c2.members.push(m);
-    }
-  }
-}
-function groupAttackOf(text) {
-  const t = String(text || "").replace(/<[^>]+>/g, "").replace(/[−–]/g, "-");
-  const bonus = t.match(/Attack Roll:\s*([+-]\s?\d+)/i)?.[1] || t.match(/([+-]\s?\d+)\s+to hit/i)?.[1] || null;
-  const hit = t.match(/Hit:\s*(\d+)\s*(?:\(([^)]*)\))?\s*([a-z]+)?\s*damage/i);
-  return { bonus: bonus && bonus.replace(/\s/g, ""), damage: hit ? Number(hit[1]) : null, dice: hit?.[2] || null, type: hit?.[3] || "" };
-}
-var isGroupAttack = (name) => /\(\s*Group Attack\s*\)/i.test(String(name || ""));
-
-// src/combat.js
-init_format();
-init_rules();
-var LEGENDARY_KEY = "legendaryActions:uses";
-function rechargeOf(name) {
-  const n = String(name || "");
-  const x = n.match(/\(\s*Recharge\s*(\d)(?:\s*[–-]\s*6)?/i) || n.match(/\(\s*R\s*(\d)\s*[–-]\s*6/);
-  if (x) return { min: Number(x[1]) };
-  return /\(\s*Recharges?\s+(?:after|when|on)/i.test(n) ? { min: 0 } : null;
-}
-function partyCombatant(ch) {
-  const live2 = ch.live || {};
-  const c2 = {
-    key: `pc-${ch.id}`,
-    kind: "pc",
-    refId: ch.id,
-    name: ch.name,
-    ac: ch.armorClass ?? null,
-    hp: live2.hp ?? (ch.maxHp || null),
-    maxHp: ch.maxHp || null,
-    initBonus: Number(ch.initiativeBonus) || 0,
-    init: null,
-    conditions: [...live2.conditions || []]
-  };
-  if (live2.tempHp) c2.tempHp = live2.tempHp;
-  if (live2.tokens?.length) c2.tokens = [...live2.tokens];
-  return c2;
-}
-function liveOf(c2) {
-  const live2 = { hp: c2.hp ?? null, conditions: [...c2.conditions || []] };
-  if (c2.tempHp) live2.tempHp = c2.tempHp;
-  if (c2.tokens?.length) live2.tokens = [...c2.tokens];
-  return live2;
-}
-var sameLive = (a2 = {}, b2 = {}) => (a2.hp ?? null) === (b2.hp ?? null) && (a2.tempHp || 0) === (b2.tempHp || 0) && JSON.stringify(a2.conditions || []) === JSON.stringify(b2.conditions || []) && JSON.stringify(a2.tokens || []) === JSON.stringify(b2.tokens || []);
-var LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-function setupCombat(e2, { character, monster, asGroup }) {
-  const list = [];
-  for (const c2 of (e2.characterIds || []).map(character).filter(Boolean)) list.push(partyCombatant(c2));
-  for (let i = 0; i < (e2.extraPlayers?.count || 0); i++) {
-    list.push({ key: `player-${i}`, kind: "pc", name: `Player ${i + 1}`, ac: null, hp: null, maxHp: null, initBonus: 0, init: null, conditions: [] });
-  }
-  const entries = (e2.groups || []).map((g, gi) => ({ g, gi, m: monster(g.monsterId) }));
-  for (const x of entries) x.group = !!x.m && asGroup(x.g);
-  const groupsOf = (id) => entries.filter((x) => x.group && x.g.monsterId === id);
-  const singlesOf = (id) => entries.filter((x) => !x.group && x.g.monsterId === id).reduce((n, x) => n + x.g.count, 0);
-  const lettered = /* @__PURE__ */ new Map();
-  for (const { g, gi, m, group } of entries) {
-    if (group) {
-      const mine = groupsOf(g.monsterId);
-      list.push(makeGroup({
-        key: `g-${g.monsterId}-${gi}`,
-        kind: "monster",
-        refId: g.monsterId,
-        name: mine.length > 1 ? `${m.name} (${mine.findIndex((x) => x.gi === gi) + 1})` : m.name,
-        ac: m.armorClass ?? null,
-        maxHp: m.averageHitPoints ?? 1,
-        initBonus: initBonus(m),
-        init: null
-      }, g.count, isMinion(m)));
-      continue;
-    }
-    const total = singlesOf(g.monsterId);
-    for (let k = 0; k < g.count; k++) {
-      const i = lettered.get(g.monsterId) || 0;
-      lettered.set(g.monsterId, i + 1);
-      list.push({
-        key: `m-${g.monsterId}-${i}`,
-        kind: "monster",
-        refId: g.monsterId,
-        name: total > 1 ? `${m?.name || g.name} (${LETTERS[i % 26]}${i >= 26 ? Math.floor(i / 26) + 1 : ""})` : m?.name || g.name,
-        ac: m?.armorClass ?? null,
-        hp: m?.averageHitPoints ?? null,
-        maxHp: m?.averageHitPoints ?? null,
-        initBonus: m ? initBonus(m) : 0,
-        init: null,
-        conditions: []
-      });
-    }
-  }
-  return { phase: "setup", round: 1, turnKey: null, selectedKey: list.find((c2) => c2.kind === "monster")?.key || null, combatants: list };
-}
-function splitEntry(groups, i, n) {
-  const g = groups[i];
-  n = Math.round(Number(n));
-  if (!g || !(n >= 1 && n < g.count)) return false;
-  g.count -= n;
-  groups.splice(i + 1, 0, { ...structuredClone(g), count: n });
-  return true;
-}
-function mergeEntries(groups, i) {
-  const g = groups[i];
-  if (!g) return false;
-  const others = groups.filter((x) => x !== g && x.monsterId === g.monsterId);
-  if (!others.length) return false;
-  g.count += others.reduce((n, x) => n + x.count, 0);
-  for (const x of others) groups.splice(groups.indexOf(x), 1);
-  return true;
-}
-function ordered(s) {
-  return [...s.combatants].sort((a2, b2) => (b2.init ?? -99) - (a2.init ?? -99) || (b2.initBonus || 0) - (a2.initBonus || 0) || (a2.kind === "pc" ? -1 : 0) - (b2.kind === "pc" ? -1 : 0) || a2.name.localeCompare(b2.name, void 0, { numeric: true }));
-}
-var isOut = (c2) => c2.kind === "monster" && (isGroup(c2) ? groupOut(c2) : c2.hp != null && c2.hp <= 0);
-function startCombat(s, rollInit2) {
-  for (const c2 of s.combatants) if (c2.init == null) c2.init = rollInit2(c2);
-  s.phase = "active";
-  s.round = 1;
-  const first = ordered(s)[0];
-  s.turnKey = first?.key || null;
-  if (first?.kind === "monster") s.selectedKey = first.key;
-}
-function nextTurn(s) {
-  const o = ordered(s);
-  if (!o.length) return null;
-  let i = o.findIndex((c2) => c2.key === s.turnKey);
-  for (let step = 0; step < o.length; step++) {
-    i++;
-    if (i >= o.length) {
-      i = 0;
-      s.round++;
-    }
-    if (!isOut(o[i])) break;
-  }
-  s.turnKey = o[i].key;
-  if (o[i].kind === "monster") s.selectedKey = o[i].key;
-  return s.combatants.find((c2) => c2.key === s.turnKey);
-}
-function removeCombatant(s, key2) {
-  if (s.turnKey === key2) {
-    const o = ordered(s).filter((c2) => c2.key !== key2);
-    const at2 = ordered(s).findIndex((c2) => c2.key === key2);
-    s.turnKey = o.length ? o[at2 % o.length].key : null;
-  }
-  if (s.selectedKey === key2) s.selectedKey = null;
-  s.combatants = s.combatants.filter((c2) => c2.key !== key2);
-}
-function startOfTurn(c2, m, roll3) {
-  if (c2?.kind !== "monster" || !m) return;
-  if (c2.used?.[`${LEGENDARY_KEY}:0`]) c2.used[`${LEGENDARY_KEY}:0`] = 0;
-  for (const [k, used] of Object.entries(c2.recharge || {})) {
-    if (!used) continue;
-    const [section, i] = k.split(":");
-    const e2 = (m[section] || [])[Number(i)], rc = e2 && rechargeOf(e2.name);
-    if (!rc?.min) continue;
-    const r = roll3("1d6", `Recharge: ${e2.name.replace(/\s*\(.*$/, "")}`);
-    if (r && r.total >= rc.min) c2.recharge[k] = false;
-  }
-}
-function applyHp(y, mode2, n) {
-  const cur = y.hp ?? y.maxHp ?? 0;
-  if (mode2 === "damage") {
-    const absorbed = Math.min(y.tempHp || 0, Math.max(0, n));
-    y.tempHp = (y.tempHp || 0) - absorbed;
-    y.hp = Math.max(0, cur - (n - absorbed));
-  } else if (mode2 === "heal") y.hp = y.maxHp != null ? Math.min(y.maxHp, cur + n) : cur + n;
-  else if (mode2 === "set") y.hp = Math.max(0, n);
-  else if (mode2 === "max") {
-    y.maxHp = Math.max(1, n);
-    y.hp ??= y.maxHp;
-  } else if (mode2 === "temp") y.tempHp = Math.max(0, Math.round(n));
-  if (!y.tempHp) delete y.tempHp;
-}
-var DEAD = "Dead";
-var UNCONSCIOUS = "Unconscious";
-var down2 = (hp) => hp != null && hp <= 0;
-function settleDown(c2) {
-  if (c2.kind !== "monster") return;
-  if (isGroup(c2)) {
-    for (const m of c2.members) if (m.hp <= 0 && m.conditions.length) m.conditions = [];
-    if (groupOut(c2) && c2.conditions?.length) c2.conditions = [];
-  } else if (down2(c2.hp) && c2.conditions?.length) c2.conditions = [];
-}
-function rowMarks(c2) {
-  const conds = c2.conditions || [];
-  if (c2.kind === "monster") return (isGroup(c2) ? groupOut(c2) : down2(c2.hp)) ? [DEAD] : [...conds];
-  return down2(c2.hp) && !conds.includes(UNCONSCIOUS) ? [...conds, UNCONSCIOUS] : [...conds];
-}
-function tokenMarks(c2) {
-  if (!isGroup(c2)) {
-    const marks = rowMarks(c2);
-    return tokensOf(c2).map((token) => ({ token, marks }));
-  }
-  return c2.members.filter((m) => m.token).map((m) => ({
-    token: m.token,
-    marks: m.hp <= 0 ? [DEAD] : [.../* @__PURE__ */ new Set([...c2.conditions || [], ...m.conditions])]
-  }));
-}
-var tokensOf = (c2) => isGroup(c2) ? c2.members.map((m) => m.token).filter(Boolean) : (c2.tokens || []).filter(Boolean);
-var tokenName = (c2, i = -1) => i >= 0 ? `${c2.name} ${i + 1}` : c2.name;
-function linkPlan(c2) {
-  if (!isGroup(c2)) return [{ member: -1, name: tokenName(c2) }];
-  const open2 = c2.members.map((m, i) => i).filter((i) => !c2.members[i].token);
-  return (open2.length ? open2 : c2.members.map((m, i) => i)).map((i) => ({ member: i, name: tokenName(c2, i) }));
-}
-function linkToken(s, key2, member2, id) {
-  for (const x of s.combatants) {
-    if (isGroup(x)) {
-      for (const m of x.members) if (m.token === id) delete m.token;
-    } else if (x.tokens?.includes(id)) x.tokens = x.tokens.filter((t) => t !== id);
-  }
-  const c2 = s.combatants.find((x) => x.key === key2);
-  if (!c2) return false;
-  if (isGroup(c2)) {
-    if (!c2.members[member2]) return false;
-    c2.members[member2].token = id;
-  } else c2.tokens = [id];
-  return true;
-}
-function unlinkTokens(s, key2) {
-  const c2 = s.combatants.find((x) => x.key === key2);
-  if (!c2) return [];
-  const ids = tokensOf(c2);
-  if (isGroup(c2)) for (const m of c2.members) delete m.token;
-  else delete c2.tokens;
-  return ids;
-}
-var tokenRenames = (c2) => isGroup(c2) ? c2.members.map((m, i) => m.token ? { id: m.token, name: tokenName(c2, i) } : null).filter(Boolean) : tokensOf(c2).map((id) => ({ id, name: c2.name }));
-var concentrationDc = (damage) => Math.min(30, Math.max(10, Math.floor(damage / 2)));
-function conSave(c2, m, pc) {
-  if (c2.kind === "monster") {
-    if (!m) return null;
-    return m.savingThrows?.find((s) => s.ability === "CON")?.bonus ?? Math.floor(((m.abilities?.constitution ?? 10) - 10) / 2);
-  }
-  return pc?.sheet?.saves?.find((s) => s.ability === "CON")?.bonus ?? null;
-}
-
-// src/statblock.js
-init_dice();
-init_constants();
-init_format();
-var ROLLABLE = /([+\-−–]\s?\d+)(?=\s+to hit)|\b(\d+d\d+(?:\s*[+\-−–]\s*\d+)?)/g;
-function rollify(html, label, who) {
-  html = html.replace(/(Attack Roll:\s*(?:<\/em>)?\s*)([+\-−–]\s?\d+)/g, (m, lead, bonus) => {
-    const b2 = bonus.replace(/\s/g, "").replace(/[−–]/, "-");
-    return lead + rollButton(b2, `1d20${b2}`, `${label}: to hit`, who);
-  });
-  return html.replace(/(^|>)([^<]+)/g, (all, gt, text) => gt + text.replace(ROLLABLE, (m, hit, dice2) => {
-    if (hit) return rollButton(hit.replace(/\s/g, ""), `1d20${hit.replace(/[\s−–]/g, (c2) => c2.trim() ? "-" : "")}`, `${label}: to hit`, who);
-    return rollButton(dice2, dice2.replace(/[−–]/g, "-"), `${label}: damage`, who);
-  }));
-}
-var WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5 };
-function legendaryUses(m) {
-  const text = (m.legendaryActions || []).map((e2) => e2.text).join(" ").replace(/<[^>]+>/g, "");
-  const x = text.match(/Legendary Action Uses:\s*(\d+)/i) || text.match(/can take (\w+) legendary actions?/i);
-  return x ? Number(x[1]) || WORDS[x[1].toLowerCase()] || 0 : 0;
-}
-function slotsOf(e2) {
-  if (e2.slots?.length) return e2.slots;
-  const d = String(e2.name || "").match(/\b(\d{1,2})\s*\/\s*Day\b/i);
-  return d ? [{ label: "", count: Math.min(10, Number(d[1])) }] : [];
-}
-function entryList(entries, who, section, tracker, recharge, group) {
-  return (entries || []).map((e2, i) => {
-    const key2 = `${section}:${i}`;
-    const rc = recharge && rechargeOf(e2.name);
-    const chip = (rc ? rechargeChip(key2, recharge.get(key2), rc) : "") + (group && isGroupAttack(e2.name) ? `<button class="sb-group-atk" data-gk="${key2}" title="One attack roll for the group; the damage is multiplied by how many join in">Group attack</button>` : "");
-    const name = e2.name ? `<strong><em>${esc(e2.name)}.</em></strong> ${chip}` : "";
-    return `<p>${name}${glossify(condify(spellify(rollify(richText(e2.text), e2.name || "Roll", who))))}</p>${boxRows({ ...e2, slots: slotsOf(e2) }, key2, tracker)}`;
-  }).join("");
-}
-var rechargeChip = (key2, used, rc) => `<button class="sb-recharge${used ? " used" : ""}" data-rk="${key2}" title="${used ? `Used. ${rc.min ? `It recharges on a ${rc.min === 6 ? "6" : `${rc.min}\u20136`}, rolled at the start of its turn. ` : ""}Click when it's available again.` : "Available. Click when it is used."}">${used ? "Used" : "Ready"}</button>`;
-function boxRows(e2, key2, tracker) {
-  if (!e2.slots?.length) return "";
-  const rows = e2.slots.map((row2, r) => {
-    const k = `${key2}:${r}`, used = tracker.get(k);
-    const boxes = Array.from({ length: Math.min(60, row2.count | 0) }, (_, b2) => `<button class="sb-box${b2 < used ? " on" : ""}" data-k="${k}" data-i="${b2}" title="${b2 < used ? "Used: click to get it back" : "Click when used"}" aria-pressed="${b2 < used}"></button>`).join("");
-    return `<div class="sb-box-row">${row2.label ? `<span class="sb-box-label">${esc(row2.label)}.</span>` : ""}<span class="sb-boxes">${boxes}</span></div>`;
-  }).join("");
-  const any = e2.slots.some((_, r) => tracker.get(`${key2}:${r}`) > 0);
-  return `<div class="sb-tracker" data-key="${key2}">${rows}${any ? `<button class="link sb-box-reset" data-reset="${key2}" data-rows="${e2.slots.length}">Reset</button>` : ""}</div>`;
-}
-var sessionTicks = /* @__PURE__ */ new Map();
-var sessionTracker = (id) => ({
-  get: (k) => sessionTicks.get(`${id}|${k}`) || 0,
-  set: (k, n) => sessionTicks.set(`${id}|${k}`, n)
-});
-function statBlock(m, opts2 = {}) {
-  const who = opts2.who || m.name;
-  const tracker = opts2.tracker || sessionTracker(m.id || m.name);
-  const recharge = opts2.recharge || null;
-  const group = opts2.group || null;
-  const legUses = legendaryUses(m);
-  const legEntry = { slots: [{ label: "Uses", count: legUses }] };
-  const entryFor = (k) => k === LEGENDARY_KEY ? legEntry : (() => {
-    const [s, i] = k.split(":");
-    const e2 = (m[s] || [])[Number(i)];
-    return e2 && { ...e2, slots: slotsOf(e2) };
-  })();
-  const prop = (label, value) => value ? `<div class="sb-prop"><span class="sb-label">${label}</span> ${value}</div>` : "";
-  const linkedList = (text, rx) => esc(text).replace(rx, (x, name, bonus) => `${name} ${rollButton(bonus, `1d20${bonus}`, `${name.trim()} ${rx === SAVE_RX ? "save" : "check"}`, who)}`);
-  const abil = ABILITIES.map((a2, i) => {
-    const s = m.abilities?.[a2] ?? 10;
-    return `<div class="sb-abil"><div class="sb-abil-name">${ABBR[i]}</div><div>${s}</div>${rollButton(`(${signed(mod(s))})`, `1d20${signed(mod(s))}`, `${ABBR[i]} check`, who)}</div>`;
-  }).join("");
-  const sections = [
-    ["Actions", m.actions, "actions"],
-    ["Bonus Actions", m.bonusActions, "bonusActions"],
-    ["Reactions", m.reactions, "reactions"],
-    ["Legendary Actions", m.legendaryActions, "legendaryActions"],
-    ["Mythic Actions", m.mythicActions, "mythicActions"],
-    ["Lair Actions", m.lairActions, "lairActions"]
-  ].filter(([, list]) => list?.length);
-  const html = `
-    <div class="sb-name">${esc(m.name)}</div>
-    <div class="sb-meta">${esc(typeLine(m))}</div>
-    <div class="sb-bar"></div>
-    ${prop("Armor Class", `${m.armorClass}${m.armorClassType ? ` (${esc(m.armorClassType)})` : ""}`)}
-    ${m.initiativeBonus !== "" && m.initiativeBonus != null ? prop("Initiative", rollButton(signed(initBonus(m)), `1d20${signed(initBonus(m))}`, "Initiative", who)) : ""}
-    ${prop("Hit Points", m.hpText ? esc(m.hpText) : `${m.averageHitPoints} ${rollButton(`(${hpFormula(m)})`, hpDice(m), "Hit points", who)}`)}
-    ${prop("Speed", esc(speedText(m)))}
-    <div class="sb-bar"></div>
-    <div class="sb-abils">${abil}</div>
-    <div class="sb-bar"></div>
-    ${prop("Saving Throws", linkedList(savesText(m), SAVE_RX))}
-    ${prop("Skills", linkedList(skillsTextOf(m), SKILL_RX))}
-    ${prop("Damage Vulnerabilities", esc(listText(m.damageVulnerabilities)))}
-    ${prop("Damage Resistances", esc(listText(m.damageResistances)))}
-    ${prop("Damage Immunities", esc(listText(m.damageImmunities)))}
-    ${prop("Condition Immunities", condify(esc(listText(m.conditionImmunities))))}
-    ${prop("Senses", esc([sensesText(m), `passive Perception ${m.passivePerception ?? 10}`].filter(Boolean).join(", ")))}
-    ${prop("Languages", esc(languagesText(m)))}
-    ${(m.notes || []).map((n) => prop(esc(n.name), esc(n.text))).join("")}
-    ${m.crText ? prop("Challenge", esc(m.crText)) : `<div class="sb-row">${prop("Challenge", esc(crXpText(m)))}${prop("Proficiency Bonus", pbText(m))}</div>`}
-    ${m.traits?.length ? `<div class="sb-bar"></div><div class="sb-entries">${entryList(m.traits, who, "traits", tracker, recharge, group)}</div>` : ""}
-    ${sections.map(([title, list, key2]) => `<div class="sb-section">${title}</div>${key2 === "legendaryActions" && legUses ? boxRows(legEntry, LEGENDARY_KEY, tracker) : ""}<div class="sb-entries">${entryList(list, who, key2, tracker, recharge, group)}</div>`).join("")}
-    ${m.description?.length && opts2.description !== false ? `<div class="sb-section">Description</div><div class="sb-entries sb-desc">${entryList(m.description, who, "description", tracker)}</div>` : ""}
-    ${m.source && m.source !== "Homebrew" ? `<div class="sb-source">Source: ${esc(m.source)}</div>` : ""}`;
-  const el10 = h("div.statblock", { html });
-  el10.addEventListener("click", (e2) => {
-    const atk = e2.target.closest(".sb-group-atk");
-    if (atk && group) {
-      e2.preventDefault();
-      group.attack(entryFor(atk.dataset.gk));
-      return;
-    }
-    const chip = e2.target.closest(".sb-recharge");
-    if (chip && recharge) {
-      e2.preventDefault();
-      const k2 = chip.dataset.rk, used = !recharge.get(k2);
-      recharge.set(k2, used);
-      chip.outerHTML = rechargeChip(k2, used, rechargeOf(entryFor(k2)?.name));
-      return;
-    }
-    const box = e2.target.closest(".sb-box"), reset2 = e2.target.closest(".sb-box-reset");
-    if (!box && !reset2) return;
-    e2.preventDefault();
-    if (reset2) {
-      for (let r = 0; r < Number(reset2.dataset.rows); r++) tracker.set(`${reset2.dataset.reset}:${r}`, 0);
-    } else {
-      const i = Number(box.dataset.i), used = tracker.get(box.dataset.k);
-      tracker.set(box.dataset.k, i < used ? i : i + 1);
-    }
-    const k = (box || reset2).closest(".sb-tracker").dataset.key;
-    (box || reset2).closest(".sb-tracker").outerHTML = boxRows(entryFor(k), k, tracker);
-  });
-  return el10;
-}
-var SAVE_RX = /(\b(?:Str|Dex|Con|Int|Wis|Cha)\w*)\s([+\-]\d+)/g;
-var SKILL_RX = /([A-Z][A-Za-z' ]+?)\s([+\-]\d+)/g;
-var skillsTextOf = (m) => (m.skills || []).map((s) => `${s.skill} ${signed(s.bonus)}`).join(", ");
-
-// src/tabs/maker.js
+// src/items.js
 init_store();
+
+// src/loot.js
+init_rules();
+init_dice();
 
 // src/generator.js
 init_rules();
@@ -62158,1011 +61830,6 @@ function styleSummary(creatures) {
   if (casters) parts.push(`${casters} caster${casters === 1 ? "" : "s"}`);
   return parts.join(", ");
 }
-
-// src/tabs/maker.js
-var MAX_SIDE = 3e3;
-var state = { images: [], avatar: null, monster: null, unsure: /* @__PURE__ */ new Set() };
-var el;
-var go;
-var readAsDataUrl = (blob) => new Promise((res, rej) => {
-  const r = new FileReader();
-  r.onload = () => res(r.result);
-  r.onerror = rej;
-  r.readAsDataURL(blob);
-});
-async function normalize2(blob) {
-  const bitmap = await createImageBitmap(blob);
-  const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
-  if (scale === 1) return readAsDataUrl(blob);
-  const canvas = new OffscreenCanvas(Math.round(bitmap.width * scale), Math.round(bitmap.height * scale));
-  canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  return readAsDataUrl(await canvas.convertToBlob({ type: "image/png" }));
-}
-var $ = (sel) => el.querySelector(sel);
-function status2(sel, text, cls = "") {
-  const s = $(sel);
-  s.hidden = !text;
-  s.textContent = text || "";
-  s.className = `status ${cls}`;
-}
-function mountMaker(root, navigate) {
-  el = root;
-  go = navigate;
-  el.append(
-    h("div.page-head", h("h1", "Monster Maker"), h("div.page-sub", "Paste a stat block screenshot or its text. The monster is saved to your library and keeps saving as you edit.")),
-    h(
-      "div.maker-grid",
-      h(
-        "div.card.maker-input",
-        h("h2", h("span.step", "1"), " Stat block"),
-        h(
-          "div.drop#mk-drop",
-          { tabindex: 0 },
-          h("strong", "Paste a screenshot or image link (Ctrl+V)"),
-          h("br"),
-          "or drop one (from your computer or a web page) / ",
-          h("label.link", "choose image files", h("input#mk-file", { type: "file", accept: "image/*", multiple: true, hidden: true })),
-          h("div.hint", "Bigger screenshots read better. A long stat block can be several screenshots, in order.")
-        ),
-        h("div.thumbs#mk-thumbs"),
-        h("button.primary#mk-ocr", { hidden: true }, "Read screenshot"),
-        h("div.status#mk-ocr-status", { hidden: true }),
-        h("label", "Stat block text", h("textarea#mk-text", { rows: 12, spellcheck: false, placeholder: "\u2026or paste the text here (copied from a PDF or web page). Text read from a screenshot also appears here, so you can fix mistakes before reading it." })),
-        h("button.primary#mk-parse", "Read text"),
-        h("div.status#mk-parse-status", { hidden: true }),
-        h("details#mk-art", h("summary", "Token art (optional)"), h("div#mk-avatar"))
-      ),
-      h(
-        "div.card.maker-review#mk-review",
-        { hidden: true },
-        h("div.review-head", h("h2", h("span.step", "2"), " Review"), h(
-          "div.review-actions",
-          h("button#mk-edit", "Edit in Creatures"),
-          h("button#mk-new", "New monster")
-        )),
-        h("div.status.ok#mk-saved", { hidden: true }),
-        h(
-          "div.quick",
-          h("label", "Name", h("input#mk-name", { type: "text" })),
-          h("div.abil#mk-abil"),
-          h("div.hint#mk-abil-hint", "Compare the six scores with the stat block: the small numbers in the table are the hardest part to read. Highlighted ones are the least certain.")
-        ),
-        h("ul.warnings#mk-warnings"),
-        h("div#mk-preview")
-      )
-    )
-  );
-  const addImages = async (files) => {
-    for (const f of files) if (f.type.startsWith("image/")) state.images.push(await normalize2(f));
-    renderThumbs();
-  };
-  wireDrop($("#mk-drop"), addImages);
-  $("#mk-file").onchange = (e2) => {
-    addImages([...e2.target.files]);
-    e2.target.value = "";
-  };
-  document.addEventListener("paste", async (e2) => {
-    if (el.hidden || e2.defaultPrevented) return;
-    const files = [...e2.clipboardData.items].filter((i) => i.type.startsWith("image/")).map((i) => i.getAsFile());
-    if (files.length) {
-      e2.preventDefault();
-      addImages(files);
-      return;
-    }
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e2.target.tagName) || !hasImage(e2.clipboardData)) return;
-    e2.preventDefault();
-    try {
-      status2("#mk-ocr-status", "Getting the picture\u2026");
-      const blobs = await imagesFrom(e2.clipboardData);
-      status2("#mk-ocr-status", "");
-      addImages(blobs);
-    } catch (err) {
-      status2("#mk-ocr-status", err.message, "error");
-    }
-  });
-  $("#mk-ocr").onclick = readScreenshots;
-  $("#mk-parse").onclick = () => readText(/* @__PURE__ */ new Set());
-  $("#mk-new").onclick = reset;
-  $("#mk-edit").onclick = () => state.monster && go("library", state.monster.id);
-  $("#mk-name").oninput = () => {
-    state.monster.name = $("#mk-name").value;
-    changed();
-  };
-  renderAvatar();
-}
-function wireDrop(zone, onFiles) {
-  zone.addEventListener("dragover", (e2) => {
-    e2.preventDefault();
-    e2.stopPropagation();
-    zone.classList.add("over");
-  });
-  zone.addEventListener("dragleave", () => zone.classList.remove("over"));
-  zone.addEventListener("drop", async (e2) => {
-    e2.preventDefault();
-    e2.stopPropagation();
-    zone.classList.remove("over");
-    try {
-      status2("#mk-ocr-status", "Getting the picture\u2026");
-      const blobs = await imagesFrom(e2.dataTransfer);
-      status2("#mk-ocr-status", blobs.length ? "" : "That was not a picture.", blobs.length ? "" : "error");
-      if (blobs.length) onFiles(blobs);
-    } catch (err) {
-      status2("#mk-ocr-status", err.message, "error");
-    }
-  });
-}
-function thumb(src, onRemove) {
-  return h("div.thumb", h("img", { src }), h("button", { title: "Remove", onclick: onRemove }, "\xD7"));
-}
-function renderThumbs() {
-  fill($("#mk-thumbs"), ...state.images.map((src, i) => thumb(src, () => {
-    state.images.splice(i, 1);
-    renderThumbs();
-  })));
-  $("#mk-ocr").hidden = !state.images.length;
-}
-function setAvatar(url) {
-  state.avatar = url;
-  renderAvatar();
-  if (state.monster) {
-    if (url) state.monster.avatar = url;
-    else delete state.monster.avatar;
-    changed();
-  }
-}
-function renderAvatar() {
-  if (state.avatar) $("#mk-art").open = true;
-  fill($("#mk-avatar"), pictureDrop({
-    src: state.avatar,
-    name: state.monster?.name || "Token",
-    chooseText: "Choose an image",
-    hint: "Drop a picture here from your computer or a web page, or click here and paste (Ctrl+V).",
-    onImage: (url) => setAvatar(url),
-    onRemove: () => setAvatar(null)
-  }));
-}
-function reset() {
-  Object.assign(state, { images: [], avatar: null, monster: null, unsure: /* @__PURE__ */ new Set() });
-  $("#mk-text").value = "";
-  renderThumbs();
-  renderAvatar();
-  $("#mk-review").hidden = true;
-  ["#mk-ocr-status", "#mk-parse-status"].forEach((s) => status2(s, ""));
-}
-async function readScreenshots() {
-  if (!state.images.length) return;
-  $("#mk-ocr").disabled = $("#mk-parse").disabled = true;
-  const started = Date.now();
-  try {
-    const texts = [];
-    const abilities = [null, null, null, null, null, null], unsure = [true, true, true, true, true, true];
-    for (const [n, img] of state.images.entries()) {
-      const prefix = state.images.length > 1 ? `Image ${n + 1} of ${state.images.length}: ` : "";
-      const r = await ocrImage(img, (msg) => status2("#mk-ocr-status", `${prefix}${msg} ${Math.round((Date.now() - started) / 1e3)}s`), { abilities: true });
-      texts.push(r.text.trim());
-      r.abilities.forEach((s, i) => {
-        if (s != null && (abilities[i] == null || unsure[i] && !r.abilityUncertain[i])) {
-          abilities[i] = s;
-          unsure[i] = r.abilityUncertain[i];
-        }
-      });
-    }
-    $("#mk-text").value = texts.join("\n\n");
-    status2("#mk-ocr-status", `Text read in ${Math.round((Date.now() - started) / 1e3)}s. Check it below, then the review.`, "ok");
-    readText(new Set(unsure.flatMap((u, i) => u ? [i] : [])));
-  } catch (e2) {
-    status2("#mk-ocr-status", `Could not read the screenshot: ${e2.message || e2}`, "error");
-  } finally {
-    $("#mk-ocr").disabled = $("#mk-parse").disabled = false;
-  }
-}
-function readText(unsure) {
-  const text = $("#mk-text").value.trim();
-  if (!text) return status2("#mk-parse-status", "Paste a screenshot or the stat block text first.", "error");
-  if (!store.libraryPath) return status2("#mk-parse-status", "Choose a library folder first (top right), so the monster has somewhere to be saved.", "error");
-  try {
-    const data = parseStatBlock(text);
-    ABILITIES.forEach((a2, i) => {
-      if (data.abilities[a2] == null) unsure.add(i);
-    });
-    const prev = state.monster;
-    const monster = { ...data, id: prev?.id || newId(data.name), source: "Homebrew", created: prev?.created };
-    monster.fightingStyle = guessStyle(monster);
-    if (state.avatar) monster.avatar = state.avatar;
-    state.monster = monster;
-    state.unsure = unsure;
-    status2("#mk-parse-status", "");
-    renderReview();
-    changed(`${prev ? "Updated in your library." : "Saved to your library."} Fighting preference guessed as ${STYLES[monster.fightingStyle]} (change it in Creatures).`);
-  } catch (e2) {
-    status2("#mk-parse-status", `Could not read the text: ${e2.message || e2}`, "error");
-  }
-}
-function changed(message) {
-  save("monsters", state.monster);
-  if (message) status2("#mk-saved", `${message} Changes save automatically.`, "ok");
-  renderPreview();
-}
-function renderReview() {
-  const m = state.monster;
-  $("#mk-review").hidden = false;
-  $("#mk-name").value = m.name;
-  fill($("#mk-abil"), ...ABILITIES.map((a2, i) => {
-    const inp = h("input", { type: "text", inputmode: "numeric", value: m.abilities[a2] ?? "", class: state.unsure.has(i) ? "unsure" : "" });
-    inp.oninput = () => {
-      const v = parseInt(inp.value, 10);
-      m.abilities[a2] = Number.isFinite(v) ? v : null;
-      inp.className = "";
-      state.unsure.delete(i);
-      changed();
-    };
-    return h("label", a2.slice(0, 3).toUpperCase(), inp);
-  }));
-  fill($("#mk-warnings"), ...(m.warnings || []).map((w) => h("li", w)));
-  renderAvatar();
-  renderPreview();
-}
-function renderPreview() {
-  const m = state.monster;
-  if (!m) return;
-  const safe = { ...m, abilities: Object.fromEntries(ABILITIES.map((a2) => [a2, m.abilities[a2] ?? 10])) };
-  fill($("#mk-preview"), statBlock(safe));
-}
-
-// src/tabs/party.js
-init_ui();
-init_store();
-init_dice();
-init_rules();
-
-// src/ddb-import.js
-async function readPdfFields(pdfjs2, data) {
-  const doc = await pdfjs2.getDocument({ data, isEvalSupported: false, verbosity: 0 }).promise;
-  const out = [];
-  for (let n = 1; n <= doc.numPages; n++) {
-    for (const a2 of await (await doc.getPage(n)).getAnnotations()) {
-      if (!a2.fieldName || a2.fieldValue == null || a2.fieldValue === "" || a2.fieldValue === "Off") continue;
-      out.push({ name: a2.fieldName.replace(/\s+/g, " ").trim(), value: String(a2.fieldValue).replace(/\r/g, "").trim() });
-    }
-  }
-  await doc.destroy();
-  return out;
-}
-var ABILITIES2 = [["STR", "strength"], ["DEX", "dexterity"], ["CON", "constitution"], ["INT", "intelligence"], ["WIS", "wisdom"], ["CHA", "charisma"]];
-var SKILLS2 = [
-  ["Acrobatics", "Acrobatics", "DEX"],
-  ["Animal", "Animal Handling", "WIS"],
-  ["Arcana", "Arcana", "INT"],
-  ["Athletics", "Athletics", "STR"],
-  ["Deception", "Deception", "CHA"],
-  ["History", "History", "INT"],
-  ["Insight", "Insight", "WIS"],
-  ["Intimidation", "Intimidation", "CHA"],
-  ["Investigation", "Investigation", "INT"],
-  ["Medicine", "Medicine", "WIS"],
-  ["Nature", "Nature", "INT"],
-  ["Perception", "Perception", "WIS"],
-  ["Performance", "Performance", "CHA"],
-  ["Persuasion", "Persuasion", "CHA"],
-  ["Religion", "Religion", "INT"],
-  ["SleightofHand", "Sleight of Hand", "DEX"],
-  ["Stealth", "Stealth", "DEX"],
-  ["Survival", "Survival", "WIS"]
-];
-var num = (s) => {
-  const n = parseInt(String(s ?? "").replace(/[^\d\-+]/g, ""), 10);
-  return Number.isFinite(n) ? n : null;
-};
-var isDash = (s) => !s || /^-+$/.test(s.trim());
-function parseDdbSheet(fields2) {
-  const first = /* @__PURE__ */ new Map(), lower = /* @__PURE__ */ new Map();
-  for (const f of fields2) {
-    if (!first.has(f.name)) first.set(f.name, f.value);
-    if (!lower.has(f.name.toLowerCase())) lower.set(f.name.toLowerCase(), f.value);
-  }
-  const get = (name) => first.get(name) ?? "";
-  const getI = (name) => lower.get(name.toLowerCase()) ?? "";
-  const joined = (prefix) => [...first.keys()].filter((k) => new RegExp(`^${prefix}\\d+$`).test(k)).sort((a2, b2) => num(a2.slice(prefix.length)) - num(b2.slice(prefix.length))).map((k) => first.get(k)).join("\n");
-  const classText = get("CLASS LEVEL");
-  const classes = [...classText.matchAll(/([A-Za-z][A-Za-z' -]*?)\s+(\d{1,2})\b/g)].map((m) => ({ name: m[1].trim(), level: Number(m[2]) }));
-  const level = classes.reduce((n, c2) => n + c2.level, 0) || num(classText) || 1;
-  const abilities = Object.fromEntries(ABILITIES2.map(([ab2, key2]) => [key2, num(get(ab2))]));
-  const saves = ABILITIES2.map(([ab2, key2]) => {
-    const label = key2[0].toUpperCase() + key2.slice(1);
-    return { ability: ab2, bonus: num(get(`ST ${label}`)) ?? 0, proficient: !!getI(`${ab2[0]}${ab2.slice(1).toLowerCase()}Prof`) };
-  });
-  const skills = SKILLS2.map(([field, name, ab2]) => ({ name, ability: ab2, bonus: num(getI(field)) ?? 0, proficiency: { P: "proficient", E: "expertise", H: "half" }[getI(`${field}Prof`)] || "" }));
-  const attacks = [];
-  for (let i = 1; i <= 20; i++) {
-    const name = get(i === 1 ? "Wpn Name" : `Wpn Name ${i}`);
-    if (!name) continue;
-    const damage = get(`Wpn${i} Damage`);
-    const dm = damage.match(/^\s*([\dd+\-\s]+?)\s+([A-Za-z].*)$/);
-    attacks.push({ name, hit: get(`Wpn${i} AtkBonus`), damage, damageDice: dm ? dm[1].replace(/\s/g, "") : "", damageType: dm ? dm[2] : "", notes: get(`Wpn Notes ${i}`) });
-  }
-  const spells = [], slots = {}, byIndex = /* @__PURE__ */ new Map();
-  let levelLabel = "";
-  for (const f of fields2) {
-    let m;
-    if (m = f.name.match(/^spellHeader(\d+)$/)) levelLabel = f.value.replace(/=+/g, "").trim().replace(/\b(\w)(\w*)/g, (x, a2, b2) => a2 + b2.toLowerCase()).replace(/(\d)(St|Nd|Rd|Th)\b/, (x, d, s) => d + s.toLowerCase());
-    else if (/^spellSlotHeader\d+$/.test(f.name) && levelLabel) slots[levelLabel] = f.value;
-    else if ((m = f.name.match(/^spellName(\d+)$/)) && !byIndex.has(m[1])) {
-      const s = { level: levelLabel || "Spells", name: f.value };
-      byIndex.set(m[1], s);
-      spells.push(s);
-    }
-  }
-  for (const [i, s] of byIndex) {
-    Object.assign(s, {
-      source: get(`spellSource${i}`),
-      saveHit: isDash(get(`spellSaveHit${i}`)) ? "" : get(`spellSaveHit${i}`),
-      time: get(`spellCastingTime${i}`),
-      range: get(`spellRange${i}`),
-      components: get(`spellComponents${i}`),
-      duration: get(`spellDuration${i}`),
-      page: get(`spellPage${i}`),
-      notes: get(`spellNotes${i}`),
-      prepared: get(`spellPrepared${i}`) === "P" ? "always" : ""
-    });
-  }
-  const unique = [];
-  for (const s of spells) {
-    const at2 = unique.findIndex((u) => u.level === s.level && u.name === s.name);
-    if (at2 < 0) unique.push(s);
-    else if (/2024/.test(s.page) && !/2024/.test(unique[at2].page)) unique[at2] = s;
-  }
-  const casting = [];
-  for (let i = 0; i < 6; i++) {
-    const cls = get(`spellCastingClass${i}`), ability = get(`spellCastingAbility${i}`);
-    if (cls || ability) casting.push({ className: cls, ability, saveDC: num(get(`spellSaveDC${i}`)), attack: get(`spellAtkBonus${i}`) });
-  }
-  const equipment = [];
-  for (let i = 0; i < 200; i++) {
-    const name = get(`Eq Name${i}`);
-    if (!name) continue;
-    const qty = num(get(`Eq Qty${i}`)) || 1, have = equipment.find((e2) => e2.name === name);
-    if (have) have.qty += qty;
-    else equipment.push({ name, qty });
-  }
-  const speedText2 = get("Speed");
-  const sheet = {
-    importedAt: Date.now(),
-    classes,
-    classText,
-    species: get("RACE"),
-    background: get("BACKGROUND"),
-    experience: get("EXPERIENCE POINTS"),
-    ddbPlayer: get("PLAYER NAME"),
-    abilities,
-    saves,
-    skills,
-    passives: { perception: num(get("Passive1")), insight: num(get("Passive2")), investigation: num(get("Passive3")) },
-    senses: get("AdditionalSenses"),
-    defenses: get("Defenses"),
-    speedText: speedText2,
-    hitDice: get("Total"),
-    proficiencyBonus: get("ProfBonus"),
-    proficiencies: get("ProficienciesLang"),
-    actions: joined("Actions"),
-    features: joined("FeaturesTraits"),
-    attacks,
-    casting,
-    spells: unique,
-    slots,
-    equipment,
-    appearance: Object.fromEntries(["GENDER", "AGE", "SIZE", "HEIGHT", "WEIGHT", "ALIGNMENT", "FAITH", "SKIN", "EYES", "HAIR"].map((k) => [k.toLowerCase(), get(k)]).filter(([, v]) => v)),
-    personality: Object.fromEntries([["traits", "PersonalityTraits"], ["ideals", "Ideals"], ["bonds", "Bonds"], ["flaws", "Flaws"], ["backstory", "Backstory"], ["allies", "AlliesOrganizations"], ["notes", "AdditionalNotes"]].map(([k, f]) => [k, get(f)]).filter(([, v]) => v))
-  };
-  const basics = {
-    name: get("CharacterName"),
-    className: classes.map((c2) => c2.name).join(" / ") || classText,
-    level,
-    armorClass: num(get("AC")),
-    maxHp: num(get("MaxHP")),
-    speed: num(speedText2) ?? 30,
-    passivePerception: sheet.passives.perception,
-    initiativeBonus: num(get("Init")) ?? 0
-  };
-  return { basics, sheet };
-}
-
-// src/sheet.js
-init_ui();
-init_conditions();
-init_spells();
-var sign = (n) => n >= 0 ? `+${n}` : `${n}`;
-var mod3 = (s) => Math.floor(((s ?? 10) - 10) / 2);
-var ABBR2 = { strength: "STR", dexterity: "DEX", constitution: "CON", intelligence: "INT", wisdom: "WIS", charisma: "CHA" };
-var bonusExpr = (b2) => {
-  const n = parseInt(String(b2).replace(/[−–]/, "-"), 10);
-  return Number.isFinite(n) ? `1d20${sign(n)}` : null;
-};
-var roll2 = (text, expr, label, who) => expr ? rollButton(text, expr, label, who) : esc(text);
-var block = (title, text, open2 = false) => text ? `<details class="sh-text"${open2 ? " open" : ""}><summary>${title}</summary><div>${condify(spellify(esc(text.replace(/[ \t]+\n/g, "\n").trim()))).replace(/\n/g, "<br>")}</div></details>` : "";
-function characterSheet(c2, opts2 = {}) {
-  const s = c2.sheet, who = c2.name;
-  if (!s) return h("div.empty", "No character sheet yet. Import this character's D&D Beyond PDF on the Party tab to see the full sheet here.");
-  const imported = new Date(s.importedAt).toLocaleDateString(void 0, { month: "short", day: "numeric", year: "numeric" });
-  const abil = Object.entries(s.abilities).map(([k, v]) => `<div class="sh-abil"><div class="sh-k">${ABBR2[k]}</div><div class="sh-score">${v ?? "\u2014"}</div>${roll2(sign(mod3(v)), `1d20${sign(mod3(v))}`, `${ABBR2[k]} check`, who)}</div>`).join("");
-  const saves = s.saves.map((x) => `<span class="sh-chip${x.proficient ? " prof" : ""}" title="${x.proficient ? "Proficient" : ""}">${x.ability} ${roll2(sign(x.bonus), `1d20${sign(x.bonus)}`, `${x.ability} save`, who)}</span>`).join("");
-  const skills = s.skills.map((k) => `<div class="sh-skill${k.proficiency ? ` ${k.proficiency}` : ""}"><span class="sh-mark" title="${k.proficiency}">${k.proficiency === "expertise" ? "E" : k.proficiency === "proficient" ? "P" : k.proficiency === "half" ? "\xBD" : ""}</span><span>${esc(k.name)} <small>${k.ability}</small></span>${roll2(sign(k.bonus), `1d20${sign(k.bonus)}`, k.name, who)}</div>`).join("");
-  const attacks = s.attacks.length ? `<table class="sh-table"><thead><tr><th>Attack</th><th>Hit</th><th>Damage</th><th>Notes</th></tr></thead><tbody>${s.attacks.map((a2) => `<tr><td>${esc(a2.name)}</td><td>${roll2(a2.hit, bonusExpr(a2.hit), `${a2.name}: to hit`, who)}</td><td>${a2.damageDice && /d/.test(a2.damageDice) ? rollButton(a2.damageDice, a2.damageDice, `${a2.name}: damage`, who) : esc(a2.damageDice)} ${esc(a2.damageType)}</td><td class="sh-notes">${esc(a2.notes)}</td></tr>`).join("")}</tbody></table>` : "";
-  const levels = [...new Set(s.spells.map((x) => x.level))];
-  const spells = levels.map((lv, i) => {
-    const list = s.spells.filter((x) => x.level === lv);
-    return `<details class="sh-spells"${i < 2 ? " open" : ""}><summary>${esc(lv)} <span class="muted">${esc(s.slots[lv] || "")} \xB7 ${list.length}</span></summary><table class="sh-table"><tbody>${list.map((x) => `<tr><td>${spellLink(x.name)}${x.prepared ? ' <span class="tag">ALWAYS</span>' : ""}</td><td>${/^[+\-]\d/.test(x.saveHit) ? roll2(x.saveHit, bonusExpr(x.saveHit), `${x.name}: spell attack`, who) : esc(x.saveHit)}</td><td>${esc(x.time)}</td><td>${esc(x.range)}</td><td class="sh-notes">${esc(x.duration)}</td></tr>`).join("")}</tbody></table></details>`;
-  }).join("");
-  const casting = s.casting.map((k) => `<span class="sh-chip">${esc(k.className || "Spellcasting")} \xB7 ${esc(k.ability)} \xB7 DC ${k.saveDC ?? "\u2014"} \xB7 ${roll2(k.attack, bonusExpr(k.attack), "Spell attack", who)}</span>`).join("");
-  const look = Object.entries(s.appearance || {}).map(([k, v]) => `${k[0].toUpperCase()}${k.slice(1)}: ${v}`).join(" \xB7 ");
-  const person = Object.entries(s.personality || {}).map(([k, v]) => `${k[0].toUpperCase()}${k.slice(1)}:
-${v}`).join("\n\n");
-  const html = `
-    <div class="sh-head">${esc([s.classText, s.species, s.background, s.appearance?.alignment].filter(Boolean).join(" \xB7 "))}<span class="sh-imported">Imported ${imported}</span></div>
-    <div class="sh-combat">
-      <div><div class="sh-k">AC</div><div class="sh-v">${c2.armorClass ?? "\u2014"}</div></div>
-      <div><div class="sh-k">HP</div><div class="sh-v">${opts2.hp != null ? `${opts2.hp}/` : ""}${c2.maxHp ?? "\u2014"}</div><div class="sh-sub">${esc(s.hitDice)}</div></div>
-      <div><div class="sh-k">Speed</div><div class="sh-v">${c2.speed ?? "\u2014"}</div><div class="sh-sub">ft.</div></div>
-      <div><div class="sh-k">Init</div><div class="sh-v">${rollButton(sign(c2.initiativeBonus || 0), `1d20${sign(c2.initiativeBonus || 0)}`, "Initiative", who)}</div></div>
-      <div><div class="sh-k">Prof.</div><div class="sh-v">${esc(s.proficiencyBonus)}</div></div>
-    </div>
-    <div class="sh-abils">${abil}</div>
-    <div class="sh-row"><span class="sh-label">Saves</span> ${saves}</div>
-    <div class="sh-row sh-small"><span class="sh-label">Passive</span> Perception ${s.passives.perception ?? "\u2014"} \xB7 Insight ${s.passives.insight ?? "\u2014"} \xB7 Investigation ${s.passives.investigation ?? "\u2014"}${s.senses ? ` \xB7 ${esc(s.senses)}` : ""}</div>
-    ${s.defenses ? `<div class="sh-row sh-small"><span class="sh-label">Defenses</span> ${condify(esc(s.defenses))}</div>` : ""}
-    ${attacks ? `<div class="sh-section">Attacks</div>${attacks}` : ""}
-    ${s.spells.length || s.casting.length ? `<div class="sh-section">Spells</div><div class="sh-row">${casting}</div>${spells}` : ""}
-    <details class="sh-text"${opts2.compact ? "" : " open"}><summary>Skills</summary><div class="sh-skills">${skills}</div></details>
-    ${block("Actions", s.actions)}
-    ${block("Features & traits", s.features)}
-    ${opts2.compact ? "" : block("Proficiencies & languages", s.proficiencies)}
-    ${opts2.compact ? "" : s.equipment?.length ? block("Equipment", s.equipment.map((e2) => `${e2.name}${e2.qty > 1 ? ` \xD7${e2.qty}` : ""}`).join(", ")) : ""}
-    ${opts2.compact ? "" : block("Appearance & personality", [look, person].filter(Boolean).join("\n\n"))}`;
-  return h("div.sheet", { html });
-}
-
-// src/tabs/party.js
-var el2;
-var selectedId = null;
-function blankCharacter() {
-  return { id: newId("character"), name: "New Character", player: "", className: "", level: 1, armorClass: 10, maxHp: 10, speed: 30, passivePerception: 10, initiativeBonus: 0, power: 1 };
-}
-function mountParty(root) {
-  el2 = root;
-  const fileInput = h("input", { type: "file", accept: ".pdf,application/pdf", multiple: true, hidden: true, onchange: (e2) => {
-    importPdfs([...e2.target.files]);
-    e2.target.value = "";
-  } });
-  el2.append(
-    h("div.page-head", h("h1", "Party"), h("div.page-sub", "Player characters. Add them to encounters in the builder; the runner uses their AC, HP and initiative bonus. Drop D&D Beyond character sheet PDFs anywhere here to add or update characters.")),
-    h(
-      "div.split",
-      h(
-        "div.card.list-pane",
-        h("div.list-tools", h("button.primary#pt-add", "Add character"), h("button", { onclick: () => fileInput.click(), title: "D&D Beyond character page > Export to PDF" }, "Import PDF"), fileInput),
-        h("div.list#pt-list")
-      ),
-      h("div.card.edit-pane#pt-edit")
-    )
-  );
-  el2.querySelector("#pt-add").onclick = () => {
-    if (!store.libraryPath) return alert("Choose a library folder first (top right).");
-    const c2 = blankCharacter();
-    save("party", c2, { delay: 0 });
-    selectedId = c2.id;
-    render2();
-    el2.querySelector("#pt-edit input")?.select();
-  };
-  el2.addEventListener("dragover", (e2) => {
-    if ([...e2.dataTransfer.items].some((i) => i.kind === "file")) {
-      e2.preventDefault();
-      el2.classList.add("drop-over");
-    }
-  });
-  el2.addEventListener("dragleave", (e2) => {
-    if (!el2.contains(e2.relatedTarget)) el2.classList.remove("drop-over");
-  });
-  el2.addEventListener("drop", (e2) => {
-    el2.classList.remove("drop-over");
-    const pdfs = [...e2.dataTransfer.files].filter(isPdf);
-    if (!pdfs.length) return;
-    e2.preventDefault();
-    importPdfs(pdfs);
-  });
-  onChange((kind) => {
-    if (kind === "all" || kind === "party") renderList();
-  });
-  pasteToPicture(el2);
-  render2();
-}
-function showParty() {
-  render2();
-}
-function render2() {
-  renderList();
-  renderEdit();
-}
-function renderList() {
-  const list = [...store.party].sort((a2, b2) => a2.name.localeCompare(b2.name));
-  fill(el2.querySelector("#pt-list"), ...list.length ? list.map((c2) => h("button.list-row" + (c2.id === selectedId ? ".active" : ""), {
-    onclick: () => {
-      selectedId = c2.id;
-      render2();
-    }
-  }, avatar(c2.avatar, c2.name, "sm"), h("div.list-main", h("div.list-name", c2.name, c2.sheet ? h("span.tag", "SHEET") : null), h("div.list-sub", [`Level ${c2.level}`, (c2.power ?? 1) !== 1 && `power \xD7${Number(Number(c2.power).toFixed(2))}`, c2.className, c2.player && `played by ${c2.player}`].filter(Boolean).join(" \xB7 "))))) : [h("div.empty", "No characters yet. Add one, or drop D&D Beyond character PDFs here.")]);
-}
-function renderEdit() {
-  const pane = el2.querySelector("#pt-edit");
-  const c2 = store.party.find((x) => x.id === selectedId);
-  if (!c2) return fill(pane, h("div.empty", store.party.length ? "Select a character." : "Add your party's characters here, or import their D&D Beyond PDFs."));
-  const set2 = (k, num2) => (e2) => {
-    c2[k] = num2 ? Number(e2.target.value) || 0 : e2.target.value;
-    save("party", c2);
-    if (k === "name" || k === "level" || k === "className" || k === "player") renderList();
-  };
-  const field = (label, k, num2, attrs = {}) => h("label", label, h("input", { type: num2 ? "number" : "text", value: c2[k] ?? "", oninput: set2(k, num2), ...attrs }));
-  const pic = pictureDrop({
-    src: c2.avatar,
-    name: c2.name,
-    onImage: (url) => {
-      c2.avatar = url;
-      save("party", c2);
-      render2();
-    },
-    onRemove: () => {
-      delete c2.avatar;
-      save("party", c2);
-      render2();
-    }
-  });
-  fill(
-    pane,
-    h("div.edit-head", h("h2", c2.name), h("button.danger", { onclick: () => confirmBox(`Delete ${c2.name}? The file goes to the Recycle Bin.`, "Delete", async () => {
-      await remove("party", c2);
-      selectedId = null;
-      render2();
-    }) }, "Delete")),
-    pic,
-    h(
-      "div.form-grid",
-      field("Name", "name"),
-      field("Player", "player"),
-      field("Class", "className", false, { placeholder: "e.g. Fighter 3" }),
-      field("Level", "level", true, { min: 1, max: 20 }),
-      field("Armor Class", "armorClass", true),
-      field("Max HP", "maxHp", true),
-      field("Speed (ft.)", "speed", true),
-      field("Passive Perception", "passivePerception", true),
-      field("Initiative bonus", "initiativeBonus", true),
-      h("label", "Power multiplier", h("input", { type: "number", step: 0.05, min: 0.25, max: 3, value: c2.power ?? 1, oninput: (e2) => {
-        const v = Number(e2.target.value);
-        if (Number.isFinite(v) && v > 0) {
-          c2.power = clampPower(v);
-          save("party", c2);
-          renderList();
-        }
-      } }))
-    ),
-    h("div.hint", `Initiative rolls as 1d20${signed(c2.initiativeBonus || 0)}.`),
-    h("div.hint", "Power multiplier: 1 = what their level suggests. Raise it (e.g. 1.1\u20131.25) for a character whose magic items make them stronger than their level, or lower it for one who is weaker. It scales their share of the encounter difficulty thresholds, so the same monsters rate a little easier."),
-    h(
-      "div.sheet-head",
-      h("h3", "Character sheet"),
-      c2.sheet ? h("button.link", { onclick: () => confirmBox(`Remove ${c2.name}'s imported sheet? The basics above stay.`, "Remove", () => {
-        delete c2.sheet;
-        save("party", c2);
-        render2();
-      }) }, "Remove sheet") : null
-    ),
-    h("div.hint", c2.sheet ? "From the D&D Beyond PDF. To update it, export the PDF again and drop it here." : ""),
-    characterSheet(c2)
-  );
-}
-var isPdf = (f) => f.type === "application/pdf" || /\.pdf$/i.test(f.name);
-var norm2 = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
-var BASICS = [["name", "Name"], ["className", "Class"], ["level", "Level"], ["armorClass", "Armor Class"], ["maxHp", "Max HP"], ["speed", "Speed"], ["passivePerception", "Passive Perception"], ["initiativeBonus", "Initiative bonus"]];
-var pdfjs;
-async function loadPdfjs() {
-  if (!pdfjs) {
-    pdfjs = await Promise.resolve().then(() => (init_pdf(), pdf_exports));
-    pdfjs.GlobalWorkerOptions.workerSrc = new URL("vendor/pdfjs/pdf.worker.min.mjs", location.href).href;
-  }
-  return pdfjs;
-}
-function findMatch(name) {
-  const n = norm2(name);
-  const exact = store.party.find((c2) => norm2(c2.name) === n);
-  if (exact) return exact;
-  const firstWord = norm2(String(name).split(/\s+/)[0]);
-  const byFirst = store.party.filter((c2) => norm2(String(c2.name).split(/\s+/)[0]) === firstWord);
-  return byFirst.length === 1 ? byFirst[0] : null;
-}
-async function importPdfs(files) {
-  files = files.filter(isPdf);
-  if (!files.length) return;
-  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
-  const lib = await loadPdfjs();
-  const results = [];
-  for (const f of files) {
-    try {
-      const parsed = parseDdbSheet(await readPdfFields(lib, new Uint8Array(await f.arrayBuffer())));
-      if (!parsed.basics.name) throw new Error("No character name in it. Is it a D&D Beyond character sheet PDF (character page > Export to PDF)?");
-      const match = findMatch(parsed.basics.name);
-      results.push({ file: f.name, ...parsed, target: match ? match.id : "new", keep: /* @__PURE__ */ new Set() });
-    } catch (e2) {
-      results.push({ file: f.name, error: e2.message || String(e2) });
-    }
-  }
-  reviewImport(results);
-}
-function reviewImport(results) {
-  const rows = results.map((r) => {
-    const box = h("div.imp-row");
-    if (r.error) return fill(box, h("div.imp-title", r.file), h("div.status.error", `Skipped: ${r.error}`));
-    const changes = h("div.imp-changes");
-    const drawChanges = () => {
-      const t = store.party.find((c2) => c2.id === r.target);
-      if (r.target === "skip") return fill(changes, h("div.muted", "Not imported."));
-      if (!t) return fill(changes, h("div.muted", `New character: ${BASICS.slice(1).map(([k, l]) => `${l} ${r.basics[k] ?? "\u2014"}`).join(" \xB7 ")}. Full sheet included.`));
-      const diffs = BASICS.filter(([k]) => r.basics[k] != null && r.basics[k] !== "" && String(r.basics[k]) !== String(t[k] ?? ""));
-      fill(
-        changes,
-        diffs.length ? h("div.muted", "Changes (untick any value you want to keep as it is in the app):") : h("div.muted", "Name, class and combat numbers already match."),
-        diffs.map(([k, label]) => h(
-          "label.check-row",
-          h("input", { type: "checkbox", checked: !r.keep.has(k), onchange: (e2) => e2.target.checked ? r.keep.delete(k) : r.keep.add(k) }),
-          h("span", h("strong", label), `: ${t[k] ?? "\u2014"} \u2192 ${r.basics[k]}`)
-        )),
-        h("div.muted", `${t.sheet ? "Refreshes" : "Adds"} the full character sheet. Picture, player name and power multiplier stay as they are.`)
-      );
-    };
-    const select2 = h(
-      "select",
-      { onchange: (e2) => {
-        r.target = e2.target.value;
-        r.keep = /* @__PURE__ */ new Set();
-        drawChanges();
-      } },
-      store.party.map((c2) => h("option", { value: c2.id, selected: r.target === c2.id }, `Update ${c2.name}`)),
-      h("option", { value: "new", selected: r.target === "new" }, "Create a new character"),
-      h("option", { value: "skip" }, "Skip this one")
-    );
-    drawChanges();
-    return fill(
-      box,
-      h("div.imp-title", h("strong", r.basics.name), ` \xB7 ${r.sheet.classText} \xB7 ${r.sheet.species}`, h("span.muted", `  (${r.file})`)),
-      h("label.inline", "Import as", select2),
-      changes
-    );
-  });
-  modal(`Import ${results.length} character sheet${results.length === 1 ? "" : "s"}`, h("div.imp-list", rows), [
-    ["Cancel", () => {
-    }],
-    ["Import", () => applyImport(results), "primary"]
-  ]);
-  document.querySelector(".modal-back:last-child .modal")?.classList.add("wide");
-}
-function applyImport(results) {
-  let last = null;
-  for (const r of results) {
-    if (r.error || r.target === "skip") continue;
-    let c2 = store.party.find((x) => x.id === r.target);
-    if (!c2) {
-      c2 = { ...blankCharacter(), ...r.basics, id: newId(r.basics.name) };
-    } else {
-      for (const [k] of BASICS) if (!r.keep.has(k) && r.basics[k] != null && r.basics[k] !== "") c2[k] = r.basics[k];
-    }
-    c2.sheet = r.sheet;
-    save("party", c2, { delay: 0 });
-    last = c2;
-  }
-  if (last) {
-    selectedId = last.id;
-    render2();
-  }
-}
-
-// src/tabs/library.js
-init_ui();
-init_store();
-
-// src/spell-dialog.js
-init_ui();
-init_store();
-
-// src/spelling.js
-var import_nspell = __toESM(require_lib(), 1);
-var WORD = /(?<![\dA-Za-z])[A-Za-z][A-Za-z'’]*(?:-[A-Za-z'’]+)*/g;
-function distance(a2, b2) {
-  const d = Array.from({ length: a2.length + 1 }, (_, i) => [i, ...Array(b2.length).fill(0)]);
-  for (let j = 1; j <= b2.length; j++) d[0][j] = j;
-  for (let i = 1; i <= a2.length; i++) for (let j = 1; j <= b2.length; j++) {
-    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a2[i - 1] === b2[j - 1] ? 0 : 1));
-  }
-  return d[a2.length][b2.length];
-}
-function createChecker(aff, dic, vocabulary2 = /* @__PURE__ */ new Map()) {
-  const spell = (0, import_nspell.default)(aff, dic);
-  const known = /* @__PURE__ */ new Set();
-  for (const w of vocabulary2.keys()) known.add(w.toLowerCase());
-  const game = [...vocabulary2].filter(([w, n]) => n >= 3 && w.length >= 4).sort((a2, b2) => b2[1] - a2[1]);
-  const exact = new Set(vocabulary2.keys());
-  const ok = (w) => known.has(w.toLowerCase()) || spell.correct(w) || spell.correct(w.toLowerCase());
-  const oddCaps = (w) => !exact.has(w) && (/[a-z][A-Z]/.test(w) || /^[A-Z]{2,}[a-z]/.test(w));
-  const proper = (w) => w[0].toUpperCase() + w.slice(1).toLowerCase();
-  const cache2 = /* @__PURE__ */ new Map();
-  return {
-    /** is this word fine? Skips abbreviations ("DC", "STR") and checks each part of a hyphenated word */
-    correct(word) {
-      const w = word.replace(/['’]s$/i, "").replace(/['’]$/, "");
-      if (w.length < 2 || /^[A-Z]{2,5}$/.test(w)) return true;
-      return w.split("-").every((part) => !part || !oddCaps(part) && (ok(part) || ok(part.replace(/['’]/g, "'"))));
-    },
-    /** up to 6 fixes (remembered, since working them out takes a moment) */
-    suggest(word) {
-      if (!cache2.has(word)) cache2.set(word, this.suggestNow(word));
-      return cache2.get(word);
-    },
-    suggestNow(word) {
-      if (oddCaps(word) && ok(word.toLowerCase())) return [proper(word), ...this.suggestNow(word.toLowerCase()).filter((s) => s.toLowerCase() !== word.toLowerCase())].slice(0, 6);
-      const lw = word.toLowerCase(), max = lw.length > 6 ? 3 : 2;
-      const near = game.filter(([w]) => Math.abs(w.length - lw.length) <= max).map(([w, n]) => [w, distance(lw, w.toLowerCase()), n]).filter(([, d]) => d <= max).map(([w, d, n]) => [w, d - (n >= 100 ? 1.5 : n >= 20 ? 1 : 0), n]);
-      const dict = spell.suggest(word).map((w) => [w, distance(lw, w.toLowerCase()), 0]);
-      const seen2 = /* @__PURE__ */ new Set();
-      return [...near, ...dict].sort((a2, b2) => a2[1] - b2[1] || b2[2] - a2[2]).map(([w]) => w).filter((w) => !seen2.has(w.toLowerCase()) && seen2.add(w.toLowerCase())).slice(0, 6);
-    },
-    add(word) {
-      known.add(word.toLowerCase());
-    }
-  };
-}
-function srdVocabulary(monsters, spells, conditions) {
-  const words2 = /* @__PURE__ */ new Map();
-  const take = (s) => {
-    for (const w of String(s || "").replace(/<[^>]+>/g, " ").match(WORD) || []) {
-      const k = w.replace(/['’]s$/i, "");
-      words2.set(k, (words2.get(k) || 0) + 1);
-    }
-  };
-  for (const m of monsters) {
-    take(m.name);
-    take(m.typeText);
-    take(m.monsterType);
-    take((m.subtypes || []).join(" "));
-    take(m.languagesNote);
-    for (const k of ["traits", "actions", "bonusActions", "reactions", "legendaryActions"]) for (const e2 of m[k] || []) {
-      take(e2.name);
-      take(e2.text);
-    }
-  }
-  for (const s of spells) {
-    take(s.name);
-    take(s.text);
-    take(s.classes?.join(" "));
-    take(s.school);
-  }
-  for (const c2 of conditions) {
-    take(c2.name);
-    take(c2.text);
-  }
-  return words2;
-}
-var ENTRY_KEYS = [["traits", "Trait"], ["actions", "Action"], ["bonusActions", "Bonus action"], ["reactions", "Reaction"], ["legendaryActions", "Legendary action"], ["mythicActions", "Mythic action"], ["lairActions", "Lair action"], ["description", "Description"]];
-function fields(m) {
-  const out = [
-    ["Name", () => m.name, (v) => {
-      m.name = v;
-    }],
-    ["Subtypes", () => (m.subtypes || []).join(", "), (v) => {
-      m.subtypes = v.split(/,\s*/).filter(Boolean);
-    }],
-    ["Armor type", () => m.armorClassType, (v) => {
-      m.armorClassType = v;
-    }],
-    ["Languages", () => m.languagesNote, (v) => {
-      m.languagesNote = v;
-    }]
-  ];
-  for (const [k, label] of ENTRY_KEYS) (m[k] || []).forEach((e2, i) => {
-    const title = e2.name || `${label} ${i + 1}`;
-    out.push([`${label} name: ${title}`, () => e2.name, (v) => {
-      e2.name = v;
-    }]);
-    out.push([`${label}: ${title}`, () => e2.text, (v) => {
-      e2.text = v;
-    }]);
-  });
-  (m.notes || []).forEach((n) => out.push([n.name, () => n.text, (v) => {
-    n.text = v;
-  }]));
-  return out.filter(([, get]) => typeof get() === "string" && get());
-}
-var textParts = (s) => [...String(s).matchAll(/(^|>)([^<]+)/g)].map((x) => ({ text: x[2], at: x.index + x[1].length }));
-function findIssues(m, checker, ignore = []) {
-  const skip = new Set(ignore.map((w) => w.toLowerCase()));
-  const byWord2 = /* @__PURE__ */ new Map();
-  for (const [field, get] of fields(m)) {
-    const value = get();
-    for (const part of textParts(value)) {
-      for (const x of part.text.matchAll(WORD)) {
-        const w = x[0];
-        if (skip.has(w.toLowerCase()) || checker.correct(w)) continue;
-        if (!byWord2.has(w)) byWord2.set(w, { word: w, count: 0, places: [] });
-        const issue = byWord2.get(w);
-        issue.count++;
-        if (issue.places.length < 4) issue.places.push({ field, before: part.text.slice(Math.max(0, x.index - 40), x.index), after: part.text.slice(x.index + w.length, x.index + w.length + 40) });
-      }
-    }
-  }
-  return [...byWord2.values()].sort((a2, b2) => b2.count - a2.count || a2.word.localeCompare(b2.word));
-}
-function matchCase(original, replacement) {
-  if (original === original.toUpperCase() && original.length > 1) return replacement.toUpperCase();
-  if (/^[A-Z]/.test(original)) return replacement[0].toUpperCase() + replacement.slice(1);
-  return replacement;
-}
-function replaceWord(m, word, replacement) {
-  const re2 = new RegExp(`(?<![A-Za-z'\u2019-])${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![A-Za-z'\u2019])`, "g");
-  let n = 0;
-  for (const [, get, set2] of fields(m)) {
-    const value = get();
-    const next2 = value.replace(/(^|>)([^<]+)/g, (all, gt, text) => gt + text.replace(re2, (w) => {
-      n++;
-      return matchCase(w, replacement);
-    }));
-    if (next2 !== value) set2(next2);
-  }
-  return n;
-}
-var checkerPromise = null;
-function getChecker(vocabulary2) {
-  checkerPromise ??= Promise.all(["vendor/dictionary-en/index.aff", "vendor/dictionary-en/index.dic"].map((u) => fetch(u).then((r) => r.text()))).then(([aff, dic]) => {
-    const c2 = createChecker(aff, dic, vocabulary2());
-    for (const w of userWords()) c2.add(w);
-    return c2;
-  });
-  return checkerPromise;
-}
-function userWords() {
-  try {
-    return JSON.parse(localStorage.getItem("spellWords") || "[]");
-  } catch {
-    return [];
-  }
-}
-async function addUserWord(word) {
-  const words2 = [.../* @__PURE__ */ new Set([...userWords(), word])];
-  try {
-    localStorage.setItem("spellWords", JSON.stringify(words2));
-  } catch {
-  }
-  (await checkerPromise)?.add(word);
-  window.desktop?.spell?.addWord(word);
-}
-
-// src/spell-dialog.js
-var skipped = /* @__PURE__ */ new Set();
-var vocabulary = () => srdVocabulary(store.srd, store.spells, store.conditions);
-async function spellingDialog(monsters, { title = "Spelling", onOpen, onChanged } = {}) {
-  const body2 = h("div.spell-review", h("div.empty", "Loading the dictionary\u2026"));
-  const close = modal(title, body2, [["Done", () => {
-  }, "primary"]]);
-  body2.closest(".modal")?.classList.add("wide");
-  const checker = await getChecker(vocabulary);
-  const open2 = /* @__PURE__ */ new Set();
-  let shown3 = 40;
-  function draw2() {
-    const words2 = /* @__PURE__ */ new Map();
-    for (const m of monsters) for (const issue of findIssues(m, checker, [...skipped])) {
-      if (!words2.has(issue.word)) words2.set(issue.word, { word: issue.word, count: 0, monsters: [] });
-      const w = words2.get(issue.word);
-      w.count += issue.count;
-      w.monsters.push({ m, places: issue.places });
-    }
-    const list = [...words2.values()].sort((a2, b2) => b2.monsters.length - a2.monsters.length || b2.count - a2.count || a2.word.localeCompare(b2.word));
-    const fix = (w, to) => {
-      if (!to.trim()) return;
-      let n = 0;
-      for (const { m } of w.monsters) {
-        const k = replaceWord(m, w.word, to.trim());
-        if (k) {
-          n += k;
-          save("monsters", m, { delay: 0 });
-        }
-      }
-      onChanged?.();
-      draw2();
-      return n;
-    };
-    const many = monsters.length > 1;
-    fill(
-      body2,
-      h("p.muted", list.length ? `${list.length} word${list.length === 1 ? "" : "s"} the dictionary doesn't know${many ? ` in ${new Set(list.flatMap((w) => w.monsters.map((x) => x.m.id))).size} of your ${monsters.length} monsters` : ""}. Words used in the SRD (game terms, monster and spell names) already count as correct. Fixing a word changes it everywhere it's listed.` : `No spelling problems found${many ? ` in your ${monsters.length} monsters` : ""}.`),
-      list.slice(0, shown3).map((w) => {
-        const own = h("input.spell-own", { type: "text", placeholder: "Your spelling", onkeydown: (e2) => {
-          if (e2.key === "Enter") fix(w, e2.target.value);
-        } });
-        const isOpen = open2.has(w.word);
-        return h(
-          "div.spell-row",
-          h(
-            "div.spell-top",
-            h("button.icon-btn.chev", { title: isOpen ? "Hide where it is" : "Show where it is", onclick: () => {
-              if (isOpen) open2.delete(w.word);
-              else open2.add(w.word);
-              draw2();
-            } }, isOpen ? "\u25BE" : "\u25B8"),
-            h("span.spell-word", w.word),
-            h("span.muted", `\xD7${w.count}${many ? ` in ${w.monsters.length} monster${w.monsters.length === 1 ? "" : "s"}` : ""}`),
-            h("div.spell-sugg", checker.suggest(w.word).map((s) => h("button.sugg", { title: `Change "${w.word}" to "${s}" everywhere listed`, onclick: () => fix(w, s) }, s))),
-            h(
-              "div.spell-actions",
-              own,
-              h("button", { onclick: () => fix(w, own.value) }, "Replace"),
-              h("button", { title: "Known from now on, in every monster", onclick: async () => {
-                await addUserWord(w.word);
-                draw2();
-              } }, "Add to dictionary"),
-              h("button.link", { title: "Hide it until the app is closed", onclick: () => {
-                skipped.add(w.word.toLowerCase());
-                draw2();
-              } }, "Skip")
-            )
-          ),
-          isOpen ? h("div.spell-places", w.monsters.flatMap(({ m, places }) => places.map((p) => h(
-            "div.spell-place",
-            many || onOpen ? h("button.link", { onclick: () => {
-              close();
-              onOpen?.(m);
-            } }, m.name) : null,
-            h("span.muted", ` ${p.field}: `),
-            h("span", { html: `\u2026${esc(p.before)}<mark>${esc(w.word)}</mark>${esc(p.after)}\u2026` })
-          )))) : null
-        );
-      }),
-      list.length > shown3 ? h("button.load-more", { onclick: () => {
-        shown3 += 40;
-        draw2();
-      } }, `Show more (${list.length - shown3} left)`) : null
-    );
-  }
-  draw2();
-}
-
-// src/tabs/library.js
-init_constants();
-
-// src/monster-filter.js
-init_store();
-init_rules();
-var emptyFilter = () => ({ q: "", type: "", race: "", size: "", source: "", crMin: "0", crMax: "30" });
-var activeFilters = (f) => ["type", "race", "size", "source"].filter((k) => f[k]).length + (f.crMin !== "0" || f.crMax !== "30" ? 1 : 0);
-var titleCase2 = (s) => s.replace(/\b\w/g, (c2) => c2.toUpperCase());
-function raceOptions() {
-  const seen2 = /* @__PURE__ */ new Map();
-  for (const m of allMonsters()) for (const s of m.subtypes || []) {
-    const k = String(s).trim().toLowerCase();
-    if (k && !seen2.has(k)) seen2.set(k, titleCase2(k));
-  }
-  return [...seen2.entries()].sort((a2, b2) => a2[0].localeCompare(b2[0])).map(([value, label]) => ({ value, label }));
-}
-function matches(m, f) {
-  const q = f.q.trim().toLowerCase();
-  if (q && !m.name.toLowerCase().includes(q) && !(m.monsterType || "").toLowerCase().includes(q) && !(m.subtypes || []).some((s) => String(s).toLowerCase().includes(q))) return false;
-  if (f.type && m.monsterType !== f.type) return false;
-  if (f.race && !(m.subtypes || []).some((s) => String(s).trim().toLowerCase() === f.race)) return false;
-  if (f.size && m.size !== f.size) return false;
-  if (f.source && f.source === "homebrew" !== isHomebrew(m)) return false;
-  const c2 = crValue(m.challengeRating);
-  return c2 >= crValue(f.crMin) && c2 <= crValue(f.crMax);
-}
-
-// src/tabs/library.js
-init_rules();
-
-// src/tabs/loot-tables.js
-init_ui();
-init_store();
-init_constants();
 
 // src/loot-data.js
 var LOOT_LEVELS = {
@@ -63726,8 +62393,6 @@ function defaultLootThemes() {
 }
 
 // src/loot.js
-init_rules();
-init_dice();
 var LOOT_CONFIG = {
   gold: { base: 10, perXp: 200, power: 0.75 },
   // gold = base × (xp / perXp)^power × level step × generosity × spread
@@ -63750,7 +62415,9 @@ var LOOT_CONFIG = {
   harvestPicks: 2,
   // different harvestables per body at Standard
   rarityWeights: { Common: 60, Uncommon: 30, Rare: 8, "Very Rare": 2, Legendary: 1 },
-  consumableWeight: 3
+  consumableWeight: 3,
+  linkedWeight: 10
+  // an item that comes from a creature in the fight (item.creatures)
 };
 var RARITIES = ["Common", "Uncommon", "Rare", "Very Rare", "Legendary"];
 var RARITY_VALUE = { Common: 100, Uncommon: 400, Rare: 4e3, "Very Rare": 4e4, Legendary: 2e5 };
@@ -63766,18 +62433,25 @@ var lowerRarity = (a2, b2) => RARITIES[Math.min(RARITIES.indexOf(a2), RARITIES.i
 var rarityCap = (partyLevel, maxCr) => lowerRarity(band(PARTY_CAP, partyLevel), band(CR_CAP, crValue(maxCr)));
 var gearCap = (partyLevel, generosity) => band(LOOT_CONFIG.gearCaps, partyLevel) * generosity;
 function lootTables(defaults3, records = []) {
-  const mine = new Map(records.filter((r) => r.id !== TYPE_MAP_ID && r.id !== MONSTER_LOOT_ID).map((r) => [r.id, r]));
+  const mine2 = new Map(records.filter((r) => r.id !== TYPE_MAP_ID && r.id !== MONSTER_LOOT_ID).map((r) => [r.id, r]));
   const themes = [];
   for (const d of defaults3) {
-    const r = mine.get(d.id);
+    const r = mine2.get(d.id);
     if (r?.deleted) continue;
     themes.push(r ? { ...d, ...r, builtin: true } : d);
   }
-  for (const r of mine.values()) if (!r.deleted && !defaults3.some((d) => d.id === r.id)) themes.push({ ...r, builtin: false });
+  for (const r of mine2.values()) if (!r.deleted && !defaults3.some((d) => d.id === r.id)) themes.push({ ...r, builtin: false });
   const typeMap = { ...DEFAULT_TYPE_THEMES, ...records.find((r) => r.id === TYPE_MAP_ID)?.types || {} };
   return { themes, typeMap };
 }
 var words = (s) => String(s || "").toLowerCase().replace(/[’']/g, "").split(/[^a-z0-9]+/).filter(Boolean);
+function nameHas(name, phrase) {
+  const n = words(name), k = words(phrase);
+  if (!k.length) return false;
+  for (let i = 0; i + k.length <= n.length; i++) if (k.every((w, j) => n[i + j] === w || j === k.length - 1 && n[i + j] === `${w}s`)) return true;
+  return false;
+}
+var comesFrom = (item, names) => (item.creatures || []).some((c2) => names.some((n) => nameHas(n, c2)));
 function themeFor(m, { themes, typeMap }) {
   if (m.lootTheme) {
     const t2 = themes.find((x) => x.id === m.lootTheme);
@@ -63848,7 +62522,7 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
   const r = rng(seed);
   const gen = Math.min(GENEROSITY.max, Math.max(GENEROSITY.min, Number(settings3.generosity) || 1));
   const level = Math.min(20, Math.max(1, Math.round(Number(partyLevel) || 1)));
-  const cap2 = gearCap(level, gen);
+  const cap3 = gearCap(level, gen);
   const C2 = LOOT_CONFIG;
   let coins = 0;
   const lines = [], harvest = [], notes = [];
@@ -63857,7 +62531,7 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
     if (same) same.qty += x.qty;
     else list.push({ ...x });
   };
-  const pool = items.filter((x) => x.category !== "magic" && x.carried && C2.gearWeights[x.category] && x.price != null);
+  const pool = items.filter((x) => x.category !== "magic" && x.carried && x.loot !== false && C2.gearWeights[x.category] && x.price != null);
   for (const { monster: m, count } of enemies) {
     if (!m || !(count > 0)) continue;
     const setting = m.loot || "auto";
@@ -63880,10 +62554,10 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
           let it = null;
           if (carried.length && r() < C2.carriedShare) it = carried[Math.floor(r() * carried.length)];
           if (it) {
-            if (it.price > cap2) add2(lines, { kind: "gear", name: `${it.name} (damaged)`, qty: 1, value: round2(it.price * C2.damagedShare), damaged: true, scrap: true });
+            if (it.price > cap3) add2(lines, { kind: "gear", name: `${it.name} (damaged)`, qty: 1, value: round2(it.price * C2.damagedShare), damaged: true, scrap: true });
             else add2(lines, { kind: "gear", name: it.name, qty: 1, value: it.price });
           } else {
-            const ok = pool.filter((x) => x.price <= cap2 && (x.category !== "focus" || caster));
+            const ok = pool.filter((x) => x.price <= cap3 && (x.category !== "focus" || caster));
             const cat = pick3(r, Object.keys(C2.gearWeights).filter((c2) => ok.some((x) => x.category === c2)), (c2) => C2.gearWeights[c2]);
             const list = ok.filter((x) => x.category === cat);
             const got = list[Math.floor(r() * list.length)];
@@ -63925,11 +62599,12 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
     const maxCr = crs.reduce((a2, b2) => crValue(b2) > crValue(a2) ? b2 : a2, "0");
     const top = rarityCap(level, maxCr);
     const allowed = RARITIES.slice(0, RARITIES.indexOf(top) + 1);
-    const magic = items.filter((x) => x.category === "magic" && allowed.includes(x.rarity));
+    const magic = items.filter((x) => x.category === "magic" && x.loot !== false && allowed.includes(x.rarity));
+    const foes = enemies.filter((x) => x.monster).map((x) => x.monster.name);
     for (let n = 0; n < magicCount; n++) {
       const rarity = pick3(r, allowed, (x) => C2.rarityWeights[x] * (gen > 1 ? gen ** RARITIES.indexOf(x) : 1));
       const choices = [...magic.filter((x) => x.rarity === rarity), ...spells.length ? [{ scroll: true, rarity, consumable: true }] : []];
-      const it = pick3(r, choices, (x) => x.consumable ? C2.consumableWeight : 1);
+      const it = pick3(r, choices, (x) => (x.consumable ? C2.consumableWeight : 1) * (comesFrom(x, foes) ? C2.linkedWeight : 1));
       if (!it) continue;
       add2(lines, it.scroll ? spellScroll(r, rarity, spells) : magicLine(r, it, items));
     }
@@ -63950,7 +62625,7 @@ function spellScroll(r, rarity, spells) {
   return { kind: "magic", name: `Spell Scroll: ${s?.name || "unknown spell"} (${lvl ? `level ${lvl}` : "cantrip"})`, qty: 1, value: SCROLL_VALUE[lvl], rarity };
 }
 function magicLine(r, it, items) {
-  let value = RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1);
+  let value = Number(it.price) > 0 ? Number(it.price) : RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1);
   let name = it.name;
   const options = it.base ? baseOptions(it.base, items) : [];
   if (options.length) {
@@ -63992,6 +62667,1868 @@ function priceText(gp) {
   if (gp >= 1) return `${Number(gp.toFixed(2)).toLocaleString()} gp`;
   return coinText(Math.max(1, Math.round(gp * 100)));
 }
+
+// src/items.js
+var CATEGORY_LABELS = { weapon: "Weapon", armor: "Armor", shield: "Shield", ammo: "Ammunition", gear: "Adventuring gear", tool: "Tool", focus: "Spellcasting focus", magic: "Magic item" };
+var MAGIC_KINDS = { armor: "Armor", potion: "Potion", ring: "Ring", rod: "Rod", scroll: "Scroll", staff: "Staff", wand: "Wand", weapon: "Weapon", wondrous: "Wondrous Item" };
+var esc2 = (s) => String(s ?? "").replace(/[&<>"]/g, (c2) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c2]);
+var title = (s) => String(s || "").replace(/\b\w/g, (c2) => c2.toUpperCase());
+function itemValue(it) {
+  if (Number(it.price) > 0) return Number(it.price);
+  return it.rarity ? RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1) : null;
+}
+function itemTypeLine(it) {
+  if (it.category === "magic") {
+    return `${MAGIC_KINDS[it.magic] || "Wondrous Item"}${it.base ? ` (${it.base})` : ""}, ${it.rarity || "rarity unknown"}${it.attunement ? ` (${it.attunement})` : ""}`;
+  }
+  if (it.category === "weapon") return `${it.weapon?.simple ? "Simple" : "Martial"} ${it.weapon?.ranged ? "Ranged" : "Melee"} Weapon`;
+  if (it.category === "armor") return `${title(it.armor || "light")} Armor`;
+  return CATEGORY_LABELS[it.category] || "Item";
+}
+function itemHtml(it) {
+  const value = itemValue(it);
+  const stat = (label, v) => v ? `<div class="item-stat"><strong>${label}</strong> ${esc2(v)}</div>` : "";
+  return `<div class="cond-name">${esc2(it.name)}</div><div class="spell-meta">${esc2(itemTypeLine(it))}</div>` + stat(it.category === "magic" && !(Number(it.price) > 0) ? "Value (by rarity)" : "Cost", value != null ? `${priceText(value)}${it.bundle ? ` each (${it.bundle} to a bundle)` : ""}` : "") + stat("Armor Class", it.ac) + stat("Damage", it.damage) + stat("Properties", it.properties) + stat("Mastery", it.mastery) + stat("Strength", it.strength) + stat("Stealth", it.stealth) + stat("Weight", it.weight) + stat("Comes from", (it.creatures || []).join(", ")) + stat("Source", it.book) + (it.text ? `<div class="item-text">${glossify(condify(markupHtml(it.text)))}</div>` : "") + (it.loot === false ? '<div class="spell-tags">Never drops as loot</div>' : "");
+}
+var blankItem = (name = "New Item") => ({ name, category: "magic", magic: "wondrous", rarity: "Uncommon", price: null, consumable: false, carried: true, text: "", source: "Homebrew" });
+function itemEditor(it, { changed: changed3, redraw }) {
+  const set2 = (k, v) => {
+    if (v === "" || v == null) delete it[k];
+    else it[k] = v;
+    changed3();
+  };
+  const text = (label, k, attrs = {}) => h("label", label, h("input", { type: "text", value: it[k] ?? "", ...attrs, oninput: (e2) => set2(k, e2.target.value.trim() ? e2.target.value : "") }));
+  const select2 = (label, value, options, onchange, attrs = {}) => h("label", { ...attrs }, label, h(
+    "select",
+    { onchange: (e2) => onchange(e2.target.value) },
+    options.map(([v, t]) => h("option", { value: v, selected: String(value ?? "") === String(v) }, t))
+  ));
+  const check = (label, on, onchange, title2) => h("label.check-row", { title: title2 }, h("input", { type: "checkbox", checked: on, onchange: (e2) => onchange(e2.target.checked) }), label);
+  const magic = it.category === "magic";
+  return h(
+    "div.item-editor",
+    h(
+      "div.form-grid",
+      h("label", "Name", h("input", { type: "text", value: it.name, oninput: (e2) => {
+        it.name = e2.target.value;
+        changed3({ renamed: true });
+      } })),
+      select2("Category", it.category, ITEM_CATEGORIES.map((c2) => [c2, CATEGORY_LABELS[c2]]), (v) => {
+        it.category = v;
+        if (v === "magic") {
+          it.magic ??= "wondrous";
+          it.rarity ??= "Uncommon";
+        }
+        if (v === "weapon") it.weapon ??= { simple: true, ranged: false };
+        if (v === "armor") it.armor ??= "light";
+        changed3();
+        redraw();
+      }),
+      magic ? select2("Kind", it.magic, Object.entries(MAGIC_KINDS), (v) => {
+        it.magic = v;
+        it.consumable = v === "potion" || v === "scroll";
+        changed3();
+        redraw();
+      }) : null,
+      magic ? select2("Rarity", it.rarity, RARITIES.map((r) => [r, r]), (v) => {
+        it.rarity = v;
+        changed3();
+        redraw();
+      }) : null,
+      magic ? text("Attunement", "attunement", { placeholder: "e.g. Requires Attunement by a Wizard (blank = none)" }) : null,
+      magic && (it.magic === "weapon" || it.magic === "armor") ? text(`Made from (${it.magic})`, "base", { placeholder: it.magic === "weapon" ? "Longsword, or Any Simple or Martial" : "Chain Mail, or Any Light, Medium, or Heavy", title: "The loot generator picks one of these and adds its cost" }) : null,
+      h(
+        "label",
+        { title: magic ? `Blank = by rarity (${priceText(RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1))})` : "In gp: 0.1 = 1 sp, 0.01 = 1 cp" },
+        magic ? "Value (gp)" : "Cost (gp)",
+        h("input", { type: "number", min: 0, step: "any", value: it.price ?? "", placeholder: magic ? `by rarity: ${RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1)}` : "", oninput: (e2) => set2("price", e2.target.value === "" ? "" : Math.max(0, Number(e2.target.value) || 0)) })
+      ),
+      it.category === "weapon" ? select2(
+        "Weapon",
+        `${it.weapon?.simple ? "simple" : "martial"}-${it.weapon?.ranged ? "ranged" : "melee"}`,
+        [["simple-melee", "Simple melee"], ["simple-ranged", "Simple ranged"], ["martial-melee", "Martial melee"], ["martial-ranged", "Martial ranged"]],
+        (v) => {
+          it.weapon = { simple: v.startsWith("simple"), ranged: v.endsWith("ranged") };
+          changed3();
+        }
+      ) : null,
+      it.category === "weapon" ? text("Damage", "damage", { placeholder: "1d8 Slashing" }) : null,
+      it.category === "weapon" ? text("Properties", "properties", { placeholder: "Versatile (1d10)" }) : null,
+      it.category === "weapon" ? text("Mastery", "mastery", { placeholder: "Sap" }) : null,
+      it.category === "armor" ? select2("Armor", it.armor, [["light", "Light"], ["medium", "Medium"], ["heavy", "Heavy"]], (v) => {
+        it.armor = v;
+        changed3();
+      }) : null,
+      it.category === "armor" || it.category === "shield" ? text("Armor Class", "ac", { placeholder: it.category === "shield" ? "+2" : "14 + Dex modifier (max 2)" }) : null,
+      it.category === "ammo" ? h("label", "Bundle size", h("input", { type: "number", min: 1, value: it.bundle ?? "", placeholder: "20", oninput: (e2) => set2("bundle", Math.max(1, Number(e2.target.value) || 0) || "") })) : null,
+      text("Weight", "weight", { placeholder: "3 lb." }),
+      h(
+        "label",
+        { title: "Creatures it is made from or carried by. When they are in a fight, Loot picks this item ten times as often for its magic items." },
+        "Comes from (creatures)",
+        h("input", { type: "text", value: (it.creatures || []).join(", "), placeholder: "e.g. Cloud Shark, Exonid", onchange: (e2) => {
+          const list = e2.target.value.split(",").map((x) => x.trim()).filter(Boolean);
+          if (list.length) it.creatures = list;
+          else delete it.creatures;
+          changed3();
+        } })
+      ),
+      text("Source (book)", "book", { placeholder: "e.g. the book it came from" })
+    ),
+    h(
+      "div.row-gap.item-checks",
+      check("Can drop as loot", it.loot !== false, (on) => {
+        if (on) delete it.loot;
+        else it.loot = false;
+        changed3();
+      }, "Off: the loot generator never picks it"),
+      check("Used up when used (potion, scroll, ammunition)", !!it.consumable, (on) => {
+        it.consumable = on;
+        changed3();
+        redraw();
+      }),
+      !magic ? check("Small enough to carry on a body", it.carried !== false, (on) => {
+        it.carried = on;
+        changed3();
+      }, "Off: barrels, chests, ladders\u2026 never drop as random gear") : null
+    ),
+    h("label", "Description", h("textarea.item-desc", { rows: 10, value: it.text || "", oninput: (e2) => {
+      it.text = e2.target.value;
+      changed3();
+    } })),
+    h("div.hint", 'A blank line starts a new paragraph. **bold**, *italic*, "| a | b |" rows for a table.')
+  );
+}
+
+// src/tabs/maker.js
+init_constants();
+init_ui();
+
+// src/statblock.js
+init_ui();
+init_conditions();
+init_spells();
+
+// src/groups.js
+var isGroup = (c2) => Array.isArray(c2?.members);
+var standing = (c2) => c2.members.filter((m) => m.hp > 0);
+var groupOut = (c2) => !c2.members.some((m) => m.hp > 0);
+var hurtFirst = (c2) => standing(c2).sort((a2, b2) => a2.hp - b2.hp);
+function makeGroup(base, count, minion) {
+  return { ...base, group: minion ? "minion" : "pack", members: Array.from({ length: count }, () => ({ hp: base.maxHp ?? 1, conditions: [] })), conditions: [] };
+}
+function down(member2) {
+  member2.hp = 0;
+  member2.conditions = [];
+}
+function killMinions(c2, n) {
+  const list = standing(c2).slice(0, Math.max(0, n));
+  list.forEach(down);
+  return list.length;
+}
+function minionOtherDamage(c2, damage, n) {
+  return damage >= (c2.maxHp ?? 1) ? killMinions(c2, n) : 0;
+}
+function damagePack(c2, damage) {
+  let left = Math.max(0, Math.round(damage));
+  const absorbed = Math.min(c2.tempHp || 0, left);
+  c2.tempHp = (c2.tempHp || 0) - absorbed;
+  if (!c2.tempHp) delete c2.tempHp;
+  left -= absorbed;
+  let killed = 0;
+  for (const m of hurtFirst(c2)) {
+    if (left <= 0) break;
+    const take = Math.min(m.hp, left);
+    m.hp -= take;
+    left -= take;
+    if (m.hp <= 0) {
+      down(m);
+      killed++;
+    }
+  }
+  return { killed, absorbed };
+}
+function damageEach(c2, damage, n) {
+  let killed = 0;
+  for (const m of hurtFirst(c2).slice(0, Math.max(0, n))) {
+    m.hp = Math.max(0, m.hp - Math.max(0, Math.round(damage)));
+    if (m.hp <= 0) {
+      down(m);
+      killed++;
+    }
+  }
+  return killed;
+}
+function healPack(c2, amount) {
+  let left = Math.max(0, Math.round(amount));
+  for (const m of hurtFirst(c2)) {
+    if (left <= 0) break;
+    const take = Math.min((c2.maxHp ?? m.hp) - m.hp, left);
+    m.hp += take;
+    left -= take;
+  }
+}
+function revive(c2, hp) {
+  const m = c2.members.find((x) => x.hp <= 0);
+  if (!m) return false;
+  m.hp = c2.group === "minion" ? c2.maxHp ?? 1 : Math.max(1, Math.min(c2.maxHp ?? 1, hp ?? 1));
+  return true;
+}
+var totalHp = (c2) => c2.members.reduce((n, m) => n + Math.max(0, m.hp), 0);
+function splitOff(c2, n, key2, name) {
+  const moving = standing(c2).slice(-Math.max(1, Math.min(n, standing(c2).length - 1)));
+  c2.members = c2.members.filter((m) => !moving.includes(m));
+  return { ...structuredClone({ ...c2, members: [] }), key: key2, name, members: moving };
+}
+function mergeInto(c2, others) {
+  for (const o of others) {
+    if (isGroup(o)) c2.members.push(...o.members);
+    else {
+      const m = { hp: c2.group === "minion" ? (o.hp ?? 1) > 0 ? c2.maxHp ?? 1 : 0 : Math.max(0, o.hp ?? c2.maxHp ?? 1), conditions: [...o.conditions || []] };
+      if (o.tokens?.[0]) m.token = o.tokens[0];
+      c2.members.push(m);
+    }
+  }
+}
+function groupAttackOf(text) {
+  const t = String(text || "").replace(/<[^>]+>/g, "").replace(/[−–]/g, "-");
+  const bonus = t.match(/Attack Roll:\s*([+-]\s?\d+)/i)?.[1] || t.match(/([+-]\s?\d+)\s+to hit/i)?.[1] || null;
+  const hit = t.match(/Hit:\s*(\d+)\s*(?:\(([^)]*)\))?\s*([a-z]+)?\s*damage/i);
+  return { bonus: bonus && bonus.replace(/\s/g, ""), damage: hit ? Number(hit[1]) : null, dice: hit?.[2] || null, type: hit?.[3] || "" };
+}
+var isGroupAttack = (name) => /\(\s*Group Attack\s*\)/i.test(String(name || ""));
+
+// src/combat.js
+init_format();
+init_rules();
+var LEGENDARY_KEY = "legendaryActions:uses";
+function rechargeOf(name) {
+  const n = String(name || "");
+  const x = n.match(/\(\s*Recharge\s*(\d)(?:\s*[–-]\s*6)?/i) || n.match(/\(\s*R\s*(\d)\s*[–-]\s*6/);
+  if (x) return { min: Number(x[1]) };
+  return /\(\s*Recharges?\s+(?:after|when|on)/i.test(n) ? { min: 0 } : null;
+}
+function partyCombatant(ch) {
+  const live2 = ch.live || {};
+  const c2 = {
+    key: `pc-${ch.id}`,
+    kind: "pc",
+    refId: ch.id,
+    name: ch.name,
+    ac: ch.armorClass ?? null,
+    hp: live2.hp ?? (ch.maxHp || null),
+    maxHp: ch.maxHp || null,
+    initBonus: Number(ch.initiativeBonus) || 0,
+    init: null,
+    conditions: [...live2.conditions || []]
+  };
+  if (live2.tempHp) c2.tempHp = live2.tempHp;
+  if (live2.tokens?.length) c2.tokens = [...live2.tokens];
+  return c2;
+}
+function liveOf(c2) {
+  const live2 = { hp: c2.hp ?? null, conditions: [...c2.conditions || []] };
+  if (c2.tempHp) live2.tempHp = c2.tempHp;
+  if (c2.tokens?.length) live2.tokens = [...c2.tokens];
+  return live2;
+}
+var sameLive = (a2 = {}, b2 = {}) => (a2.hp ?? null) === (b2.hp ?? null) && (a2.tempHp || 0) === (b2.tempHp || 0) && JSON.stringify(a2.conditions || []) === JSON.stringify(b2.conditions || []) && JSON.stringify(a2.tokens || []) === JSON.stringify(b2.tokens || []);
+var LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+function setupCombat(e2, { character, monster, asGroup }) {
+  const list = [];
+  for (const c2 of (e2.characterIds || []).map(character).filter(Boolean)) list.push(partyCombatant(c2));
+  for (let i = 0; i < (e2.extraPlayers?.count || 0); i++) {
+    list.push({ key: `player-${i}`, kind: "pc", name: `Player ${i + 1}`, ac: null, hp: null, maxHp: null, initBonus: 0, init: null, conditions: [] });
+  }
+  const entries = (e2.groups || []).map((g, gi) => ({ g, gi, m: monster(g.monsterId) }));
+  for (const x of entries) x.group = !!x.m && asGroup(x.g);
+  const groupsOf = (id) => entries.filter((x) => x.group && x.g.monsterId === id);
+  const singlesOf = (id) => entries.filter((x) => !x.group && x.g.monsterId === id).reduce((n, x) => n + x.g.count, 0);
+  const lettered = /* @__PURE__ */ new Map();
+  for (const { g, gi, m, group } of entries) {
+    if (group) {
+      const mine2 = groupsOf(g.monsterId);
+      list.push(makeGroup({
+        key: `g-${g.monsterId}-${gi}`,
+        kind: "monster",
+        refId: g.monsterId,
+        name: mine2.length > 1 ? `${m.name} (${mine2.findIndex((x) => x.gi === gi) + 1})` : m.name,
+        ac: m.armorClass ?? null,
+        maxHp: m.averageHitPoints ?? 1,
+        initBonus: initBonus(m),
+        init: null
+      }, g.count, isMinion(m)));
+      continue;
+    }
+    const total = singlesOf(g.monsterId);
+    for (let k = 0; k < g.count; k++) {
+      const i = lettered.get(g.monsterId) || 0;
+      lettered.set(g.monsterId, i + 1);
+      list.push({
+        key: `m-${g.monsterId}-${i}`,
+        kind: "monster",
+        refId: g.monsterId,
+        name: total > 1 ? `${m?.name || g.name} (${LETTERS[i % 26]}${i >= 26 ? Math.floor(i / 26) + 1 : ""})` : m?.name || g.name,
+        ac: m?.armorClass ?? null,
+        hp: m?.averageHitPoints ?? null,
+        maxHp: m?.averageHitPoints ?? null,
+        initBonus: m ? initBonus(m) : 0,
+        init: null,
+        conditions: []
+      });
+    }
+  }
+  return { phase: "setup", round: 1, turnKey: null, selectedKey: list.find((c2) => c2.kind === "monster")?.key || null, combatants: list };
+}
+function splitEntry(groups, i, n) {
+  const g = groups[i];
+  n = Math.round(Number(n));
+  if (!g || !(n >= 1 && n < g.count)) return false;
+  g.count -= n;
+  groups.splice(i + 1, 0, { ...structuredClone(g), count: n });
+  return true;
+}
+function mergeEntries(groups, i) {
+  const g = groups[i];
+  if (!g) return false;
+  const others = groups.filter((x) => x !== g && x.monsterId === g.monsterId);
+  if (!others.length) return false;
+  g.count += others.reduce((n, x) => n + x.count, 0);
+  for (const x of others) groups.splice(groups.indexOf(x), 1);
+  return true;
+}
+function ordered(s) {
+  return [...s.combatants].sort((a2, b2) => (b2.init ?? -99) - (a2.init ?? -99) || (b2.initBonus || 0) - (a2.initBonus || 0) || (a2.kind === "pc" ? -1 : 0) - (b2.kind === "pc" ? -1 : 0) || a2.name.localeCompare(b2.name, void 0, { numeric: true }));
+}
+var isOut = (c2) => c2.kind === "monster" && (isGroup(c2) ? groupOut(c2) : c2.hp != null && c2.hp <= 0);
+function startCombat(s, rollInit2) {
+  for (const c2 of s.combatants) if (c2.init == null) c2.init = rollInit2(c2);
+  s.phase = "active";
+  s.round = 1;
+  const first = ordered(s)[0];
+  s.turnKey = first?.key || null;
+  if (first?.kind === "monster") s.selectedKey = first.key;
+}
+function nextTurn(s) {
+  const o = ordered(s);
+  if (!o.length) return null;
+  let i = o.findIndex((c2) => c2.key === s.turnKey);
+  for (let step = 0; step < o.length; step++) {
+    i++;
+    if (i >= o.length) {
+      i = 0;
+      s.round++;
+    }
+    if (!isOut(o[i])) break;
+  }
+  s.turnKey = o[i].key;
+  if (o[i].kind === "monster") s.selectedKey = o[i].key;
+  return s.combatants.find((c2) => c2.key === s.turnKey);
+}
+function removeCombatant(s, key2) {
+  if (s.turnKey === key2) {
+    const o = ordered(s).filter((c2) => c2.key !== key2);
+    const at2 = ordered(s).findIndex((c2) => c2.key === key2);
+    s.turnKey = o.length ? o[at2 % o.length].key : null;
+  }
+  if (s.selectedKey === key2) s.selectedKey = null;
+  s.combatants = s.combatants.filter((c2) => c2.key !== key2);
+}
+function startOfTurn(c2, m, roll3) {
+  if (c2?.kind !== "monster" || !m) return;
+  if (c2.used?.[`${LEGENDARY_KEY}:0`]) c2.used[`${LEGENDARY_KEY}:0`] = 0;
+  for (const [k, used] of Object.entries(c2.recharge || {})) {
+    if (!used) continue;
+    const [section, i] = k.split(":");
+    const e2 = (m[section] || [])[Number(i)], rc = e2 && rechargeOf(e2.name);
+    if (!rc?.min) continue;
+    const r = roll3("1d6", `Recharge: ${e2.name.replace(/\s*\(.*$/, "")}`);
+    if (r && r.total >= rc.min) c2.recharge[k] = false;
+  }
+}
+function applyHp(y, mode3, n) {
+  const cur = y.hp ?? y.maxHp ?? 0;
+  if (mode3 === "damage") {
+    const absorbed = Math.min(y.tempHp || 0, Math.max(0, n));
+    y.tempHp = (y.tempHp || 0) - absorbed;
+    y.hp = Math.max(0, cur - (n - absorbed));
+  } else if (mode3 === "heal") y.hp = y.maxHp != null ? Math.min(y.maxHp, cur + n) : cur + n;
+  else if (mode3 === "set") y.hp = Math.max(0, n);
+  else if (mode3 === "max") {
+    y.maxHp = Math.max(1, n);
+    y.hp ??= y.maxHp;
+  } else if (mode3 === "temp") y.tempHp = Math.max(0, Math.round(n));
+  if (!y.tempHp) delete y.tempHp;
+}
+var DEAD = "Dead";
+var UNCONSCIOUS = "Unconscious";
+var down2 = (hp) => hp != null && hp <= 0;
+function settleDown(c2) {
+  if (c2.kind !== "monster") return;
+  if (isGroup(c2)) {
+    for (const m of c2.members) if (m.hp <= 0 && m.conditions.length) m.conditions = [];
+    if (groupOut(c2) && c2.conditions?.length) c2.conditions = [];
+  } else if (down2(c2.hp) && c2.conditions?.length) c2.conditions = [];
+}
+function rowMarks(c2) {
+  const conds = c2.conditions || [];
+  if (c2.kind === "monster") return (isGroup(c2) ? groupOut(c2) : down2(c2.hp)) ? [DEAD] : [...conds];
+  return down2(c2.hp) && !conds.includes(UNCONSCIOUS) ? [...conds, UNCONSCIOUS] : [...conds];
+}
+function tokenMarks(c2) {
+  if (!isGroup(c2)) {
+    const marks = rowMarks(c2);
+    return tokensOf(c2).map((token) => ({ token, marks }));
+  }
+  return c2.members.filter((m) => m.token).map((m) => ({
+    token: m.token,
+    marks: m.hp <= 0 ? [DEAD] : [.../* @__PURE__ */ new Set([...c2.conditions || [], ...m.conditions])]
+  }));
+}
+var tokensOf = (c2) => isGroup(c2) ? c2.members.map((m) => m.token).filter(Boolean) : (c2.tokens || []).filter(Boolean);
+var tokenName = (c2, i = -1) => i >= 0 ? `${c2.name} ${i + 1}` : c2.name;
+function linkPlan(c2) {
+  if (!isGroup(c2)) return [{ member: -1, name: tokenName(c2) }];
+  const open2 = c2.members.map((m, i) => i).filter((i) => !c2.members[i].token);
+  return (open2.length ? open2 : c2.members.map((m, i) => i)).map((i) => ({ member: i, name: tokenName(c2, i) }));
+}
+function linkToken(s, key2, member2, id) {
+  for (const x of s.combatants) {
+    if (isGroup(x)) {
+      for (const m of x.members) if (m.token === id) delete m.token;
+    } else if (x.tokens?.includes(id)) x.tokens = x.tokens.filter((t) => t !== id);
+  }
+  const c2 = s.combatants.find((x) => x.key === key2);
+  if (!c2) return false;
+  if (isGroup(c2)) {
+    if (!c2.members[member2]) return false;
+    c2.members[member2].token = id;
+  } else c2.tokens = [id];
+  return true;
+}
+function unlinkTokens(s, key2) {
+  const c2 = s.combatants.find((x) => x.key === key2);
+  if (!c2) return [];
+  const ids = tokensOf(c2);
+  if (isGroup(c2)) for (const m of c2.members) delete m.token;
+  else delete c2.tokens;
+  return ids;
+}
+var tokenRenames = (c2) => isGroup(c2) ? c2.members.map((m, i) => m.token ? { id: m.token, name: tokenName(c2, i) } : null).filter(Boolean) : tokensOf(c2).map((id) => ({ id, name: c2.name }));
+var concentrationDc = (damage) => Math.min(30, Math.max(10, Math.floor(damage / 2)));
+function conSave(c2, m, pc) {
+  if (c2.kind === "monster") {
+    if (!m) return null;
+    return m.savingThrows?.find((s) => s.ability === "CON")?.bonus ?? Math.floor(((m.abilities?.constitution ?? 10) - 10) / 2);
+  }
+  return pc?.sheet?.saves?.find((s) => s.ability === "CON")?.bonus ?? null;
+}
+
+// src/statblock.js
+init_dice();
+init_constants();
+init_format();
+var ROLLABLE = /([+\-−–]\s?\d+)(?=\s+to hit)|\b(\d+d\d+(?:\s*[+\-−–]\s*\d+)?)/g;
+function rollify(html, label, who) {
+  html = html.replace(/(Attack Roll:\s*(?:<\/em>)?\s*)([+\-−–]\s?\d+)/g, (m, lead, bonus) => {
+    const b2 = bonus.replace(/\s/g, "").replace(/[−–]/, "-");
+    return lead + rollButton(b2, `1d20${b2}`, `${label}: to hit`, who);
+  });
+  return html.replace(/(^|>)([^<]+)/g, (all, gt, text) => gt + text.replace(ROLLABLE, (m, hit, dice2) => {
+    if (hit) return rollButton(hit.replace(/\s/g, ""), `1d20${hit.replace(/[\s−–]/g, (c2) => c2.trim() ? "-" : "")}`, `${label}: to hit`, who);
+    return rollButton(dice2, dice2.replace(/[−–]/g, "-"), `${label}: damage`, who);
+  }));
+}
+var WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5 };
+function legendaryUses(m) {
+  const text = (m.legendaryActions || []).map((e2) => e2.text).join(" ").replace(/<[^>]+>/g, "");
+  const x = text.match(/Legendary Action Uses:\s*(\d+)/i) || text.match(/can take (\w+) legendary actions?/i);
+  return x ? Number(x[1]) || WORDS[x[1].toLowerCase()] || 0 : 0;
+}
+function slotsOf(e2) {
+  if (e2.slots?.length) return e2.slots;
+  const d = String(e2.name || "").match(/\b(\d{1,2})\s*\/\s*Day\b/i);
+  return d ? [{ label: "", count: Math.min(10, Number(d[1])) }] : [];
+}
+function entryList(entries, who, section, tracker, recharge, group) {
+  return (entries || []).map((e2, i) => {
+    const key2 = `${section}:${i}`;
+    const rc = recharge && rechargeOf(e2.name);
+    const chip = (rc ? rechargeChip(key2, recharge.get(key2), rc) : "") + (group && isGroupAttack(e2.name) ? `<button class="sb-group-atk" data-gk="${key2}" title="One attack roll for the group; the damage is multiplied by how many join in">Group attack</button>` : "");
+    const name = e2.name ? `<strong><em>${esc(e2.name)}.</em></strong> ${chip}` : "";
+    return `<p>${name}${glossify(condify(spellify(rollify(richText(e2.text), e2.name || "Roll", who))))}</p>${boxRows({ ...e2, slots: slotsOf(e2) }, key2, tracker)}`;
+  }).join("");
+}
+var rechargeChip = (key2, used, rc) => `<button class="sb-recharge${used ? " used" : ""}" data-rk="${key2}" title="${used ? `Used. ${rc.min ? `It recharges on a ${rc.min === 6 ? "6" : `${rc.min}\u20136`}, rolled at the start of its turn. ` : ""}Click when it's available again.` : "Available. Click when it is used."}">${used ? "Used" : "Ready"}</button>`;
+function boxRows(e2, key2, tracker) {
+  if (!e2.slots?.length) return "";
+  const rows = e2.slots.map((row2, r) => {
+    const k = `${key2}:${r}`, used = tracker.get(k);
+    const boxes = Array.from({ length: Math.min(60, row2.count | 0) }, (_, b2) => `<button class="sb-box${b2 < used ? " on" : ""}" data-k="${k}" data-i="${b2}" title="${b2 < used ? "Used: click to get it back" : "Click when used"}" aria-pressed="${b2 < used}"></button>`).join("");
+    return `<div class="sb-box-row">${row2.label ? `<span class="sb-box-label">${esc(row2.label)}.</span>` : ""}<span class="sb-boxes">${boxes}</span></div>`;
+  }).join("");
+  const any = e2.slots.some((_, r) => tracker.get(`${key2}:${r}`) > 0);
+  return `<div class="sb-tracker" data-key="${key2}">${rows}${any ? `<button class="link sb-box-reset" data-reset="${key2}" data-rows="${e2.slots.length}">Reset</button>` : ""}</div>`;
+}
+var sessionTicks = /* @__PURE__ */ new Map();
+var sessionTracker = (id) => ({
+  get: (k) => sessionTicks.get(`${id}|${k}`) || 0,
+  set: (k, n) => sessionTicks.set(`${id}|${k}`, n)
+});
+function statBlock(m, opts2 = {}) {
+  const who = opts2.who || m.name;
+  const tracker = opts2.tracker || sessionTracker(m.id || m.name);
+  const recharge = opts2.recharge || null;
+  const group = opts2.group || null;
+  const legUses = legendaryUses(m);
+  const legEntry = { slots: [{ label: "Uses", count: legUses }] };
+  const entryFor = (k) => k === LEGENDARY_KEY ? legEntry : (() => {
+    const [s, i] = k.split(":");
+    const e2 = (m[s] || [])[Number(i)];
+    return e2 && { ...e2, slots: slotsOf(e2) };
+  })();
+  const prop = (label, value) => value ? `<div class="sb-prop"><span class="sb-label">${label}</span> ${value}</div>` : "";
+  const linkedList = (text, rx) => esc(text).replace(rx, (x, name, bonus) => `${name} ${rollButton(bonus, `1d20${bonus}`, `${name.trim()} ${rx === SAVE_RX ? "save" : "check"}`, who)}`);
+  const abil = ABILITIES.map((a2, i) => {
+    const s = m.abilities?.[a2] ?? 10;
+    return `<div class="sb-abil"><div class="sb-abil-name">${ABBR[i]}</div><div>${s}</div>${rollButton(`(${signed(mod(s))})`, `1d20${signed(mod(s))}`, `${ABBR[i]} check`, who)}</div>`;
+  }).join("");
+  const sections = [
+    ["Actions", m.actions, "actions"],
+    ["Bonus Actions", m.bonusActions, "bonusActions"],
+    ["Reactions", m.reactions, "reactions"],
+    ["Legendary Actions", m.legendaryActions, "legendaryActions"],
+    ["Mythic Actions", m.mythicActions, "mythicActions"],
+    ["Lair Actions", m.lairActions, "lairActions"]
+  ].filter(([, list]) => list?.length);
+  const html = `
+    <div class="sb-name">${esc(m.name)}</div>
+    <div class="sb-meta">${esc(typeLine(m))}</div>
+    <div class="sb-bar"></div>
+    ${prop("Armor Class", `${m.armorClass}${m.armorClassType ? ` (${esc(m.armorClassType)})` : ""}`)}
+    ${m.initiativeBonus !== "" && m.initiativeBonus != null ? prop("Initiative", rollButton(signed(initBonus(m)), `1d20${signed(initBonus(m))}`, "Initiative", who)) : ""}
+    ${prop("Hit Points", m.hpText ? esc(m.hpText) : `${m.averageHitPoints} ${rollButton(`(${hpFormula(m)})`, hpDice(m), "Hit points", who)}`)}
+    ${prop("Speed", esc(speedText(m)))}
+    <div class="sb-bar"></div>
+    <div class="sb-abils">${abil}</div>
+    <div class="sb-bar"></div>
+    ${prop("Saving Throws", linkedList(savesText(m), SAVE_RX))}
+    ${prop("Skills", linkedList(skillsTextOf(m), SKILL_RX))}
+    ${prop("Damage Vulnerabilities", esc(listText(m.damageVulnerabilities)))}
+    ${prop("Damage Resistances", esc(listText(m.damageResistances)))}
+    ${prop("Damage Immunities", esc(listText(m.damageImmunities)))}
+    ${prop("Condition Immunities", condify(esc(listText(m.conditionImmunities))))}
+    ${prop("Senses", esc([sensesText(m), `passive Perception ${m.passivePerception ?? 10}`].filter(Boolean).join(", ")))}
+    ${prop("Languages", esc(languagesText(m)))}
+    ${(m.notes || []).map((n) => prop(esc(n.name), esc(n.text))).join("")}
+    ${m.crText ? prop("Challenge", esc(m.crText)) : `<div class="sb-row">${prop("Challenge", esc(crXpText(m)))}${prop("Proficiency Bonus", pbText(m))}</div>`}
+    ${m.traits?.length ? `<div class="sb-bar"></div><div class="sb-entries">${entryList(m.traits, who, "traits", tracker, recharge, group)}</div>` : ""}
+    ${sections.map(([title2, list, key2]) => `<div class="sb-section">${title2}</div>${key2 === "legendaryActions" && legUses ? boxRows(legEntry, LEGENDARY_KEY, tracker) : ""}<div class="sb-entries">${entryList(list, who, key2, tracker, recharge, group)}</div>`).join("")}
+    ${m.description?.length && opts2.description !== false ? `<div class="sb-section">Description</div><div class="sb-entries sb-desc">${entryList(m.description, who, "description", tracker)}</div>` : ""}
+    ${m.source && m.source !== "Homebrew" ? `<div class="sb-source">Source: ${esc(m.source)}</div>` : ""}`;
+  const el11 = h("div.statblock", { html });
+  el11.addEventListener("click", (e2) => {
+    const atk = e2.target.closest(".sb-group-atk");
+    if (atk && group) {
+      e2.preventDefault();
+      group.attack(entryFor(atk.dataset.gk));
+      return;
+    }
+    const chip = e2.target.closest(".sb-recharge");
+    if (chip && recharge) {
+      e2.preventDefault();
+      const k2 = chip.dataset.rk, used = !recharge.get(k2);
+      recharge.set(k2, used);
+      chip.outerHTML = rechargeChip(k2, used, rechargeOf(entryFor(k2)?.name));
+      return;
+    }
+    const box = e2.target.closest(".sb-box"), reset2 = e2.target.closest(".sb-box-reset");
+    if (!box && !reset2) return;
+    e2.preventDefault();
+    if (reset2) {
+      for (let r = 0; r < Number(reset2.dataset.rows); r++) tracker.set(`${reset2.dataset.reset}:${r}`, 0);
+    } else {
+      const i = Number(box.dataset.i), used = tracker.get(box.dataset.k);
+      tracker.set(box.dataset.k, i < used ? i : i + 1);
+    }
+    const k = (box || reset2).closest(".sb-tracker").dataset.key;
+    (box || reset2).closest(".sb-tracker").outerHTML = boxRows(entryFor(k), k, tracker);
+  });
+  return el11;
+}
+var SAVE_RX = /(\b(?:Str|Dex|Con|Int|Wis|Cha)\w*)\s([+\-]\d+)/g;
+var SKILL_RX = /([A-Z][A-Za-z' ]+?)\s([+\-]\d+)/g;
+var skillsTextOf = (m) => (m.skills || []).map((s) => `${s.skill} ${signed(s.bonus)}`).join(", ");
+
+// src/tabs/maker.js
+init_store();
+var MAX_SIDE = 3e3;
+var state = { images: [], avatar: null, monster: null, unsure: /* @__PURE__ */ new Set(), item: null };
+var mode2 = "monster";
+try {
+  if (localStorage.getItem("makerMode") === "item") mode2 = "item";
+} catch {
+}
+var el;
+var go;
+var readAsDataUrl = (blob) => new Promise((res, rej) => {
+  const r = new FileReader();
+  r.onload = () => res(r.result);
+  r.onerror = rej;
+  r.readAsDataURL(blob);
+});
+async function normalize2(blob) {
+  const bitmap = await createImageBitmap(blob);
+  const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+  if (scale === 1) return readAsDataUrl(blob);
+  const canvas = new OffscreenCanvas(Math.round(bitmap.width * scale), Math.round(bitmap.height * scale));
+  canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  return readAsDataUrl(await canvas.convertToBlob({ type: "image/png" }));
+}
+var $ = (sel) => el.querySelector(sel);
+function status2(sel, text, cls = "") {
+  const s = $(sel);
+  s.hidden = !text;
+  s.textContent = text || "";
+  s.className = `status ${cls}`;
+}
+function mountMaker(root, navigate) {
+  el = root;
+  go = navigate;
+  el.append(
+    h(
+      "div.page-head.view-head",
+      h("div", h("h1", "Maker"), h("div.page-sub#mk-sub")),
+      h("div.view-switch", h("button#mk-mode-monster", { onclick: () => setMode("monster") }, "Monster"), h("button#mk-mode-item", { onclick: () => setMode("item") }, "Item"))
+    ),
+    h(
+      "div.maker-grid",
+      h(
+        "div.card.maker-input",
+        h("h2", h("span.step", "1"), h("span#mk-step1", " Stat block")),
+        h(
+          "div.drop#mk-drop",
+          { tabindex: 0 },
+          h("strong", "Paste a screenshot or image link (Ctrl+V)"),
+          h("br"),
+          "or drop one (from your computer or a web page) / ",
+          h("label.link", "choose image files", h("input#mk-file", { type: "file", accept: "image/*", multiple: true, hidden: true })),
+          h("div.hint#mk-drop-hint", "Bigger screenshots read better. A long stat block can be several screenshots, in order.")
+        ),
+        h("div.thumbs#mk-thumbs"),
+        h("button.primary#mk-ocr", { hidden: true }, "Read screenshot"),
+        h("div.status#mk-ocr-status", { hidden: true }),
+        h("label#mk-text-label", "Stat block text", h("textarea#mk-text", { rows: 12, spellcheck: false, placeholder: "\u2026or paste the text here (copied from a PDF or web page). Text read from a screenshot also appears here, so you can fix mistakes before reading it." })),
+        h("button.primary#mk-parse", "Read text"),
+        h("div.status#mk-parse-status", { hidden: true }),
+        h("details#mk-art", h("summary", "Token art (optional)"), h("div#mk-avatar"))
+      ),
+      h(
+        "div.card.maker-review#mk-review",
+        { hidden: true },
+        h("div.review-head", h("h2", h("span.step", "2"), " Review"), h(
+          "div.review-actions",
+          h("button#mk-edit", "Edit in Creatures"),
+          h("button#mk-new", "New monster")
+        )),
+        h("div.status.ok#mk-saved", { hidden: true }),
+        h(
+          "div.quick",
+          h("label", "Name", h("input#mk-name", { type: "text" })),
+          h("div.abil#mk-abil"),
+          h("div.hint#mk-abil-hint", "Compare the six scores with the stat block: the small numbers in the table are the hardest part to read. Highlighted ones are the least certain.")
+        ),
+        h("ul.warnings#mk-warnings"),
+        h("div#mk-preview")
+      ),
+      h(
+        "div.card.maker-review#mk-item-review",
+        { hidden: true },
+        h("div.review-head", h("h2", h("span.step", "2"), " Review"), h(
+          "div.review-actions",
+          h("button", { onclick: () => state.item && go("items", state.item.id) }, "Open in Items"),
+          h("button", { onclick: reset }, "New item")
+        )),
+        h("div.status.ok#mk-item-saved", { hidden: true }),
+        h("ul.warnings#mk-item-warnings"),
+        h("div.maker-item", h("div#mk-item-form"), h("div#mk-item-card"))
+      )
+    )
+  );
+  const addImages = async (files) => {
+    for (const f of files) if (f.type.startsWith("image/")) state.images.push(await normalize2(f));
+    renderThumbs();
+  };
+  wireDrop($("#mk-drop"), addImages);
+  $("#mk-file").onchange = (e2) => {
+    addImages([...e2.target.files]);
+    e2.target.value = "";
+  };
+  document.addEventListener("paste", async (e2) => {
+    if (el.hidden || e2.defaultPrevented) return;
+    const files = [...e2.clipboardData.items].filter((i) => i.type.startsWith("image/")).map((i) => i.getAsFile());
+    if (files.length) {
+      e2.preventDefault();
+      addImages(files);
+      return;
+    }
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e2.target.tagName) || !hasImage(e2.clipboardData)) return;
+    e2.preventDefault();
+    try {
+      status2("#mk-ocr-status", "Getting the picture\u2026");
+      const blobs = await imagesFrom(e2.clipboardData);
+      status2("#mk-ocr-status", "");
+      addImages(blobs);
+    } catch (err) {
+      status2("#mk-ocr-status", err.message, "error");
+    }
+  });
+  $("#mk-ocr").onclick = readScreenshots;
+  $("#mk-parse").onclick = () => mode2 === "item" ? readItem() : readText(/* @__PURE__ */ new Set());
+  $("#mk-new").onclick = reset;
+  $("#mk-edit").onclick = () => state.monster && go("library", state.monster.id);
+  $("#mk-name").oninput = () => {
+    state.monster.name = $("#mk-name").value;
+    changed();
+  };
+  renderAvatar();
+  setMode(mode2);
+}
+function showMaker(arg) {
+  if (arg === "item" || arg === "monster") setMode(arg);
+}
+var MODES = {
+  monster: {
+    sub: "Paste a stat block screenshot or its text. The monster is saved to your library and keeps saving as you edit.",
+    step: " Stat block",
+    label: "Stat block text",
+    hint: "Bigger screenshots read better. A long stat block can be several screenshots, in order.",
+    placeholder: "\u2026or paste the text here (copied from a PDF or web page). Text read from a screenshot also appears here, so you can fix mistakes before reading it."
+  },
+  item: {
+    sub: "Paste a screenshot of a magic item, weapon or other item, or its text. The item is saved to Items, keeps saving as you edit, and can drop as loot.",
+    step: " Item card",
+    label: "Item text",
+    hint: 'A screenshot of the item card: its name, the type line (like "Weapon (Longsword), Rare"), any Cost / Damage / Properties lines, and the description.',
+    placeholder: "\u2026or paste the item text here. Text read from a screenshot also appears here, so you can fix mistakes before reading it.\n\nFrostbite Blade\nWeapon (Longsword), Rare (Requires Attunement)\nThis blade is rimed with frost\u2026"
+  }
+};
+function setMode(m) {
+  if (m !== mode2) {
+    mode2 = m;
+    reset();
+  }
+  try {
+    localStorage.setItem("makerMode", m);
+  } catch {
+  }
+  const t = MODES[m];
+  $("#mk-sub").textContent = t.sub;
+  $("#mk-step1").textContent = t.step;
+  $("#mk-text-label").firstChild.textContent = t.label;
+  $("#mk-drop-hint").textContent = t.hint;
+  $("#mk-text").placeholder = t.placeholder;
+  $("#mk-art").hidden = m !== "monster";
+  $("#mk-mode-monster").classList.toggle("on", m === "monster");
+  $("#mk-mode-item").classList.toggle("on", m === "item");
+}
+function wireDrop(zone, onFiles) {
+  zone.addEventListener("dragover", (e2) => {
+    e2.preventDefault();
+    e2.stopPropagation();
+    zone.classList.add("over");
+  });
+  zone.addEventListener("dragleave", () => zone.classList.remove("over"));
+  zone.addEventListener("drop", async (e2) => {
+    e2.preventDefault();
+    e2.stopPropagation();
+    zone.classList.remove("over");
+    try {
+      status2("#mk-ocr-status", "Getting the picture\u2026");
+      const blobs = await imagesFrom(e2.dataTransfer);
+      status2("#mk-ocr-status", blobs.length ? "" : "That was not a picture.", blobs.length ? "" : "error");
+      if (blobs.length) onFiles(blobs);
+    } catch (err) {
+      status2("#mk-ocr-status", err.message, "error");
+    }
+  });
+}
+function thumb(src, onRemove) {
+  return h("div.thumb", h("img", { src }), h("button", { title: "Remove", onclick: onRemove }, "\xD7"));
+}
+function renderThumbs() {
+  fill($("#mk-thumbs"), ...state.images.map((src, i) => thumb(src, () => {
+    state.images.splice(i, 1);
+    renderThumbs();
+  })));
+  $("#mk-ocr").hidden = !state.images.length;
+}
+function setAvatar(url) {
+  state.avatar = url;
+  renderAvatar();
+  if (state.monster) {
+    if (url) state.monster.avatar = url;
+    else delete state.monster.avatar;
+    changed();
+  }
+}
+function renderAvatar() {
+  if (state.avatar) $("#mk-art").open = true;
+  fill($("#mk-avatar"), pictureDrop({
+    src: state.avatar,
+    name: state.monster?.name || "Token",
+    chooseText: "Choose an image",
+    hint: "Drop a picture here from your computer or a web page, or click here and paste (Ctrl+V).",
+    onImage: (url) => setAvatar(url),
+    onRemove: () => setAvatar(null)
+  }));
+}
+function reset() {
+  Object.assign(state, { images: [], avatar: null, monster: null, unsure: /* @__PURE__ */ new Set(), item: null });
+  $("#mk-item-review").hidden = true;
+  $("#mk-text").value = "";
+  renderThumbs();
+  renderAvatar();
+  $("#mk-review").hidden = true;
+  ["#mk-ocr-status", "#mk-parse-status"].forEach((s) => status2(s, ""));
+}
+async function readScreenshots() {
+  if (!state.images.length) return;
+  $("#mk-ocr").disabled = $("#mk-parse").disabled = true;
+  const started = Date.now();
+  try {
+    const texts = [];
+    const abilities = [null, null, null, null, null, null], unsure = [true, true, true, true, true, true];
+    for (const [n, img] of state.images.entries()) {
+      const prefix = state.images.length > 1 ? `Image ${n + 1} of ${state.images.length}: ` : "";
+      const r = await ocrImage(img, (msg) => status2("#mk-ocr-status", `${prefix}${msg} ${Math.round((Date.now() - started) / 1e3)}s`), { abilities: mode2 === "monster" });
+      texts.push(r.text.trim());
+      (r.abilities || []).forEach((s, i) => {
+        if (s != null && (abilities[i] == null || unsure[i] && !r.abilityUncertain[i])) {
+          abilities[i] = s;
+          unsure[i] = r.abilityUncertain[i];
+        }
+      });
+    }
+    $("#mk-text").value = texts.join("\n\n");
+    status2("#mk-ocr-status", `Text read in ${Math.round((Date.now() - started) / 1e3)}s. Check it below, then the review.`, "ok");
+    if (mode2 === "item") readItem();
+    else readText(new Set(unsure.flatMap((u, i) => u ? [i] : [])));
+  } catch (e2) {
+    status2("#mk-ocr-status", `Could not read the screenshot: ${e2.message || e2}`, "error");
+  } finally {
+    $("#mk-ocr").disabled = $("#mk-parse").disabled = false;
+  }
+}
+function readText(unsure) {
+  const text = $("#mk-text").value.trim();
+  if (!text) return status2("#mk-parse-status", "Paste a screenshot or the stat block text first.", "error");
+  if (!store.libraryPath) return status2("#mk-parse-status", "Choose a library folder first (top right), so the monster has somewhere to be saved.", "error");
+  try {
+    const data = parseStatBlock(text);
+    ABILITIES.forEach((a2, i) => {
+      if (data.abilities[a2] == null) unsure.add(i);
+    });
+    const prev = state.monster;
+    const monster = { ...data, id: prev?.id || newId(data.name), source: "Homebrew", created: prev?.created };
+    monster.fightingStyle = guessStyle(monster);
+    if (state.avatar) monster.avatar = state.avatar;
+    state.monster = monster;
+    state.unsure = unsure;
+    status2("#mk-parse-status", "");
+    renderReview();
+    changed(`${prev ? "Updated in your library." : "Saved to your library."} Fighting preference guessed as ${STYLES[monster.fightingStyle]} (change it in Creatures).`);
+  } catch (e2) {
+    status2("#mk-parse-status", `Could not read the text: ${e2.message || e2}`, "error");
+  }
+}
+function changed(message) {
+  save("monsters", state.monster);
+  if (message) status2("#mk-saved", `${message} Changes save automatically.`, "ok");
+  renderPreview();
+}
+function renderReview() {
+  const m = state.monster;
+  $("#mk-review").hidden = false;
+  $("#mk-name").value = m.name;
+  fill($("#mk-abil"), ...ABILITIES.map((a2, i) => {
+    const inp = h("input", { type: "text", inputmode: "numeric", value: m.abilities[a2] ?? "", class: state.unsure.has(i) ? "unsure" : "" });
+    inp.oninput = () => {
+      const v = parseInt(inp.value, 10);
+      m.abilities[a2] = Number.isFinite(v) ? v : null;
+      inp.className = "";
+      state.unsure.delete(i);
+      changed();
+    };
+    return h("label", a2.slice(0, 3).toUpperCase(), inp);
+  }));
+  fill($("#mk-warnings"), ...(m.warnings || []).map((w) => h("li", w)));
+  renderAvatar();
+  renderPreview();
+}
+function renderPreview() {
+  const m = state.monster;
+  if (!m) return;
+  const safe = { ...m, abilities: Object.fromEntries(ABILITIES.map((a2) => [a2, m.abilities[a2] ?? 10])) };
+  fill($("#mk-preview"), statBlock(safe));
+}
+function readItem() {
+  const text = $("#mk-text").value.trim();
+  if (!text) return status2("#mk-parse-status", "Paste a screenshot or the item text first.", "error");
+  if (!store.libraryPath) return status2("#mk-parse-status", "Choose a library folder first (top right), so the item has somewhere to be saved.", "error");
+  try {
+    const data = parseItem(text);
+    const prev = state.item;
+    state.item = { ...data, id: prev?.id || newId(data.name || "item"), source: "Homebrew", created: prev?.created };
+    if (!state.item.name) state.item.name = "New Item";
+    status2("#mk-parse-status", "");
+    $("#mk-review").hidden = true;
+    $("#mk-item-review").hidden = false;
+    renderItem();
+    itemChanged(prev ? "Updated in Items." : "Saved to Items.");
+  } catch (e2) {
+    status2("#mk-parse-status", `Could not read the text: ${e2.message || e2}`, "error");
+  }
+}
+function itemChanged(message) {
+  save("items", state.item);
+  if (message) status2("#mk-item-saved", `${message} Changes save automatically, and it can drop as loot.`, "ok");
+  fill($("#mk-item-card"), h("div.cond-ref-body.spell-card", { html: itemHtml(state.item) }));
+}
+function renderItem() {
+  const it = state.item;
+  fill($("#mk-item-warnings"), ...(it.warnings || []).map((w) => h("li", w)));
+  fill($("#mk-item-form"), itemEditor(it, { changed: () => itemChanged(), redraw: renderItem }));
+  fill($("#mk-item-card"), h("div.cond-ref-body.spell-card", { html: itemHtml(it) }));
+}
+
+// src/tabs/items.js
+init_ui();
+init_store();
+var el2;
+var go2;
+var selectedId = null;
+var shown = 200;
+var filter = { q: "", category: "", rarity: "", source: "" };
+var mine = (x) => store.items.includes(x);
+function mountItems(root, navigate) {
+  el2 = root;
+  go2 = navigate;
+  el2.append(
+    h("div.page-head", h("h1", "Items"), h("div.page-sub", "The SRD 5.2.1 equipment and magic items, and your own (make them here or from a screenshot in the Maker). Your items can drop as loot.")),
+    h(
+      "div.lib-grid",
+      h(
+        "div.card.list-pane",
+        h(
+          "div.list-tools",
+          h("input.search#it-q", { type: "search", placeholder: "Search items", oninput: (e2) => {
+            filter.q = e2.target.value;
+            shown = 200;
+            renderList();
+          } }),
+          h("button", { title: "Make an item from a screenshot or pasted text", onclick: () => go2("maker", "item") }, "From screenshot"),
+          h("button.primary", { onclick: newItem }, "New")
+        ),
+        h("div.lib-filters#it-filters"),
+        h("div.list-count#it-count"),
+        h("div.list#it-list")
+      ),
+      h("div.card.edit-pane#it-edit"),
+      h("div.card.preview-pane#it-card")
+    )
+  );
+  onChange((kind) => {
+    if (!el2.hidden && (kind === "all" || kind === "items")) renderList();
+  });
+}
+function showItems(id) {
+  if (id) {
+    selectedId = id;
+    Object.assign(filter, { q: "", category: "", rarity: "", source: "" });
+    el2.querySelector("#it-q").value = "";
+  }
+  renderFilters();
+  renderList();
+  renderEdit();
+  if (id) el2.querySelector("#it-list .active")?.scrollIntoView({ block: "center" });
+}
+function renderFilters() {
+  const changed3 = () => {
+    shown = 200;
+    renderFilters();
+    renderList();
+  };
+  const sel = (label, key2, options) => h("label", label, h(
+    "select",
+    { onchange: (e2) => {
+      filter[key2] = e2.target.value;
+      changed3();
+    } },
+    h("option", { value: "" }, "Any"),
+    options.map(([v, t]) => h("option", { value: v, selected: filter[key2] === v }, t))
+  ));
+  fill(
+    el2.querySelector("#it-filters"),
+    sel("Category", "category", Object.entries(CATEGORY_LABELS)),
+    sel("Rarity", "rarity", RARITIES.map((r) => [r, r])),
+    sel("Source", "source", [["mine", "My items"], ["srd", "SRD 5.2.1"]]),
+    filter.category || filter.rarity || filter.source ? h("button.link.wide", { onclick: () => {
+      Object.assign(filter, { category: "", rarity: "", source: "" });
+      changed3();
+    } }, "Clear filters") : null
+  );
+}
+function matches(x) {
+  const q = filter.q.trim().toLowerCase();
+  if (q && !x.name.toLowerCase().includes(q)) return false;
+  if (filter.category && x.category !== filter.category) return false;
+  if (filter.rarity && x.rarity !== filter.rarity) return false;
+  if (filter.source && filter.source === "mine" !== mine(x)) return false;
+  return true;
+}
+function renderList() {
+  const list = allItems().filter(matches).sort((a2, b2) => a2.name.localeCompare(b2.name));
+  el2.querySelector("#it-count").textContent = `${list.length} item${list.length === 1 ? "" : "s"}`;
+  const rows = list.slice(0, shown).map((x) => h(
+    "button.list-row" + (x.id === selectedId ? ".active" : ""),
+    { onclick: () => {
+      selectedId = x.id;
+      renderList();
+      renderEdit();
+    } },
+    h(
+      "div.list-main",
+      h("div.list-name", x.name, mine(x) ? null : h("span.tag", "SRD"), x.loot === false ? h("span.tag", { title: "Never drops as loot" }, "NO LOOT") : null),
+      h("div.list-sub", itemTypeLine(x))
+    )
+  ));
+  if (list.length > shown) rows.push(h("button.load-more", { onclick: () => {
+    shown += 200;
+    renderList();
+  } }, `Show more (${list.length - shown})`));
+  fill(el2.querySelector("#it-list"), ...rows.length ? rows : [h("div.empty", "No items match.")]);
+}
+function newItem() {
+  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
+  const it = { ...blankItem(), id: newId("new-item") };
+  save("items", it, { delay: 0 });
+  selectedId = it.id;
+  showItems();
+  el2.querySelector("#it-edit input")?.select();
+}
+function duplicate(x) {
+  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
+  const copy = { ...structuredClone(x), id: newId(x.name), source: "Homebrew", basedOn: x.source || "SRD 5.2.1" };
+  delete copy.created;
+  save("items", copy, { delay: 0 });
+  selectedId = copy.id;
+  showItems();
+}
+var relist = debounce(() => renderList(), 300);
+var refreshCard = debounce((x) => fill(el2.querySelector("#it-card"), h("div.cond-ref-body.spell-card", { html: itemHtml(x) })), 150);
+function renderEdit() {
+  const pane = el2.querySelector("#it-edit"), card = el2.querySelector("#it-card");
+  const x = findItem(selectedId);
+  if (!x) {
+    fill(pane, h("div.empty", `Pick an item, click New, or make one from a screenshot. ${store.srdItems.length} SRD items, ${store.items.length} of yours.`));
+    card.replaceChildren();
+    return;
+  }
+  fill(card, h("div.cond-ref-body.spell-card", { html: itemHtml(x) }));
+  if (!mine(x)) {
+    fill(
+      pane,
+      h("div.edit-head", h("h2", x.name), h("button.primary", { onclick: () => duplicate(x) }, "Copy to my items")),
+      h("p.muted", "SRD items are read-only. Copy one to your items to change it (for example a +1 weapon with your own description).")
+    );
+    return;
+  }
+  const changed3 = ({ renamed } = {}) => {
+    save("items", x);
+    refreshCard(x);
+    if (renamed) {
+      pane.querySelector(".edit-head h2").textContent = x.name;
+      renderList();
+    }
+  };
+  fill(
+    pane,
+    h("div.edit-head", h("h2", x.name), h(
+      "div.row-gap",
+      h("button", { onclick: () => duplicate(x) }, "Duplicate"),
+      h("button.danger", { onclick: () => confirmBox(`Delete ${x.name}? The file goes to the Recycle Bin.`, "Delete", async () => {
+        await remove("items", x);
+        selectedId = null;
+        showItems();
+      }) }, "Delete")
+    )),
+    x.warnings?.length ? h("div.warn-box", h("ul.warnings", x.warnings.map((w) => h("li", w))), h("button.link", { onclick: (e2) => {
+      delete x.warnings;
+      changed3();
+      e2.target.parentElement.remove();
+    } }, "Dismiss reader notes")) : null,
+    itemEditor(x, { changed: (o) => {
+      changed3(o);
+      relist();
+    }, redraw: renderEdit })
+  );
+}
+
+// src/tabs/party.js
+init_ui();
+init_store();
+init_dice();
+init_rules();
+
+// src/ddb-import.js
+async function readPdfFields(pdfjs2, data) {
+  const doc = await pdfjs2.getDocument({ data, isEvalSupported: false, verbosity: 0 }).promise;
+  const out = [];
+  for (let n = 1; n <= doc.numPages; n++) {
+    for (const a2 of await (await doc.getPage(n)).getAnnotations()) {
+      if (!a2.fieldName || a2.fieldValue == null || a2.fieldValue === "" || a2.fieldValue === "Off") continue;
+      out.push({ name: a2.fieldName.replace(/\s+/g, " ").trim(), value: String(a2.fieldValue).replace(/\r/g, "").trim() });
+    }
+  }
+  await doc.destroy();
+  return out;
+}
+var ABILITIES2 = [["STR", "strength"], ["DEX", "dexterity"], ["CON", "constitution"], ["INT", "intelligence"], ["WIS", "wisdom"], ["CHA", "charisma"]];
+var SKILLS2 = [
+  ["Acrobatics", "Acrobatics", "DEX"],
+  ["Animal", "Animal Handling", "WIS"],
+  ["Arcana", "Arcana", "INT"],
+  ["Athletics", "Athletics", "STR"],
+  ["Deception", "Deception", "CHA"],
+  ["History", "History", "INT"],
+  ["Insight", "Insight", "WIS"],
+  ["Intimidation", "Intimidation", "CHA"],
+  ["Investigation", "Investigation", "INT"],
+  ["Medicine", "Medicine", "WIS"],
+  ["Nature", "Nature", "INT"],
+  ["Perception", "Perception", "WIS"],
+  ["Performance", "Performance", "CHA"],
+  ["Persuasion", "Persuasion", "CHA"],
+  ["Religion", "Religion", "INT"],
+  ["SleightofHand", "Sleight of Hand", "DEX"],
+  ["Stealth", "Stealth", "DEX"],
+  ["Survival", "Survival", "WIS"]
+];
+var num = (s) => {
+  const n = parseInt(String(s ?? "").replace(/[^\d\-+]/g, ""), 10);
+  return Number.isFinite(n) ? n : null;
+};
+var isDash = (s) => !s || /^-+$/.test(s.trim());
+function parseDdbSheet(fields2) {
+  const first = /* @__PURE__ */ new Map(), lower = /* @__PURE__ */ new Map();
+  for (const f of fields2) {
+    if (!first.has(f.name)) first.set(f.name, f.value);
+    if (!lower.has(f.name.toLowerCase())) lower.set(f.name.toLowerCase(), f.value);
+  }
+  const get = (name) => first.get(name) ?? "";
+  const getI = (name) => lower.get(name.toLowerCase()) ?? "";
+  const joined = (prefix) => [...first.keys()].filter((k) => new RegExp(`^${prefix}\\d+$`).test(k)).sort((a2, b2) => num(a2.slice(prefix.length)) - num(b2.slice(prefix.length))).map((k) => first.get(k)).join("\n");
+  const classText = get("CLASS LEVEL");
+  const classes = [...classText.matchAll(/([A-Za-z][A-Za-z' -]*?)\s+(\d{1,2})\b/g)].map((m) => ({ name: m[1].trim(), level: Number(m[2]) }));
+  const level = classes.reduce((n, c2) => n + c2.level, 0) || num(classText) || 1;
+  const abilities = Object.fromEntries(ABILITIES2.map(([ab2, key2]) => [key2, num(get(ab2))]));
+  const saves = ABILITIES2.map(([ab2, key2]) => {
+    const label = key2[0].toUpperCase() + key2.slice(1);
+    return { ability: ab2, bonus: num(get(`ST ${label}`)) ?? 0, proficient: !!getI(`${ab2[0]}${ab2.slice(1).toLowerCase()}Prof`) };
+  });
+  const skills = SKILLS2.map(([field, name, ab2]) => ({ name, ability: ab2, bonus: num(getI(field)) ?? 0, proficiency: { P: "proficient", E: "expertise", H: "half" }[getI(`${field}Prof`)] || "" }));
+  const attacks = [];
+  for (let i = 1; i <= 20; i++) {
+    const name = get(i === 1 ? "Wpn Name" : `Wpn Name ${i}`);
+    if (!name) continue;
+    const damage = get(`Wpn${i} Damage`);
+    const dm = damage.match(/^\s*([\dd+\-\s]+?)\s+([A-Za-z].*)$/);
+    attacks.push({ name, hit: get(`Wpn${i} AtkBonus`), damage, damageDice: dm ? dm[1].replace(/\s/g, "") : "", damageType: dm ? dm[2] : "", notes: get(`Wpn Notes ${i}`) });
+  }
+  const spells = [], slots = {}, byIndex = /* @__PURE__ */ new Map();
+  let levelLabel = "";
+  for (const f of fields2) {
+    let m;
+    if (m = f.name.match(/^spellHeader(\d+)$/)) levelLabel = f.value.replace(/=+/g, "").trim().replace(/\b(\w)(\w*)/g, (x, a2, b2) => a2 + b2.toLowerCase()).replace(/(\d)(St|Nd|Rd|Th)\b/, (x, d, s) => d + s.toLowerCase());
+    else if (/^spellSlotHeader\d+$/.test(f.name) && levelLabel) slots[levelLabel] = f.value;
+    else if ((m = f.name.match(/^spellName(\d+)$/)) && !byIndex.has(m[1])) {
+      const s = { level: levelLabel || "Spells", name: f.value };
+      byIndex.set(m[1], s);
+      spells.push(s);
+    }
+  }
+  for (const [i, s] of byIndex) {
+    Object.assign(s, {
+      source: get(`spellSource${i}`),
+      saveHit: isDash(get(`spellSaveHit${i}`)) ? "" : get(`spellSaveHit${i}`),
+      time: get(`spellCastingTime${i}`),
+      range: get(`spellRange${i}`),
+      components: get(`spellComponents${i}`),
+      duration: get(`spellDuration${i}`),
+      page: get(`spellPage${i}`),
+      notes: get(`spellNotes${i}`),
+      prepared: get(`spellPrepared${i}`) === "P" ? "always" : ""
+    });
+  }
+  const unique = [];
+  for (const s of spells) {
+    const at2 = unique.findIndex((u) => u.level === s.level && u.name === s.name);
+    if (at2 < 0) unique.push(s);
+    else if (/2024/.test(s.page) && !/2024/.test(unique[at2].page)) unique[at2] = s;
+  }
+  const casting = [];
+  for (let i = 0; i < 6; i++) {
+    const cls = get(`spellCastingClass${i}`), ability = get(`spellCastingAbility${i}`);
+    if (cls || ability) casting.push({ className: cls, ability, saveDC: num(get(`spellSaveDC${i}`)), attack: get(`spellAtkBonus${i}`) });
+  }
+  const equipment = [];
+  for (let i = 0; i < 200; i++) {
+    const name = get(`Eq Name${i}`);
+    if (!name) continue;
+    const qty = num(get(`Eq Qty${i}`)) || 1, have = equipment.find((e2) => e2.name === name);
+    if (have) have.qty += qty;
+    else equipment.push({ name, qty });
+  }
+  const speedText2 = get("Speed");
+  const sheet = {
+    importedAt: Date.now(),
+    classes,
+    classText,
+    species: get("RACE"),
+    background: get("BACKGROUND"),
+    experience: get("EXPERIENCE POINTS"),
+    ddbPlayer: get("PLAYER NAME"),
+    abilities,
+    saves,
+    skills,
+    passives: { perception: num(get("Passive1")), insight: num(get("Passive2")), investigation: num(get("Passive3")) },
+    senses: get("AdditionalSenses"),
+    defenses: get("Defenses"),
+    speedText: speedText2,
+    hitDice: get("Total"),
+    proficiencyBonus: get("ProfBonus"),
+    proficiencies: get("ProficienciesLang"),
+    actions: joined("Actions"),
+    features: joined("FeaturesTraits"),
+    attacks,
+    casting,
+    spells: unique,
+    slots,
+    equipment,
+    appearance: Object.fromEntries(["GENDER", "AGE", "SIZE", "HEIGHT", "WEIGHT", "ALIGNMENT", "FAITH", "SKIN", "EYES", "HAIR"].map((k) => [k.toLowerCase(), get(k)]).filter(([, v]) => v)),
+    personality: Object.fromEntries([["traits", "PersonalityTraits"], ["ideals", "Ideals"], ["bonds", "Bonds"], ["flaws", "Flaws"], ["backstory", "Backstory"], ["allies", "AlliesOrganizations"], ["notes", "AdditionalNotes"]].map(([k, f]) => [k, get(f)]).filter(([, v]) => v))
+  };
+  const basics = {
+    name: get("CharacterName"),
+    className: classes.map((c2) => c2.name).join(" / ") || classText,
+    level,
+    armorClass: num(get("AC")),
+    maxHp: num(get("MaxHP")),
+    speed: num(speedText2) ?? 30,
+    passivePerception: sheet.passives.perception,
+    initiativeBonus: num(get("Init")) ?? 0
+  };
+  return { basics, sheet };
+}
+
+// src/sheet.js
+init_ui();
+init_conditions();
+init_spells();
+var sign = (n) => n >= 0 ? `+${n}` : `${n}`;
+var mod3 = (s) => Math.floor(((s ?? 10) - 10) / 2);
+var ABBR2 = { strength: "STR", dexterity: "DEX", constitution: "CON", intelligence: "INT", wisdom: "WIS", charisma: "CHA" };
+var bonusExpr = (b2) => {
+  const n = parseInt(String(b2).replace(/[−–]/, "-"), 10);
+  return Number.isFinite(n) ? `1d20${sign(n)}` : null;
+};
+var roll2 = (text, expr, label, who) => expr ? rollButton(text, expr, label, who) : esc(text);
+var block = (title2, text, open2 = false) => text ? `<details class="sh-text"${open2 ? " open" : ""}><summary>${title2}</summary><div>${condify(spellify(esc(text.replace(/[ \t]+\n/g, "\n").trim()))).replace(/\n/g, "<br>")}</div></details>` : "";
+function characterSheet(c2, opts2 = {}) {
+  const s = c2.sheet, who = c2.name;
+  if (!s) return h("div.empty", "No character sheet yet. Import this character's D&D Beyond PDF on the Party tab to see the full sheet here.");
+  const imported = new Date(s.importedAt).toLocaleDateString(void 0, { month: "short", day: "numeric", year: "numeric" });
+  const abil = Object.entries(s.abilities).map(([k, v]) => `<div class="sh-abil"><div class="sh-k">${ABBR2[k]}</div><div class="sh-score">${v ?? "\u2014"}</div>${roll2(sign(mod3(v)), `1d20${sign(mod3(v))}`, `${ABBR2[k]} check`, who)}</div>`).join("");
+  const saves = s.saves.map((x) => `<span class="sh-chip${x.proficient ? " prof" : ""}" title="${x.proficient ? "Proficient" : ""}">${x.ability} ${roll2(sign(x.bonus), `1d20${sign(x.bonus)}`, `${x.ability} save`, who)}</span>`).join("");
+  const skills = s.skills.map((k) => `<div class="sh-skill${k.proficiency ? ` ${k.proficiency}` : ""}"><span class="sh-mark" title="${k.proficiency}">${k.proficiency === "expertise" ? "E" : k.proficiency === "proficient" ? "P" : k.proficiency === "half" ? "\xBD" : ""}</span><span>${esc(k.name)} <small>${k.ability}</small></span>${roll2(sign(k.bonus), `1d20${sign(k.bonus)}`, k.name, who)}</div>`).join("");
+  const attacks = s.attacks.length ? `<table class="sh-table"><thead><tr><th>Attack</th><th>Hit</th><th>Damage</th><th>Notes</th></tr></thead><tbody>${s.attacks.map((a2) => `<tr><td>${esc(a2.name)}</td><td>${roll2(a2.hit, bonusExpr(a2.hit), `${a2.name}: to hit`, who)}</td><td>${a2.damageDice && /d/.test(a2.damageDice) ? rollButton(a2.damageDice, a2.damageDice, `${a2.name}: damage`, who) : esc(a2.damageDice)} ${esc(a2.damageType)}</td><td class="sh-notes">${esc(a2.notes)}</td></tr>`).join("")}</tbody></table>` : "";
+  const levels = [...new Set(s.spells.map((x) => x.level))];
+  const spells = levels.map((lv, i) => {
+    const list = s.spells.filter((x) => x.level === lv);
+    return `<details class="sh-spells"${i < 2 ? " open" : ""}><summary>${esc(lv)} <span class="muted">${esc(s.slots[lv] || "")} \xB7 ${list.length}</span></summary><table class="sh-table"><tbody>${list.map((x) => `<tr><td>${spellLink(x.name)}${x.prepared ? ' <span class="tag">ALWAYS</span>' : ""}</td><td>${/^[+\-]\d/.test(x.saveHit) ? roll2(x.saveHit, bonusExpr(x.saveHit), `${x.name}: spell attack`, who) : esc(x.saveHit)}</td><td>${esc(x.time)}</td><td>${esc(x.range)}</td><td class="sh-notes">${esc(x.duration)}</td></tr>`).join("")}</tbody></table></details>`;
+  }).join("");
+  const casting = s.casting.map((k) => `<span class="sh-chip">${esc(k.className || "Spellcasting")} \xB7 ${esc(k.ability)} \xB7 DC ${k.saveDC ?? "\u2014"} \xB7 ${roll2(k.attack, bonusExpr(k.attack), "Spell attack", who)}</span>`).join("");
+  const look = Object.entries(s.appearance || {}).map(([k, v]) => `${k[0].toUpperCase()}${k.slice(1)}: ${v}`).join(" \xB7 ");
+  const person = Object.entries(s.personality || {}).map(([k, v]) => `${k[0].toUpperCase()}${k.slice(1)}:
+${v}`).join("\n\n");
+  const html = `
+    <div class="sh-head">${esc([s.classText, s.species, s.background, s.appearance?.alignment].filter(Boolean).join(" \xB7 "))}<span class="sh-imported">Imported ${imported}</span></div>
+    <div class="sh-combat">
+      <div><div class="sh-k">AC</div><div class="sh-v">${c2.armorClass ?? "\u2014"}</div></div>
+      <div><div class="sh-k">HP</div><div class="sh-v">${opts2.hp != null ? `${opts2.hp}/` : ""}${c2.maxHp ?? "\u2014"}</div><div class="sh-sub">${esc(s.hitDice)}</div></div>
+      <div><div class="sh-k">Speed</div><div class="sh-v">${c2.speed ?? "\u2014"}</div><div class="sh-sub">ft.</div></div>
+      <div><div class="sh-k">Init</div><div class="sh-v">${rollButton(sign(c2.initiativeBonus || 0), `1d20${sign(c2.initiativeBonus || 0)}`, "Initiative", who)}</div></div>
+      <div><div class="sh-k">Prof.</div><div class="sh-v">${esc(s.proficiencyBonus)}</div></div>
+    </div>
+    <div class="sh-abils">${abil}</div>
+    <div class="sh-row"><span class="sh-label">Saves</span> ${saves}</div>
+    <div class="sh-row sh-small"><span class="sh-label">Passive</span> Perception ${s.passives.perception ?? "\u2014"} \xB7 Insight ${s.passives.insight ?? "\u2014"} \xB7 Investigation ${s.passives.investigation ?? "\u2014"}${s.senses ? ` \xB7 ${esc(s.senses)}` : ""}</div>
+    ${s.defenses ? `<div class="sh-row sh-small"><span class="sh-label">Defenses</span> ${condify(esc(s.defenses))}</div>` : ""}
+    ${attacks ? `<div class="sh-section">Attacks</div>${attacks}` : ""}
+    ${s.spells.length || s.casting.length ? `<div class="sh-section">Spells</div><div class="sh-row">${casting}</div>${spells}` : ""}
+    <details class="sh-text"${opts2.compact ? "" : " open"}><summary>Skills</summary><div class="sh-skills">${skills}</div></details>
+    ${block("Actions", s.actions)}
+    ${block("Features & traits", s.features)}
+    ${opts2.compact ? "" : block("Proficiencies & languages", s.proficiencies)}
+    ${opts2.compact ? "" : s.equipment?.length ? block("Equipment", s.equipment.map((e2) => `${e2.name}${e2.qty > 1 ? ` \xD7${e2.qty}` : ""}`).join(", ")) : ""}
+    ${opts2.compact ? "" : block("Appearance & personality", [look, person].filter(Boolean).join("\n\n"))}`;
+  return h("div.sheet", { html });
+}
+
+// src/tabs/party.js
+var el3;
+var selectedId2 = null;
+function blankCharacter() {
+  return { id: newId("character"), name: "New Character", player: "", className: "", level: 1, armorClass: 10, maxHp: 10, speed: 30, passivePerception: 10, initiativeBonus: 0, power: 1 };
+}
+function mountParty(root) {
+  el3 = root;
+  const fileInput = h("input", { type: "file", accept: ".pdf,application/pdf", multiple: true, hidden: true, onchange: (e2) => {
+    importPdfs([...e2.target.files]);
+    e2.target.value = "";
+  } });
+  el3.append(
+    h("div.page-head", h("h1", "Party"), h("div.page-sub", "Player characters. Add them to encounters in the builder; the runner uses their AC, HP and initiative bonus. Drop D&D Beyond character sheet PDFs anywhere here to add or update characters.")),
+    h(
+      "div.split",
+      h(
+        "div.card.list-pane",
+        h("div.list-tools", h("button.primary#pt-add", "Add character"), h("button", { onclick: () => fileInput.click(), title: "D&D Beyond character page > Export to PDF" }, "Import PDF"), fileInput),
+        h("div.list#pt-list")
+      ),
+      h("div.card.edit-pane#pt-edit")
+    )
+  );
+  el3.querySelector("#pt-add").onclick = () => {
+    if (!store.libraryPath) return alert("Choose a library folder first (top right).");
+    const c2 = blankCharacter();
+    save("party", c2, { delay: 0 });
+    selectedId2 = c2.id;
+    render2();
+    el3.querySelector("#pt-edit input")?.select();
+  };
+  el3.addEventListener("dragover", (e2) => {
+    if ([...e2.dataTransfer.items].some((i) => i.kind === "file")) {
+      e2.preventDefault();
+      el3.classList.add("drop-over");
+    }
+  });
+  el3.addEventListener("dragleave", (e2) => {
+    if (!el3.contains(e2.relatedTarget)) el3.classList.remove("drop-over");
+  });
+  el3.addEventListener("drop", (e2) => {
+    el3.classList.remove("drop-over");
+    const pdfs = [...e2.dataTransfer.files].filter(isPdf);
+    if (!pdfs.length) return;
+    e2.preventDefault();
+    importPdfs(pdfs);
+  });
+  onChange((kind) => {
+    if (kind === "all" || kind === "party") renderList2();
+  });
+  pasteToPicture(el3);
+  render2();
+}
+function showParty() {
+  render2();
+}
+function render2() {
+  renderList2();
+  renderEdit2();
+}
+function renderList2() {
+  const list = [...store.party].sort((a2, b2) => a2.name.localeCompare(b2.name));
+  fill(el3.querySelector("#pt-list"), ...list.length ? list.map((c2) => h("button.list-row" + (c2.id === selectedId2 ? ".active" : ""), {
+    onclick: () => {
+      selectedId2 = c2.id;
+      render2();
+    }
+  }, avatar(c2.avatar, c2.name, "sm"), h("div.list-main", h("div.list-name", c2.name, c2.sheet ? h("span.tag", "SHEET") : null), h("div.list-sub", [`Level ${c2.level}`, (c2.power ?? 1) !== 1 && `power \xD7${Number(Number(c2.power).toFixed(2))}`, c2.className, c2.player && `played by ${c2.player}`].filter(Boolean).join(" \xB7 "))))) : [h("div.empty", "No characters yet. Add one, or drop D&D Beyond character PDFs here.")]);
+}
+function renderEdit2() {
+  const pane = el3.querySelector("#pt-edit");
+  const c2 = store.party.find((x) => x.id === selectedId2);
+  if (!c2) return fill(pane, h("div.empty", store.party.length ? "Select a character." : "Add your party's characters here, or import their D&D Beyond PDFs."));
+  const set2 = (k, num2) => (e2) => {
+    c2[k] = num2 ? Number(e2.target.value) || 0 : e2.target.value;
+    save("party", c2);
+    if (k === "name" || k === "level" || k === "className" || k === "player") renderList2();
+  };
+  const field = (label, k, num2, attrs = {}) => h("label", label, h("input", { type: num2 ? "number" : "text", value: c2[k] ?? "", oninput: set2(k, num2), ...attrs }));
+  const pic = pictureDrop({
+    src: c2.avatar,
+    name: c2.name,
+    onImage: (url) => {
+      c2.avatar = url;
+      save("party", c2);
+      render2();
+    },
+    onRemove: () => {
+      delete c2.avatar;
+      save("party", c2);
+      render2();
+    }
+  });
+  fill(
+    pane,
+    h("div.edit-head", h("h2", c2.name), h("button.danger", { onclick: () => confirmBox(`Delete ${c2.name}? The file goes to the Recycle Bin.`, "Delete", async () => {
+      await remove("party", c2);
+      selectedId2 = null;
+      render2();
+    }) }, "Delete")),
+    pic,
+    h(
+      "div.form-grid",
+      field("Name", "name"),
+      field("Player", "player"),
+      field("Class", "className", false, { placeholder: "e.g. Fighter 3" }),
+      field("Level", "level", true, { min: 1, max: 20 }),
+      field("Armor Class", "armorClass", true),
+      field("Max HP", "maxHp", true),
+      field("Speed (ft.)", "speed", true),
+      field("Passive Perception", "passivePerception", true),
+      field("Initiative bonus", "initiativeBonus", true),
+      h("label", "Power multiplier", h("input", { type: "number", step: 0.05, min: 0.25, max: 3, value: c2.power ?? 1, oninput: (e2) => {
+        const v = Number(e2.target.value);
+        if (Number.isFinite(v) && v > 0) {
+          c2.power = clampPower(v);
+          save("party", c2);
+          renderList2();
+        }
+      } }))
+    ),
+    h("div.hint", `Initiative rolls as 1d20${signed(c2.initiativeBonus || 0)}.`),
+    h("div.hint", "Power multiplier: 1 = what their level suggests. Raise it (e.g. 1.1\u20131.25) for a character whose magic items make them stronger than their level, or lower it for one who is weaker. It scales their share of the encounter difficulty thresholds, so the same monsters rate a little easier."),
+    h(
+      "div.sheet-head",
+      h("h3", "Character sheet"),
+      c2.sheet ? h("button.link", { onclick: () => confirmBox(`Remove ${c2.name}'s imported sheet? The basics above stay.`, "Remove", () => {
+        delete c2.sheet;
+        save("party", c2);
+        render2();
+      }) }, "Remove sheet") : null
+    ),
+    h("div.hint", c2.sheet ? "From the D&D Beyond PDF. To update it, export the PDF again and drop it here." : ""),
+    characterSheet(c2)
+  );
+}
+var isPdf = (f) => f.type === "application/pdf" || /\.pdf$/i.test(f.name);
+var norm2 = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+var BASICS = [["name", "Name"], ["className", "Class"], ["level", "Level"], ["armorClass", "Armor Class"], ["maxHp", "Max HP"], ["speed", "Speed"], ["passivePerception", "Passive Perception"], ["initiativeBonus", "Initiative bonus"]];
+var pdfjs;
+async function loadPdfjs() {
+  if (!pdfjs) {
+    pdfjs = await Promise.resolve().then(() => (init_pdf(), pdf_exports));
+    pdfjs.GlobalWorkerOptions.workerSrc = new URL("vendor/pdfjs/pdf.worker.min.mjs", location.href).href;
+  }
+  return pdfjs;
+}
+function findMatch(name) {
+  const n = norm2(name);
+  const exact = store.party.find((c2) => norm2(c2.name) === n);
+  if (exact) return exact;
+  const firstWord = norm2(String(name).split(/\s+/)[0]);
+  const byFirst = store.party.filter((c2) => norm2(String(c2.name).split(/\s+/)[0]) === firstWord);
+  return byFirst.length === 1 ? byFirst[0] : null;
+}
+async function importPdfs(files) {
+  files = files.filter(isPdf);
+  if (!files.length) return;
+  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
+  const lib = await loadPdfjs();
+  const results = [];
+  for (const f of files) {
+    try {
+      const parsed = parseDdbSheet(await readPdfFields(lib, new Uint8Array(await f.arrayBuffer())));
+      if (!parsed.basics.name) throw new Error("No character name in it. Is it a D&D Beyond character sheet PDF (character page > Export to PDF)?");
+      const match = findMatch(parsed.basics.name);
+      results.push({ file: f.name, ...parsed, target: match ? match.id : "new", keep: /* @__PURE__ */ new Set() });
+    } catch (e2) {
+      results.push({ file: f.name, error: e2.message || String(e2) });
+    }
+  }
+  reviewImport(results);
+}
+function reviewImport(results) {
+  const rows = results.map((r) => {
+    const box = h("div.imp-row");
+    if (r.error) return fill(box, h("div.imp-title", r.file), h("div.status.error", `Skipped: ${r.error}`));
+    const changes = h("div.imp-changes");
+    const drawChanges = () => {
+      const t = store.party.find((c2) => c2.id === r.target);
+      if (r.target === "skip") return fill(changes, h("div.muted", "Not imported."));
+      if (!t) return fill(changes, h("div.muted", `New character: ${BASICS.slice(1).map(([k, l]) => `${l} ${r.basics[k] ?? "\u2014"}`).join(" \xB7 ")}. Full sheet included.`));
+      const diffs = BASICS.filter(([k]) => r.basics[k] != null && r.basics[k] !== "" && String(r.basics[k]) !== String(t[k] ?? ""));
+      fill(
+        changes,
+        diffs.length ? h("div.muted", "Changes (untick any value you want to keep as it is in the app):") : h("div.muted", "Name, class and combat numbers already match."),
+        diffs.map(([k, label]) => h(
+          "label.check-row",
+          h("input", { type: "checkbox", checked: !r.keep.has(k), onchange: (e2) => e2.target.checked ? r.keep.delete(k) : r.keep.add(k) }),
+          h("span", h("strong", label), `: ${t[k] ?? "\u2014"} \u2192 ${r.basics[k]}`)
+        )),
+        h("div.muted", `${t.sheet ? "Refreshes" : "Adds"} the full character sheet. Picture, player name and power multiplier stay as they are.`)
+      );
+    };
+    const select2 = h(
+      "select",
+      { onchange: (e2) => {
+        r.target = e2.target.value;
+        r.keep = /* @__PURE__ */ new Set();
+        drawChanges();
+      } },
+      store.party.map((c2) => h("option", { value: c2.id, selected: r.target === c2.id }, `Update ${c2.name}`)),
+      h("option", { value: "new", selected: r.target === "new" }, "Create a new character"),
+      h("option", { value: "skip" }, "Skip this one")
+    );
+    drawChanges();
+    return fill(
+      box,
+      h("div.imp-title", h("strong", r.basics.name), ` \xB7 ${r.sheet.classText} \xB7 ${r.sheet.species}`, h("span.muted", `  (${r.file})`)),
+      h("label.inline", "Import as", select2),
+      changes
+    );
+  });
+  modal(`Import ${results.length} character sheet${results.length === 1 ? "" : "s"}`, h("div.imp-list", rows), [
+    ["Cancel", () => {
+    }],
+    ["Import", () => applyImport(results), "primary"]
+  ]);
+  document.querySelector(".modal-back:last-child .modal")?.classList.add("wide");
+}
+function applyImport(results) {
+  let last = null;
+  for (const r of results) {
+    if (r.error || r.target === "skip") continue;
+    let c2 = store.party.find((x) => x.id === r.target);
+    if (!c2) {
+      c2 = { ...blankCharacter(), ...r.basics, id: newId(r.basics.name) };
+    } else {
+      for (const [k] of BASICS) if (!r.keep.has(k) && r.basics[k] != null && r.basics[k] !== "") c2[k] = r.basics[k];
+    }
+    c2.sheet = r.sheet;
+    save("party", c2, { delay: 0 });
+    last = c2;
+  }
+  if (last) {
+    selectedId2 = last.id;
+    render2();
+  }
+}
+
+// src/tabs/library.js
+init_ui();
+init_store();
+
+// src/spell-dialog.js
+init_ui();
+init_store();
+
+// src/spelling.js
+var import_nspell = __toESM(require_lib(), 1);
+var WORD = /(?<![\dA-Za-z])[A-Za-z][A-Za-z'’]*(?:-[A-Za-z'’]+)*/g;
+function distance(a2, b2) {
+  const d = Array.from({ length: a2.length + 1 }, (_, i) => [i, ...Array(b2.length).fill(0)]);
+  for (let j = 1; j <= b2.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a2.length; i++) for (let j = 1; j <= b2.length; j++) {
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a2[i - 1] === b2[j - 1] ? 0 : 1));
+  }
+  return d[a2.length][b2.length];
+}
+function createChecker(aff, dic, vocabulary2 = /* @__PURE__ */ new Map()) {
+  const spell = (0, import_nspell.default)(aff, dic);
+  const known = /* @__PURE__ */ new Set();
+  for (const w of vocabulary2.keys()) known.add(w.toLowerCase());
+  const game = [...vocabulary2].filter(([w, n]) => n >= 3 && w.length >= 4).sort((a2, b2) => b2[1] - a2[1]);
+  const exact = new Set(vocabulary2.keys());
+  const ok = (w) => known.has(w.toLowerCase()) || spell.correct(w) || spell.correct(w.toLowerCase());
+  const oddCaps = (w) => !exact.has(w) && (/[a-z][A-Z]/.test(w) || /^[A-Z]{2,}[a-z]/.test(w));
+  const proper = (w) => w[0].toUpperCase() + w.slice(1).toLowerCase();
+  const cache2 = /* @__PURE__ */ new Map();
+  return {
+    /** is this word fine? Skips abbreviations ("DC", "STR") and checks each part of a hyphenated word */
+    correct(word) {
+      const w = word.replace(/['’]s$/i, "").replace(/['’]$/, "");
+      if (w.length < 2 || /^[A-Z]{2,5}$/.test(w)) return true;
+      return w.split("-").every((part) => !part || !oddCaps(part) && (ok(part) || ok(part.replace(/['’]/g, "'"))));
+    },
+    /** up to 6 fixes (remembered, since working them out takes a moment) */
+    suggest(word) {
+      if (!cache2.has(word)) cache2.set(word, this.suggestNow(word));
+      return cache2.get(word);
+    },
+    suggestNow(word) {
+      if (oddCaps(word) && ok(word.toLowerCase())) return [proper(word), ...this.suggestNow(word.toLowerCase()).filter((s) => s.toLowerCase() !== word.toLowerCase())].slice(0, 6);
+      const lw = word.toLowerCase(), max = lw.length > 6 ? 3 : 2;
+      const near = game.filter(([w]) => Math.abs(w.length - lw.length) <= max).map(([w, n]) => [w, distance(lw, w.toLowerCase()), n]).filter(([, d]) => d <= max).map(([w, d, n]) => [w, d - (n >= 100 ? 1.5 : n >= 20 ? 1 : 0), n]);
+      const dict = spell.suggest(word).map((w) => [w, distance(lw, w.toLowerCase()), 0]);
+      const seen2 = /* @__PURE__ */ new Set();
+      return [...near, ...dict].sort((a2, b2) => a2[1] - b2[1] || b2[2] - a2[2]).map(([w]) => w).filter((w) => !seen2.has(w.toLowerCase()) && seen2.add(w.toLowerCase())).slice(0, 6);
+    },
+    add(word) {
+      known.add(word.toLowerCase());
+    }
+  };
+}
+function srdVocabulary(monsters, spells, conditions) {
+  const words2 = /* @__PURE__ */ new Map();
+  const take = (s) => {
+    for (const w of String(s || "").replace(/<[^>]+>/g, " ").match(WORD) || []) {
+      const k = w.replace(/['’]s$/i, "");
+      words2.set(k, (words2.get(k) || 0) + 1);
+    }
+  };
+  for (const m of monsters) {
+    take(m.name);
+    take(m.typeText);
+    take(m.monsterType);
+    take((m.subtypes || []).join(" "));
+    take(m.languagesNote);
+    for (const k of ["traits", "actions", "bonusActions", "reactions", "legendaryActions"]) for (const e2 of m[k] || []) {
+      take(e2.name);
+      take(e2.text);
+    }
+  }
+  for (const s of spells) {
+    take(s.name);
+    take(s.text);
+    take(s.classes?.join(" "));
+    take(s.school);
+  }
+  for (const c2 of conditions) {
+    take(c2.name);
+    take(c2.text);
+  }
+  return words2;
+}
+var ENTRY_KEYS = [["traits", "Trait"], ["actions", "Action"], ["bonusActions", "Bonus action"], ["reactions", "Reaction"], ["legendaryActions", "Legendary action"], ["mythicActions", "Mythic action"], ["lairActions", "Lair action"], ["description", "Description"]];
+function fields(m) {
+  const out = [
+    ["Name", () => m.name, (v) => {
+      m.name = v;
+    }],
+    ["Subtypes", () => (m.subtypes || []).join(", "), (v) => {
+      m.subtypes = v.split(/,\s*/).filter(Boolean);
+    }],
+    ["Armor type", () => m.armorClassType, (v) => {
+      m.armorClassType = v;
+    }],
+    ["Languages", () => m.languagesNote, (v) => {
+      m.languagesNote = v;
+    }]
+  ];
+  for (const [k, label] of ENTRY_KEYS) (m[k] || []).forEach((e2, i) => {
+    const title2 = e2.name || `${label} ${i + 1}`;
+    out.push([`${label} name: ${title2}`, () => e2.name, (v) => {
+      e2.name = v;
+    }]);
+    out.push([`${label}: ${title2}`, () => e2.text, (v) => {
+      e2.text = v;
+    }]);
+  });
+  (m.notes || []).forEach((n) => out.push([n.name, () => n.text, (v) => {
+    n.text = v;
+  }]));
+  return out.filter(([, get]) => typeof get() === "string" && get());
+}
+var textParts = (s) => [...String(s).matchAll(/(^|>)([^<]+)/g)].map((x) => ({ text: x[2], at: x.index + x[1].length }));
+function findIssues(m, checker, ignore = []) {
+  const skip = new Set(ignore.map((w) => w.toLowerCase()));
+  const byWord2 = /* @__PURE__ */ new Map();
+  for (const [field, get] of fields(m)) {
+    const value = get();
+    for (const part of textParts(value)) {
+      for (const x of part.text.matchAll(WORD)) {
+        const w = x[0];
+        if (skip.has(w.toLowerCase()) || checker.correct(w)) continue;
+        if (!byWord2.has(w)) byWord2.set(w, { word: w, count: 0, places: [] });
+        const issue = byWord2.get(w);
+        issue.count++;
+        if (issue.places.length < 4) issue.places.push({ field, before: part.text.slice(Math.max(0, x.index - 40), x.index), after: part.text.slice(x.index + w.length, x.index + w.length + 40) });
+      }
+    }
+  }
+  return [...byWord2.values()].sort((a2, b2) => b2.count - a2.count || a2.word.localeCompare(b2.word));
+}
+function matchCase(original, replacement) {
+  if (original === original.toUpperCase() && original.length > 1) return replacement.toUpperCase();
+  if (/^[A-Z]/.test(original)) return replacement[0].toUpperCase() + replacement.slice(1);
+  return replacement;
+}
+function replaceWord(m, word, replacement) {
+  const re2 = new RegExp(`(?<![A-Za-z'\u2019-])${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![A-Za-z'\u2019])`, "g");
+  let n = 0;
+  for (const [, get, set2] of fields(m)) {
+    const value = get();
+    const next2 = value.replace(/(^|>)([^<]+)/g, (all, gt, text) => gt + text.replace(re2, (w) => {
+      n++;
+      return matchCase(w, replacement);
+    }));
+    if (next2 !== value) set2(next2);
+  }
+  return n;
+}
+var checkerPromise = null;
+function getChecker(vocabulary2) {
+  checkerPromise ??= Promise.all(["vendor/dictionary-en/index.aff", "vendor/dictionary-en/index.dic"].map((u) => fetch(u).then((r) => r.text()))).then(([aff, dic]) => {
+    const c2 = createChecker(aff, dic, vocabulary2());
+    for (const w of userWords()) c2.add(w);
+    return c2;
+  });
+  return checkerPromise;
+}
+function userWords() {
+  try {
+    return JSON.parse(localStorage.getItem("spellWords") || "[]");
+  } catch {
+    return [];
+  }
+}
+async function addUserWord(word) {
+  const words2 = [.../* @__PURE__ */ new Set([...userWords(), word])];
+  try {
+    localStorage.setItem("spellWords", JSON.stringify(words2));
+  } catch {
+  }
+  (await checkerPromise)?.add(word);
+  window.desktop?.spell?.addWord(word);
+}
+
+// src/spell-dialog.js
+var skipped = /* @__PURE__ */ new Set();
+var vocabulary = () => srdVocabulary(store.srd, store.spells, store.conditions);
+async function spellingDialog(monsters, { title: title2 = "Spelling", onOpen, onChanged } = {}) {
+  const body2 = h("div.spell-review", h("div.empty", "Loading the dictionary\u2026"));
+  const close = modal(title2, body2, [["Done", () => {
+  }, "primary"]]);
+  body2.closest(".modal")?.classList.add("wide");
+  const checker = await getChecker(vocabulary);
+  const open2 = /* @__PURE__ */ new Set();
+  let shown4 = 40;
+  function draw2() {
+    const words2 = /* @__PURE__ */ new Map();
+    for (const m of monsters) for (const issue of findIssues(m, checker, [...skipped])) {
+      if (!words2.has(issue.word)) words2.set(issue.word, { word: issue.word, count: 0, monsters: [] });
+      const w = words2.get(issue.word);
+      w.count += issue.count;
+      w.monsters.push({ m, places: issue.places });
+    }
+    const list = [...words2.values()].sort((a2, b2) => b2.monsters.length - a2.monsters.length || b2.count - a2.count || a2.word.localeCompare(b2.word));
+    const fix = (w, to) => {
+      if (!to.trim()) return;
+      let n = 0;
+      for (const { m } of w.monsters) {
+        const k = replaceWord(m, w.word, to.trim());
+        if (k) {
+          n += k;
+          save("monsters", m, { delay: 0 });
+        }
+      }
+      onChanged?.();
+      draw2();
+      return n;
+    };
+    const many = monsters.length > 1;
+    fill(
+      body2,
+      h("p.muted", list.length ? `${list.length} word${list.length === 1 ? "" : "s"} the dictionary doesn't know${many ? ` in ${new Set(list.flatMap((w) => w.monsters.map((x) => x.m.id))).size} of your ${monsters.length} monsters` : ""}. Words used in the SRD (game terms, monster and spell names) already count as correct. Fixing a word changes it everywhere it's listed.` : `No spelling problems found${many ? ` in your ${monsters.length} monsters` : ""}.`),
+      list.slice(0, shown4).map((w) => {
+        const own = h("input.spell-own", { type: "text", placeholder: "Your spelling", onkeydown: (e2) => {
+          if (e2.key === "Enter") fix(w, e2.target.value);
+        } });
+        const isOpen = open2.has(w.word);
+        return h(
+          "div.spell-row",
+          h(
+            "div.spell-top",
+            h("button.icon-btn.chev", { title: isOpen ? "Hide where it is" : "Show where it is", onclick: () => {
+              if (isOpen) open2.delete(w.word);
+              else open2.add(w.word);
+              draw2();
+            } }, isOpen ? "\u25BE" : "\u25B8"),
+            h("span.spell-word", w.word),
+            h("span.muted", `\xD7${w.count}${many ? ` in ${w.monsters.length} monster${w.monsters.length === 1 ? "" : "s"}` : ""}`),
+            h("div.spell-sugg", checker.suggest(w.word).map((s) => h("button.sugg", { title: `Change "${w.word}" to "${s}" everywhere listed`, onclick: () => fix(w, s) }, s))),
+            h(
+              "div.spell-actions",
+              own,
+              h("button", { onclick: () => fix(w, own.value) }, "Replace"),
+              h("button", { title: "Known from now on, in every monster", onclick: async () => {
+                await addUserWord(w.word);
+                draw2();
+              } }, "Add to dictionary"),
+              h("button.link", { title: "Hide it until the app is closed", onclick: () => {
+                skipped.add(w.word.toLowerCase());
+                draw2();
+              } }, "Skip")
+            )
+          ),
+          isOpen ? h("div.spell-places", w.monsters.flatMap(({ m, places }) => places.map((p) => h(
+            "div.spell-place",
+            many || onOpen ? h("button.link", { onclick: () => {
+              close();
+              onOpen?.(m);
+            } }, m.name) : null,
+            h("span.muted", ` ${p.field}: `),
+            h("span", { html: `\u2026${esc(p.before)}<mark>${esc(w.word)}</mark>${esc(p.after)}\u2026` })
+          )))) : null
+        );
+      }),
+      list.length > shown4 ? h("button.load-more", { onclick: () => {
+        shown4 += 40;
+        draw2();
+      } }, `Show more (${list.length - shown4} left)`) : null
+    );
+  }
+  draw2();
+}
+
+// src/tabs/library.js
+init_constants();
+
+// src/monster-filter.js
+init_store();
+init_rules();
+var emptyFilter = () => ({ q: "", type: "", race: "", size: "", source: "", crMin: "0", crMax: "30" });
+var activeFilters = (f) => ["type", "race", "size", "source"].filter((k) => f[k]).length + (f.crMin !== "0" || f.crMax !== "30" ? 1 : 0);
+var titleCase2 = (s) => s.replace(/\b\w/g, (c2) => c2.toUpperCase());
+function raceOptions() {
+  const seen2 = /* @__PURE__ */ new Map();
+  for (const m of allMonsters()) for (const s of m.subtypes || []) {
+    const k = String(s).trim().toLowerCase();
+    if (k && !seen2.has(k)) seen2.set(k, titleCase2(k));
+  }
+  return [...seen2.entries()].sort((a2, b2) => a2[0].localeCompare(b2[0])).map(([value, label]) => ({ value, label }));
+}
+function matches2(m, f) {
+  const q = f.q.trim().toLowerCase();
+  if (q && !m.name.toLowerCase().includes(q) && !(m.monsterType || "").toLowerCase().includes(q) && !(m.subtypes || []).some((s) => String(s).toLowerCase().includes(q))) return false;
+  if (f.type && m.monsterType !== f.type) return false;
+  if (f.race && !(m.subtypes || []).some((s) => String(s).trim().toLowerCase() === f.race)) return false;
+  if (f.size && m.size !== f.size) return false;
+  if (f.source && f.source === "homebrew" !== isHomebrew(m)) return false;
+  const c2 = crValue(m.challengeRating);
+  return c2 >= crValue(f.crMin) && c2 <= crValue(f.crMax);
+}
+
+// src/tabs/library.js
+init_rules();
+
+// src/tabs/loot-tables.js
+init_ui();
+init_store();
+init_constants();
 
 // src/loot-dialog.js
 init_ui();
@@ -64178,7 +64715,7 @@ function lootDialog(enc2) {
     const res = generateLoot({
       enemies: enemies.filter((x) => x.on),
       partyLevel: st.level,
-      items: store.items,
+      items: allItems(),
       spells: store.spells,
       tables,
       settings: { generosity: st.generosity, magic: st.magic ? st.magicCount : 0 },
@@ -64208,7 +64745,7 @@ function lootDialog(enc2) {
           h("span.muted", `~${priceText(x.value)}${x.qty > 1 ? " each" : ""} \xB7 ${x.from.join(", ")}`)
         )))
       ] : null,
-      h("p.loot-total", `Worth about ${priceText(Math.round(res.totalGp) || res.totalGp)} in coins and items`, res.magicGp ? `, plus ${priceText(res.magicGp)} in magic items` : "", "."),
+      h("p.loot-total", res.totalGp ? `Worth about ${priceText(Math.round(res.totalGp) || res.totalGp)} in coins and items` : "No coins or items", res.magicGp ? `, plus ${priceText(res.magicGp)} in magic items` : "", "."),
       res.notes.map((n) => h("p.hint", n))
     );
   };
@@ -64300,17 +64837,17 @@ function lootDialog(enc2) {
 
 // src/tabs/loot-tables.js
 init_format();
-var el3;
+var el4;
 var openMonster;
-var selectedId2 = null;
+var selectedId3 = null;
 var query = "";
 var sampleCr = "1";
 var sampleSeed = "sample";
 var TYPE_ROW = "types";
 function mountLootTables(root, onOpenMonster) {
-  el3 = root;
+  el4 = root;
   openMonster = onOpenMonster;
-  el3.append(
+  el4.append(
     h(
       "div.lib-grid.cond-grid",
       h(
@@ -64319,7 +64856,7 @@ function mountLootTables(root, onOpenMonster) {
           "div.list-tools",
           h("input.search", { type: "search", placeholder: "Search themes or keywords", oninput: (e2) => {
             query = e2.target.value;
-            renderList2();
+            renderList3();
           } }),
           h("button.primary", { onclick: addTheme }, "New")
         ),
@@ -64331,12 +64868,12 @@ function mountLootTables(root, onOpenMonster) {
     )
   );
   onChange((kind) => {
-    if (!el3.hidden && (kind === "all" || kind === "loot")) renderList2();
+    if (!el4.hidden && (kind === "all" || kind === "loot")) renderList3();
   });
 }
 function showLootTables() {
-  renderList2();
-  renderEdit2();
+  renderList3();
+  renderEdit3();
 }
 var defaults = () => new Map(defaultLootThemes().map((t) => [t.id, t]));
 var record = (id) => store.loot.find((x) => x.id === id);
@@ -64353,21 +64890,21 @@ function usage(tables) {
   }
   return by;
 }
-function renderList2() {
+function renderList3() {
   const tables = currentTables(), used = usage(tables);
   const q = query.trim().toLowerCase();
   const list = tables.themes.filter((t) => !q || t.name.toLowerCase().includes(q) || t.keywords.some((k) => k.toLowerCase().includes(q))).sort((a2, b2) => a2.name.localeCompare(b2.name));
   fill(
-    el3.querySelector("#lt-list"),
+    el4.querySelector("#lt-list"),
     h(
-      "button.list-row" + (selectedId2 === TYPE_ROW ? ".active" : ""),
+      "button.list-row" + (selectedId3 === TYPE_ROW ? ".active" : ""),
       { onclick: () => select(TYPE_ROW) },
       h("div.list-main", h("div.list-name", "Creature types"), h("div.list-sub", "The theme each type uses when no keyword matches"))
     ),
     list.map((t) => {
       const n = used.get(t.id)?.length || 0;
       return h(
-        "button.list-row" + (t.id === selectedId2 ? ".active" : ""),
+        "button.list-row" + (t.id === selectedId3 ? ".active" : ""),
         { onclick: () => select(t.id) },
         h(
           "div.list-main",
@@ -64378,7 +64915,7 @@ function renderList2() {
     })
   );
   const gone = store.loot.filter((r) => r.deleted && defaults().has(r.id));
-  fill(el3.querySelector("#lt-restore"), gone.length ? h(
+  fill(el4.querySelector("#lt-restore"), gone.length ? h(
     "button.link",
     { onclick: async () => {
       for (const r of gone) await remove("loot", r);
@@ -64388,25 +64925,25 @@ function renderList2() {
   ) : null);
 }
 function select(id) {
-  selectedId2 = id;
-  renderList2();
-  renderEdit2();
+  selectedId3 = id;
+  renderList3();
+  renderEdit3();
 }
 function addTheme() {
   if (!store.libraryPath) return alert("Choose a library folder first (top right).");
   const t = { id: newId("loot-theme"), name: "New theme", loot: "full", keywords: [], onlyTypes: [], items: [], harvest: [] };
   save("loot", t, { delay: 0 });
   select(t.id);
-  el3.querySelector("#lt-edit input")?.select();
+  el4.querySelector("#lt-edit input")?.select();
 }
-function renderEdit2() {
-  const pane = el3.querySelector("#lt-edit");
-  if (selectedId2 === TYPE_ROW) {
+function renderEdit3() {
+  const pane = el4.querySelector("#lt-edit");
+  if (selectedId3 === TYPE_ROW) {
     typeEditor(pane);
     return renderSide();
   }
-  const shown3 = currentTables().themes.find((t2) => t2.id === selectedId2);
-  if (!shown3) {
+  const shown4 = currentTables().themes.find((t2) => t2.id === selectedId3);
+  if (!shown4) {
     fill(pane, h(
       "div.cond-ref-body",
       h("div.cond-name", "Loot tables"),
@@ -64416,17 +64953,17 @@ function renderEdit2() {
     ));
     return renderSide();
   }
-  const t = record(shown3.id) || structuredClone(shown3);
+  const t = record(shown4.id) || structuredClone(shown4);
   const changed3 = () => {
     save("loot", t);
     refresh();
   };
   const refresh = debounce(() => {
-    renderList2();
+    renderList3();
     renderSide();
   }, 300);
   const original = defaults().get(t.id);
-  const entries = (key2, title, help) => {
+  const entries = (key2, title2, help) => {
     const box = h("div.loot-entries");
     const draw2 = () => fill(
       box,
@@ -64459,14 +64996,14 @@ function renderEdit2() {
     );
     draw2();
     return [
-      h("h4", title),
+      h("h4", title2),
       h("div.hint", help),
       box,
       h("button", { onclick: () => {
         t[key2].push({ name: "", value: 1, weight: 1, qty: "" });
         draw2();
         box.querySelector(".loot-entry:last-child input")?.focus();
-      } }, `Add ${title.toLowerCase().replace(/s$/, "")}`)
+      } }, `Add ${title2.toLowerCase().replace(/s$/, "")}`)
     ];
   };
   fill(
@@ -64483,7 +65020,7 @@ function renderEdit2() {
           t.deleted = true;
           save("loot", t, { delay: 0 });
         } else await remove("loot", t);
-        selectedId2 = null;
+        selectedId3 = null;
         showLootTables();
       }) }, "Delete")
     )),
@@ -64544,7 +65081,7 @@ function typeEditor(pane) {
         rec.types[ty] = e2.target.value;
         save("loot", rec);
         renderSide();
-        renderList2();
+        renderList3();
       } },
       !themes.some((t) => t.id === map[ty]) ? h("option", { value: "", selected: true }, "(none: no loot)") : null,
       themes.map((t) => h("option", { value: t.id, selected: map[ty] === t.id }, t.name))
@@ -64553,17 +65090,17 @@ function typeEditor(pane) {
   );
 }
 function renderSide() {
-  const side = el3.querySelector("#lt-side");
+  const side = el4.querySelector("#lt-side");
   if (!side) return;
   const tables = currentTables();
-  const t = tables.themes.find((x) => x.id === selectedId2);
-  if (!t) return fill(side, h("h3", "Loot tables"), h("p.muted", selectedId2 === TYPE_ROW ? "Pick a theme on the left to see which monsters use it." : "Pick a theme to see which monsters use it and roll a sample."));
+  const t = tables.themes.find((x) => x.id === selectedId3);
+  if (!t) return fill(side, h("h3", "Loot tables"), h("p.muted", selectedId3 === TYPE_ROW ? "Pick a theme on the left to see which monsters use it." : "Pick a theme to see which monsters use it and roll a sample."));
   const users = usage(tables).get(t.id) || [];
   const out = h("div.loot-sample");
   const sample = () => {
     const m = { name: t.name, monsterType: t.onlyTypes[0] || "Humanoid", challengeRating: sampleCr, lootTheme: t.id };
     const level = Math.min(20, Math.max(1, Math.round(Number(sampleCr.includes("/") ? 1 : sampleCr) || 1)));
-    const res = generateLoot({ enemies: [{ monster: m, count: 5 }], partyLevel: level, items: store.items, spells: [], tables, settings: { generosity: 1 }, seed: sampleSeed });
+    const res = generateLoot({ enemies: [{ monster: m, count: 5 }], partyLevel: level, items: allItems(), spells: [], tables, settings: { generosity: 1 }, seed: sampleSeed });
     fill(
       out,
       h("div.hint", `5 creatures of CR ${sampleCr}, party level ${level}, Standard generosity:`),
@@ -64601,16 +65138,16 @@ function renderSide() {
 
 // src/tabs/library.js
 init_format();
-var el4;
-var selectedId3 = null;
-var shown = 150;
+var el5;
+var selectedId4 = null;
+var shown2 = 150;
 var filtersOpen = false;
 var view = "monsters";
 try {
   if (localStorage.getItem("creaturesView") === "loot") view = "loot";
 } catch {
 }
-var filter = emptyFilter();
+var filter2 = emptyFilter();
 var SORTS = {
   name: ["Name (A\u2013Z)", (a2, b2) => a2.name.localeCompare(b2.name)],
   crUp: ["CR (low to high)", (a2, b2) => crValue(a2.challengeRating) - crValue(b2.challengeRating) || a2.name.localeCompare(b2.name)],
@@ -64620,9 +65157,9 @@ var SORTS = {
 };
 var sortKey = "name";
 function mountLibrary(root) {
-  el4 = root;
+  el5 = root;
   const lootBox = h("div#lb-loot");
-  el4.append(
+  el5.append(
     h(
       "div.page-head.view-head",
       h("div", h("h1", "Creatures"), h("div.page-sub#lb-sub")),
@@ -64636,17 +65173,17 @@ function mountLibrary(root) {
         h(
           "div.list-tools",
           h("input.search#lb-q", { type: "search", placeholder: "Search name, type or race", oninput: (e2) => {
-            filter.q = e2.target.value;
-            shown = 150;
-            renderList3();
+            filter2.q = e2.target.value;
+            shown2 = 150;
+            renderList4();
           } }),
           h("button#lb-filter-btn", { onclick: () => {
             filtersOpen = !filtersOpen;
-            renderFilters();
+            renderFilters2();
           } }, "Filters"),
           h("button", { title: "Check the spelling of all your monsters", onclick: () => spellingDialog(store.monsters, { title: "Spelling in your monsters", onOpen: (m) => showLibrary(m.id), onChanged: () => {
-            renderList3();
-            renderEdit3();
+            renderList4();
+            renderEdit4();
           } }) }, "Spelling"),
           h("button.primary", { onclick: newMonster }, "New")
         ),
@@ -64660,9 +65197,9 @@ function mountLibrary(root) {
   );
   mountLootTables(lootBox, (id) => showLibrary(id));
   onChange((kind) => {
-    if (kind === "all" || kind === "monsters") renderList3();
+    if (kind === "all" || kind === "monsters") renderList4();
   });
-  pasteToPicture(el4);
+  pasteToPicture(el5);
 }
 var SUBS = {
   monsters: "Your monsters and the SRD 5.2.1 monsters. Click a monster to view it; your own monsters can be edited here and save automatically.",
@@ -64678,20 +65215,20 @@ function setView(v) {
 }
 function showLibrary(id) {
   if (id) view = "monsters";
-  el4.querySelector("#lb-sub").textContent = SUBS[view];
-  el4.querySelector("#lb-view-monsters").classList.toggle("on", view === "monsters");
-  el4.querySelector("#lb-view-loot").classList.toggle("on", view === "loot");
-  el4.querySelector("#lb-monsters").hidden = view !== "monsters";
-  el4.querySelector("#lb-loot").hidden = view !== "loot";
+  el5.querySelector("#lb-sub").textContent = SUBS[view];
+  el5.querySelector("#lb-view-monsters").classList.toggle("on", view === "monsters");
+  el5.querySelector("#lb-view-loot").classList.toggle("on", view === "loot");
+  el5.querySelector("#lb-monsters").hidden = view !== "monsters";
+  el5.querySelector("#lb-loot").hidden = view !== "loot";
   if (view === "loot") return showLootTables();
   if (id) {
-    selectedId3 = id;
-    Object.assign(filter, emptyFilter());
-    el4.querySelector("#lb-q").value = "";
+    selectedId4 = id;
+    Object.assign(filter2, emptyFilter());
+    el5.querySelector("#lb-q").value = "";
   }
-  renderFilters();
-  renderList3();
-  renderEdit3();
+  renderFilters2();
+  renderList4();
+  renderEdit4();
 }
 function newMonster() {
   if (!store.libraryPath) return alert("Choose a library folder first (top right).");
@@ -64699,38 +65236,38 @@ function newMonster() {
   save("monsters", m, { delay: 0 });
   showLibrary(m.id);
 }
-function duplicate(m) {
+function duplicate2(m) {
   if (!store.libraryPath) return alert("Choose a library folder first (top right).");
   const copy = { ...structuredClone(m), id: newId(m.name), source: "Homebrew", basedOn: m.source, name: `${m.name}` };
   delete copy.created;
   save("monsters", copy, { delay: 0 });
   showLibrary(copy.id);
 }
-function renderFilters() {
-  const box = el4.querySelector("#lb-filters");
-  const n = activeFilters(filter);
-  el4.querySelector("#lb-filter-btn").textContent = n ? `Filters (${n})` : "Filters";
-  el4.querySelector("#lb-filter-btn").classList.toggle("on", filtersOpen || n > 0);
+function renderFilters2() {
+  const box = el5.querySelector("#lb-filters");
+  const n = activeFilters(filter2);
+  el5.querySelector("#lb-filter-btn").textContent = n ? `Filters (${n})` : "Filters";
+  el5.querySelector("#lb-filter-btn").classList.toggle("on", filtersOpen || n > 0);
   box.hidden = !filtersOpen;
   if (!filtersOpen) return;
   const changed3 = () => {
-    shown = 150;
-    renderFilters();
-    renderList3();
+    shown2 = 150;
+    renderFilters2();
+    renderList4();
   };
   const sel = (label, key2, options) => h("label", label, h(
     "select",
     { onchange: (e2) => {
-      filter[key2] = e2.target.value;
+      filter2[key2] = e2.target.value;
       changed3();
     } },
     h("option", { value: "" }, "Any"),
-    options.map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => h("option", { value: o.value, selected: filter[key2] === o.value }, o.label))
+    options.map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => h("option", { value: o.value, selected: filter2[key2] === o.value }, o.label))
   ));
   const cr = (key2) => h("select", { onchange: (e2) => {
-    filter[key2] = e2.target.value;
+    filter2[key2] = e2.target.value;
     changed3();
-  } }, CR_ORDER.map((c2) => h("option", { value: c2, selected: filter[key2] === c2 }, c2)));
+  } }, CR_ORDER.map((c2) => h("option", { value: c2, selected: filter2[key2] === c2 }, c2)));
   fill(
     box,
     sel("Type", "type", TYPES),
@@ -64740,37 +65277,37 @@ function renderFilters() {
     h("label.wide", "Challenge rating", h("div.cr-range", cr("crMin"), h("span", "to"), cr("crMax"))),
     h("label.wide", "Sort by", h("select", { onchange: (e2) => {
       sortKey = e2.target.value;
-      renderList3();
+      renderList4();
     } }, Object.entries(SORTS).map(([k, [label]]) => h("option", { value: k, selected: sortKey === k }, label)))),
     n ? h("button.link.wide", { onclick: () => {
-      Object.assign(filter, emptyFilter(), { q: filter.q });
+      Object.assign(filter2, emptyFilter(), { q: filter2.q });
       changed3();
     } }, "Clear filters") : null
   );
 }
-function renderList3() {
-  const list = allMonsters().filter((m) => matches(m, filter)).sort(SORTS[sortKey][1]);
-  el4.querySelector("#lb-count").textContent = `${list.length} monster${list.length === 1 ? "" : "s"}${activeFilters(filter) || filter.q ? " match" : ""}`;
-  const rows = list.slice(0, shown).map((m) => h(
-    "button.list-row" + (m.id === selectedId3 ? ".active" : ""),
+function renderList4() {
+  const list = allMonsters().filter((m) => matches2(m, filter2)).sort(SORTS[sortKey][1]);
+  el5.querySelector("#lb-count").textContent = `${list.length} monster${list.length === 1 ? "" : "s"}${activeFilters(filter2) || filter2.q ? " match" : ""}`;
+  const rows = list.slice(0, shown2).map((m) => h(
+    "button.list-row" + (m.id === selectedId4 ? ".active" : ""),
     { onclick: () => {
-      selectedId3 = m.id;
-      renderList3();
-      renderEdit3();
+      selectedId4 = m.id;
+      renderList4();
+      renderEdit4();
     } },
     avatar(m.avatar, m.name, "sm"),
     h("div.list-main", h("div.list-name", m.name, isHomebrew(m) ? null : h("span.tag", "SRD")), h("div.list-sub", `CR ${m.challengeRating} \xB7 ${m.size} ${(m.monsterType || "").toLowerCase()}`))
   ));
-  if (list.length > shown) rows.push(h("button.load-more", { onclick: () => {
-    shown += 150;
-    renderList3();
-  } }, `Show more (${list.length - shown})`));
-  fill(el4.querySelector("#lb-list"), ...rows.length ? rows : [h("div.empty", "No monsters match.")]);
+  if (list.length > shown2) rows.push(h("button.load-more", { onclick: () => {
+    shown2 += 150;
+    renderList4();
+  } }, `Show more (${list.length - shown2})`));
+  fill(el5.querySelector("#lb-list"), ...rows.length ? rows : [h("div.empty", "No monsters match.")]);
 }
-var refreshPreview = debounce((m) => fill(el4.querySelector("#lb-preview"), statBlock(m)), 150);
-function renderEdit3() {
-  const pane = el4.querySelector("#lb-edit"), preview = el4.querySelector("#lb-preview");
-  const m = findMonster(selectedId3);
+var refreshPreview = debounce((m) => fill(el5.querySelector("#lb-preview"), statBlock(m)), 150);
+function renderEdit4() {
+  const pane = el5.querySelector("#lb-edit"), preview = el5.querySelector("#lb-preview");
+  const m = findMonster(selectedId4);
   if (!m) {
     fill(pane, h("div.empty", "Select a monster, or click New. Monsters you make in the Monster Maker land here too."));
     preview.replaceChildren();
@@ -64780,12 +65317,12 @@ function renderEdit3() {
   if (!isHomebrew(m)) {
     fill(
       pane,
-      h("div.edit-head", h("h2", m.name), h("button.primary", { onclick: () => duplicate(m) }, "Copy to my monsters")),
+      h("div.edit-head", h("h2", m.name), h("button.primary", { onclick: () => duplicate2(m) }, "Copy to my monsters")),
       h("p.muted", "SRD monsters are read-only. Copy one to your monsters to change it (for example to reskin or retune it)."),
       h("p.muted", `Fighting preference (guessed from the stat block): ${STYLES[guessStyle(m)]}. The encounter generator uses it.`),
       h("div.form-grid", lootFields(lootOf(m), (key2, value) => {
         setSrdLoot(m, key2, value);
-        renderEdit3();
+        renderEdit4();
       })),
       h("p.hint", "Loot settings work on SRD monsters too: they are kept in your library, not in the monster."),
       h("div.pic", avatar(m.avatar, m.name, "lg"))
@@ -64820,7 +65357,7 @@ function editor(m) {
     e2.target.value = get(m);
     changed3();
   } }));
-  const section = (title, key2) => {
+  const section = (title2, key2) => {
     m[key2] ??= [];
     const box = h("div.entries");
     const draw2 = () => fill(box, ...m[key2].map((entry, i) => h(
@@ -64864,14 +65401,14 @@ function editor(m) {
     return h(
       "details.edit-section",
       { open: m[key2].length > 0 },
-      h("summary", `${title} (${m[key2].length})`),
+      h("summary", `${title2} (${m[key2].length})`),
       box,
       h("button", { onclick: () => {
         m[key2].push({ name: "", text: "" });
         draw2();
         changed3();
         box.lastChild?.querySelector("input")?.focus();
-      } }, `Add ${title.replace(/s$/, "").toLowerCase()}`)
+      } }, `Add ${title2.replace(/s$/, "").toLowerCase()}`)
     );
   };
   const json = h("textarea.json", { rows: 14, spellcheck: false });
@@ -64881,14 +65418,14 @@ function editor(m) {
     h("div.edit-head", h("h2", m.name), h(
       "div.row-gap",
       h("button", { title: "List the words in this monster the dictionary doesn\u2019t know", onclick: () => spellingDialog([m], { title: `Spelling: ${m.name}`, onChanged: () => {
-        renderList3();
-        renderEdit3();
+        renderList4();
+        renderEdit4();
       } }) }, "Check spelling"),
-      h("button", { onclick: () => duplicate(m) }, "Duplicate"),
+      h("button", { onclick: () => duplicate2(m) }, "Duplicate"),
       h("button.danger", { onclick: () => confirmBox(`Delete ${m.name}? The file goes to the Recycle Bin.`, "Delete", async () => {
         await remove("monsters", m);
-        selectedId3 = null;
-        renderEdit3();
+        selectedId4 = null;
+        renderEdit4();
       }) }, "Delete")
     )),
     m.warnings?.length ? h("div.warn-box", h("ul.warnings", m.warnings.map((w) => h("li", w))), h("button.link", { onclick: (e2) => {
@@ -64903,22 +65440,22 @@ function editor(m) {
       onImage: (url) => {
         m.avatar = url;
         changed3();
-        renderEdit3();
-        renderList3();
+        renderEdit4();
+        renderList4();
       },
       onRemove: () => {
         delete m.avatar;
         changed3();
-        renderEdit3();
-        renderList3();
+        renderEdit4();
+        renderList4();
       }
     }),
     h(
       "div.form-grid",
       text("Name", () => m.name, (v) => {
         m.name = v;
-        el4.querySelector(".edit-head h2").textContent = v;
-        renderList3();
+        el5.querySelector(".edit-head h2").textContent = v;
+        renderList4();
       }),
       select2("Challenge rating", "challengeRating", CRS),
       select2("Size", "size", SIZES),
@@ -65022,7 +65559,7 @@ function editor(m) {
           });
           Object.assign(m, next2, { id: m.id, source: "Homebrew" });
           changed3();
-          renderEdit3();
+          renderEdit4();
         } catch (e2) {
           jsonStatus.hidden = false;
           jsonStatus.className = "status error";
@@ -65058,15 +65595,15 @@ init_ui();
 init_store();
 init_conditions_data();
 init_conditions();
-var el5;
-var go2;
-var selectedId4 = null;
+var el6;
+var go3;
+var selectedId5 = null;
 var usage2 = /* @__PURE__ */ new Map();
 var query2 = "";
 function mountConditions(root, navigate) {
-  el5 = root;
-  go2 = navigate;
-  el5.append(
+  el6 = root;
+  go3 = navigate;
+  el6.append(
     h("div.page-head", h("h1", "Conditions"), h("div.page-sub", "The conditions stat blocks link to: the SRD 5.2.1 conditions, plus any you add (marked CUSTOM). Change a description, or the keywords a condition is found by; every monster picks up the change right away.")),
     h(
       "div.lib-grid.cond-grid",
@@ -65076,7 +65613,7 @@ function mountConditions(root, navigate) {
           "div.list-tools",
           h("input.search", { type: "search", placeholder: "Search conditions", oninput: (e2) => {
             query2 = e2.target.value;
-            renderList4();
+            renderList5();
           } }),
           h("button.primary", { onclick: addCondition }, "New")
         ),
@@ -65088,17 +65625,17 @@ function mountConditions(root, navigate) {
     )
   );
   onChange((kind) => {
-    if (!el5.hidden && (kind === "all" || kind === "monsters")) {
+    if (!el6.hidden && (kind === "all" || kind === "monsters")) {
       countUsage();
-      renderList4();
+      renderList5();
     }
   });
 }
 function showConditions(id) {
-  if (id) selectedId4 = id;
+  if (id) selectedId5 = id;
   countUsage();
-  renderList4();
-  renderEdit4();
+  renderList5();
+  renderEdit5();
 }
 var plain2 = (s) => String(s || "").replace(/<[^>]+>/g, "");
 function monsterTexts(m) {
@@ -65117,7 +65654,7 @@ function countUsage() {
 }
 var recount = debounce(() => {
   countUsage();
-  renderList4();
+  renderList5();
   renderSide2();
 }, 400);
 var defaults2 = () => new Map(defaultConditions().map((c2) => [c2.id, c2]));
@@ -65125,24 +65662,24 @@ var edited2 = (c2) => {
   const d = defaults2().get(c2.id);
   return d && (d.name !== c2.name || d.text !== c2.text || JSON.stringify(d.keywords) !== JSON.stringify(c2.keywords));
 };
-function renderList4() {
+function renderList5() {
   const q = query2.trim().toLowerCase();
   const list = [...store.conditions].filter((c2) => !q || c2.name.toLowerCase().includes(q) || c2.keywords.some((k) => k.text.toLowerCase().includes(q))).sort((a2, b2) => a2.name.localeCompare(b2.name));
   fill(
-    el5.querySelector("#cd-list"),
-    h("button.list-row" + (selectedId4 === null ? ".active" : ""), { onclick: () => {
-      selectedId4 = null;
-      renderList4();
-      renderEdit4();
+    el6.querySelector("#cd-list"),
+    h("button.list-row" + (selectedId5 === null ? ".active" : ""), { onclick: () => {
+      selectedId5 = null;
+      renderList5();
+      renderEdit5();
     } }, h("div.list-main", h("div.list-name", "About conditions"))),
     list.map((c2) => {
       const n = usage2.get(c2.id)?.length || 0;
       return h(
-        "button.list-row" + (c2.id === selectedId4 ? ".active" : ""),
+        "button.list-row" + (c2.id === selectedId5 ? ".active" : ""),
         { onclick: () => {
-          selectedId4 = c2.id;
-          renderList4();
-          renderEdit4();
+          selectedId5 = c2.id;
+          renderList5();
+          renderEdit5();
         } },
         h(
           "div.list-main",
@@ -65154,21 +65691,21 @@ function renderList4() {
   );
   const have = new Set(store.conditions.map((c2) => c2.id));
   const missing = defaultConditions().filter((c2) => !have.has(c2.id));
-  fill(el5.querySelector("#cd-restore"), missing.length ? h("button.link", { onclick: () => {
+  fill(el6.querySelector("#cd-restore"), missing.length ? h("button.link", { onclick: () => {
     missing.forEach((c2) => save("conditions", c2, { delay: 0 }));
-    renderList4();
+    renderList5();
   } }, `Restore ${missing.length} deleted original${missing.length === 1 ? "" : "s"}`) : null);
 }
 function addCondition() {
   const c2 = { id: newId("condition"), name: "New Condition", keywords: [{ text: "New Condition", caps: false }], text: "Describe what the condition does.\n\n**Ending the Condition.** How it ends." };
   save("conditions", c2, { delay: 0 });
-  selectedId4 = c2.id;
+  selectedId5 = c2.id;
   showConditions();
-  el5.querySelector("#cd-edit input")?.select();
+  el6.querySelector("#cd-edit input")?.select();
 }
-function renderEdit4() {
-  const pane = el5.querySelector("#cd-edit");
-  const c2 = store.conditions.find((x) => x.id === selectedId4);
+function renderEdit5() {
+  const pane = el6.querySelector("#cd-edit");
+  const c2 = store.conditions.find((x) => x.id === selectedId5);
   if (!c2) {
     fill(pane, h("div.cond-ref-body", { html: `<div class="cond-name">Conditions</div>${markupHtml(CONDITIONS_INTRO_TEXT)}` }));
     return renderSide2();
@@ -65220,7 +65757,7 @@ function renderEdit4() {
       } }, "Reset to original") : null,
       h("button.danger", { onclick: () => confirmBox(`Delete "${c2.name}"? The file goes to the Recycle Bin.${original ? " You can restore deleted originals from the list." : ""}`, "Delete", async () => {
         await remove("conditions", c2);
-        selectedId4 = null;
+        selectedId5 = null;
         showConditions();
       }) }, "Delete")
     )),
@@ -65228,9 +65765,9 @@ function renderEdit4() {
       "div.form-grid.one",
       h("label", "Name", h("input", { type: "text", value: c2.name, oninput: (e2) => {
         c2.name = e2.target.value;
-        el5.querySelector("#cd-edit .edit-head h2").textContent = c2.name;
+        el6.querySelector("#cd-edit .edit-head h2").textContent = c2.name;
         changed3();
-        renderList4();
+        renderList5();
       } }))
     ),
     h("h4", "Keywords and phrases"),
@@ -65254,13 +65791,13 @@ function renderEdit4() {
 }
 var testText = "The target must succeed on a DC 13 Constitution saving throw or be poisoned for 1 minute, and is knocked prone. A Bloodied target gains the Bleeding (1d6) condition. It wields a Hidden Dagger and some burning oil.";
 function renderSide2() {
-  const side = el5.querySelector("#cd-side");
+  const side = el6.querySelector("#cd-side");
   const out = h("div.test-out");
   const draw2 = () => {
     out.innerHTML = condify(esc(testText)) || "&nbsp;";
   };
   draw2();
-  const c2 = store.conditions.find((x) => x.id === selectedId4);
+  const c2 = store.conditions.find((x) => x.id === selectedId5);
   const uses = c2 ? usage2.get(c2.id) || [] : [];
   fill(
     side,
@@ -65276,7 +65813,7 @@ function renderSide2() {
       "div.uses",
       uses.slice(0, 60).map((u) => h(
         "button.use-row",
-        { onclick: () => go2("library", u.monster.id), title: "Open in Creatures" },
+        { onclick: () => go3("library", u.monster.id), title: "Open in Creatures" },
         h("strong", u.monster.name),
         h("div.use-snip", { html: esc(u.snippet).replace(/\[\[(.+?)\]\]/, "<mark>$1</mark>") })
       )),
@@ -65290,13 +65827,13 @@ init_ui();
 init_store();
 init_conditions();
 init_spells();
-var el6;
-var selectedId5 = null;
-var filter2 = { q: "", level: "", school: "", cls: "", concentration: false, ritual: false };
+var el7;
+var selectedId6 = null;
+var filter3 = { q: "", level: "", school: "", cls: "", concentration: false, ritual: false };
 var LEVELS = [["0", "Cantrip"], ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => [String(n), `Level ${n}`])];
 function mountSpells(root) {
-  el6 = root;
-  el6.append(
+  el7 = root;
+  el7.append(
     h("div.page-head", h("h1", "Spells"), h("div.page-sub", "The SRD 5.2.1 spells. Spell names in stat blocks link here: hover one to read it, click to pin it open.")),
     h(
       "div.lib-grid.spell-grid",
@@ -65305,8 +65842,8 @@ function mountSpells(root) {
         h(
           "div.list-tools",
           h("input.search#sp-q", { type: "search", placeholder: "Search spells", oninput: (e2) => {
-            filter2.q = e2.target.value;
-            renderList5();
+            filter3.q = e2.target.value;
+            renderList6();
           } })
         ),
         h("div.lib-filters#sp-filters"),
@@ -65319,65 +65856,65 @@ function mountSpells(root) {
 }
 function showSpells(id) {
   if (id) {
-    selectedId5 = id;
-    Object.assign(filter2, { q: "", level: "", school: "", cls: "", concentration: false, ritual: false });
-    el6.querySelector("#sp-q").value = "";
+    selectedId6 = id;
+    Object.assign(filter3, { q: "", level: "", school: "", cls: "", concentration: false, ritual: false });
+    el7.querySelector("#sp-q").value = "";
   }
-  renderFilters2();
-  renderList5();
+  renderFilters3();
+  renderList6();
   renderSpell();
-  if (id) el6.querySelector("#sp-list .active")?.scrollIntoView({ block: "center" });
+  if (id) el7.querySelector("#sp-list .active")?.scrollIntoView({ block: "center" });
 }
 var uniq = (xs) => [...new Set(xs)].sort((a2, b2) => a2.localeCompare(b2));
-function renderFilters2() {
+function renderFilters3() {
   const changed3 = () => {
-    renderFilters2();
-    renderList5();
+    renderFilters3();
+    renderList6();
   };
   const sel = (label, key2, options) => h("label", label, h(
     "select",
     { onchange: (e2) => {
-      filter2[key2] = e2.target.value;
+      filter3[key2] = e2.target.value;
       changed3();
     } },
     h("option", { value: "" }, "Any"),
-    options.map(([value, text]) => h("option", { value, selected: filter2[key2] === value }, text))
+    options.map(([value, text]) => h("option", { value, selected: filter3[key2] === value }, text))
   ));
-  const check = (label, key2) => h("label.check-row", h("input", { type: "checkbox", checked: filter2[key2], onchange: (e2) => {
-    filter2[key2] = e2.target.checked;
+  const check = (label, key2) => h("label.check-row", h("input", { type: "checkbox", checked: filter3[key2], onchange: (e2) => {
+    filter3[key2] = e2.target.checked;
     changed3();
   } }), label);
-  const any = filter2.level || filter2.school || filter2.cls || filter2.concentration || filter2.ritual;
+  const any = filter3.level || filter3.school || filter3.cls || filter3.concentration || filter3.ritual;
   fill(
-    el6.querySelector("#sp-filters"),
+    el7.querySelector("#sp-filters"),
     sel("Level", "level", LEVELS),
     sel("School", "school", uniq(store.spells.map((s) => s.school)).map((s) => [s, s])),
     sel("Class", "cls", uniq(store.spells.flatMap((s) => s.classes)).map((c2) => [c2, c2])),
     h("div.spell-checks", check("Concentration", "concentration"), check("Ritual", "ritual")),
     any ? h("button.link.wide", { onclick: () => {
-      Object.assign(filter2, { level: "", school: "", cls: "", concentration: false, ritual: false });
+      Object.assign(filter3, { level: "", school: "", cls: "", concentration: false, ritual: false });
       changed3();
     } }, "Clear filters") : null
   );
 }
-function matches2(s) {
-  const q = filter2.q.trim().toLowerCase();
+function matches3(s) {
+  const q = filter3.q.trim().toLowerCase();
   if (q && !s.name.toLowerCase().includes(q)) return false;
-  if (filter2.level && String(s.level) !== filter2.level) return false;
-  if (filter2.school && s.school !== filter2.school) return false;
-  if (filter2.cls && !s.classes.includes(filter2.cls)) return false;
-  if (filter2.concentration && !s.concentration) return false;
-  if (filter2.ritual && !s.ritual) return false;
+  if (filter3.level && String(s.level) !== filter3.level) return false;
+  if (filter3.school && s.school !== filter3.school) return false;
+  if (filter3.cls && !s.classes.includes(filter3.cls)) return false;
+  if (filter3.concentration && !s.concentration) return false;
+  if (filter3.ritual && !s.ritual) return false;
   return true;
 }
-function renderList5() {
-  const list = store.spells.filter(matches2);
-  el6.querySelector("#sp-count").textContent = `${list.length} spell${list.length === 1 ? "" : "s"}`;
-  fill(el6.querySelector("#sp-list"), ...list.length ? list.map((s) => h(
-    "button.list-row" + (s.id === selectedId5 ? ".active" : ""),
+function renderList6() {
+  const list = store.spells.filter(matches3);
+  el7.querySelector("#sp-count").textContent = `${list.length} spell${list.length === 1 ? "" : "s"}`;
+  fill(el7.querySelector("#sp-list"), ...list.length ? list.map((s) => h(
+    "button.list-row" + (s.id === selectedId6 ? ".active" : ""),
     { onclick: () => {
-      selectedId5 = s.id;
-      renderList5();
+      selectedId6 = s.id;
+      renderList6();
       renderSpell();
     } },
     h(
@@ -65388,8 +65925,8 @@ function renderList5() {
   )) : [h("div.empty", "No spells match.")]);
 }
 function renderSpell() {
-  const pane = el6.querySelector("#sp-view");
-  const s = spellById(selectedId5);
+  const pane = el7.querySelector("#sp-view");
+  const s = spellById(selectedId6);
   if (!s) {
     fill(pane, h("div.empty", `Pick a spell from the list. ${store.spells.length} spells from the SRD 5.2.1.`));
     return;
@@ -65415,7 +65952,7 @@ init_ui();
 init_store();
 init_rules();
 init_constants();
-var el7;
+var el8;
 var opts;
 var params = null;
 var expanded = null;
@@ -65452,12 +65989,12 @@ var set = (k, v, redraw = true) => {
   if (redraw) renderParams();
 };
 function renderGenerator(root, options) {
-  el7 = root;
+  el8 = root;
   opts = options;
   params ??= loadParams();
   params.characterIds = params.characterIds.filter((id) => store.party.some((c2) => c2.id === id));
   fill(
-    el7,
+    el8,
     h("div.crumbs", h("button.link", { onclick: opts.back }, "My Encounters"), h("span", "\u203A"), h("span", "Encounter Generator")),
     h("div.page-head", h("h1", "Encounter Generator"), h("div.page-sub", "Set what you want, press Generate, and regenerate until you like the mix. Nothing is saved until you choose Save as encounter or Open in the editor.")),
     h("div.gen-grid", h("div.gen-params#gn-params"), h("div.gen-result#gn-result"))
@@ -65490,7 +66027,7 @@ function chipPicker(key2, placeholder, options, labelOf) {
   );
 }
 function renderParams() {
-  const box = el7.querySelector("#gn-params");
+  const box = el8.querySelector("#gn-params");
   if (!box) return;
   const p = params;
   const sel = (label, key2, options, conv = (x) => x) => h("label", label, h(
@@ -65563,7 +66100,7 @@ function renderParams() {
         "details.gen-adv",
         h("summary", "Advanced: seed"),
         h("div.hint", "Each result has a seed. The same settings and seed give the same encounter."),
-        h("div.row-gap", h("input#gn-seed", { type: "text", placeholder: "e.g. k3x9qa", value: current()?.seed || "" }), h("button", { onclick: () => run2(el7.querySelector("#gn-seed").value.trim() || newSeed()) }, "Generate from seed"))
+        h("div.row-gap", h("input#gn-seed", { type: "text", placeholder: "e.g. k3x9qa", value: current()?.seed || "" }), h("button", { onclick: () => run2(el8.querySelector("#gn-seed").value.trim() || newSeed()) }, "Generate from seed"))
       )
     ),
     h("button.primary.big.gen-go", { onclick: () => run2() }, current() ? "Regenerate" : "Generate")
@@ -65587,7 +66124,7 @@ function run2(seed = newSeed()) {
   renderResult();
 }
 function renderResult() {
-  const box = el7.querySelector("#gn-result");
+  const box = el8.querySelector("#gn-result");
   if (!box) return;
   const res = current();
   const nav2 = h(
@@ -65734,22 +66271,22 @@ function saveAs(openAfter) {
 }
 
 // src/tabs/builder.js
-var el8;
-var go3;
+var el9;
+var go4;
 var current2 = null;
 var view2 = "list";
 var tab = "monsters";
-var shown2 = 40;
+var shown3 = 40;
 var expanded2 = null;
 var listQuery = "";
 var filters = emptyFilter();
 var sort = { key: "name", dir: 1 };
 function mountBuilder(root, navigate) {
-  el8 = root;
-  go3 = navigate;
+  el9 = root;
+  go4 = navigate;
   onChange((kind) => {
-    if (el8.hidden) return;
-    if (view2 === "list") renderList6();
+    if (el9.hidden) return;
+    if (view2 === "list") renderList7();
     else if (kind === "all") {
       current2 = store.encounters.find((e2) => e2.id === current2?.id) || null;
       render3();
@@ -65764,7 +66301,7 @@ function showBuilder(id) {
   render3();
 }
 function render3() {
-  if (view2 === "generator") renderGenerator(el8, { back: () => {
+  if (view2 === "generator") renderGenerator(el9, { back: () => {
     view2 = "list";
     render3();
   }, openInEditor: (e2) => {
@@ -65776,10 +66313,10 @@ function render3() {
   else if (view2 === "edit" && current2) renderEditor();
   else {
     view2 = "list";
-    renderList6();
+    renderList7();
   }
 }
-function renderList6() {
+function renderList7() {
   const table = h("div.enc-table-wrap");
   const draw2 = () => fill(table, encounterTable({
     query: listQuery,
@@ -65788,7 +66325,7 @@ function renderList6() {
       view2 = "edit";
       render3();
     },
-    onRun: (e2) => go3("runner", e2.id),
+    onRun: (e2) => go4("runner", e2.id),
     menu: (e2) => [
       ["Edit", () => {
         current2 = e2;
@@ -65799,16 +66336,16 @@ function renderList6() {
         const c2 = { ...structuredClone(e2), id: newId(e2.name), name: `${e2.name} (copy)`, combat: null };
         delete c2.created;
         save("encounters", c2, { delay: 0 });
-        renderList6();
+        renderList7();
       }],
       ["Delete", () => confirmBox(`Delete "${e2.name}"? The file goes to the Recycle Bin.`, "Delete", async () => {
         await remove("encounters", e2);
-        renderList6();
+        renderList7();
       }), "danger"]
     ]
   }));
   fill(
-    el8,
+    el9,
     h("div.crumbs", h("span", "My Encounters")),
     h("div.page-head.with-action", h("h1", "My Encounters"), h("div.row-gap", h("button.outline.big", { title: "Generate an encounter from your monsters and the SRD", onclick: () => {
       view2 = "generator";
@@ -65829,7 +66366,7 @@ function create() {
   view2 = "edit";
   tab = "monsters";
   render3();
-  el8.querySelector(".enc-title")?.select();
+  el9.querySelector(".enc-title")?.select();
 }
 function changed2() {
   save("encounters", current2);
@@ -65840,7 +66377,7 @@ function renderEditor() {
   const levels = encounterLevels(e2);
   const avg = levels.length ? levels.reduce((a2, b2) => a2 + b2, 0) / levels.length : 0;
   fill(
-    el8,
+    el9,
     h(
       "div.builder",
       h(
@@ -65898,7 +66435,7 @@ function renderEditor() {
         ),
         tab === "monsters" ? h("div.browser", filterPanel(), h("div.browser-main", h("input.search", { type: "search", placeholder: "Search", value: filters.q, oninput: (ev) => {
           filters.q = ev.target.value;
-          shown2 = 40;
+          shown3 = 40;
           renderMonsters();
         } }), h("div#bd-monsters"))) : h("div.card.summary-tab", h("h2", "Short summary"), h("textarea", { rows: 12, value: e2.summary || "", placeholder: "Notes for this encounter: setting, tactics, treasure\u2026", oninput: (ev) => {
           e2.summary = ev.target.value;
@@ -65916,7 +66453,7 @@ function filterPanel() {
     "select",
     { onchange: (ev) => {
       filters[key2] = ev.target.value;
-      shown2 = 40;
+      shown3 = 40;
       renderMonsters();
     } },
     h("option", { value: "" }, label),
@@ -65924,7 +66461,7 @@ function filterPanel() {
   );
   const cr = (key2) => h("select", { onchange: (ev) => {
     filters[key2] = ev.target.value;
-    shown2 = 40;
+    shown3 = 40;
     renderMonsters();
   } }, CR_ORDER.map((c2) => h("option", { value: c2, selected: filters[key2] === c2 }, c2)));
   return h(
@@ -65943,7 +66480,7 @@ function filterPanel() {
   );
 }
 function filteredMonsters() {
-  const list = allMonsters().filter((m) => matches(m, filters));
+  const list = allMonsters().filter((m) => matches2(m, filters));
   const key2 = { name: (m) => m.name, type: (m) => m.monsterType, size: (m) => SIZES.indexOf(m.size), cr: (m) => crValue(m.challengeRating), difficulty: (m) => crValue(m.challengeRating) }[sort.key];
   return list.sort((a2, b2) => {
     const x = key2(a2), y = key2(b2);
@@ -65951,7 +66488,7 @@ function filteredMonsters() {
   });
 }
 function renderMonsters() {
-  const box = el8.querySelector("#bd-monsters");
+  const box = el9.querySelector("#bd-monsters");
   if (!box) return;
   const levels = encounterLevels(current2);
   const party = encounterParty(current2);
@@ -65961,7 +66498,7 @@ function renderMonsters() {
     sort.key = key2;
     renderMonsters();
   } }, label, sort.key === key2 ? sort.dir > 0 ? " \u25B2" : " \u25BC" : " \u21C5");
-  const rows = list.slice(0, shown2).map((m) => {
+  const rows = list.slice(0, shown3).map((m) => {
     const r = evaluate([xpItem(m)], party, current2.rules);
     const open2 = expanded2 === m.id;
     return h(
@@ -65987,8 +66524,8 @@ function renderMonsters() {
     box,
     h("div.mon-row.mon-head", h("div"), head("Name", "name"), head("Type", "type"), head("Size", "size"), head("CR", "cr"), head("Difficulty", "difficulty"), h("div"), h("div")),
     ...rows.length ? rows : [h("div.empty", "No monsters match these filters.")],
-    list.length > shown2 ? h("button.load-more", { onclick: () => {
-      shown2 += 40;
+    list.length > shown3 ? h("button.load-more", { onclick: () => {
+      shown3 += 40;
       renderMonsters();
     } }, "Load more") : null
   );
@@ -66017,7 +66554,7 @@ function splitDialog(i) {
   n.select();
 }
 function renderSummary() {
-  const box = el8.querySelector("#bd-summary");
+  const box = el9.querySelector("#bd-summary");
   if (!box) return;
   const e2 = current2;
   const r = evaluateEncounter(e2);
@@ -66139,8 +66676,8 @@ var iconPath = (id, size = 64) => `conditions%20symbols/png-${size}/${id}.png`;
 // src/tabs/runner.js
 init_format();
 init_rules();
-var el9;
-var go4;
+var el10;
+var go5;
 var enc = null;
 var sameInit = true;
 var UNDO_LIMIT = 100;
@@ -66150,13 +66687,13 @@ var undoStack = () => {
   return undoStacks.get(enc.id);
 };
 function mountRunner(root, navigate) {
-  el9 = root;
-  go4 = navigate;
+  el10 = root;
+  go5 = navigate;
   onRoll(() => {
-    if (!el9.hidden && enc) renderLog();
+    if (!el10.hidden && enc) renderLog();
   });
   onChange((kind) => {
-    if (el9.hidden) return;
+    if (el10.hidden) return;
     if (kind === "all") enc = enc && store.encounters.find((e2) => e2.id === enc.id);
     if (!enc) render4();
   });
@@ -66199,10 +66736,10 @@ function render4() {
 function renderPicker() {
   const table = h("div.enc-table-wrap");
   let query3 = "";
-  const draw2 = () => fill(table, encounterTable({ query: query3, onOpen: (e2) => go4("builder", e2.id), onRun: (e2) => showRunner(e2.id) }));
+  const draw2 = () => fill(table, encounterTable({ query: query3, onOpen: (e2) => go5("builder", e2.id), onRun: (e2) => showRunner(e2.id) }));
   const party = activeParty();
   fill(
-    el9,
+    el10,
     h("div.page-head", h("h1", "Run Encounter"), h("div.page-sub", "Your active party, and the encounters to run. A fight in progress shows Resume.")),
     h(
       "div.run-home",
@@ -66300,7 +66837,7 @@ function rollFor(which) {
 function renderSetup() {
   const s = C();
   fill(
-    el9,
+    el10,
     header(),
     h(
       "div.run-grid",
@@ -66342,7 +66879,7 @@ function renderSetup() {
   updateStart();
   function updateStart() {
     const n = s.combatants.filter((c2) => c2.init == null).length;
-    el9.querySelector("#run-missing").textContent = n ? `${n} without initiative: they will roll automatically when you start.` : "";
+    el10.querySelector("#run-missing").textContent = n ? `${n} without initiative: they will roll automatically when you start.` : "";
   }
 }
 function start() {
@@ -66363,7 +66900,7 @@ function header() {
     ),
     h(
       "div.row-gap",
-      h("button.outline", { onclick: () => go4("builder", enc.id) }, "Edit encounter"),
+      h("button.outline", { onclick: () => go5("builder", enc.id) }, "Edit encounter"),
       h("button.outline", { title: "Roll the loot for every enemy in this fight", onclick: () => lootDialog(enc) }, "Loot"),
       h("button.dark", { onclick: endCombat }, "End combat")
     )
@@ -66393,7 +66930,7 @@ function renderTracker() {
   const order = ordered2();
   const turnIndex = Math.max(0, order.findIndex((c2) => c2.key === s.turnKey));
   fill(
-    el9,
+    el10,
     header(),
     h(
       "div.run-grid",
@@ -66415,7 +66952,7 @@ function renderTracker() {
   );
   renderBlock();
   renderLog();
-  el9.querySelector(".turn-row.current")?.scrollIntoView({ block: "nearest" });
+  el10.querySelector(".turn-row.current")?.scrollIntoView({ block: "nearest" });
 }
 function avatarFor(c2, size) {
   const src = c2.kind === "pc" ? findCharacter(c2.refId)?.avatar : findMonster(c2.refId)?.avatar;
@@ -66533,17 +67070,17 @@ function concentrationPrompt(c2, damage, end) {
   }, "keep"], ["End concentration", end, "danger.end"]]);
 }
 function editHp(c2) {
-  hpDialog(c2, (mode2, n) => {
-    act((x) => applyHp(x.combatants.find((z) => z.key === c2.key), mode2, n));
-    if (mode2 === "damage") setTimeout(() => concentrationCheck(c2.key, n), 0);
+  hpDialog(c2, (mode3, n) => {
+    act((x) => applyHp(x.combatants.find((z) => z.key === c2.key), mode3, n));
+    if (mode3 === "damage") setTimeout(() => concentrationCheck(c2.key, n), 0);
   });
 }
 function hpDialog(c2, onApply) {
   const input = h("input.hp-input", { type: "number", min: 0, placeholder: "Amount" });
-  const apply = (mode2) => {
+  const apply = (mode3) => {
     const n = Number(input.value);
     if (!Number.isFinite(n) || input.value === "") return false;
-    onApply(mode2, n);
+    onApply(mode3, n);
   };
   const close = modal(`${c2.name}: hit points`, h(
     "div.hp-edit",
@@ -66570,10 +67107,10 @@ function pips(c2) {
     { onclick: (e2) => e2.stopPropagation() },
     c2.members.map((mem, i) => {
       const dead = mem.hp <= 0;
-      const title = `${c2.name} ${i + 1}: ${dead ? "down" : minion ? "standing" : `${mem.hp}/${c2.maxHp} HP`}${mem.conditions.length ? ` \xB7 ${mem.conditions.join(", ")}` : ""}
+      const title2 = `${c2.name} ${i + 1}: ${dead ? "down" : minion ? "standing" : `${mem.hp}/${c2.maxHp} HP`}${mem.conditions.length ? ` \xB7 ${mem.conditions.join(", ")}` : ""}
 ${minion ? "Click: down / back up" : "Click: change just its HP"}. Right-click: its own conditions.`;
       return h("button.pip" + (dead ? ".dead" : "") + (minion ? "" : ".bar") + (mem.conditions.length ? ".marked" : ""), {
-        title,
+        title: title2,
         onclick: () => minion ? act((x) => {
           const y = find(x, c2.key);
           const m = y.members[i];
@@ -66650,20 +67187,20 @@ function packDialog(c2) {
   const left = standing(c2).length;
   const input = h("input.hp-input", { type: "number", min: 0, placeholder: "Amount" });
   const caught = numberInput(left, 1, left);
-  const apply = (mode2) => {
+  const apply = (mode3) => {
     const n = Number(input.value);
     if (!Number.isFinite(n) || input.value === "") return false;
     act((x) => {
       const y = find(x, c2.key);
-      if (mode2 === "damage") damagePack(y, n);
-      else if (mode2 === "each") damageEach(y, n, Number(caught.value) || 1);
-      else if (mode2 === "heal") healPack(y, n);
-      else if (mode2 === "temp") {
+      if (mode3 === "damage") damagePack(y, n);
+      else if (mode3 === "each") damageEach(y, n, Number(caught.value) || 1);
+      else if (mode3 === "heal") healPack(y, n);
+      else if (mode3 === "temp") {
         y.tempHp = Math.max(0, Math.round(n));
         if (!y.tempHp) delete y.tempHp;
       }
     });
-    if (mode2 === "damage" || mode2 === "each") setTimeout(() => concentrationCheck(c2.key, n), 0);
+    if (mode3 === "damage" || mode3 === "each") setTimeout(() => concentrationCheck(c2.key, n), 0);
   };
   const close = modal(`${c2.name}: pack hit points`, h(
     "div.hp-edit.group-edit",
@@ -66690,13 +67227,13 @@ function packDialog(c2) {
 function memberHp(c2, i) {
   const mem = c2.members[i];
   const input = h("input.hp-input", { type: "number", min: 0, placeholder: "Amount" });
-  const apply = (mode2) => {
+  const apply = (mode3) => {
     const n = Number(input.value);
     if (!Number.isFinite(n) || input.value === "") return false;
     act((x) => {
       const y = find(x, c2.key), m = y.members[i];
-      if (mode2 === "damage") m.hp = Math.max(0, m.hp - n);
-      else if (mode2 === "heal") {
+      if (mode3 === "damage") m.hp = Math.max(0, m.hp - n);
+      else if (mode3 === "heal") {
         if (m.hp > 0) m.hp = Math.min(y.maxHp, m.hp + n);
       } else m.hp = Math.max(0, Math.min(y.maxHp, n));
       if (m.hp <= 0) m.conditions = [];
@@ -66763,9 +67300,9 @@ function groupAttack(key2, entry) {
   const left = standing(c2).length;
   const n = h("input.hp-input", { type: "number", min: 1, max: left, value: left });
   const result = h("div.conc-result");
-  const run3 = (mode2) => {
+  const run3 = (mode3) => {
     const k = Math.max(1, Math.min(left, Math.round(Number(n.value)) || left));
-    const r = a2.bonus ? rollFromClick(btn, `1d20${a2.bonus}`, { who: c2.name, label: `${name}: group attack (${k} joining)`, mode: mode2 }) : null;
+    const r = a2.bonus ? rollFromClick(btn, `1d20${a2.bonus}`, { who: c2.name, label: `${name}: group attack (${k} joining)`, mode: mode3 }) : null;
     if (a2.bonus && !r) return;
     fill(
       result,
@@ -66948,9 +67485,9 @@ function partyCard(ch) {
   );
 }
 function partyHp(ch) {
-  hpDialog(partyCombatant(ch), (mode2, n) => {
-    partyAct(ch.id, (p) => applyHp(p, mode2, n));
-    if (mode2 !== "damage") return;
+  hpDialog(partyCombatant(ch), (mode3, n) => {
+    partyAct(ch.id, (p) => applyHp(p, mode3, n));
+    if (mode3 !== "damage") return;
     setTimeout(() => concentrationPrompt(
       partyCombatant(findCharacter(ch.id)),
       n,
@@ -67009,7 +67546,7 @@ function unlinkParty(ch) {
   if (ids.length && linker.available()) linker.unlink(ids);
 }
 function renderBlock() {
-  const box = el9.querySelector("#run-block");
+  const box = el10.querySelector("#run-block");
   if (!box) return;
   const c2 = C().combatants.find((x) => x.key === C().selectedKey);
   if (!c2) return fill(box, h("div.empty", "Click a creature to see its stat block. Click any bonus or dice in it to roll."));
@@ -67039,7 +67576,7 @@ function renderBlock() {
     fill(
       box,
       m ? statBlock(m, { who: c2.name, description: false, tracker, recharge, group }) : h("div.empty", `${c2.name} has no stat block (manual entry or deleted from the library).`),
-      m ? h("button.outline", { onclick: () => go4("library", m.id) }, "View in Creatures") : null
+      m ? h("button.outline", { onclick: () => go5("library", m.id) }, "View in Creatures") : null
     );
     return;
   }
@@ -67056,7 +67593,7 @@ function renderBlock() {
   );
 }
 function renderLog() {
-  const box = el9.querySelector("#run-log");
+  const box = el10.querySelector("#run-log");
   if (!box) return;
   fill(box, h("h3", "Roll log"), rollLog.length ? h("div.log-list", rollLog.slice(0, 40).map((r) => h(
     "div.log-row" + (r.natural20 ? ".crit" : r.natural1 ? ".fumble" : ""),
@@ -67067,15 +67604,16 @@ function renderLog() {
 }
 
 // src/obr/manifest.json
-var version2 = "1.1.0";
+var version2 = "1.2.0";
 
 // src/app.js
 var TABS = [
-  { id: "maker", label: "Monster Maker", mount: mountMaker },
+  { id: "maker", label: "Maker", mount: mountMaker, show: showMaker },
   { id: "party", label: "Party", mount: mountParty, show: showParty },
   { id: "library", label: "Creatures", mount: mountLibrary, show: showLibrary },
   { id: "conditions", label: "Conditions", mount: mountConditions, show: showConditions },
   { id: "spells", label: "Spells", mount: mountSpells, show: showSpells },
+  { id: "items", label: "Items", mount: mountItems, show: showItems },
   { id: "builder", label: "Encounter Builder", mount: mountBuilder, show: showBuilder },
   { id: "runner", label: "Run Encounter", mount: mountRunner, show: showRunner }
 ];
@@ -67085,7 +67623,7 @@ var saveStatus = h("span.save-status");
 var libButton = h("button.lib-btn", { onclick: (e2) => libraryMenu(e2.currentTarget) });
 var settingsButton = h("button.icon-btn.settings-btn", { title: "Settings", onclick: () => settings() }, "\u2699");
 var active = null;
-function go5(id, arg) {
+function go6(id, arg) {
   active = id;
   try {
     localStorage.setItem("tab", id);
@@ -67117,7 +67655,7 @@ function renderGhButton() {
   ghButton.classList.toggle("dirty", !!s.dirty && !ghBusy);
   ghButton.title = s.dirty ? `Changes not saved to GitHub (${s.repo}). Click to save now.${s.auto ? " Autosave is on." : ""}` : `Library saved to GitHub (${s.repo})${s.savedAt ? `, ${new Date(s.savedAt).toLocaleString()}` : ""}. Click for the GitHub library settings.`;
 }
-var USER_KINDS = /* @__PURE__ */ new Set(["monsters", "party", "encounters", "conditions", "loot"]);
+var USER_KINDS = /* @__PURE__ */ new Set(["monsters", "party", "encounters", "conditions", "loot", "items"]);
 function watchGithub() {
   onChange((kind) => {
     if (!USER_KINDS.has(kind) || !ghReady()) return;
@@ -67344,15 +67882,15 @@ async function importLibrary(text, fileName, { onDone } = {}) {
     Object.keys(skipped2).length ? h("li.muted", "Unreadable records left out: ", countText(skipped2)) : null
   ];
   const localOnly = PACK_KINDS.some((k) => store[k].some((x) => !pack[k].some((y) => y.id === x.id)));
-  const run3 = async (mode2) => {
-    const items = toImport(plan, mode2);
+  const run3 = async (mode3) => {
+    const items = toImport(plan, mode3);
     for (const k of PACK_KINDS) for (const x of items[k]) save(k, x, { delay: 0, touch: false });
     await flushSaves();
     await loadLibrary();
-    go5(active || "maker");
+    go6(active || "maker");
     modal("Library imported", h("p", `Imported ${countText(items)}.`), [["OK", () => {
     }, "primary"]]);
-    onDone?.({ mode: mode2, localNewer: localOnly || mode2 !== "all" && n(older) > 0 });
+    onDone?.({ mode: mode3, localNewer: localOnly || mode3 !== "all" && n(older) > 0 });
   };
   const nothing = !n(add2) && !n(newer);
   if (nothing) onDone?.({ mode: null, localNewer: localOnly || n(older) > 0 });
@@ -67374,7 +67912,7 @@ async function importLibrary(text, fileName, { onDone } = {}) {
 }
 async function pickLibrary() {
   const p = await chooseLibrary();
-  if (p) go5(active || "maker");
+  if (p) go6(active || "maker");
 }
 function renderLibButton() {
   const name = store.libraryPath ? store.libraryPath.split(/[\\/]/).filter(Boolean).pop() : "Choose library folder";
@@ -67544,7 +68082,7 @@ var COMMON_FONTS = [
 function about() {
   modal("About", h(
     "div.about",
-    h("p", h("strong", "Kimble's Encounter Manager 5/5.5e"), h("span.muted", ` \xB7 version ${version2}`), h("br"), "Monster maker, party, creatures, conditions, spells, encounter builder and combat tracker."),
+    h("p", h("strong", "Kimble's Encounter Manager 5/5.5e"), h("span.muted", ` \xB7 version ${version2}`), h("br"), "Monster and item maker, party, creatures, conditions, spells, items, encounter builder, combat tracker and loot."),
     h("p", "Encounter difficulty uses the 2014 XP thresholds and multipliers, or the 2024 XP budgets."),
     h(
       "p.license",
@@ -67561,7 +68099,7 @@ async function init() {
   document.body.append(h("header.top", h("div.brand", { title: "Kimble's Encounter Manager 5/5.5e" }, h("span.brand-mark", "\u2694"), h("span.brand-text", h("span.brand-top", "Kimble's \xB7 5/5.5e"), h("span.brand-main", "Encounter Manager"))), nav, h("div.top-right", saveStatus, ghButton, libButton, settingsButton)), main);
   for (const t of TABS) {
     t.el = h(`section.tab.tab-${t.id}`, { hidden: true });
-    t.button = h("button", { onclick: () => go5(t.id) }, t.label);
+    t.button = h("button", { onclick: () => go6(t.id) }, t.label);
     nav.append(t.button);
     main.append(t.el);
   }
@@ -67575,8 +68113,8 @@ async function init() {
     if (kind === "all") renderLibButton();
   });
   await loadLibrary();
-  for (const t of TABS) t.mount(t.el, go5);
-  setSpellOpener((id) => go5("spells", id));
+  for (const t of TABS) t.mount(t.el, go6);
+  setSpellOpener((id) => go6("spells", id));
   mountDiceTray();
   renderLibButton();
   if (store.errors.length) modal("Some files could not be read", h("ul.warnings", store.errors.map((e2) => h("li", e2))));
@@ -67585,12 +68123,12 @@ async function init() {
     start2 = localStorage.getItem("tab") || "maker";
   } catch {
   }
-  go5(TABS.some((t) => t.id === start2) ? start2 : "maker");
+  go6(TABS.some((t) => t.id === start2) ? start2 : "maker");
   if (!store.libraryPath) welcome();
 }
 if (location.search.includes("test")) {
   Promise.all([Promise.resolve().then(() => (init_ocr(), ocr_exports)), Promise.resolve().then(() => (init_parse(), parse_exports)), Promise.resolve().then(() => (init_store(), store_exports)), Promise.resolve().then(() => (init_conditions(), conditions_exports)), Promise.resolve().then(() => (init_spells(), spells_exports))]).then(([ocr, parse, st, cond, sp]) => {
-    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, condify: cond.condify, spellify: sp.spellify, go: go5, importLibrary, flushSaves: st.flushSaves };
+    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, condify: cond.condify, spellify: sp.spellify, go: go6, importLibrary, flushSaves: st.flushSaves };
   });
 }
 init();
@@ -67765,14 +68303,14 @@ function draw() {
   )) : h("div.empty", "No messages yet. Right-click a character in Run Encounter > Send message\u2026"));
   const from = h("input", { type: "text", value: lastVoice(), title: "Who it seems to come from (the title they see)" });
   const text = h("textarea", { rows: 2, placeholder: t ? `Message for ${t.character}\u2026` : "Pick a character first", disabled: !t });
-  const go6 = () => {
+  const go7 = () => {
     if (!t || !text.value.trim()) return;
     sendMessage(t.charId, t.character, from.value.trim() || "GM", text.value.trim());
   };
   text.addEventListener("keydown", (e2) => {
     if (e2.key === "Enter" && !e2.shiftKey) {
       e2.preventDefault();
-      go6();
+      go7();
     }
   });
   fill(
@@ -67785,7 +68323,7 @@ function draw() {
       threads[k].unread ? h("span.chat-count", threads[k].unread) : ""
     ))) : null,
     list,
-    t ? h("div.chat-send", h("label", "From", from), h("div.chat-row", text, h("button.primary", { onclick: go6 }, "Send"))) : null
+    t ? h("div.chat-send", h("label", "From", from), h("div.chat-row", text, h("button.primary", { onclick: go7 }, "Send"))) : null
   );
   list.scrollTop = list.scrollHeight;
 }
