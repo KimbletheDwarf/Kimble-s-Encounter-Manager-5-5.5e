@@ -68611,7 +68611,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.5.0";
+var version2 = "1.5.1";
 
 // src/app.js
 var TABS = [
@@ -69048,7 +69048,7 @@ function owlbearSection() {
     }));
   };
   draw2();
-  return [h("h4", "Owlbear"), h("p.muted", "The room\u2019s settings, the same switches as the GM panel in Owlbear. They apply to everyone in the room straight away."), box];
+  return [h("h4", "Owlbear"), h("p.muted", "The room\u2019s settings. They apply to everyone in the room straight away."), box];
 }
 var fontStyle = (f) => `font-family: ${f ? `"${f.replace(/"/g, "")}", ` : ""}"Segoe UI", system-ui, sans-serif`;
 var fontList = null;

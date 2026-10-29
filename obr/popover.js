@@ -3642,7 +3642,7 @@ function marks(list = []) {
 }
 function row(r, cls = "") {
   const pic = (r.tokens || []).map((id) => pictures.get(id)).find(Boolean);
-  const centre = role === "GM" && r.tokens?.length;
+  const centre = canCentre(r);
   const owner = r.with && state?.order?.find((o) => o.key === r.with);
   return h(
     `div.row.${r.kind}${r.with ? ".follow" : ""}${r.down ? ".down" : ""}${cls ? `.${cls}` : ""}${centre ? ".centre" : ""}`,
@@ -3703,43 +3703,15 @@ function gmControls() {
       h("button", { onclick: () => send("undo"), disabled: !connected, title: "Undo the last change in the GM window" }, "Undo"),
       h("button.primary", { onclick: () => send("next"), disabled: !connected, title: "Next turn" }, "Next")
     ) : null,
-    h(
-      "label.check",
-      {},
-      h("input", { type: "checkbox", checked: !!settings.showPartyHp, onchange: (e) => lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings, showPartyHp: e.target.checked } }) }),
-      "Show party HP to players"
-    ),
-    h(
-      "label.check",
-      {},
-      h("input", { type: "checkbox", checked: settings.showTurnDie !== false, onchange: (e) => lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings, showTurnDie: e.target.checked } }) }),
-      "Show the turn d20 on the active token"
-    ),
-    h(
-      "label.check",
-      { title: 'A green trail with a dot every 5 ft and "15 / 30 ft" on the token whose turn it is. Right-click the token > Reset movement to start its turn again.' },
-      h("input", { type: "checkbox", checked: settings.trackMovement !== false, onchange: (e) => lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings, trackMovement: e.target.checked } }) }),
-      "Track movement on the active token"
-    ),
-    settings.trackMovement !== false ? h(
-      "label.check",
-      { title: "The trail follows the drag square by square. Off: players keep Owlbear\u2019s normal Move tool (one straight line per drop)." },
-      h("input", { type: "checkbox", checked: settings.dragTrail !== false, onchange: (e) => lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings, dragTrail: e.target.checked } }) }),
-      "Switch players to \u201CMove with trail\u201D during fights"
-    ) : null,
-    settings.trackMovement !== false ? h(
-      "label.check",
-      { title: "A drop that goes past the token\u2019s speed is undone, and its player is told how far it can still go." },
-      h("input", { type: "checkbox", checked: !!settings.stopAtSpeed, onchange: (e) => lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings, stopAtSpeed: e.target.checked } }) }),
-      "Stop movement at its speed"
-    ) : null,
+    h("p.muted.settings-note", {}, "Party HP, the turn d20 and movement tracking: the GM window\u2019s Settings (\u2699)."),
     h(`div.status${connected ? ".on" : ""}`, {}, connected ? "\u25CF GM window linked" : "\u25CB GM window not linked"),
     h("button", { onclick: openGmWindow }, connected ? "Show the GM window" : "Open / reconnect GM window"),
     note ? h("div.status", {}, note) : null
   );
 }
+var canCentre = (r) => r.tokens?.length && (role === "GM" || r.kind === "pc" || r.kind === "ally");
 async function centreOn(ids) {
-  const here = (await lib_default.scene.items.getItems(ids)).map((i) => i.id);
+  const here = (await lib_default.scene.items.getItems(ids)).filter((i) => role === "GM" || i.visible).map((i) => i.id);
   if (!here.length) {
     note = "Its token is not on this map.";
     return render();
@@ -3747,7 +3719,7 @@ async function centreOn(ids) {
   const b = await lib_default.scene.items.getItemBounds(here);
   const [scale, w, ht] = await Promise.all([lib_default.viewport.getScale(), lib_default.viewport.getWidth(), lib_default.viewport.getHeight()]);
   await lib_default.viewport.animateTo({ scale, position: { x: w / 2 - b.center.x * scale, y: ht / 2 - b.center.y * scale } });
-  await lib_default.player.select(here, true);
+  if (role === "GM") await lib_default.player.select(here, true);
 }
 async function loadPictures() {
   const ids = [...new Set((state?.order || []).flatMap((r) => r.tokens || []))].filter((id) => !pictures.has(id));

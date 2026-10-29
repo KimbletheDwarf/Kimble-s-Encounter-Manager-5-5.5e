@@ -4233,7 +4233,7 @@ async function startMovement() {
     const [token] = await lib_default.scene.items.getItems([data?.token]).catch(() => []);
     if (token?.createdUserId === me) lib_default.notification.show(data.text, "WARNING");
   });
-  const icon = new URL("icon.svg", location.href).href;
+  const icon = new URL("../logo/logo-64.png", location.href).href;
   try {
     await lib_default.contextMenu.create({
       id: MENU,
@@ -4478,7 +4478,10 @@ async function drawTrail(id, m, { local = false, visible = true } = {}) {
   if (token) {
     const b = await lib_default.scene.items.getItemBounds([id]);
     const at = local ? m.points[m.points.length - 1] : b.center;
-    add.push(finish(buildLabel().plainText(usedText(used, speed, unit)).position({ x: at.x, y: at.y + b.height / 2 + dpi * 0.08 }).fontSize(dpi * 0.16).fontWeight(700).padding(dpi * 0.05).cornerRadius(dpi * 0.08).pointerWidth(0).pointerHeight(0).backgroundColor(over ? "#5a1612" : "#12321d").backgroundOpacity(0.9).fillColor("#ffffff").attachedTo(local ? void 0 : id).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).zIndex(2), "Movement used"));
+    const style = token.text?.style || {};
+    const label = finish(buildLabel().plainText(usedText(used, speed, unit)).position({ x: at.x, y: at.y - b.height / 2 - dpi * 0.04 }).fontFamily(style.fontFamily || "Roboto").fontWeight(style.fontWeight || 400).fontSize(dpi * 0.15).padding(dpi * 0.04).cornerRadius(dpi * 0.06).pointerWidth(0).pointerHeight(0).backgroundColor("#000000").backgroundOpacity(0.6).fillColor(over ? "#ff8a80" : "#ffffff").attachedTo(local ? void 0 : id).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).zIndex(2), "Movement used");
+    label.layer = "TEXT";
+    add.push(label);
   }
   if (old.length) await items.deleteItems(old);
   await items.addItems(add);
@@ -4762,7 +4765,7 @@ lib_default.onReady(async () => {
     if (role3 === "GM" && linked()) post(gm, { type: "command", cmd: data?.cmd });
   });
   lib_default.broadcast.onMessage(LOCAL_ASK, () => status(true));
-  const icon = new URL("icon.svg", location.href).href;
+  const icon = new URL("../logo/logo-64.png", location.href).href;
   try {
     await lib_default.tool.create({ id: TOOL, icons: [{ icon, label: "Link token (Encounter Builder)", filter: { roles: ["GM"] } }], defaultMode: MODE2 });
     await lib_default.tool.createMode({
