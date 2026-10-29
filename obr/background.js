@@ -4479,7 +4479,7 @@ async function drawTrail(id, m, { local = false, visible = true } = {}) {
     const b = await lib_default.scene.items.getItemBounds([id]);
     const at = local ? m.points[m.points.length - 1] : b.center;
     const style = token.text?.style || {};
-    const label = finish(buildLabel().plainText(usedText(used, speed, unit)).position({ x: at.x, y: at.y - b.height / 2 - dpi * 0.04 }).fontFamily(style.fontFamily || "Roboto").fontWeight(style.fontWeight || 400).fontSize(dpi * 0.15).padding(dpi * 0.04).cornerRadius(dpi * 0.06).pointerWidth(0).pointerHeight(0).backgroundColor("#000000").backgroundOpacity(0.6).fillColor(over ? "#ff8a80" : "#ffffff").attachedTo(local ? void 0 : id).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).zIndex(2), "Movement used");
+    const label = finish(buildLabel().plainText(usedText(used, speed, unit)).position({ x: at.x, y: at.y - b.height / 2 - dpi * 0.02 }).fontFamily(style.fontFamily || "Roboto").fontWeight(style.fontWeight || 400).fontSize(dpi * 0.075).padding(dpi * 0.02).cornerRadius(dpi * 0.03).pointerWidth(0).pointerHeight(0).backgroundColor("#000000").backgroundOpacity(0.6).fillColor(over ? "#ff8a80" : "#ffffff").attachedTo(local ? void 0 : id).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).zIndex(2), "Movement used");
     label.layer = "TEXT";
     add.push(label);
   }
