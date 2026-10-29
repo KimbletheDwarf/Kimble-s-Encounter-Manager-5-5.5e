@@ -68161,7 +68161,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.4.3";
+var version2 = "1.4.4";
 
 // src/app.js
 var TABS = [
@@ -68681,7 +68681,18 @@ function about() {
   ));
 }
 async function init() {
-  document.body.append(h("header.top", h("div.brand", { title: "Kimble's Encounter Manager 5/5.5e" }, h("span.brand-mark", "\u2694"), h("span.brand-text", h("span.brand-top", "Kimble's \xB7 5/5.5e"), h("span.brand-main", "Encounter Manager"))), nav, h("div.top-right", saveStatus, ghButton, libButton, settingsButton)), main);
+  document.body.append(h("header.top", h("div.brand", { title: "Kimble's Encounter Manager 5/5.5e" }, h("img.brand-mark", {
+    src: "logo/logo.png",
+    alt: "",
+    draggable: false,
+    // Kimble's logo; it spins while hovered
+    onmouseenter: (e2) => {
+      e2.target.src = "logo/logo-animated.webp";
+    },
+    onmouseleave: (e2) => {
+      e2.target.src = "logo/logo.png";
+    }
+  }), h("span.brand-text", h("span.brand-top", "Kimble's \xB7 5/5.5e"), h("span.brand-main", "Encounter Manager"))), nav, h("div.top-right", saveStatus, ghButton, libButton, settingsButton)), main);
   for (const t of TABS) {
     t.el = h(`section.tab.tab-${t.id}`, { hidden: true });
     t.button = h("button", { onclick: () => go6(t.id) }, t.label);
