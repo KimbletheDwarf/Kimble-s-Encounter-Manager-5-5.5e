@@ -4584,6 +4584,7 @@ window.addEventListener("message", async (e) => {
     post(gm, { type: "welcome", settings: settings3 });
     status();
     whispers?.flush();
+    sendTokens(true);
   } else if (m.type === "ping") {
     if (e.source === gm) {
       gmSeen = Date.now();
@@ -4667,6 +4668,15 @@ async function rename(list) {
       }
     });
   }
+}
+var lastTokens = "";
+async function sendTokens(force = false) {
+  if (role3 !== "GM" || !linked() || !await lib_default.scene.isReady()) return;
+  const tokens = (await lib_default.scene.items.getItems((i) => i.layer === "CHARACTER" || i.layer === "MOUNT")).map((i) => ({ id: i.id, name: i.name || "", label: i.text?.plainText || "" }));
+  const sig = JSON.stringify(tokens);
+  if (!force && sig === lastTokens) return;
+  lastTokens = sig;
+  post(gm, { type: "sceneTokens", tokens });
 }
 var MARK_KEY = `${EXT}/marker`;
 var iconUrl = (id) => new URL(`../conditions%20symbols/png-128/${id}.png`, location.href).href;
@@ -4775,10 +4785,17 @@ lib_default.onReady(async () => {
     if (role3 === "GM") syncMarkers((await lib_default.room.getMetadata())[TRACKER_KEY] ?? null);
   };
   lib_default.scene.onReadyChange((ready2) => {
-    if (ready2) redraw();
+    if (ready2) {
+      redraw();
+      sendTokens(true);
+    }
   });
-  let resizeTimer = null;
+  let resizeTimer = null, tokensTimer = null;
   lib_default.scene.items.onChange(() => {
+    if (role3 === "GM") {
+      clearTimeout(tokensTimer);
+      tokensTimer = setTimeout(() => sendTokens(), 400);
+    }
     if (role3 !== "GM" || !lastState) return;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => syncMarkers(lastState), 250);

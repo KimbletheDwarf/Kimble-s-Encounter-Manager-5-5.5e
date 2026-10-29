@@ -63623,6 +63623,32 @@ function unlinkTokens(s, key3) {
   return ids;
 }
 var tokenRenames = (c2) => isGroup(c2) ? c2.members.map((m, i) => m.token ? { id: m.token, name: tokenName(c2, i) } : null).filter(Boolean) : tokensOf(c2).map((id) => ({ id, name: c2.name }));
+function matchPartyTokens(party, tokens) {
+  const links = /* @__PURE__ */ new Map(), twice = [];
+  for (const ch of party) {
+    const hits = tokensNamed(tokens, ch.name);
+    if (hits.length === 1) links.set(ch.id, hits[0].id);
+    else if (hits.length > 1) twice.push(ch.name);
+  }
+  return { links, twice };
+}
+var normName = (x) => String(x ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+var tokensNamed = (tokens, name) => {
+  const n = normName(name);
+  return n ? tokens.filter((t) => normName(t.name) === n || normName(t.label) === n) : [];
+};
+function matchFightTokens(s, tokens) {
+  const links = [], twice = [];
+  for (const c2 of s.combatants) {
+    const slots = isGroup(c2) ? c2.members.map((m, i) => ({ member: i, name: tokenName(c2, i), now: m.token ? [m.token] : [] })) : [{ member: -1, name: tokenName(c2), now: tokensOf(c2) }];
+    for (const { member: member2, name, now } of slots) {
+      const hits = tokensNamed(tokens, name);
+      if (hits.length > 1) twice.push(name);
+      else if (hits.length === 1 && !(now.length === 1 && now[0] === hits[0].id)) links.push({ key: c2.key, member: member2, token: hits[0].id });
+    }
+  }
+  return { links, twice };
+}
 var concentrationDc = (damage) => Math.min(30, Math.max(10, Math.floor(damage / 2)));
 function conSave(c2, m, pc) {
   if (c2.kind === "monster") {
@@ -67938,9 +67964,12 @@ function startLink(c2) {
   const encId = enc.id, plan = linkPlan(c2);
   linker.pick(
     { names: plan.map((p) => p.name) },
-    (i, id) => actOn(encId, (s) => {
-      linkToken(s, c2.key, plan[i].member, id);
-    }),
+    (i, id) => {
+      unlinkedByHand.delete(id);
+      actOn(encId, (s) => {
+        linkToken(s, c2.key, plan[i].member, id);
+      });
+    },
     (reason) => {
       if (reason === "cancelled") notice("Linking stopped.");
     }
@@ -67952,6 +67981,7 @@ function unlinkCombatant(c2) {
   act((s) => {
     ids = unlinkTokens(s, c2.key);
   });
+  for (const id of ids) unlinkedByHand.add(id);
   if (ids.length && linker.available()) linker.unlink(ids);
 }
 var activeParty = () => store.party.filter((c2) => c2.active);
@@ -68066,6 +68096,7 @@ function partyTokenItems(ch) {
 function startPartyLink(ch) {
   if (!linker.available()) return notice('Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".', "error");
   linker.pick({ names: [ch.name] }, (i, id) => {
+    unlinkedByHand.delete(id);
     for (const o of store.party) if (o !== ch && o.live?.tokens?.includes(id)) setPartyLive(o, { ...o.live, tokens: o.live.tokens.filter((t) => t !== id) });
     partyAct(ch.id, (p) => {
       p.tokens = [id];
@@ -68077,10 +68108,53 @@ function startPartyLink(ch) {
 }
 function unlinkParty(ch) {
   const ids = ch.live?.tokens || [];
+  for (const id of ids) unlinkedByHand.add(id);
   partyAct(ch.id, (p) => {
     delete p.tokens;
   });
   if (ids.length && linker.available()) linker.unlink(ids);
+}
+var warnedTwice = "";
+var linking = false;
+var unlinkedByHand = /* @__PURE__ */ new Set();
+function linkByName(all) {
+  if (linking) return;
+  const tokens = all.filter((t) => !unlinkedByHand.has(t.id));
+  const linked2 = [], twice = [];
+  linking = true;
+  try {
+    const party = matchPartyTokens(activeParty(), tokens);
+    twice.push(...party.twice);
+    for (const [id, token] of party.links) {
+      const ch = findCharacter(id), now = characterTokens(id);
+      if (now.length === 1 && now[0] === token) continue;
+      setPartyLive(ch, { ...liveOf(partyCombatant(ch)), tokens: [token] });
+      linked2.push(ch.name);
+    }
+    const e2 = liveEncounter();
+    if (e2?.combat) {
+      const fight = matchFightTokens(e2.combat, tokens);
+      twice.push(...fight.twice.filter((n) => !twice.includes(n)));
+      for (const l of fight.links) {
+        linkToken(e2.combat, l.key, l.member, l.token);
+        const c2 = e2.combat.combatants.find((x) => x.key === l.key);
+        linked2.push(l.member >= 0 ? `${c2.name} ${l.member + 1}` : c2.name);
+      }
+      if (fight.links.length) {
+        syncParty(e2.combat);
+        save("encounters", e2);
+      }
+    }
+  } finally {
+    linking = false;
+  }
+  if (linked2.length) {
+    render4();
+    notice(`Owlbear: linked ${linked2.length > 5 ? `${linked2.length} tokens` : linked2.join(", ")} on this scene.`);
+  }
+  const warn3 = twice.join(", ");
+  if (warn3 && warn3 !== warnedTwice) notice(`Owlbear: more than one token is named ${twice.join(" / ")}, so ${twice.length === 1 ? "it was" : "they were"} not linked. Link by hand, or rename the extras.`);
+  warnedTwice = warn3;
 }
 function renderBlock() {
   const box = el10.querySelector("#run-block");
@@ -68161,7 +68235,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.4.7";
+var version2 = "1.4.8";
 
 // src/app.js
 var TABS = [
@@ -68972,6 +69046,7 @@ var bridge = null;
 var lastPong = 0;
 var settings2 = {};
 var lastSent = null;
+var sceneTokens = [];
 var badge = h("span.obr-link", { title: "" });
 function setBadge() {
   badge.textContent = bridge ? "\u25CF Owlbear" : "\u25CB Owlbear";
@@ -69051,7 +69126,10 @@ window.addEventListener("message", (e2) => {
     settings2 = m.settings || {};
     publish();
   } else if (m.type === "command") runnerCommand(m.cmd);
-  else if (m.type === "picked") picks.get(m.id)?.onPicked(m.index, m.token);
+  else if (m.type === "sceneTokens") {
+    sceneTokens = m.tokens || [];
+    linkByName(sceneTokens);
+  } else if (m.type === "picked") picks.get(m.id)?.onPicked(m.index, m.token);
   else if (m.type === "pickDone") {
     picks.get(m.id)?.onDone(m.reason);
     picks.delete(m.id);
@@ -69104,7 +69182,9 @@ setInterval(() => {
   hello();
 }, 3e3);
 onChange((kind) => {
-  if (kind === "encounters" || kind === "party" || kind === "all") schedule();
+  if (kind !== "encounters" && kind !== "party" && kind !== "all") return;
+  schedule();
+  if (bridge) linkByName(sceneTokens);
 });
 var mount = () => {
   const bar = document.querySelector("header.top .top-right");
