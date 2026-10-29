@@ -68161,7 +68161,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.4.4";
+var version2 = "1.4.5";
 
 // src/app.js
 var TABS = [
@@ -68693,6 +68693,12 @@ async function init() {
       e2.target.src = "logo/logo.png";
     }
   }), h("span.brand-text", h("span.brand-top", "Kimble's \xB7 5/5.5e"), h("span.brand-main", "Encounter Manager"))), nav, h("div.top-right", saveStatus, ghButton, libButton, settingsButton)), main);
+  const ribbon = document.querySelector("header.top");
+  ribbon.addEventListener("wheel", (e2) => {
+    if (ribbon.scrollWidth <= ribbon.clientWidth || Math.abs(e2.deltaX) > Math.abs(e2.deltaY)) return;
+    ribbon.scrollLeft += e2.deltaY;
+    e2.preventDefault();
+  }, { passive: false });
   for (const t of TABS) {
     t.el = h(`section.tab.tab-${t.id}`, { hidden: true });
     t.button = h("button", { onclick: () => go6(t.id) }, t.label);

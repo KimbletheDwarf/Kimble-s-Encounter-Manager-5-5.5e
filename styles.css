@@ -44,16 +44,23 @@ h4 { font-size: 13px; text-transform: uppercase; letter-spacing: .05em; margin: 
 .row-gap { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
 /* ---------- top bar ---------- */
+/* when the window is narrower than the ribbon it scrolls sideways (a thin bar under it) instead of cutting off */
 header.top {
-  display: flex; align-items: center; gap: 24px; padding: 0 20px; height: 58px; flex: none;
+  display: flex; align-items: center; gap: 24px; padding: 0 20px; min-height: 58px; flex: none;
   background: var(--bg-deep); border-bottom: 1px solid #000;
+  overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; scrollbar-color: #4a4d55 transparent;
 }
+header.top > * { flex: none; }
+header.top::-webkit-scrollbar { height: 6px; }
+header.top::-webkit-scrollbar-thumb { background: #4a4d55; border-radius: 3px; }
+header.top::-webkit-scrollbar-thumb:hover { background: #6b6f78; }
+header.top::-webkit-scrollbar-track { background: transparent; }
 .brand { font: 700 20px var(--head); display: flex; gap: 8px; align-items: center; white-space: nowrap; }
 .brand-mark { width: 40px; height: 40px; flex: none; margin: -4px 0; }
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand-top { font: 600 11px var(--head); color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
 .brand-main { font: 700 18px var(--head); }
-nav.tabs { display: flex; gap: 2px; height: 100%; }
+nav.tabs { display: flex; gap: 2px; height: 58px; }
 nav.tabs button {
   background: none; border: 0; border-bottom: 3px solid transparent; color: #d6d8db; padding: 0 14px;
   font: 700 14px var(--head); text-transform: uppercase; letter-spacing: .03em; cursor: pointer; border-radius: 0; white-space: nowrap;
