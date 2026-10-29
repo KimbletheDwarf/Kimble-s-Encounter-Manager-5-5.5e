@@ -808,3 +808,15 @@ button.temp { background: #13283a; border-color: #2b5a80; color: #8fd0ff; }
 .pick-row.active { background: #1d2b3a; border-color: var(--blue-btn); }
 .pick-name { font-weight: 700; }
 .pick-row .muted { margin-left: auto; font-size: 12px; }
+
+/* ---------------- shapeshifters (Party / Creatures editors, Run Encounter) ---------------- */
+.shifter { margin: 10px 0 14px; padding: 10px 12px; background: var(--card-2); border: 1px solid var(--line-soft); border-radius: 4px; }
+.shifter-switch { margin: 0; }
+.shifter .comp-list { margin: 10px 0 8px; }
+.shifter .comp-row { background: #1f2125; }
+.shifter-add { margin-top: 4px; }
+.comp-fields.form-fields { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+.tag.shape { background: #3a2e1a; color: #f3cf8f; margin-left: 6px; }
+.shape-banner { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; padding: 8px 10px; background: #3a2e1a; color: #f3cf8f; border-radius: 4px; font-weight: 700; }
+.own-sheet { margin-top: 12px; }
+.own-sheet > summary { cursor: pointer; font-weight: 700; color: var(--muted); }

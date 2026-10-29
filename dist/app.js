@@ -63432,15 +63432,21 @@ function partyCombatant(ch) {
   };
   if (live2.tempHp) c2.tempHp = live2.tempHp;
   if (live2.tokens?.length) c2.tokens = [...live2.tokens];
+  if (live2.form) {
+    c2.form = { ...live2.form };
+    c2.ac = live2.form.ac ?? c2.ac;
+    if (live2.form.pool) c2.maxHp = live2.form.maxHp;
+  }
   return c2;
 }
 function liveOf(c2) {
   const live2 = { hp: c2.hp ?? null, conditions: [...c2.conditions || []] };
   if (c2.tempHp) live2.tempHp = c2.tempHp;
   if (c2.tokens?.length) live2.tokens = [...c2.tokens];
+  if (c2.form) live2.form = { ...c2.form };
   return live2;
 }
-var sameLive = (a2 = {}, b2 = {}) => (a2.hp ?? null) === (b2.hp ?? null) && (a2.tempHp || 0) === (b2.tempHp || 0) && JSON.stringify(a2.conditions || []) === JSON.stringify(b2.conditions || []) && JSON.stringify(a2.tokens || []) === JSON.stringify(b2.tokens || []);
+var sameLive = (a2 = {}, b2 = {}) => (a2.hp ?? null) === (b2.hp ?? null) && (a2.tempHp || 0) === (b2.tempHp || 0) && JSON.stringify(a2.conditions || []) === JSON.stringify(b2.conditions || []) && JSON.stringify(a2.tokens || []) === JSON.stringify(b2.tokens || []) && JSON.stringify(a2.form || null) === JSON.stringify(b2.form || null);
 var LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 function setupCombat(e2, { character, monster, asGroup }) {
   const list = [];
@@ -63574,6 +63580,11 @@ function companionCombatant(ch, comp, m, rules = "2014") {
   } else {
     c2 = { ...base, hp: live2.hp ?? base.maxHp, conditions: [...live2.conditions || []] };
     if (live2.tokens?.length) c2.tokens = [...live2.tokens];
+    if (live2.form) {
+      c2.form = { ...live2.form };
+      c2.ac = live2.form.ac ?? c2.ac;
+      if (live2.form.pool) c2.maxHp = live2.form.maxHp;
+    }
   }
   if (live2.tempHp) c2.tempHp = live2.tempHp;
   return c2;
@@ -63635,6 +63646,7 @@ function applyHp(y, mode3, n) {
     const absorbed = Math.min(y.tempHp || 0, Math.max(0, n));
     y.tempHp = (y.tempHp || 0) - absorbed;
     y.hp = Math.max(0, cur - (n - absorbed));
+    if (y.form?.pool && y.hp <= 0) revertShape(y, n - absorbed - cur);
   } else if (mode3 === "heal") y.hp = y.maxHp != null ? Math.min(y.maxHp, cur + n) : cur + n;
   else if (mode3 === "set") y.hp = Math.max(0, n);
   else if (mode3 === "max") {
@@ -63642,6 +63654,35 @@ function applyHp(y, mode3, n) {
     y.hp ??= y.maxHp;
   } else if (mode3 === "temp") y.tempHp = Math.max(0, Math.round(n));
   if (!y.tempHp) delete y.tempHp;
+}
+var formsOf = (x) => x?.shifter ? (x.forms || []).filter((f) => f.monsterId) : [];
+var statRef = (c2) => c2?.form?.monsterId || c2?.refId;
+function shiftInto(c2, f, m) {
+  if (!c2 || !f || !m || isGroup(c2)) return false;
+  if (c2.form) revertShape(c2);
+  const form = { id: f.id, monsterId: f.monsterId, name: f.name || m.name, ac: m.armorClass ?? c2.ac ?? null, ac0: c2.ac ?? null };
+  c2.ac = form.ac;
+  if (f.hp === "form") {
+    Object.assign(form, { pool: true, maxHp: m.averageHitPoints ?? 1, hp0: c2.hp ?? c2.maxHp ?? null, maxHp0: c2.maxHp ?? null, temp0: c2.tempHp || 0 });
+    c2.hp = c2.maxHp = form.maxHp;
+    delete c2.tempHp;
+  }
+  c2.form = form;
+  return true;
+}
+function revertShape(c2, overflow = 0) {
+  const f = c2?.form;
+  if (!f) return false;
+  delete c2.form;
+  c2.ac = f.ac0;
+  if (f.pool) {
+    c2.maxHp = f.maxHp0;
+    c2.hp = f.hp0;
+    if (f.temp0) c2.tempHp = f.temp0;
+    else delete c2.tempHp;
+    if (overflow > 0) applyHp(c2, "damage", overflow);
+  }
+  return true;
 }
 var DEAD = "Dead";
 var UNCONSCIOUS = "Unconscious";
@@ -64436,6 +64477,70 @@ function pickMonster({ title: title2, okText = "Add", count = null, hint = "", o
   search.focus();
 }
 
+// src/forms-editor.js
+init_ui();
+init_store();
+function formsEditor(x, changed3) {
+  const box = h("div.shifter");
+  const list = () => x.forms || (x.forms = []);
+  const draw2 = () => fill(
+    box,
+    h("label.check-row.shifter-switch", h("input", { type: "checkbox", checked: !!x.shifter, onchange: (e2) => {
+      x.shifter = e2.target.checked;
+      changed3();
+      draw2();
+    } }), h("strong", "Shapeshifter")),
+    h("div.hint", "It can take other shapes, each with its own stat block: a druid\u2019s Wild Shape beasts, a vampire\u2019s bat or mist form, a werewolf\u2019s wolf and hybrid forms. Run Encounter can switch it into one and back. Hit points: \u201CKeeps its own\u201D for 2024 Wild Shape, vampires and werewolves; \u201CThe form\u2019s own\u201D for 2014 Wild Shape (at 0 it drops back to its own shape and the leftover damage carries over)."),
+    x.shifter ? [
+      list().length ? h("div.comp-list", list().map((f, i) => {
+        const m = findMonster(f.monsterId);
+        return h(
+          "div.comp-row",
+          avatar(m?.avatar, m?.name || "?", "sm"),
+          h(
+            "div.comp-main",
+            h("div.comp-name", m ? m.name : h("span.bad-text", "Creature not found in the library"), m ? h("span.muted", ` \xB7 AC ${m.armorClass ?? "\u2014"} \xB7 HP ${m.averageHitPoints ?? "\u2014"}`) : null),
+            h(
+              "div.comp-fields.form-fields",
+              h("label", "Name", h("input", { type: "text", value: f.name || "", placeholder: m?.name || "", oninput: (e2) => {
+                if (e2.target.value.trim()) f.name = e2.target.value;
+                else delete f.name;
+                changed3();
+              } })),
+              h("label", "Hit points", h(
+                "select",
+                { onchange: (e2) => {
+                  f.hp = e2.target.value;
+                  changed3();
+                } },
+                h("option", { value: "own", selected: f.hp !== "form" }, "Keeps its own"),
+                h("option", { value: "form", selected: f.hp === "form" }, "The form\u2019s own")
+              ))
+            )
+          ),
+          h("button.icon-btn", { title: "Remove", onclick: () => confirmBox(`Remove the ${f.name || m?.name || "shape"} shape?`, "Remove", () => {
+            list().splice(i, 1);
+            changed3();
+            draw2();
+          }) }, "\xD7")
+        );
+      })) : null,
+      h("button.outline.shifter-add", { onclick: () => pickMonster({
+        title: `A shape for ${x.name}`,
+        okText: "Add shape",
+        hint: "Pick the stat block it turns into (a Brown Bear, a Bat, a Wolf\u2026). Make your own in the Maker or the Creatures tab.",
+        onPick: (m) => {
+          list().push({ id: newId(m.name), monsterId: m.id, hp: "own" });
+          changed3();
+          draw2();
+        }
+      }) }, "Add a shape")
+    ] : null
+  );
+  draw2();
+  return box;
+}
+
 // src/tabs/party.js
 init_dice();
 init_rules();
@@ -64747,6 +64852,7 @@ function renderEdit2() {
       render2();
     }) }, "Delete")),
     pic,
+    formsEditor(c2, () => save("party", c2)),
     h(
       "div.form-grid",
       field("Name", "name"),
@@ -66073,6 +66179,7 @@ function renderEdit4() {
         renderEdit4();
       })),
       h("p.hint", "Loot settings work on SRD monsters too: they are kept in your library, not in the monster."),
+      h("p.hint", "To make it a shapeshifter (a vampire\u2019s bat form, a werewolf\u2019s wolf form), copy it to your monsters first."),
       h("div.pic", avatar(m.avatar, m.name, "lg"))
     );
     return;
@@ -66198,6 +66305,7 @@ function editor(m) {
         renderList4();
       }
     }),
+    formsEditor(m, changed3),
     h(
       "div.form-grid",
       text("Name", () => m.name, (v) => {
@@ -67725,15 +67833,15 @@ function renderTracker() {
   el10.querySelector(".turn-row.current")?.scrollIntoView({ block: "nearest" });
 }
 function avatarFor(c2, size) {
-  const src = c2.kind === "pc" ? findCharacter(c2.refId)?.avatar : findMonster(c2.refId)?.avatar;
+  const src = c2.form ? findMonster(c2.form.monsterId)?.avatar : c2.kind === "pc" ? findCharacter(c2.refId)?.avatar : findMonster(c2.refId)?.avatar;
   return avatar(src, c2.name.replace(/\s\([A-Z]\d*\)$/, ""), size);
 }
 function combatantRow(c2, current3) {
   const s = C();
-  const m = c2.kind === "monster" ? findMonster(c2.refId) : null;
+  const m = c2.kind === "monster" || c2.form ? findMonster(statRef(c2)) : null;
   const pc = c2.kind === "pc" ? findCharacter(c2.refId) : null;
   const grp = isGroup(c2);
-  const stats = c2.kind === "monster" ? [h("span", h("b", "CR "), m?.challengeRating ?? "?"), h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "HP "), grp ? `${c2.maxHp} each` : m ? `${m.averageHitPoints} (${hpFormula(m)})` : "\u2014"), h("span", h("b", "Init. Bonus "), signed(c2.initBonus))] : [h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "Speed "), `${pc?.speed ?? 30} ft`), h("span", h("b", "Pass. Perception "), pc?.passivePerception ?? "\u2014")];
+  const stats = c2.kind === "monster" || c2.form && m ? [h("span", h("b", "CR "), m?.challengeRating ?? "?"), h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "HP "), grp ? `${c2.maxHp} each` : m ? `${m.averageHitPoints} (${hpFormula(m)})` : "\u2014"), h("span", h("b", "Init. Bonus "), signed(c2.initBonus))] : [h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "Speed "), `${pc?.speed ?? 30} ft`), h("span", h("b", "Pass. Perception "), pc?.passivePerception ?? "\u2014")];
   const hpBox = grp ? h(
     "button.hp-box.tracked.group",
     { title: c2.group === "minion" ? "Minions left: click when some are hit or caught" : `Pack HP: click to damage or heal (damage rolls over)${c2.tempHp ? `; ${c2.tempHp} temporary hit points` : ""}`, onclick: () => c2.group === "minion" ? minionDialog(c2) : packDialog(c2) },
@@ -67768,7 +67876,7 @@ function combatantRow(c2, current3) {
       avatarFor(c2, "md"),
       h(
         "div.turn-info",
-        h("div.turn-name", c2.name, grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null, isOut(c2) ? h("span.tag.dead", "Down") : null, c2.owner ? h("span.tag.follow", { title: followText(c2) }, c2.summoned || c2.companion?.summon ? "Summon" : "Companion") : null, linkTag(c2)),
+        h("div.turn-name", c2.name, grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null, isOut(c2) ? h("span.tag.dead", "Down") : null, shapeTag(c2), c2.owner ? h("span.tag.follow", { title: followText(c2) }, c2.summoned || c2.companion?.summon ? "Summon" : "Companion") : null, linkTag(c2)),
         h("div.turn-stats", stats),
         grp ? pips(c2) : null,
         condChips(c2, {
@@ -67788,6 +67896,7 @@ function combatantRow(c2, current3) {
         x.turnKey = c2.key;
       })],
       ...linker ? tokenItems(c2) : [],
+      ...shapeItems(c2, (fn) => act((x) => fn(find(x, c2.key)))),
       ...summonItems(c2),
       ["Rename", () => renameCombatant(c2)],
       ...groupItems,
@@ -67804,9 +67913,9 @@ function next() {
 }
 function startOfTurn2(c2) {
   if (c2?.kind !== "monster") return;
-  startOfTurn(c2, findMonster(c2.refId), (expr, label) => doRoll(expr, { who: c2.name, label }));
+  startOfTurn(c2, findMonster(statRef(c2)), (expr, label) => doRoll(expr, { who: c2.name, label }));
 }
-var conSave2 = (c2) => conSave(c2, c2.kind === "monster" ? findMonster(c2.refId) : null, c2.kind === "pc" ? findCharacter(c2.refId) : null);
+var conSave2 = (c2) => conSave(c2, c2.kind === "monster" ? findMonster(statRef(c2)) : null, c2.kind === "pc" ? findCharacter(c2.refId) : null);
 function concentrationCheck(key3, damage) {
   const c2 = C().combatants.find((x) => x.key === key3);
   concentrationPrompt(c2, damage, () => act((x) => {
@@ -68158,8 +68267,25 @@ function tokenItems(c2) {
 }
 function tokenMenu(e2, c2) {
   e2.preventDefault();
-  popMenu(e2.currentTarget.querySelector(".turn-name, .setup-name") || e2.currentTarget, [...linker ? tokenItems(c2) : [], ...summonItems(c2)]);
+  popMenu(e2.currentTarget.querySelector(".turn-name, .setup-name") || e2.currentTarget, [...linker ? tokenItems(c2) : [], ...shapeItems(c2, (fn) => act((x) => fn(find(x, c2.key)))), ...summonItems(c2)]);
 }
+function shapeItems(c2, change) {
+  if (isGroup(c2)) return [];
+  const self2 = c2.kind === "pc" ? findCharacter(c2.refId) : findMonster(c2.refId);
+  const forms = formsOf(self2);
+  return [
+    ...forms.filter((f) => f.id !== c2.form?.id).map((f) => {
+      const m = findMonster(f.monsterId);
+      return m ? [`Shapeshift: ${f.name || m.name}`, () => change((y) => {
+        shiftInto(y, f, m);
+      })] : null;
+    }).filter(Boolean),
+    ...c2.form ? [[`Back to ${self2?.name || c2.name}'s own shape`, () => change((y) => {
+      revertShape(y);
+    })]] : []
+  ];
+}
+var shapeTag = (c2) => c2.form ? h("span.tag.shape", { title: c2.form.pool ? `In ${c2.form.name} form, with its hit points (its own: ${c2.form.hp0 ?? "\u2014"}/${c2.form.maxHp0 ?? "\u2014"})` : `In ${c2.form.name} form` }, c2.form.name) : null;
 function summonItems(c2) {
   return [
     [`Summon for ${c2.name}\u2026`, () => summonDialog(c2)],
@@ -68303,7 +68429,7 @@ function companionCard(ch, comp) {
   const c2 = e2?.combat?.combatants.find((x) => x.key === companionKey(ch.id, comp.id)) || companionCombatant(ch, comp, m);
   const grp = isGroup(c2), on = !!comp.on && !!m;
   const change = (fn) => companionAct(ch.id, comp.id, (y) => fn(y));
-  const items = () => linker && on ? companionTokenItems(ch, comp, c2) : [];
+  const items = () => on ? [...linker ? companionTokenItems(ch, comp, c2) : [], ...shapeItems(c2, change)] : [];
   const hp = !on ? h("span") : grp ? h(
     "button.hp-box.group",
     { title: "Hit points: click to damage or heal", onclick: () => c2.group === "minion" ? minionDialog(c2, change) : packDialog(c2, change) },
@@ -68383,19 +68509,21 @@ function companionTokenItems(ch, comp, c2) {
 }
 function partyCard(ch) {
   const c2 = partyCombatant(ch);
-  const menu = (anchor) => popMenu(anchor, partyTokenItems(ch));
+  const items = () => [...partyTokenItems(ch), ...shapeItems(c2, (fn) => partyAct(ch.id, fn))];
+  const menu = (anchor) => popMenu(anchor, items());
+  const shape = c2.form && findMonster(c2.form.monsterId);
   return h(
     "div.party-card" + (c2.hp != null && c2.hp <= 0 ? ".down" : ""),
     { oncontextmenu: (e2) => {
-      if (!linker) return;
+      if (!items().length) return;
       e2.preventDefault();
       menu(e2.currentTarget.querySelector(".party-name"));
     } },
-    avatar(ch.avatar, ch.name, "md"),
+    avatar(shape?.avatar || ch.avatar, ch.name, "md"),
     h(
       "div.party-main",
-      h("div.party-name", ch.name, linkTag(c2)),
-      h("div.turn-stats", h("span", h("b", "AC "), ch.armorClass ?? "\u2014"), h("span", h("b", "Speed "), `${ch.speed ?? 30} ft`), h("span", h("b", "Pass. Perception "), ch.passivePerception ?? "\u2014")),
+      h("div.party-name", ch.name, shapeTag(c2), linkTag(c2)),
+      h("div.turn-stats", h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "Speed "), `${shape ? walkSpeed(shape) || "\u2014" : ch.speed ?? 30} ft`), h("span", h("b", "Pass. Perception "), ch.passivePerception ?? "\u2014")),
       condChips(c2, {
         add: (q) => partyAct(ch.id, (p) => {
           p.conditions.push(q);
@@ -68413,7 +68541,7 @@ function partyCard(ch) {
       h("span.hp-max", c2.maxHp ?? "\u2014"),
       c2.tempHp ? h("span.hp-temp", `+${c2.tempHp}`) : null
     ),
-    linker ? h("button.icon-btn.kebab", { title: "More", onclick: (e2) => menu(e2.currentTarget) }, "\u22EE") : null
+    items().length ? h("button.icon-btn.kebab", { title: "More", onclick: (e2) => menu(e2.currentTarget) }, "\u22EE") : null
   );
 }
 function partyHp(ch) {
@@ -68537,8 +68665,8 @@ function renderBlock() {
   if (!box) return;
   const c2 = C().combatants.find((x) => x.key === C().selectedKey);
   if (!c2) return fill(box, h("div.empty", "Click a creature to see its stat block. Click any bonus or dice in it to roll."));
-  if (c2.kind === "monster") {
-    const m = findMonster(c2.refId);
+  if (c2.kind === "monster" || c2.form) {
+    const m = findMonster(statRef(c2));
     const tracker = {
       get: (k) => C().combatants.find((x) => x.key === c2.key)?.used?.[k] || 0,
       set: (k, n) => act((s) => {
@@ -68560,10 +68688,19 @@ function renderBlock() {
       }, { redraw: false })
     };
     const group = isGroup(c2) ? { attack: (entry) => groupAttack(c2.key, entry) } : null;
+    const pc2 = c2.kind === "pc" ? findCharacter(c2.refId) : null;
     fill(
       box,
+      c2.form ? h(
+        "div.shape-banner",
+        h("span", `${c2.name} in ${c2.form.name} form${c2.form.pool ? ` \xB7 own HP ${c2.form.hp0 ?? "\u2014"}/${c2.form.maxHp0 ?? "\u2014"} waiting` : ""}`),
+        h("button.outline", { onclick: () => act((s) => {
+          revertShape(find(s, c2.key));
+        }) }, "Back to own shape")
+      ) : null,
       m ? statBlock(m, { who: c2.name, description: false, tracker, recharge, group }) : h("div.empty", `${c2.name} has no stat block (manual entry or deleted from the library).`),
-      m ? h("button.outline", { onclick: () => go5("library", m.id) }, "View in Creatures") : null
+      m ? h("button.outline", { onclick: () => go5("library", m.id) }, "View in Creatures") : null,
+      pc2?.sheet ? h("details.own-sheet", h("summary", `${pc2.name}'s own sheet`), characterSheet(pc2, { hp: c2.hp, compact: true })) : null
     );
     return;
   }
@@ -68611,7 +68748,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.5.1";
+var version2 = "1.6.0";
 
 // src/app.js
 var TABS = [
@@ -69218,7 +69355,7 @@ function partyState(characters, { showPartyHp = false, mark: mark2 = (n) => ({ n
   return fit({ v: STATE_VERSION, phase: "party", name: "Party", showPartyHp: !!showPartyHp, order: rows });
 }
 function rowOf(c2, showPartyHp, mark2, speed2 = () => null) {
-  const row2 = { key: c2.key, name: isGroup(c2) ? `${c2.name} \xD7${standing(c2).length}` : c2.name, kind: c2.ally ? "ally" : c2.kind };
+  const row2 = { key: c2.key, name: isGroup(c2) ? `${c2.name} \xD7${standing(c2).length}` : c2.form ? `${c2.name} (${c2.form.name})` : c2.name, kind: c2.ally ? "ally" : c2.kind };
   if (c2.init != null) row2.init = c2.init;
   if (isOut(c2)) row2.down = true;
   if (c2.owner) {
@@ -69469,6 +69606,10 @@ var mark = (name) => {
   return i ? { n: name, i } : { n: name, t: iconLetters(name) };
 };
 var speed = (c2) => {
+  if (c2.form) {
+    const f = findMonster(c2.form.monsterId);
+    return f?.movement?.length ? walkSpeed(f) : null;
+  }
   if (c2.kind === "pc") {
     const ch = c2.refId && findCharacter(c2.refId);
     return ch ? Number(ch.speed) || null : null;
