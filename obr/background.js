@@ -4382,8 +4382,10 @@ async function queue() {
 function wanted2() {
   if (!on() || state2?.phase !== "active") return { key: "", tokens: /* @__PURE__ */ new Map() };
   const row = state2.order?.find((r) => r.key === state2.turn);
-  if (!row?.tokens?.length) return { key: "", tokens: /* @__PURE__ */ new Map() };
-  return { key: `${state2.encounter}:${state2.round}:${state2.turn}`, tokens: new Map(row.tokens.map((t) => [t, row.sp ?? null])) };
+  const rows = row ? [row, ...state2.order.filter((r) => r.during && r.with === row.key)] : [];
+  const tokens = new Map(rows.flatMap((r) => (r.tokens || []).map((t) => [t, r.sp ?? null])));
+  if (!tokens.size) return { key: "", tokens };
+  return { key: `${state2.encounter}:${state2.round}:${state2.turn}`, tokens };
 }
 async function update() {
   if (role2 !== "GM" || !await lib_default.scene.isReady()) return;

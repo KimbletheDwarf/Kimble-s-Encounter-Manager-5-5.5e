@@ -38,6 +38,7 @@ In **Run Encounter**, press **Run**, roll initiative and **Start combat**. Bonus
 
 - **Link a token:** right-click a creature or character in the tracker > **Link to token…**, then click its token on the map. A group links member by member.
 - **Tokens link themselves:** when a scene opens, a token named exactly like a party character or a creature in the fight being run ("Goblin (A)", "Wolf 2") links to it. Link a scene once, or name its tokens ahead of time, and it relinks every time you come back.
+- **Companions and summons:** give a character its Steel Defender, familiar or beast companion in the Party tab and switch it on in play; it follows its owner's turn. Right-click anyone in a fight > **Summon for…** to add summoned creatures on its side.
 - **Conditions:** **+ Condition** puts a badge on the linked token. 0 HP shows a skull (monsters) or Unconscious (characters).
 - **Next / Undo** work from the GM window or from the GM's panel in Owlbear. Players see whose turn it is; monster HP is never shown to them.
 

@@ -779,3 +779,32 @@ button.temp { background: #13283a; border-color: #2b5a80; color: #8fd0ff; }
 .tip-copy:hover:not(:disabled) { background: #dccfb0; border-color: #a8884d; }
 .owlbear-switches .check-row { padding: 3px 2px; }
 .owlbear-switches .check-row.indent { padding-left: 24px; }
+
+/* ---------------- companions and summons (Party tab, Run Encounter) ---------------- */
+.tag.follow { background: #1d3532; color: #9fe0d2; }
+.setup-row.follow, .turn-row.follow { margin-left: 28px; }
+.setup-row.follow .follow-init { text-align: center; font-size: 18px; }
+.turn-row.follow .follow-box { background: #22302e; }
+.turn-row.follow .follow-box .lbl { text-align: center; }
+.follow-init { font-size: 20px; color: var(--muted); line-height: 1; }
+.turn-row.with-turn { border-color: var(--blue); border-style: dashed; }
+.party-card.comp-card { margin-left: 28px; padding: 8px 12px; }
+.party-card.comp-card .party-name { font-size: 14px; }
+.party-card.comp-card.off { opacity: .55; }
+.party-card.comp-card.off:hover { opacity: .85; }
+.comp-on { display: inline-flex; align-items: center; gap: 4px; margin-left: 10px; font-size: 12px; font-weight: 400; color: var(--muted); cursor: pointer; vertical-align: middle; }
+.comp-on input { margin: 0; }
+.companions { margin: 18px 0 6px; }
+.comp-list { display: grid; gap: 8px; margin-top: 8px; }
+.comp-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 8px 10px; background: var(--card-2); border: 1px solid var(--line-soft); border-radius: 4px; }
+.comp-name { font-weight: 700; margin-bottom: 6px; }
+.comp-fields { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.6fr) 90px; gap: 8px; }
+.comp-fields label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+/* the creature picker (src/monster-picker.js) */
+.pick { display: grid; gap: 8px; min-width: min(460px, 80vw); }
+.pick-list { display: grid; gap: 2px; max-height: 340px; overflow-y: auto; border: 1px solid var(--line-soft); border-radius: 4px; padding: 4px; }
+.pick-row { display: flex; gap: 8px; align-items: center; text-align: left; padding: 4px 6px; background: transparent; border-color: transparent; }
+.pick-row:hover { background: var(--card-2); }
+.pick-row.active { background: #1d2b3a; border-color: var(--blue-btn); }
+.pick-name { font-weight: 700; }
+.pick-row .muted { margin-left: auto; font-size: 12px; }

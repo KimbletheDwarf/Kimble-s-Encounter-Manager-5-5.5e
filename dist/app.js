@@ -63444,7 +63444,10 @@ var sameLive = (a2 = {}, b2 = {}) => (a2.hp ?? null) === (b2.hp ?? null) && (a2.
 var LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 function setupCombat(e2, { character, monster, asGroup }) {
   const list = [];
-  for (const c2 of (e2.characterIds || []).map(character).filter(Boolean)) list.push(partyCombatant(c2));
+  for (const c2 of (e2.characterIds || []).map(character).filter(Boolean)) {
+    list.push(partyCombatant(c2));
+    for (const comp of c2.companions || []) if (comp.on && monster(comp.monsterId)) list.push(companionCombatant(c2, comp, monster(comp.monsterId), e2.rules));
+  }
   for (let i = 0; i < (e2.extraPlayers?.count || 0); i++) {
     list.push({ key: `player-${i}`, kind: "pc", name: `Player ${i + 1}`, ac: null, hp: null, maxHp: null, initBonus: 0, init: null, conditions: [] });
   }
@@ -63506,17 +63509,31 @@ function mergeEntries(groups, i) {
   return true;
 }
 function ordered(s) {
-  return [...s.combatants].sort((a2, b2) => (b2.init ?? -99) - (a2.init ?? -99) || (b2.initBonus || 0) - (a2.initBonus || 0) || (a2.kind === "pc" ? -1 : 0) - (b2.kind === "pc" ? -1 : 0) || a2.name.localeCompare(b2.name, void 0, { numeric: true }));
+  const here = new Set(s.combatants.map((c2) => c2.key));
+  const leads = s.combatants.filter((c2) => !c2.owner || !here.has(c2.owner)).sort((a2, b2) => (b2.init ?? -99) - (a2.init ?? -99) || (b2.initBonus || 0) - (a2.initBonus || 0) || (a2.kind === "pc" ? -1 : 0) - (b2.kind === "pc" ? -1 : 0) || a2.name.localeCompare(b2.name, void 0, { numeric: true }));
+  const out = [], seen2 = /* @__PURE__ */ new Set();
+  const add2 = (c2) => {
+    if (seen2.has(c2.key)) return;
+    seen2.add(c2.key);
+    out.push(c2);
+    for (const f of s.combatants) if (f.owner === c2.key) add2(f);
+  };
+  leads.forEach(add2);
+  for (const c2 of s.combatants) add2(c2);
+  return out;
 }
 var isOut = (c2) => c2.kind === "monster" && (isGroup(c2) ? groupOut(c2) : c2.hp != null && c2.hp <= 0);
+var ownTurn = (s, c2) => !(c2.during && s.combatants.some((o) => o.key === c2.owner));
 function startCombat(s, rollInit2) {
-  for (const c2 of s.combatants) if (c2.init == null) c2.init = rollInit2(c2);
+  for (const c2 of s.combatants) if (c2.init == null && !c2.owner) c2.init = rollInit2(c2);
+  for (const c2 of s.combatants) if (c2.owner) c2.init = ownerInit(s, c2) ?? c2.init ?? rollInit2(c2);
   s.phase = "active";
   s.round = 1;
-  const first = ordered(s)[0];
+  const first = ordered(s).find((c2) => ownTurn(s, c2));
   s.turnKey = first?.key || null;
   if (first?.kind === "monster") s.selectedKey = first.key;
 }
+var ownerInit = (s, c2) => s.combatants.find((o) => o.key === c2.owner)?.init ?? null;
 function nextTurn(s) {
   const o = ordered(s);
   if (!o.length) return null;
@@ -63527,11 +63544,69 @@ function nextTurn(s) {
       i = 0;
       s.round++;
     }
-    if (!isOut(o[i])) break;
+    if (!isOut(o[i]) && ownTurn(s, o[i])) break;
   }
   s.turnKey = o[i].key;
   if (o[i].kind === "monster") s.selectedKey = o[i].key;
   return s.combatants.find((c2) => c2.key === s.turnKey);
+}
+function companionCombatant(ch, comp, m, rules = "2014") {
+  const base = {
+    key: `cp-${ch.id}-${comp.id}`,
+    kind: "monster",
+    refId: comp.monsterId,
+    name: comp.name || m?.name || "Companion",
+    ac: m?.armorClass ?? null,
+    maxHp: m?.averageHitPoints ?? null,
+    initBonus: m ? initBonus(m) : 0,
+    init: null,
+    owner: `pc-${ch.id}`,
+    ally: true,
+    companion: { char: ch.id, id: comp.id, ...comp.type === "summon" ? { summon: true } : {} }
+  };
+  if (rules === "2024") base.during = true;
+  const live2 = comp.live || {};
+  let c2;
+  if ((comp.count || 1) > 1) {
+    c2 = makeGroup({ ...base, maxHp: base.maxHp ?? 1 }, comp.count, false);
+    if (live2.members?.length === comp.count) c2.members = structuredClone(live2.members);
+    if (live2.conditions) c2.conditions = [...live2.conditions];
+  } else {
+    c2 = { ...base, hp: live2.hp ?? base.maxHp, conditions: [...live2.conditions || []] };
+    if (live2.tokens?.length) c2.tokens = [...live2.tokens];
+  }
+  if (live2.tempHp) c2.tempHp = live2.tempHp;
+  return c2;
+}
+function companionLiveOf(c2) {
+  if (!isGroup(c2)) return liveOf(c2);
+  const live2 = { members: structuredClone(c2.members), conditions: [...c2.conditions || []] };
+  if (c2.tempHp) live2.tempHp = c2.tempHp;
+  return live2;
+}
+function summon(s, ownerKey, m, n = 1, rules = "2014") {
+  const owner = s.combatants.find((c3) => c3.key === ownerKey);
+  if (!owner || !m) return null;
+  const taken = new Set(s.combatants.map((c3) => c3.name));
+  let name = m.name;
+  for (let k = 2; taken.has(name); k++) name = `${m.name} (${k})`;
+  const base = {
+    key: `sm-${m.id}-${Date.now().toString(36)}-${s.combatants.length}`,
+    kind: "monster",
+    refId: m.id,
+    name,
+    ac: m.armorClass ?? null,
+    maxHp: m.averageHitPoints ?? 1,
+    initBonus: initBonus(m),
+    init: owner.init ?? null,
+    owner: owner.key,
+    summoned: true
+  };
+  if (owner.kind === "pc" || owner.ally) base.ally = true;
+  if (rules === "2024") base.during = true;
+  const c2 = n > 1 ? makeGroup(base, n, isMinion(m)) : { ...base, hp: base.maxHp, conditions: [] };
+  s.combatants.push(c2);
+  return c2;
 }
 function removeCombatant(s, key3) {
   if (s.turnKey === key3) {
@@ -64312,6 +64387,56 @@ function renderEdit() {
 // src/tabs/party.js
 init_ui();
 init_store();
+
+// src/monster-picker.js
+init_ui();
+init_store();
+function pickMonster({ title: title2, okText = "Add", count = null, hint = "", onPick }) {
+  let chosen = null, query3 = "";
+  const search = h("input.search", { type: "search", placeholder: "Search creatures by name" });
+  const list = h("div.pick-list");
+  const many = count != null ? h("input", { type: "number", min: 1, max: 30, value: count }) : null;
+  const draw2 = () => {
+    const q = query3.trim().toLowerCase();
+    const found = allMonsters().filter((m) => !q || m.name.toLowerCase().includes(q)).sort((a2, b2) => (q ? (a2.name.toLowerCase().startsWith(q) ? 0 : 1) - (b2.name.toLowerCase().startsWith(q) ? 0 : 1) : 0) || (isHomebrew(a2) ? 0 : 1) - (isHomebrew(b2) ? 0 : 1) || a2.name.localeCompare(b2.name)).slice(0, 60);
+    fill(list, found.length ? found.map((m) => h(
+      "button.pick-row" + (chosen === m ? ".active" : ""),
+      {
+        onclick: () => {
+          chosen = m;
+          draw2();
+        },
+        ondblclick: () => {
+          chosen = m;
+          if (ok() !== false) close();
+        }
+      },
+      avatar(m.avatar, m.name, "xs"),
+      h("span.pick-name", m.name),
+      h("span.muted", [m.challengeRating != null && `CR ${m.challengeRating}`, m.typeText || m.monsterType, isHomebrew(m) ? "yours" : "SRD"].filter(Boolean).join(" \xB7 "))
+    )) : h("div.empty", "No creature by that name. Make one in the Maker or the Creatures tab first."));
+  };
+  search.addEventListener("input", () => {
+    query3 = search.value;
+    draw2();
+  });
+  const ok = () => {
+    if (!chosen) return false;
+    onPick(chosen, many ? Math.max(1, Math.min(30, Math.round(Number(many.value)) || 1)) : 1);
+  };
+  const close = modal(title2, h(
+    "div.pick",
+    search,
+    list,
+    many ? h("label.mg-row", "How many", many) : null,
+    hint ? h("div.hint", hint) : null
+  ), [["Cancel", () => {
+  }], [okText, ok, "primary"]]);
+  draw2();
+  search.focus();
+}
+
+// src/tabs/party.js
 init_dice();
 init_rules();
 
@@ -64644,6 +64769,7 @@ function renderEdit2() {
     ),
     h("div.hint", `Initiative rolls as 1d20${signed(c2.initiativeBonus || 0)}.`),
     h("div.hint", "Power multiplier: 1 = what their level suggests. Raise it (e.g. 1.1\u20131.25) for a character whose magic items make them stronger than their level, or lower it for one who is weaker. It scales their share of the encounter difficulty thresholds, so the same monsters rate a little easier."),
+    companionsEditor(c2),
     h(
       "div.sheet-head",
       h("h3", "Character sheet"),
@@ -64656,6 +64782,65 @@ function renderEdit2() {
     h("div.hint", c2.sheet ? "From the D&D Beyond PDF. To update it, export the PDF again and drop it here." : ""),
     characterSheet(c2)
   );
+}
+function companionsEditor(c2) {
+  const box = h("div.companions");
+  const list = () => c2.companions || (c2.companions = []);
+  const changed3 = () => {
+    save("party", c2);
+    draw2();
+  };
+  const draw2 = () => fill(
+    box,
+    h(
+      "div.sheet-head",
+      h("h3", "Companions & summons"),
+      h("button.outline", { onclick: () => pickMonster({ title: `A companion or summon for ${c2.name}`, hint: "Pick its stat block. Make your own (a Steel Defender with your numbers, say) in the Maker or the Creatures tab.", onPick: (m) => {
+        list().push({ id: newId(m.name), monsterId: m.id, type: "companion", count: 1, on: true });
+        changed3();
+      } }) }, "Add")
+    ),
+    h("div.hint", "Creatures that go with this character: a Steel Defender, a familiar, a beast companion, the skeletons of Animate Dead. Switch them on or off in Run Encounter. With 2014 rules they take their turn right after the character; with 2024 rules they act during its turn."),
+    list().length ? h("div.comp-list", list().map((x, i) => {
+      const m = findMonster(x.monsterId);
+      return h(
+        "div.comp-row",
+        avatar(m?.avatar, m?.name || "?", "sm"),
+        h(
+          "div.comp-main",
+          h("div.comp-name", m ? m.name : h("span.bad-text", "Creature not found in the library"), m ? h("span.muted", ` \xB7 AC ${m.armorClass ?? "\u2014"} \xB7 HP ${m.averageHitPoints ?? "\u2014"}`) : null),
+          h(
+            "div.comp-fields",
+            h("label", "Name", h("input", { type: "text", value: x.name || "", placeholder: m?.name || "", oninput: (e2) => {
+              if (e2.target.value.trim()) x.name = e2.target.value;
+              else delete x.name;
+              save("party", c2);
+            } })),
+            h("label", "Kind", h(
+              "select",
+              { onchange: (e2) => {
+                x.type = e2.target.value;
+                changed3();
+              } },
+              h("option", { value: "companion", selected: x.type !== "summon" }, "Companion (keeps its HP)"),
+              h("option", { value: "summon", selected: x.type === "summon" }, "Summon (fresh each time)")
+            )),
+            h("label", "How many", h("input", { type: "number", min: 1, max: 30, value: x.count || 1, onchange: (e2) => {
+              x.count = Math.max(1, Math.min(30, Math.round(Number(e2.target.value)) || 1));
+              delete x.live;
+              changed3();
+            } }))
+          )
+        ),
+        h("button.icon-btn", { title: "Remove", onclick: () => confirmBox(`Remove ${x.name || m?.name || "this creature"} from ${c2.name}?`, "Remove", () => {
+          list().splice(i, 1);
+          changed3();
+        }) }, "\xD7")
+      );
+    })) : null
+  );
+  draw2();
+  return box;
 }
 var isPdf = (f) => f.type === "application/pdf" || /\.pdf$/i.test(f.name);
 var norm2 = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -65239,7 +65424,7 @@ function encounterEnemies(enc2) {
     if (m) by.set(id, { monster: m, count: (by.get(id)?.count || 0) + n });
   };
   if (enc2.combat?.combatants?.length) {
-    for (const c2 of enc2.combat.combatants) if (c2.kind === "monster" && c2.refId) add2(c2.refId, isGroup(c2) ? c2.members.length : 1);
+    for (const c2 of enc2.combat.combatants) if (c2.kind === "monster" && c2.refId && !c2.ally && !c2.summoned) add2(c2.refId, isGroup(c2) ? c2.members.length : 1);
   } else for (const g of enc2.groups || []) add2(g.monsterId, g.count);
   return [...by.values()];
 }
@@ -67317,8 +67502,8 @@ function renderPicker() {
             h("button.outline", { onclick: chooseParty }, "Choose characters")
           )
         ),
-        party.length ? h("div.party-list", party.map(partyCard)) : h("div.empty", store.party.length ? "No one is in the active party yet. Choose characters to track their HP and conditions between fights." : "Add your characters in the Party tab first."),
-        party.length ? h("div.hint", `Their HP, conditions and linked token carry into every encounter you run, and back out again.${linker ? " Right-click a character to link its token in Owlbear." : ""}`) : null
+        party.length ? h("div.party-list", party.flatMap((ch) => [partyCard(ch), ...(ch.companions || []).map((comp) => companionCard(ch, comp))])) : h("div.empty", store.party.length ? "No one is in the active party yet. Choose characters to track their HP and conditions between fights." : "Add your characters in the Party tab first."),
+        party.length ? h("div.hint", `Their HP, conditions and linked token carry into every encounter you run, and back out again. Companions and summons (added in the Party tab) join them when In play.${linker ? " Right-click a character to link its token in Owlbear." : ""}`) : null
       ),
       h(
         "div.run-encounters",
@@ -67376,6 +67561,14 @@ function undo() {
 }
 function syncParty(s) {
   for (const c2 of s.combatants) {
+    if (c2.companion) {
+      const ch2 = findCharacter(c2.companion.char), comp = ch2?.companions?.find((x) => x.id === c2.companion.id);
+      const live2 = companionLiveOf(c2);
+      if (!comp || JSON.stringify(comp.live || {}) === JSON.stringify(live2)) continue;
+      comp.live = live2;
+      save("party", ch2);
+      continue;
+    }
     const ch = c2.kind === "pc" && c2.refId && findCharacter(c2.refId);
     if (!ch || sameLive(ch.live, liveOf(c2))) continue;
     ch.live = liveOf(c2);
@@ -67389,7 +67582,7 @@ function rollFor(which) {
   act((s) => {
     const shared = /* @__PURE__ */ new Map();
     for (const c2 of s.combatants) {
-      if (which === "monsters" && c2.kind !== "monster") continue;
+      if (c2.owner || which === "monsters" && c2.kind !== "monster") continue;
       if (sameInit && c2.kind === "monster" && c2.refId) {
         if (!shared.has(c2.refId)) shared.set(c2.refId, rollInit(c2));
         c2.init = shared.get(c2.refId);
@@ -67411,17 +67604,17 @@ function renderSetup() {
         h("label.check-row", h("input", { type: "checkbox", checked: sameInit, onchange: (e2) => {
           sameInit = e2.target.checked;
         } }), "Identical monsters share one initiative roll"),
-        h("div.setup-list", s.combatants.map((c2) => h(
-          "div.setup-row",
+        h("div.setup-list", underOwners(s.combatants).map((c2) => h(
+          "div.setup-row" + (c2.owner ? ".follow" : ""),
           { oncontextmenu: (e2) => tokenMenu(e2, c2) },
           avatarFor(c2, "sm"),
-          h("div.setup-name", c2.name, linkTag(c2), h("div.muted", `${c2.kind === "pc" ? "Character" : isGroup(c2) ? `Group of ${c2.members.length} ${c2.group === "minion" ? "minions" : "(pack)"}` : "Monster"} \xB7 init ${signed(c2.initBonus)}`)),
-          h("input.init-input", { type: "number", value: c2.init ?? "", placeholder: "\u2014", oninput: (e2) => {
+          h("div.setup-name", c2.name, linkTag(c2), h("div.muted", `${c2.owner ? followText(c2) : c2.kind === "pc" ? "Character" : isGroup(c2) ? `Group of ${c2.members.length} ${c2.group === "minion" ? "minions" : "(pack)"}` : "Monster"}${c2.owner ? "" : ` \xB7 init ${signed(c2.initBonus)}`}`)),
+          c2.owner ? h("span.muted.follow-init", "\u21B3") : h("input.init-input", { type: "number", value: c2.init ?? "", placeholder: "\u2014", oninput: (e2) => {
             c2.init = e2.target.value === "" ? null : Number(e2.target.value);
             save("encounters", enc);
             updateStart();
           } }),
-          h("button.icon-btn", { title: "Roll", onclick: () => act((x) => {
+          c2.owner ? h("span") : h("button.icon-btn", { title: "Roll", onclick: () => act((x) => {
             x.combatants.find((y) => y.key === c2.key).init = rollInit(c2, false);
           }) }, "\u{1F3B2}"),
           h("button.icon-btn", { title: "Remove from this fight", onclick: () => act((x) => {
@@ -67441,9 +67634,23 @@ function renderSetup() {
   );
   updateStart();
   function updateStart() {
-    const n = s.combatants.filter((c2) => c2.init == null).length;
+    const n = s.combatants.filter((c2) => c2.init == null && !c2.owner).length;
     el10.querySelector("#run-missing").textContent = n ? `${n} without initiative: they will roll automatically when you start.` : "";
   }
+}
+function underOwners(list) {
+  const keys = new Set(list.map((c2) => c2.key)), out = [];
+  const add2 = (c2) => {
+    if (out.includes(c2)) return;
+    out.push(c2);
+    list.filter((f) => f.owner === c2.key).forEach(add2);
+  };
+  list.filter((c2) => !c2.owner || !keys.has(c2.owner)).forEach(add2);
+  return out;
+}
+function followText(c2) {
+  const o = C().combatants.find((x) => x.key === c2.owner);
+  return `${o ? `${o.name}'s` : "A"} ${c2.summoned || c2.companion?.summon ? "summon" : "companion"}: ${c2.during ? "acts during their turn" : "right after their turn"}`;
 }
 function start() {
   act((s) => startCombat(s, rollInit));
@@ -67544,10 +67751,11 @@ function combatantRow(c2, current3) {
     grp && standing(c2).length > 1 ? ["Split off\u2026", () => splitDialog2(c2)] : null,
     same.length ? [grp ? `Merge the other ${m?.name || c2.name} rows into this group` : `Merge identical creatures into a group (${same.length + 1})`, () => mergeRows(c2)] : null
   ].filter(Boolean);
+  const withTurn = c2.during && c2.owner === s.turnKey;
   return h(
-    "div.turn-row" + (current3 ? ".current" : "") + (c2.key === s.selectedKey ? ".selected" : "") + (isOut(c2) ? ".out" : "") + (c2.kind === "pc" ? ".pc" : ""),
+    "div.turn-row" + (current3 ? ".current" : "") + (withTurn ? ".with-turn" : "") + (c2.owner ? ".follow" : "") + (c2.key === s.selectedKey ? ".selected" : "") + (isOut(c2) ? ".out" : "") + (c2.kind === "pc" ? ".pc" : "") + (c2.ally ? ".ally" : ""),
     { oncontextmenu: (e2) => tokenMenu(e2, c2) },
-    h("div.init-box", h("div.lbl", "Initiative"), h("input", { type: "number", value: c2.init ?? "", onchange: (e2) => act((x) => {
+    c2.owner ? h("div.init-box.follow-box", { title: followText(c2) }, h("div.lbl", c2.during ? "On their turn" : "After them"), h("div.follow-init", "\u21B3")) : h("div.init-box", h("div.lbl", "Initiative"), h("input", { type: "number", value: c2.init ?? "", onchange: (e2) => act((x) => {
       x.combatants.find((y) => y.key === c2.key).init = Number(e2.target.value) || 0;
     }) })),
     h(
@@ -67560,7 +67768,7 @@ function combatantRow(c2, current3) {
       avatarFor(c2, "md"),
       h(
         "div.turn-info",
-        h("div.turn-name", c2.name, grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null, isOut(c2) ? h("span.tag.dead", "Down") : null, linkTag(c2)),
+        h("div.turn-name", c2.name, grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null, isOut(c2) ? h("span.tag.dead", "Down") : null, c2.owner ? h("span.tag.follow", { title: followText(c2) }, c2.summoned || c2.companion?.summon ? "Summon" : "Companion") : null, linkTag(c2)),
         h("div.turn-stats", stats),
         grp ? pips(c2) : null,
         condChips(c2, {
@@ -67580,6 +67788,7 @@ function combatantRow(c2, current3) {
         x.turnKey = c2.key;
       })],
       ...linker ? tokenItems(c2) : [],
+      ...summonItems(c2),
       ["Rename", () => renameCombatant(c2)],
       ...groupItems,
       ["Duplicate", () => act((x) => {
@@ -67701,7 +67910,7 @@ function memberConditions(anchor, c2, i) {
     m.conditions = m.conditions.includes(q) ? m.conditions.filter((z) => z !== q) : [...m.conditions, q];
   }), "", { dataset: { cond: q } }]));
 }
-function minionDialog(c2) {
+function minionDialog(c2, change = (fn) => act((x) => fn(find(x, c2.key)))) {
   const left = standing(c2).length;
   const killN = h("input.hp-input", { type: "number", min: 0, max: left, value: Math.min(1, left) });
   const dmg = h("input", { type: "number", min: 0, placeholder: "Damage" });
@@ -67710,8 +67919,8 @@ function minionDialog(c2) {
   const kill = () => {
     const n = Number(killN.value);
     if (!(n > 0)) return false;
-    act((x) => {
-      killMinions(find(x, c2.key), n);
+    change((y) => {
+      killMinions(y, n);
     });
   };
   const other = () => {
@@ -67721,8 +67930,8 @@ function minionDialog(c2) {
       msg.textContent = `${d} is less than their maximum HP (${c2.maxHp}), so it does nothing to them.`;
       return false;
     }
-    act((x) => {
-      minionOtherDamage(find(x, c2.key), d, n);
+    change((y) => {
+      minionOtherDamage(y, d, n);
     });
   };
   const close = modal(`${c2.name}: minions`, h(
@@ -67736,8 +67945,8 @@ function minionDialog(c2) {
     h("div.hint", `Other damage (an aura, a fall, a hazard) kills only if it's at least their maximum HP (${c2.maxHp}).`),
     msg
   ), [
-    ...left < c2.members.length ? [["Revive one", () => act((x) => {
-      revive(find(x, c2.key));
+    ...left < c2.members.length ? [["Revive one", () => change((y) => {
+      revive(y);
     })]] : [],
     ["Kill", kill, "danger"]
   ]);
@@ -67746,15 +67955,15 @@ function minionDialog(c2) {
   });
   killN.select();
 }
-function packDialog(c2) {
+function packDialog(c2, custom = null) {
+  const change = custom || ((fn) => act((x) => fn(find(x, c2.key))));
   const left = standing(c2).length;
   const input = h("input.hp-input", { type: "number", min: 0, placeholder: "Amount" });
   const caught = numberInput(left, 1, left);
   const apply = (mode3) => {
     const n = Number(input.value);
     if (!Number.isFinite(n) || input.value === "") return false;
-    act((x) => {
-      const y = find(x, c2.key);
+    change((y) => {
       if (mode3 === "damage") damagePack(y, n);
       else if (mode3 === "each") damageEach(y, n, Number(caught.value) || 1);
       else if (mode3 === "heal") healPack(y, n);
@@ -67763,7 +67972,7 @@ function packDialog(c2) {
         if (!y.tempHp) delete y.tempHp;
       }
     });
-    if (mode3 === "damage" || mode3 === "each") setTimeout(() => concentrationCheck(c2.key, n), 0);
+    if (!custom && (mode3 === "damage" || mode3 === "each")) setTimeout(() => concentrationCheck(c2.key, n), 0);
   };
   const close = modal(`${c2.name}: pack hit points`, h(
     "div.hp-edit.group-edit",
@@ -67777,8 +67986,8 @@ function packDialog(c2) {
     h("div.hint", "Damage each: an area effect. Each creature caught takes the full amount, the hurt ones first, with no rollover.")
   ), [
     ["Temp HP", () => apply("temp"), "temp"],
-    ...left < c2.members.length ? [["Revive one", () => act((x) => {
-      revive(find(x, c2.key), Number(input.value) || 1);
+    ...left < c2.members.length ? [["Revive one", () => change((y) => {
+      revive(y, Number(input.value) || 1);
     })]] : [],
     ["Heal", () => apply("heal"), "ok"],
     ["Damage", () => apply("damage"), "danger"]
@@ -67948,9 +68157,31 @@ function tokenItems(c2) {
   ];
 }
 function tokenMenu(e2, c2) {
-  if (!linker) return;
   e2.preventDefault();
-  popMenu(e2.currentTarget.querySelector(".turn-name, .setup-name") || e2.currentTarget, tokenItems(c2));
+  popMenu(e2.currentTarget.querySelector(".turn-name, .setup-name") || e2.currentTarget, [...linker ? tokenItems(c2) : [], ...summonItems(c2)]);
+}
+function summonItems(c2) {
+  return [
+    [`Summon for ${c2.name}\u2026`, () => summonDialog(c2)],
+    ...c2.owner ? [[c2.companion ? "Dismiss (switch it off)" : "Dismiss", () => dismiss(c2), "danger"]] : []
+  ];
+}
+function summonDialog(c2) {
+  const rules = enc.rules === "2024" ? "acts during their turn (2024 rules)" : "takes its turn right after theirs (2014 rules)";
+  pickMonster({
+    title: `Summon for ${c2.name}`,
+    okText: "Summon",
+    count: 1,
+    hint: `It joins on ${c2.kind === "pc" || c2.ally ? "the players\u2019" : "the monsters\u2019"} side and ${rules}. Several make one group, "Skeleton 1", "Skeleton 2"\u2026: name their tokens like that in Owlbear and they link by themselves.`,
+    onPick: (m, n) => act((s) => {
+      const y = summon(s, c2.key, m, n, enc.rules);
+      if (y && s.phase === "active" && y.init == null) y.init = rollInit(y);
+    })
+  });
+}
+function dismiss(c2) {
+  act((s) => removeCombatant(s, c2.key));
+  if (c2.companion) setCompanionOn(c2.companion.char, c2.companion.id, false);
 }
 function actOn(encId, fn) {
   if (enc?.id === encId) return act(fn);
@@ -68013,8 +68244,142 @@ function setPartyLive(ch, next2) {
 function partyUndoLast() {
   const u = partyUndo.pop();
   const ch = u && findCharacter(u.id);
-  if (ch) setPartyLive(ch, u.live);
+  if (ch && u.companions) {
+    ch.companions = u.companions;
+    save("party", ch);
+  } else if (ch) setPartyLive(ch, u.live);
   render4();
+}
+var companionKey = (charId, compId) => `cp-${charId}-${compId}`;
+function companionCombatants(ch) {
+  return (ch.companions || []).filter((comp) => comp.on && findMonster(comp.monsterId)).map((comp) => companionCombatant(ch, comp, findMonster(comp.monsterId)));
+}
+function fightChange(e2, fn) {
+  if (enc === e2) return act(fn);
+  fn(e2.combat);
+  e2.combat.combatants.forEach(settleDown);
+  syncParty(e2.combat);
+  save("encounters", e2);
+}
+function companionAct(charId, compId, fn, { undo: undo2 = true } = {}) {
+  const ch = findCharacter(charId), comp = ch?.companions?.find((x) => x.id === compId);
+  if (!comp) return;
+  const key3 = companionKey(charId, compId), e2 = liveEncounter();
+  if (e2?.combat?.combatants.some((x) => x.key === key3)) {
+    fightChange(e2, (s) => fn(find(s, key3), s));
+    render4();
+    return;
+  }
+  if (undo2) {
+    partyUndo.push({ id: charId, companions: structuredClone(ch.companions) });
+    if (partyUndo.length > UNDO_LIMIT) partyUndo.shift();
+  }
+  const c2 = companionCombatant(ch, comp, findMonster(comp.monsterId));
+  fn(c2, { combatants: [c2] });
+  settleDown(c2);
+  comp.live = companionLiveOf(c2);
+  save("party", ch);
+  render4();
+}
+function setCompanionOn(charId, compId, on) {
+  const ch = findCharacter(charId), comp = ch?.companions?.find((x) => x.id === compId);
+  if (!comp || !!comp.on === on) return;
+  comp.on = on;
+  if (comp.type === "summon") delete comp.live;
+  save("party", ch);
+  const e2 = liveEncounter(), key3 = companionKey(charId, compId), m = findMonster(comp.monsterId);
+  const s = e2?.combat, here = s?.combatants.some((x) => x.key === key3);
+  if (s && on && !here && m && s.combatants.some((x) => x.key === `pc-${charId}`)) {
+    fightChange(e2, (x) => {
+      const y = companionCombatant(ch, comp, m, e2.rules);
+      y.init = x.combatants.find((o) => o.key === y.owner)?.init ?? null;
+      x.combatants.push(y);
+    });
+  } else if (s && !on && here) fightChange(e2, (x) => removeCombatant(x, key3));
+  render4();
+}
+function companionCard(ch, comp) {
+  const m = findMonster(comp.monsterId), e2 = liveEncounter();
+  const c2 = e2?.combat?.combatants.find((x) => x.key === companionKey(ch.id, comp.id)) || companionCombatant(ch, comp, m);
+  const grp = isGroup(c2), on = !!comp.on && !!m;
+  const change = (fn) => companionAct(ch.id, comp.id, (y) => fn(y));
+  const items = () => linker && on ? companionTokenItems(ch, comp, c2) : [];
+  const hp = !on ? h("span") : grp ? h(
+    "button.hp-box.group",
+    { title: "Hit points: click to damage or heal", onclick: () => c2.group === "minion" ? minionDialog(c2, change) : packDialog(c2, change) },
+    h("span.hp-cur", c2.group === "minion" ? standing(c2).length : totalHp(c2)),
+    h("span.hp-sep", "/"),
+    h("span.hp-max", c2.group === "minion" ? c2.members.length : c2.maxHp * c2.members.length)
+  ) : h(
+    "button.hp-box",
+    { title: "Change HP", onclick: () => hpDialog(c2, (mode3, n) => change((y) => applyHp(y, mode3, n))) },
+    h("span.hp-cur", c2.hp ?? "\u2014"),
+    h("span.hp-sep", "/"),
+    h("span.hp-max", c2.maxHp ?? "\u2014"),
+    c2.tempHp ? h("span.hp-temp", `+${c2.tempHp}`) : null
+  );
+  return h(
+    "div.party-card.comp-card" + (on ? "" : ".off") + (on && isOut(c2) ? ".down" : ""),
+    {
+      oncontextmenu: (ev) => {
+        if (!items().length) return;
+        ev.preventDefault();
+        popMenu(ev.currentTarget.querySelector(".party-name"), items());
+      }
+    },
+    avatar(m?.avatar, c2.name, "sm"),
+    h(
+      "div.party-main",
+      h(
+        "div.party-name",
+        c2.name,
+        grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null,
+        h("span.tag.follow", comp.type === "summon" ? "Summon" : "Companion"),
+        on ? linkTag(c2) : null,
+        m ? h("label.comp-on", { title: "In play: it joins fights and shows in Owlbear" }, h("input", { type: "checkbox", checked: !!comp.on, onchange: (ev) => setCompanionOn(ch.id, comp.id, ev.target.checked) }), "In play") : h("span.bad-text", " Its stat block is missing from the library")
+      ),
+      on ? h("div.turn-stats", h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "HP "), `${c2.maxHp ?? "\u2014"}${grp ? " each" : ""}`), h("span.muted", `${ch.name}'s ${comp.type === "summon" ? "summon" : "companion"}`)) : null,
+      on && !grp ? condChips(c2, {
+        add: (q) => change((y) => {
+          y.conditions.push(q);
+        }),
+        remove: (q) => change((y) => {
+          y.conditions = y.conditions.filter((z) => z !== q);
+        })
+      }) : null
+    ),
+    hp,
+    items().length ? h("button.icon-btn.kebab", { title: "More", onclick: (ev) => popMenu(ev.currentTarget, items()) }, "\u22EE") : h("span")
+  );
+}
+function companionTokenItems(ch, comp, c2) {
+  const n = tokensOf(c2).length, plan = linkPlan(c2);
+  return [
+    [!n ? "Link to token\u2026" : isGroup(c2) ? "Relink tokens\u2026" : "Link to a different token\u2026", () => {
+      if (!linker.available()) return notice('Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".', "error");
+      linker.pick(
+        { names: plan.map((p) => p.name) },
+        (i, id) => {
+          unlinkedByHand.delete(id);
+          companionAct(ch.id, comp.id, (y, s) => {
+            linkToken(s, y.key, plan[i].member, id);
+          });
+        },
+        (reason) => {
+          if (reason === "cancelled") notice("Linking stopped.");
+        }
+      );
+      notice(plan.length > 1 ? `In Owlbear, click the tokens for ${c2.name}, one after another (Esc stops).` : `In Owlbear, click the token for ${c2.name} (Esc cancels).`);
+    }],
+    ...n ? [[n === 1 ? "Unlink token" : `Unlink ${n} tokens`, () => {
+      let ids = [];
+      companionAct(ch.id, comp.id, (y, s) => {
+        ids = unlinkTokens(s, y.key);
+      });
+      for (const id of ids) unlinkedByHand.add(id);
+      if (ids.length && linker.available()) linker.unlink(ids);
+    }]] : []
+  ];
 }
 function partyCard(ch) {
   const c2 = partyCombatant(ch);
@@ -68145,6 +68510,17 @@ function linkByName(all) {
         save("encounters", e2);
       }
     }
+    const inFight = new Set(e2?.combat?.combatants.map((c2) => c2.key) || []);
+    const away = activeParty().flatMap(companionCombatants).filter((c2) => !inFight.has(c2.key));
+    const comps = matchFightTokens({ combatants: away }, tokens);
+    twice.push(...comps.twice.filter((n) => !twice.includes(n)));
+    for (const l of comps.links) {
+      const c2 = away.find((x) => x.key === l.key);
+      companionAct(c2.companion.char, c2.companion.id, (y, s) => {
+        linkToken(s, y.key, l.member, l.token);
+      }, { undo: false });
+      linked2.push(l.member >= 0 ? `${c2.name} ${l.member + 1}` : c2.name);
+    }
   } finally {
     linking = false;
   }
@@ -68235,7 +68611,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.4.8";
+var version2 = "1.5.0";
 
 // src/app.js
 var TABS = [
@@ -68818,7 +69194,7 @@ init_ui();
 // src/obr/tracker-state.js
 var STATE_VERSION = 1;
 var MAX_BYTES = 12e3;
-function publicState(enc2, { showPartyHp = false, mark: mark2 = (n) => ({ n }), party = [], speed: speed2 = () => null } = {}) {
+function publicState(enc2, { showPartyHp = false, mark: mark2 = (n) => ({ n }), party = [], speed: speed2 = () => null, companions = () => [] } = {}) {
   const s = enc2?.combat;
   if (!s) return null;
   const state2 = {
@@ -68832,20 +69208,27 @@ function publicState(enc2, { showPartyHp = false, mark: mark2 = (n) => ({ n }), 
     order: ordered(s).map((c2) => rowOf(c2, showPartyHp, mark2, speed2))
   };
   const inFight = new Set(s.combatants.map((c2) => c2.key));
-  const extra = party.map(partyCombatant).filter((c2) => !inFight.has(c2.key)).flatMap((c2) => tokenMarks(c2)).filter((x) => x.marks.length);
+  const extra = party.flatMap((ch) => [partyCombatant(ch), ...companions(ch)]).filter((c2) => !inFight.has(c2.key)).flatMap((c2) => tokenMarks(c2)).filter((x) => x.marks.length);
   if (extra.length) state2.tmExtra = Object.fromEntries(extra.map((x) => [x.token, x.marks.map(mark2)]));
   return fit(state2);
 }
-function partyState(characters, { showPartyHp = false, mark: mark2 = (n) => ({ n }) } = {}) {
+function partyState(characters, { showPartyHp = false, mark: mark2 = (n) => ({ n }), companions = () => [] } = {}) {
   if (!characters?.length) return null;
-  const rows = characters.map(partyCombatant).sort((a2, b2) => a2.name.localeCompare(b2.name)).map((c2) => rowOf(c2, showPartyHp, mark2));
+  const rows = [...characters].sort((a2, b2) => a2.name.localeCompare(b2.name)).flatMap((ch) => [partyCombatant(ch), ...companions(ch)]).map((c2) => rowOf(c2, showPartyHp, mark2));
   return fit({ v: STATE_VERSION, phase: "party", name: "Party", showPartyHp: !!showPartyHp, order: rows });
 }
 function rowOf(c2, showPartyHp, mark2, speed2 = () => null) {
-  const row2 = { key: c2.key, name: isGroup(c2) ? `${c2.name} \xD7${standing(c2).length}` : c2.name, kind: c2.kind };
+  const row2 = { key: c2.key, name: isGroup(c2) ? `${c2.name} \xD7${standing(c2).length}` : c2.name, kind: c2.ally ? "ally" : c2.kind };
   if (c2.init != null) row2.init = c2.init;
   if (isOut(c2)) row2.down = true;
-  if (showPartyHp && c2.kind === "pc" && c2.hp != null) row2.hp = `${c2.hp}/${c2.maxHp ?? "?"}${c2.tempHp ? ` +${c2.tempHp}` : ""}`;
+  if (c2.owner) {
+    row2.with = c2.owner;
+    if (c2.during) row2.during = true;
+  }
+  if (showPartyHp && (c2.kind === "pc" || c2.ally)) {
+    if (isGroup(c2)) row2.hp = `${standing(c2).length}/${c2.members.length} up`;
+    else if (c2.hp != null) row2.hp = `${c2.hp}/${c2.maxHp ?? "?"}${c2.tempHp ? ` +${c2.tempHp}` : ""}`;
+  }
   const tokens = tokensOf(c2);
   if (tokens.length) row2.tokens = tokens;
   const sp = Number(speed2(c2));
@@ -69095,7 +69478,7 @@ var speed = (c2) => {
 };
 function publish(force = false) {
   if (!bridge) return;
-  const e2 = liveEncounter(), opts2 = { showPartyHp: !!settings2.showPartyHp, mark, party: activeParty(), speed };
+  const e2 = liveEncounter(), opts2 = { showPartyHp: !!settings2.showPartyHp, mark, party: activeParty(), speed, companions: companionCombatants };
   const state2 = e2?.combat ? publicState(e2, opts2) : partyState(opts2.party, opts2);
   const text = JSON.stringify(state2);
   if (!force && text === lastSent) return;

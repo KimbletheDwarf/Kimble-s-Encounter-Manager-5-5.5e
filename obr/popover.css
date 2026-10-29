@@ -1,5 +1,5 @@
 /* The tracker panel inside Owlbear. Colours follow Owlbear's theme (popover.js sets --text and --muted). */
-:root { --text: #ffffff; --muted: rgba(255, 255, 255, 0.6); --line: rgba(255, 255, 255, 0.12); --accent: #bb99ff; --pc: #3f7fd1; --monster: #b03a3a; }
+:root { --text: #ffffff; --muted: rgba(255, 255, 255, 0.6); --line: rgba(255, 255, 255, 0.12); --accent: #bb99ff; --pc: #3f7fd1; --monster: #b03a3a; --ally: #3f9a8a; }
 * { box-sizing: border-box; }
 body { margin: 0; padding: 12px 14px 14px; font: 14px/1.35 Roboto, "Segoe UI", system-ui, sans-serif; color: var(--text); background: transparent; overflow-x: hidden; }
 h1 { font-size: 15px; font-weight: 600; margin: 0; }
@@ -14,6 +14,11 @@ h1 { font-size: 15px; font-weight: 600; margin: 0; }
 .row.down .name { text-decoration: line-through; }
 .dot { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #fff; background: var(--monster); }
 .row.pc .dot { background: var(--pc); }
+.row.ally .dot { background: var(--ally); }
+/* a companion or summon, under its owner */
+.row.follow { margin-left: 18px; }
+.row.follow .name::before { content: '↳ '; color: var(--muted); }
+.row.now-with { margin-left: 18px; background: rgba(187, 153, 255, 0.10); }
 .row.now .dot { width: 32px; height: 32px; font-size: 13px; }
 .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .row.now .name { font-weight: 600; font-size: 15px; }

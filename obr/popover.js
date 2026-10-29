@@ -3598,12 +3598,13 @@ function upcoming(state2, n = 3) {
   for (let step = 1; step < order.length && out.length < n; step++) {
     const crossed = at + step >= order.length;
     const row2 = order[(at + step) % order.length];
-    if (row2.down) continue;
+    if (row2.down || ownsTurn(order, row2) === false) continue;
     out.push({ row: row2, newRound: crossed && !marked });
     if (crossed) marked = true;
   }
   return out;
 }
+var ownsTurn = (order, row2) => !(row2.during && order.some((r) => r.key === row2.with));
 
 // src/obr/popover.js
 var root = document.getElementById("root");
@@ -3642,10 +3643,11 @@ function marks(list = []) {
 function row(r, cls = "") {
   const pic = (r.tokens || []).map((id) => pictures.get(id)).find(Boolean);
   const centre = role === "GM" && r.tokens?.length;
+  const owner = r.with && state?.order?.find((o) => o.key === r.with);
   return h(
-    `div.row.${r.kind}${r.down ? ".down" : ""}${cls ? `.${cls}` : ""}${centre ? ".centre" : ""}`,
+    `div.row.${r.kind}${r.with ? ".follow" : ""}${r.down ? ".down" : ""}${cls ? `.${cls}` : ""}${centre ? ".centre" : ""}`,
     {
-      title: `${r.name}${r.down ? " (down)" : ""}${centre ? " \xB7 click to centre the map on it" : ""}`,
+      title: `${r.name}${owner ? ` \xB7 ${r.during ? "acts during" : "goes right after"} ${owner.name}'s turn` : ""}${r.down ? " (down)" : ""}${centre ? " \xB7 click to centre the map on it" : ""}`,
       onclick: centre ? () => centreOn(r.tokens) : null
     },
     h("span.init", {}, r.init ?? ""),
@@ -3668,6 +3670,9 @@ function tracker() {
   const current2 = state.order.find((r) => r.key === state.turn);
   const next = upcoming(state, 3);
   const out = [head, current2 ? row(current2, "now") : h("p.muted", {}, "Waiting for the first turn\u2026")];
+  if (current2) {
+    for (const r of state.order) if (r.during && r.with === current2.key) out.push(row(r, "now-with"));
+  }
   if (next.length) {
     out.push(h("div.label", {}, "Up next"));
     for (const { row: r, newRound } of next) {
