@@ -47,7 +47,7 @@ In **Run Encounter**, press **Run**, roll initiative and **Start combat**. Bonus
 
 ## Movement
 
-During a fight, the linked token whose turn it is leaves a green trail with a dot every 5 ft and shows **15 / 30 ft** against its speed. Players' Move tool switches to **Move with trail** while a fight is on. Right-click a token > **Reset movement** to send it back. Switch any of this off in the GM window's **Settings** (⚙).
+During a fight, the linked token whose turn it is leaves a green trail with a dot every 5 ft and shows **15 / 30 ft** against its speed. Right-click a token > **Reset movement** to send it back. Switch any of this off in the GM window's **Settings** (⚙).
 
 ## Screenshot to monster or item
 

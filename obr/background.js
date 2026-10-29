@@ -4182,12 +4182,9 @@ var samePoint = (a, b) => !!a && !!b && Math.abs(a.x - b.x) < 0.5 && Math.abs(a.
 // src/obr/movement.js
 var MOVE_KEY = `${EXT}/move`;
 var TRAIL_KEY = `${EXT}/trail`;
-var DRAFT_KEY = `${EXT}/trail-draft`;
 var RESET = `${EXT}/reset-movement`;
 var NOTE = `${EXT}/movement-note`;
 var MENU = `${EXT}/reset-movement-menu`;
-var MOVE_TOOL = "rodeo.owlbear.tool/move";
-var MODE = `${EXT}/move-with-trail`;
 var GREEN = "#3fd16f";
 var RED = "#ff5a4a";
 var role2 = "PLAYER";
@@ -4213,7 +4210,6 @@ async function startMovement() {
     state2 = m[TRACKER_KEY] || null;
     settings2 = m[SETTINGS_KEY] || {};
     queue();
-    autoMode();
   });
   lib_default.scene.onReadyChange((ready2) => {
     if (ready2) {
@@ -4245,122 +4241,10 @@ async function startMovement() {
         });
       }
     });
-    await lib_default.tool.createMode({
-      id: MODE,
-      icons: [{ icon, label: "Move with trail (tracks movement)", filter: { activeTools: [MOVE_TOOL] } }],
-      cursors: [{ cursor: "grab", filter: { target: [{ key: "layer", value: "CHARACTER", coordinator: "||" }, { key: "layer", value: "MOUNT" }] } }, { cursor: "default" }],
-      onToolClick: (ctx, ev) => {
-        lib_default.player.select(ev.target && !ev.target.locked ? [ev.target.id] : []);
-        return false;
-      },
-      onToolDragStart: (ctx, ev) => {
-        dragStart(ev);
-      },
-      onToolDragMove: (ctx, ev) => {
-        dragMove(ev);
-      },
-      onToolDragEnd: () => {
-        dragEnd(false);
-      },
-      onToolDragCancel: () => {
-        dragEnd(true);
-      }
-    });
   } catch (err) {
     console.error("Encounter Builder: could not add movement tracking to Owlbear", err);
   }
   queue();
-  autoMode();
-}
-var switchedFor = "";
-var modeBefore = null;
-async function autoMode() {
-  if (role2 === "GM") return;
-  const fight = on() && settings2.dragTrail !== false && state2?.phase === "active" ? state2.encounter : "";
-  if (fight && fight !== switchedFor) {
-    switchedFor = fight;
-    try {
-      if (await lib_default.tool.getActiveTool() === MOVE_TOOL) modeBefore = await lib_default.tool.getActiveToolMode();
-      await lib_default.tool.activateTool(MOVE_TOOL);
-      await lib_default.tool.activateMode(MOVE_TOOL, MODE);
-    } catch {
-    }
-  } else if (!fight && switchedFor) {
-    switchedFor = "";
-    try {
-      if (await lib_default.tool.getActiveToolMode() === MODE) {
-        if (modeBefore && modeBefore !== MODE) await lib_default.tool.activateMode(MOVE_TOOL, modeBefore);
-        else await lib_default.tool.activateTool("rodeo.owlbear.tool/select");
-      }
-    } catch {
-    }
-    modeBefore = null;
-  }
-}
-var drag = null;
-async function dragStart(ev) {
-  const t = ev.target;
-  if (!t || t.locked || !["CHARACTER", "MOUNT", "PROP"].includes(t.layer)) return;
-  const m = t.metadata?.[MOVE_KEY];
-  const [scale, interaction] = await Promise.all([lib_default.scene.grid.getScale(), lib_default.interaction.startItemInteraction(t)]);
-  drag = {
-    id: t.id,
-    offset: { x: t.position.x - ev.pointerPosition.x, y: t.position.y - ev.pointerPosition.y },
-    from: { ...t.position },
-    // a token on its turn: the trail so far, to add to; any other token is simply moved
-    track: m ? { ...m, points: [...m.points], segments: [...m.segments] } : null,
-    stop: !!settings2.stopAtSpeed,
-    unit: scale.parsed.unit || "ft",
-    perSquare: scale.parsed.multiplier || 5,
-    update: interaction[0],
-    stopInteraction: interaction[1],
-    at: { ...t.position },
-    chain: Promise.resolve(),
-    visible: t.visible
-  };
-  lib_default.player.select([t.id]);
-}
-function dragMove(ev) {
-  const d = drag;
-  if (!d) return;
-  d.chain = d.chain.then(async () => {
-    if (drag !== d) return;
-    const want = await lib_default.scene.grid.snapPosition({ x: ev.pointerPosition.x + d.offset.x, y: ev.pointerPosition.y + d.offset.y });
-    if (samePoint(want, d.at)) return;
-    if (d.track) {
-      const last = d.track.points[d.track.points.length - 1];
-      const ft = feet(await lib_default.scene.grid.getDistance(last, want), d.perSquare);
-      const used = d.track.segments.reduce((a, b) => a + b, 0);
-      if (d.stop && d.track.sp != null && used + ft > d.track.sp + 0.01) return;
-      d.track.points.push({ ...want });
-      d.track.segments.push(ft);
-    }
-    d.at = { ...want };
-    d.update((item) => {
-      item.position = { ...want };
-    });
-    if (d.track) await drawTrail(d.id, d.track, { local: true, visible: d.visible });
-  }).catch(() => {
-  });
-}
-async function dragEnd(cancelled) {
-  const d = drag;
-  if (!d) return;
-  drag = null;
-  await d.chain;
-  d.stopInteraction();
-  await clearDraft();
-  if (cancelled || samePoint(d.at, d.from)) return;
-  await lib_default.scene.items.updateItems([d.id], (items) => {
-    for (const it of items) {
-      it.position = { ...d.at };
-      if (d.track && it.metadata[MOVE_KEY]) it.metadata[MOVE_KEY] = { ...it.metadata[MOVE_KEY], points: d.track.points, segments: d.track.segments };
-    }
-  }).catch(() => lib_default.notification.show("You can\u2019t move that token.", "WARNING"));
-}
-async function clearDraft() {
-  const old = (await lib_default.scene.local.getItems((i) => !!i.metadata?.[DRAFT_KEY])).map((i) => i.id);
-  if (old.length) await lib_default.scene.local.deleteItems(old);
 }
 async function queue() {
   if (busy2) {
@@ -4458,9 +4342,9 @@ async function clearAll(key = "", keep = /* @__PURE__ */ new Map()) {
     for (const t of items) delete t.metadata[MOVE_KEY];
   });
 }
-async function drawTrail(id, m, { local = false, visible = true } = {}) {
-  const items = local ? lib_default.scene.local : lib_default.scene.items;
-  const key = local ? DRAFT_KEY : TRAIL_KEY;
+async function drawTrail(id, m, { visible = true } = {}) {
+  const items = lib_default.scene.items;
+  const key = TRAIL_KEY;
   const old = (await items.getItems((i) => i.metadata?.[key]?.token === id)).map((i) => i.id);
   const [dpi, scale] = await Promise.all([lib_default.scene.grid.getDpi(), lib_default.scene.grid.getScale()]);
   const speed = m.sp ?? null, unit = scale.parsed.unit || "ft";
@@ -4477,9 +4361,9 @@ async function drawTrail(id, m, { local = false, visible = true } = {}) {
   const [token] = await lib_default.scene.items.getItems([id]);
   if (token) {
     const b = await lib_default.scene.items.getItemBounds([id]);
-    const at = local ? m.points[m.points.length - 1] : b.center;
+    const at = b.center;
     const style = token.text?.style || {};
-    const label = finish(buildLabel().plainText(usedText(used, speed, unit)).position({ x: at.x, y: at.y - b.height / 2 - dpi * 0.02 }).fontFamily(style.fontFamily || "Roboto").fontWeight(style.fontWeight || 400).fontSize(dpi * 0.075).padding(dpi * 0.02).cornerRadius(dpi * 0.03).pointerWidth(0).pointerHeight(0).backgroundColor("#000000").backgroundOpacity(0.6).fillColor(over ? "#ff8a80" : "#ffffff").attachedTo(local ? void 0 : id).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).zIndex(2), "Movement used");
+    const label = finish(buildLabel().plainText(usedText(used, speed, unit)).position({ x: at.x, y: at.y - b.height / 2 - dpi * 0.02 }).fontFamily(style.fontFamily || "Roboto").fontWeight(style.fontWeight || 400).fontSize(dpi * 0.075).padding(dpi * 0.02).cornerRadius(dpi * 0.03).pointerWidth(0).pointerHeight(0).backgroundColor("#000000").backgroundOpacity(0.6).fillColor(over ? "#ff8a80" : "#ffffff").attachedTo(id).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).zIndex(2), "Movement used");
     label.layer = "TEXT";
     add.push(label);
   }
@@ -4607,23 +4491,54 @@ window.addEventListener("message", async (e) => {
   else if (m.type === "whisper") post(e.source, { type: "whisperResult", id: m.id, ...await sendWhisper(m).catch((err) => ({ error: String(err?.message || err) })) });
 });
 var TOOL = `${EXT}/link-tool`;
-var MODE2 = `${EXT}/pick`;
+var MODE = `${EXT}/pick`;
 var LINK_KEY = `${EXT}/link`;
 var MOVE = "rodeo.owlbear.tool/move";
 var pick = null;
 async function startPick(source, { id, names }) {
-  if (pick) finishPick("replaced");
+  if (pick) await finishPick("replaced");
   if (!names?.length) return;
   pick = { id, names, at: 0, picked: /* @__PURE__ */ new Set(), source, back: await lib_default.tool.getActiveTool().catch(() => MOVE) };
   if (pick.back === TOOL) pick.back = MOVE;
+  await addLinkTool();
   await lib_default.tool.activateTool(TOOL);
 }
-function finishPick(reason) {
+async function finishPick(reason) {
   if (!pick) return;
   const { id, source, back } = pick;
   pick = null;
   post(source, { type: "pickDone", id, reason });
-  lib_default.tool.activateTool(back).catch(() => lib_default.tool.activateTool(MOVE));
+  await lib_default.tool.activateTool(back).catch(() => lib_default.tool.activateTool(MOVE)).catch(() => {
+  });
+  await removeLinkTool();
+}
+async function addLinkTool() {
+  const icon = new URL("../logo/logo-64.png", location.href).href;
+  try {
+    await lib_default.tool.create({ id: TOOL, icons: [{ icon, label: "Linking a token (Esc stops)", filter: { roles: ["GM"] } }], defaultMode: MODE });
+    await lib_default.tool.createMode({
+      id: MODE,
+      icons: [{ icon, label: "Click a token to link it", filter: { activeTools: [TOOL] } }],
+      cursors: [{ cursor: "crosshair" }],
+      onToolClick: (ctx, ev) => {
+        onTokenClick(ev.target);
+        return false;
+      },
+      onKeyDown: (ctx, ev) => {
+        if (ev.key === "Escape") finishPick("cancelled");
+      },
+      onDeactivate: () => finishPick("cancelled")
+      // the GM picked another tool
+    });
+  } catch (err) {
+    console.error("Encounter Builder: could not set up the link tool", err);
+  }
+}
+async function removeLinkTool() {
+  await lib_default.tool.removeMode(MODE).catch(() => {
+  });
+  await lib_default.tool.remove(TOOL).catch(() => {
+  });
 }
 async function onTokenClick(target) {
   if (!pick) return;
@@ -4765,26 +4680,7 @@ lib_default.onReady(async () => {
     if (role3 === "GM" && linked()) post(gm, { type: "command", cmd: data?.cmd });
   });
   lib_default.broadcast.onMessage(LOCAL_ASK, () => status(true));
-  const icon = new URL("../logo/logo-64.png", location.href).href;
-  try {
-    await lib_default.tool.create({ id: TOOL, icons: [{ icon, label: "Link token (Encounter Builder)", filter: { roles: ["GM"] } }], defaultMode: MODE2 });
-    await lib_default.tool.createMode({
-      id: MODE2,
-      icons: [{ icon, label: "Click a token to link it", filter: { activeTools: [TOOL] } }],
-      cursors: [{ cursor: "crosshair" }],
-      onToolClick: (ctx, ev) => {
-        onTokenClick(ev.target);
-        return false;
-      },
-      onKeyDown: (ctx, ev) => {
-        if (ev.key === "Escape") finishPick("cancelled");
-      },
-      onDeactivate: () => finishPick("cancelled")
-      // the GM picked another tool
-    });
-  } catch (err) {
-    console.error("Encounter Builder: could not set up the link tool", err);
-  }
+  removeLinkTool();
   setInterval(() => status(), 2e3);
   const redraw = async () => {
     if (role3 === "GM") syncMarkers((await lib_default.room.getMetadata())[TRACKER_KEY] ?? null);
