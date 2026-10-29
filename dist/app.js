@@ -22,9 +22,9 @@ var __export = (target, all) => {
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
-    for (let key2 of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key2) && key2 !== except)
-        __defProp(to, key2, { get: () => from[key2], enumerable: !(desc = __getOwnPropDesc(from, key2)) || desc.enumerable });
+    for (let key3 of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key3) && key3 !== except)
+        __defProp(to, key3, { get: () => from[key3], enumerable: !(desc = __getOwnPropDesc(from, key3)) || desc.enumerable });
   }
   return to;
 };
@@ -126,8 +126,8 @@ function pointInPolygon(verts, normal, p) {
   }
   return true;
 }
-function unpackAndPush(array, key2) {
-  array.push((key2 & 4294901760) >> 16, key2 & 65535);
+function unpackAndPush(array, key3) {
+  array.push((key3 & 4294901760) >> 16, key3 & 65535);
 }
 var Mat3, reverse_eqns, Vec3, Vec3_tangents_n, Vec3_tangents_randVec, antip_neg, AABB, tmp$1, transformIntoFrame_corners, ArrayCollisionMatrix, EventTarget, Quaternion, sfv_t1, sfv_t2, SHAPE_TYPES, Shape, Transform, tmpQuat$1, ConvexPolyhedron, maxminA, maxminB, project_worldVertex, project_localAxis, project_localOrigin, Box, worldCornerTempPos, worldCornersTemp, BODY_TYPES, BODY_SLEEP_STATES, Body, tmpVec, tmpQuat, updateAABB_shapeAABB, uiw_m1, uiw_m2, uiw_m3, Body_applyForce_rotForce, Body_applyLocalForce_worldForce, Body_applyLocalForce_relativePointWorld, Body_applyImpulse_velo, Body_applyImpulse_rotVelo, Body_applyLocalImpulse_worldImpulse, Body_applyLocalImpulse_relativePoint, Body_updateMassProperties_halfExtents, Broadphase, Broadphase_collisionPairs_r, Broadphase_makePairsUnique_temp, Broadphase_makePairsUnique_p1, Broadphase_makePairsUnique_p2, GridBroadphase_collisionPairs_d, NaiveBroadphase, RaycastResult, _Shape$types$SPHERE, _Shape$types$PLANE, _Shape$types$BOX, _Shape$types$CYLINDER, _Shape$types$CONVEXPO, _Shape$types$HEIGHTFI, _Shape$types$TRIMESH, RAY_MODES, Ray, tmpAABB$1, tmpArray, v1, v2, intersectBody_xi, intersectBody_qi, intersectPoint, a, b, c, intersectConvexOptions, worldPillarOffset, intersectHeightfield_localRay, intersectHeightfield_index, Ray_intersectSphere_intersectionPoint, Ray_intersectSphere_normal, intersectConvex_normal, intersectConvex_minDistNormal, intersectConvex_minDistIntersect, intersectConvex_vector, intersectTrimesh_normal, intersectTrimesh_localDirection, intersectTrimesh_localFrom, intersectTrimesh_localTo, intersectTrimesh_worldNormal, intersectTrimesh_worldIntersectPoint, intersectTrimesh_triangles, intersectTrimesh_treeTransform, v0, intersect, Utils, Constraint, JacobianElement, Equation, iMfi, iMfj, invIi_vmult_taui, invIj_vmult_tauj, tmp, addToWlambda_temp, ContactEquation, ContactEquation_computeB_temp1, ContactEquation_computeB_temp2, ContactEquation_computeB_temp3, ContactEquation_getImpactVelocityAlongNormal_vi, ContactEquation_getImpactVelocityAlongNormal_vj, ContactEquation_getImpactVelocityAlongNormal_xi, ContactEquation_getImpactVelocityAlongNormal_xj, ContactEquation_getImpactVelocityAlongNormal_relVel, tmpVec1$2, tmpVec2$2, tmpVec1$1, tmpVec2$1, LockConstraint_update_tmpVec1, LockConstraint_update_tmpVec2, HingeConstraint_update_tmpVec1, HingeConstraint_update_tmpVec2, FrictionEquation, FrictionEquation_computeB_temp1, FrictionEquation_computeB_temp2, ContactMaterial, Material, applyForce_r, applyForce_r_unit, applyForce_u, applyForce_f, applyForce_worldAnchorA, applyForce_worldAnchorB, applyForce_ri, applyForce_rj, applyForce_ri_x_f, applyForce_rj_x_f, applyForce_tmp, chassis_velocity_at_contactPoint, relpos, tmpVec4, tmpVec5, tmpVec6, castRay_rayvector, castRay_target, directions, updateFriction_surfNormalWS_scaled_proj, calcRollingFriction_vel1, calcRollingFriction_vel2, calcRollingFriction_vel, computeImpulseDenominator_r0, computeImpulseDenominator_c0, computeImpulseDenominator_vec, computeImpulseDenominator_m, resolveSingleBilateral_vel1, resolveSingleBilateral_vel2, resolveSingleBilateral_vel, torque, worldAxis, SPHSystem_getNeighbors_dist, SPHSystem_update_dist, SPHSystem_update_a_pressure, SPHSystem_update_a_visc, SPHSystem_update_gradW, SPHSystem_update_r_vec, SPHSystem_update_u, Plane, tempNormal, getHeightAt_weights, getHeightAt_a, getHeightAt_b, getHeightAt_c, getNormalAt_a, getNormalAt_b, getNormalAt_c, getNormalAt_e0, getNormalAt_e1, halfDiagonal, tmpAABB, computeNormals_n, unscaledAABB, getEdgeVector_va, getEdgeVector_vb, cb, ab, va, vb, vc, cli_aabb, computeLocalAABB_worldVert, calculateWorldAABB_frame, calculateWorldAABB_aabb, Solver, GSSolver, GSSolver_solve_lambda, GSSolver_solve_invCs, GSSolver_solve_Bs, STATIC, Pool, Vec3Pool, COLLISION_TYPES, Narrowphase, averageNormal, averageContactPointA, averageContactPointB, tmpVec1, tmpVec2, tmpQuat1, tmpQuat2, planeTrimesh_normal, planeTrimesh_relpos, planeTrimesh_projected, sphereTrimesh_normal, sphereTrimesh_relpos, sphereTrimesh_v, sphereTrimesh_v2, sphereTrimesh_edgeVertexA, sphereTrimesh_edgeVertexB, sphereTrimesh_edgeVector, sphereTrimesh_edgeVectorUnit, sphereTrimesh_localSpherePos, sphereTrimesh_tmp, sphereTrimesh_va, sphereTrimesh_vb, sphereTrimesh_vc, sphereTrimesh_localSphereAABB, sphereTrimesh_triangles, point_on_plane_to_sphere, plane_to_sphere_ortho, pointInPolygon_edge, pointInPolygon_edge_x_normal, pointInPolygon_vtp, box_to_sphere, sphereBox_ns, sphereBox_ns1, sphereBox_ns2, sphereBox_sides, sphereBox_sphere_to_corner, sphereBox_side_ns, sphereBox_side_ns1, sphereBox_side_ns2, convex_to_sphere, sphereConvex_edge, sphereConvex_edgeUnit, sphereConvex_sphereToCorner, sphereConvex_worldCorner, sphereConvex_worldNormal, sphereConvex_worldPoint, sphereConvex_worldSpherePointClosestToPlane, sphereConvex_penetrationVec, sphereConvex_sphereToWorldPoint, planeConvex_v, planeConvex_normal, planeConvex_relpos, planeConvex_projected, convexConvex_sepAxis, convexConvex_q, particlePlane_normal, particlePlane_relpos, particlePlane_projected, particleSphere_normal, cqj, convexParticle_local, convexParticle_penetratedFaceNormal, convexParticle_vertexToParticle, convexParticle_worldPenetrationVec, convexHeightfield_tmp1, convexHeightfield_tmp2, convexHeightfield_faceList, sphereHeightfield_tmp1, sphereHeightfield_tmp2, OverlapKeeper, getKey, TupleDictionary, World, tmpRay, performance2, World_step_postStepEvent, World_step_preStepEvent, World_step_collideEvent, World_step_oldContacts, World_step_frictionEquationPool, World_step_p1, World_step_p2, additions, removals, beginContactEvent, endContactEvent, beginShapeContactEvent, endShapeContactEvent;
 var init_cannon_es = __esm({
@@ -3213,16 +3213,16 @@ var init_cannon_es = __esm({
         for (let i = 0; i !== N; i++) {
           const id1 = p1[i].id;
           const id2 = p2[i].id;
-          const key2 = id1 < id2 ? `${id1},${id2}` : `${id2},${id1}`;
-          t[key2] = i;
-          t.keys.push(key2);
+          const key3 = id1 < id2 ? `${id1},${id2}` : `${id2},${id1}`;
+          t[key3] = i;
+          t.keys.push(key3);
         }
         for (let i = 0; i !== t.keys.length; i++) {
-          const key2 = t.keys.pop();
-          const pairIndex = t[key2];
+          const key3 = t.keys.pop();
+          const pairIndex = t[key3];
           pairs1.push(p1[pairIndex]);
           pairs2.push(p2[pairIndex]);
-          delete t[key2];
+          delete t[key3];
         }
       }
       /**
@@ -3930,9 +3930,9 @@ var init_cannon_es = __esm({
         if (options === void 0) {
           options = {};
         }
-        for (let key2 in defaults3) {
-          if (!(key2 in options)) {
-            options[key2] = defaults3[key2];
+        for (let key3 in defaults3) {
+          if (!(key3 in options)) {
+            options[key3] = defaults3[key3];
           }
         }
         return options;
@@ -6028,19 +6028,19 @@ var init_cannon_es = __esm({
        * set
        */
       set(i, j) {
-        const key2 = this.getKey(i, j);
+        const key3 = this.getKey(i, j);
         const current3 = this.current;
         let index = 0;
-        while (key2 > current3[index]) {
+        while (key3 > current3[index]) {
           index++;
         }
-        if (key2 === current3[index]) {
+        if (key3 === current3[index]) {
           return;
         }
         for (let j2 = current3.length - 1; j2 >= index; j2--) {
           current3[j2 + 1] = current3[j2];
         }
-        current3[index] = key2;
+        current3[index] = key3;
       }
       /**
        * tick
@@ -6094,33 +6094,33 @@ var init_cannon_es = __esm({
       }
       /** get */
       get(i, j) {
-        const key2 = getKey(i, j);
-        return this.data[key2];
+        const key3 = getKey(i, j);
+        return this.data[key3];
       }
       /** set */
       set(i, j, value) {
-        const key2 = getKey(i, j);
+        const key3 = getKey(i, j);
         if (!this.get(i, j)) {
-          this.data.keys.push(key2);
+          this.data.keys.push(key3);
         }
-        this.data[key2] = value;
+        this.data[key3] = value;
       }
       /** delete */
       delete(i, j) {
-        const key2 = getKey(i, j);
-        const index = this.data.keys.indexOf(key2);
+        const key3 = getKey(i, j);
+        const index = this.data.keys.indexOf(key3);
         if (index !== -1) {
           this.data.keys.splice(index, 1);
         }
-        delete this.data[key2];
+        delete this.data[key3];
       }
       /** reset */
       reset() {
         const data = this.data;
         const keys = data.keys;
         while (keys.length > 0) {
-          const key2 = keys.pop();
-          delete data[key2];
+          const key3 = keys.pop();
+          delete data[key3];
         }
       }
     };
@@ -10597,15 +10597,15 @@ var init_three_core = __esm({
        * @param {Object} values - A container with texture parameters.
        */
       setValues(values) {
-        for (const key2 in values) {
-          const newValue = values[key2];
+        for (const key3 in values) {
+          const newValue = values[key3];
           if (newValue === void 0) {
-            warn(`Texture.setValues(): parameter '${key2}' has value of undefined.`);
+            warn(`Texture.setValues(): parameter '${key3}' has value of undefined.`);
             continue;
           }
-          const currentValue = this[key2];
+          const currentValue = this[key3];
           if (currentValue === void 0) {
-            warn(`Texture.setValues(): property '${key2}' does not exist.`);
+            warn(`Texture.setValues(): property '${key3}' does not exist.`);
             continue;
           }
           if (currentValue && newValue && (currentValue.isVector2 && newValue.isVector2)) {
@@ -10615,7 +10615,7 @@ var init_three_core = __esm({
           } else if (currentValue && newValue && (currentValue.isMatrix3 && newValue.isMatrix3)) {
             currentValue.copy(newValue);
           } else {
-            this[key2] = newValue;
+            this[key3] = newValue;
           }
         }
       }
@@ -14200,8 +14200,8 @@ var init_three_core = __esm({
         return output;
         function extractFromCache(cache2) {
           const values = [];
-          for (const key2 in cache2) {
-            const data = cache2[key2];
+          for (const key3 in cache2) {
+            const data = cache2[key3];
             delete data.metadata;
             values.push(data);
           }
@@ -17607,8 +17607,8 @@ var init_three_core = __esm({
         if (Object.keys(this.userData).length > 0) data.userData = this.userData;
         if (this.parameters !== void 0 && this._transformed !== true) {
           const parameters = this.parameters;
-          for (const key2 in parameters) {
-            if (parameters[key2] !== void 0) data[key2] = parameters[key2];
+          for (const key3 in parameters) {
+            if (parameters[key3] !== void 0) data[key3] = parameters[key3];
           }
           return data;
         }
@@ -17621,21 +17621,21 @@ var init_three_core = __esm({
           };
         }
         const attributes = this.attributes;
-        for (const key2 in attributes) {
-          const attribute = attributes[key2];
-          data.data.attributes[key2] = attribute.toJSON(data.data);
+        for (const key3 in attributes) {
+          const attribute = attributes[key3];
+          data.data.attributes[key3] = attribute.toJSON(data.data);
         }
         const morphAttributes = {};
         let hasMorphAttributes = false;
-        for (const key2 in this.morphAttributes) {
-          const attributeArray = this.morphAttributes[key2];
+        for (const key3 in this.morphAttributes) {
+          const attributeArray = this.morphAttributes[key3];
           const array = [];
           for (let i = 0, il = attributeArray.length; i < il; i++) {
             const attribute = attributeArray[i];
             array.push(attribute.toJSON(data.data));
           }
           if (array.length > 0) {
-            morphAttributes[key2] = array;
+            morphAttributes[key3] = array;
             hasMorphAttributes = true;
           }
         }
@@ -18111,15 +18111,15 @@ var init_three_core = __esm({
        */
       setValues(values) {
         if (values === void 0) return;
-        for (const key2 in values) {
-          const newValue = values[key2];
+        for (const key3 in values) {
+          const newValue = values[key3];
           if (newValue === void 0) {
-            warn(`Material: parameter '${key2}' has value of undefined.`);
+            warn(`Material: parameter '${key3}' has value of undefined.`);
             continue;
           }
-          const currentValue = this[key2];
+          const currentValue = this[key3];
           if (currentValue === void 0) {
-            warn(`Material: '${key2}' is not a property of THREE.${this.type}.`);
+            warn(`Material: '${key3}' is not a property of THREE.${this.type}.`);
             continue;
           }
           if (currentValue && currentValue.isColor) {
@@ -18127,7 +18127,7 @@ var init_three_core = __esm({
           } else if (currentValue && currentValue.isVector2 && (newValue && newValue.isVector2) || currentValue && currentValue.isEuler && (newValue && newValue.isEuler) || currentValue && currentValue.isVector3 && (newValue && newValue.isVector3)) {
             currentValue.copy(newValue);
           } else {
-            this[key2] = newValue;
+            this[key3] = newValue;
           }
         }
       }
@@ -18312,8 +18312,8 @@ var init_three_core = __esm({
         if (Object.keys(this.userData).length > 0) data.userData = this.userData;
         function extractFromCache(cache2) {
           const values = [];
-          for (const key2 in cache2) {
-            const data2 = cache2[key2];
+          for (const key3 in cache2) {
+            const data2 = cache2[key3];
             delete data2.metadata;
             values.push(data2);
           }
@@ -20587,8 +20587,8 @@ var init_three_core = __esm({
         data.lights = this.lights;
         data.clipping = this.clipping;
         const extensions = {};
-        for (const key2 in this.extensions) {
-          if (this.extensions[key2] === true) extensions[key2] = true;
+        for (const key3 in this.extensions) {
+          if (this.extensions[key3] === true) extensions[key3] = true;
         }
         if (Object.keys(extensions).length > 0) data.extensions = extensions;
         return data;
@@ -20638,8 +20638,8 @@ var init_three_core = __esm({
         if (json.fragmentShader !== void 0) this.fragmentShader = json.fragmentShader;
         if (json.glslVersion !== void 0) this.glslVersion = json.glslVersion;
         if (json.extensions !== void 0) {
-          for (const key2 in json.extensions) {
-            this.extensions[key2] = json.extensions[key2];
+          for (const key3 in json.extensions) {
+            this.extensions[key3] = json.extensions[key3];
           }
         }
         if (json.lights !== void 0) this.lights = json.lights;
@@ -26691,8 +26691,8 @@ function WebGLProperties() {
   function remove2(object) {
     properties.delete(object);
   }
-  function update(object, key2, value) {
-    properties.get(object)[key2] = value;
+  function update(object, key3, value) {
+    properties.get(object)[key3] = value;
   }
   function dispose() {
     properties = /* @__PURE__ */ new WeakMap();
@@ -32053,8 +32053,8 @@ void main() {
           _currentDepthNear = null;
           _currentDepthFar = null;
           depthSensing.reset();
-          for (const key2 in cameraAccessTextures) {
-            delete cameraAccessTextures[key2];
+          for (const key3 in cameraAccessTextures) {
+            delete cameraAccessTextures[key3];
           }
           renderer.setRenderTarget(initialRenderTarget);
           glBaseLayer = null;
@@ -35934,12 +35934,12 @@ function save(kind, item, { delay = 500, touch = true } = {}) {
     if (i >= 0) list[i] = item;
     else list.push(item);
   }
-  const key2 = `${kind}/${item.id}`;
-  if (timers.has(key2)) clearTimeout(timers.get(key2).timer);
+  const key3 = `${kind}/${item.id}`;
+  if (timers.has(key3)) clearTimeout(timers.get(key3).timer);
   else pending++;
   status("Saving\u2026");
   const write = async () => {
-    timers.delete(key2);
+    timers.delete(key3);
     const p = window.desktop.save(kind, item.id, item);
     writing.add(p);
     try {
@@ -35953,7 +35953,7 @@ function save(kind, item, { delay = 500, touch = true } = {}) {
       writing.delete(p);
     }
   };
-  timers.set(key2, { timer: setTimeout(write, delay), write });
+  timers.set(key3, { timer: setTimeout(write, delay), write });
   emit(kind);
 }
 async function flushSaves() {
@@ -35962,10 +35962,10 @@ async function flushSaves() {
   await Promise.allSettled([...waiting.map((t) => t.write()), ...writing]);
 }
 async function remove(kind, item) {
-  const key2 = `${kind}/${item.id}`;
-  if (timers.has(key2)) {
-    clearTimeout(timers.get(key2).timer);
-    timers.delete(key2);
+  const key3 = `${kind}/${item.id}`;
+  if (timers.has(key3)) {
+    clearTimeout(timers.get(key3).timer);
+    timers.delete(key3);
     pending--;
   }
   store[kind] = store[kind].filter((x) => x.id !== item.id);
@@ -36051,28 +36051,28 @@ var require_runtime = __commonJS({
       "use strict";
       var Op = Object.prototype;
       var hasOwn = Op.hasOwnProperty;
-      var defineProperty = Object.defineProperty || function(obj, key2, desc) {
-        obj[key2] = desc.value;
+      var defineProperty = Object.defineProperty || function(obj, key3, desc) {
+        obj[key3] = desc.value;
       };
       var undefined2;
       var $Symbol = typeof Symbol === "function" ? Symbol : {};
       var iteratorSymbol = $Symbol.iterator || "@@iterator";
       var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
       var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-      function define(obj, key2, value) {
-        Object.defineProperty(obj, key2, {
+      function define(obj, key3, value) {
+        Object.defineProperty(obj, key3, {
           value,
           enumerable: true,
           configurable: true,
           writable: true
         });
-        return obj[key2];
+        return obj[key3];
       }
       try {
         define({}, "");
       } catch (err) {
-        define = function(obj, key2, value) {
-          return obj[key2] = value;
+        define = function(obj, key3, value) {
+          return obj[key3] = value;
         };
       }
       function wrap(innerFn, outerFn, self2, tryLocsList) {
@@ -36349,15 +36349,15 @@ var require_runtime = __commonJS({
       exports2.keys = function(val) {
         var object = Object(val);
         var keys = [];
-        for (var key2 in object) {
-          keys.push(key2);
+        for (var key3 in object) {
+          keys.push(key3);
         }
         keys.reverse();
         return function next2() {
           while (keys.length) {
-            var key3 = keys.pop();
-            if (key3 in object) {
-              next2.value = key3;
+            var key4 = keys.pop();
+            if (key4 in object) {
+              next2.value = key4;
               next2.done = false;
               return next2;
             }
@@ -36686,7 +36686,7 @@ var require_createScheduler = __commonJS({
 var require_getEnvironment = __commonJS({
   "node_modules/tesseract.js/src/utils/getEnvironment.js"(exports, module) {
     "use strict";
-    module.exports = (key2) => {
+    module.exports = (key3) => {
       const env = {};
       if (typeof WorkerGlobalScope !== "undefined") {
         env.type = "webworker";
@@ -36695,10 +36695,10 @@ var require_getEnvironment = __commonJS({
       } else if (typeof process === "object" && typeof __require === "function") {
         env.type = "node";
       }
-      if (typeof key2 === "undefined") {
+      if (typeof key3 === "undefined") {
         return env;
       }
-      return env[key2];
+      return env[key3];
     };
   }
 });
@@ -36711,9 +36711,9 @@ var require_resolvePaths = __commonJS({
     var resolveURL = isBrowser ? (s) => new URL(s, window.location.href).href : (s) => s;
     module.exports = (options) => {
       const opts2 = { ...options };
-      ["corePath", "workerPath", "langPath"].forEach((key2) => {
-        if (options[key2]) {
-          opts2[key2] = resolveURL(opts2[key2]);
+      ["corePath", "workerPath", "langPath"].forEach((key3) => {
+        if (options[key3]) {
+          opts2[key3] = resolveURL(opts2[key3]);
         }
       });
       return opts2;
@@ -37996,17 +37996,17 @@ function parseStatBlock(rawText) {
     }
     const hit = HEADER_KEYS.find(([, re2]) => re2.test(line));
     if (hit) {
-      const [key2, re2] = hit;
+      const [key3, re2] = hit;
       let value = line.replace(re2, "");
-      if (key2 === "cr") {
+      if (key3 === "cr") {
         const pb2 = value.match(/Proficiency Bonus\s*([+\-]\d+)/i);
         if (pb2) fields2.pb = pb2[1];
         value = value.replace(/Proficiency Bonus.*$/i, "");
         sawCr = true;
       }
-      if (key2 === "xp") sawCr = true;
-      fields2[key2] = fields2[key2] ? `${fields2[key2]} ${value}` : value;
-      lastKey = key2;
+      if (key3 === "xp") sawCr = true;
+      fields2[key3] = fields2[key3] ? `${fields2[key3]} ${value}` : value;
+      lastKey = key3;
       continue;
     }
     const isBody = SECTION_RE.test(line.replace(/[^A-Za-z ]/g, "").trim()) || NAME_RE.test(line) || SPELL_LINE_RE.test(line);
@@ -38517,7 +38517,7 @@ var init_tooltip = __esm({
     init_ui();
     init_snapshot();
     kinds = /* @__PURE__ */ new Map();
-    registerTip = (key2, html) => kinds.set(key2, html);
+    registerTip = (key3, html) => kinds.set(key3, html);
     linkOf = (target) => target.closest?.([...kinds.keys()].map((k) => `[data-${k}]`).join(",") || null);
     htmlOf = (el11, pinned) => {
       for (const [k, fn] of kinds) if (el11.dataset[k] != null) return fn(el11.dataset[k], pinned);
@@ -38927,8 +38927,8 @@ function string32(value) {
 }
 function objectFromMap(map) {
   const obj = /* @__PURE__ */ Object.create(null);
-  for (const [key2, value] of map) {
-    obj[key2] = value;
+  for (const [key3, value] of map) {
+    obj[key3] = value;
   }
   return obj;
 }
@@ -39929,10 +39929,10 @@ function createHeaders(isHttp, httpHeaders) {
   if (!isHttp || !httpHeaders || typeof httpHeaders !== "object") {
     return headers;
   }
-  for (const key2 in httpHeaders) {
-    const val = httpHeaders[key2];
+  for (const key3 in httpHeaders) {
+    const val = httpHeaders[key3];
     if (val !== void 0) {
-      headers.append(key2, val);
+      headers.append(key3, val);
     }
   }
   return headers;
@@ -40250,9 +40250,9 @@ var init_pdf = __esm({
     __webpack_require__ = {};
     (() => {
       __webpack_require__.d = (exports, definition) => {
-        for (var key2 in definition) {
-          if (__webpack_require__.o(definition, key2) && !__webpack_require__.o(exports, key2)) {
-            Object.defineProperty(exports, key2, { enumerable: true, get: definition[key2] });
+        for (var key3 in definition) {
+          if (__webpack_require__.o(definition, key3) && !__webpack_require__.o(exports, key3)) {
+            Object.defineProperty(exports, key3, { enumerable: true, get: definition[key3] });
           }
         }
       };
@@ -41334,9 +41334,9 @@ var init_pdf = __esm({
         });
         return shadow(this, "_isSVGFittingCanvas", promise);
       }
-      async #get(key2, rawData) {
+      async #get(key3, rawData) {
         this.#cache ||= /* @__PURE__ */ new Map();
-        let data = this.#cache.get(key2);
+        let data = this.#cache.get(key3);
         if (data === null) {
           return null;
         }
@@ -41386,7 +41386,7 @@ var init_pdf = __esm({
           warn2(e2);
           data = null;
         }
-        this.#cache.set(key2, data);
+        this.#cache.set(key3, data);
         if (data) {
           this.#cache.set(data.id, data);
         }
@@ -41598,20 +41598,20 @@ var init_pdf = __esm({
           isMac
         } = util_FeatureTest.platform;
         for (const [keys, callback, options = {}] of callbacks) {
-          for (const key2 of keys) {
-            const isMacKey = key2.startsWith("mac+");
+          for (const key3 of keys) {
+            const isMacKey = key3.startsWith("mac+");
             if (isMac && isMacKey) {
-              this.callbacks.set(key2.slice(4), {
+              this.callbacks.set(key3.slice(4), {
                 callback,
                 options
               });
-              this.allKeys.add(key2.split("+").at(-1));
+              this.allKeys.add(key3.split("+").at(-1));
             } else if (!isMac && !isMacKey) {
-              this.callbacks.set(key2, {
+              this.callbacks.set(key3, {
                 callback,
                 options
               });
-              this.allKeys.add(key2.split("+").at(-1));
+              this.allKeys.add(key3.split("+").at(-1));
             }
           }
         }
@@ -42381,7 +42381,7 @@ var init_pdf = __esm({
         }
       }
       #dispatchUpdateStates(details) {
-        const hasChanged = Object.entries(details).some(([key2, value]) => this.#previousStates[key2] !== value);
+        const hasChanged = Object.entries(details).some(([key3, value]) => this.#previousStates[key3] !== value);
         if (hasChanged) {
           this._eventBus.dispatch("annotationeditorstateschanged", {
             source: this,
@@ -44927,18 +44927,18 @@ var init_pdf = __esm({
         this.onResetModified = null;
         this.onAnnotationEditor = null;
       }
-      getValue(key2, defaultValue) {
-        const value = this.#storage.get(key2);
+      getValue(key3, defaultValue) {
+        const value = this.#storage.get(key3);
         if (value === void 0) {
           return defaultValue;
         }
         return Object.assign(defaultValue, value);
       }
-      getRawValue(key2) {
-        return this.#storage.get(key2);
+      getRawValue(key3) {
+        return this.#storage.get(key3);
       }
-      remove(key2) {
-        this.#storage.delete(key2);
+      remove(key3) {
+        this.#storage.delete(key3);
         if (this.#storage.size === 0) {
           this.resetModified();
         }
@@ -44951,8 +44951,8 @@ var init_pdf = __esm({
           this.onAnnotationEditor(null);
         }
       }
-      setValue(key2, value) {
-        const obj = this.#storage.get(key2);
+      setValue(key3, value) {
+        const obj = this.#storage.get(key3);
         let modified = false;
         if (obj !== void 0) {
           for (const [entry, val] of Object.entries(value)) {
@@ -44963,7 +44963,7 @@ var init_pdf = __esm({
           }
         } else {
           modified = true;
-          this.#storage.set(key2, value);
+          this.#storage.set(key3, value);
         }
         if (modified) {
           this.#setModified();
@@ -44972,15 +44972,15 @@ var init_pdf = __esm({
           this.onAnnotationEditor(value.constructor._type);
         }
       }
-      has(key2) {
-        return this.#storage.has(key2);
+      has(key3) {
+        return this.#storage.has(key3);
       }
       getAll() {
         return this.#storage.size > 0 ? objectFromMap(this.#storage) : null;
       }
       setAll(obj) {
-        for (const [key2, val] of Object.entries(obj)) {
-          this.setValue(key2, val);
+        for (const [key3, val] of Object.entries(obj)) {
+          this.setValue(key3, val);
         }
       }
       get size() {
@@ -45012,11 +45012,11 @@ var init_pdf = __esm({
         const map = /* @__PURE__ */ new Map(), hash = new MurmurHash3_64(), transfer = [];
         const context = /* @__PURE__ */ Object.create(null);
         let hasBitmap = false;
-        for (const [key2, val] of this.#storage) {
+        for (const [key3, val] of this.#storage) {
           const serialized = val instanceof AnnotationEditor ? val.serialize(false, context) : val;
           if (serialized) {
-            map.set(key2, serialized);
-            hash.update(`${key2}:${JSON.stringify(serialized)}`);
+            map.set(key3, serialized);
+            hash.update(`${key3}:${JSON.stringify(serialized)}`);
             hasBitmap ||= !!serialized.bitmap;
           }
         }
@@ -45052,14 +45052,14 @@ var init_pdf = __esm({
           }
           stats ||= /* @__PURE__ */ Object.create(null);
           const map = stats[type] ||= /* @__PURE__ */ new Map();
-          for (const [key2, val] of Object.entries(editorStats)) {
-            if (key2 === "type") {
+          for (const [key3, val] of Object.entries(editorStats)) {
+            if (key3 === "type") {
               continue;
             }
-            let counters = map.get(key2);
+            let counters = map.get(key3);
             if (!counters) {
               counters = /* @__PURE__ */ new Map();
-              map.set(key2, counters);
+              map.set(key3, counters);
             }
             const count = counters.get(val) ?? 0;
             counters.set(val, count + 1);
@@ -45960,8 +45960,8 @@ var init_pdf = __esm({
           return value;
         }
         const [tableR, tableG, tableB] = this.#createTables(maps);
-        const key2 = maps.length === 1 ? tableR : `${tableR}${tableG}${tableB}`;
-        value = this.#cache.get(key2);
+        const key3 = maps.length === 1 ? tableR : `${tableR}${tableG}${tableB}`;
+        value = this.#cache.get(key3);
         if (value) {
           this.#cache.set(maps, value);
           return value;
@@ -45969,26 +45969,26 @@ var init_pdf = __esm({
         const id = `g_${this.#docId}_transfer_map_${this.#id++}`;
         const url = this.#createUrl(id);
         this.#cache.set(maps, url);
-        this.#cache.set(key2, url);
+        this.#cache.set(key3, url);
         const filter4 = this.#createFilter(id);
         this.#addTransferMapConversion(tableR, tableG, tableB, filter4);
         return url;
       }
       addHCMFilter(fgColor, bgColor) {
-        const key2 = `${fgColor}-${bgColor}`;
+        const key3 = `${fgColor}-${bgColor}`;
         const filterName = "base";
         let info2 = this.#hcmCache.get(filterName);
-        if (info2?.key === key2) {
+        if (info2?.key === key3) {
           return info2.url;
         }
         if (info2) {
           info2.filter?.remove();
-          info2.key = key2;
+          info2.key = key3;
           info2.url = "none";
           info2.filter = null;
         } else {
           info2 = {
-            key: key2,
+            key: key3,
             url: "none",
             filter: null
           };
@@ -46034,8 +46034,8 @@ var init_pdf = __esm({
           return value;
         }
         const [tableA] = this.#createTables([map]);
-        const key2 = `alpha_${tableA}`;
-        value = this.#cache.get(key2);
+        const key3 = `alpha_${tableA}`;
+        value = this.#cache.get(key3);
         if (value) {
           this.#cache.set(map, value);
           return value;
@@ -46043,7 +46043,7 @@ var init_pdf = __esm({
         const id = `g_${this.#docId}_alpha_map_${this.#id++}`;
         const url = this.#createUrl(id);
         this.#cache.set(map, url);
-        this.#cache.set(key2, url);
+        this.#cache.set(key3, url);
         const filter4 = this.#createFilter(id);
         this.#addTransferMapAlphaConversion(tableA, filter4);
         return url;
@@ -46053,14 +46053,14 @@ var init_pdf = __esm({
         if (value) {
           return value;
         }
-        let tableA, key2;
+        let tableA, key3;
         if (map) {
           [tableA] = this.#createTables([map]);
-          key2 = `luminosity_${tableA}`;
+          key3 = `luminosity_${tableA}`;
         } else {
-          key2 = "luminosity";
+          key3 = "luminosity";
         }
-        value = this.#cache.get(key2);
+        value = this.#cache.get(key3);
         if (value) {
           this.#cache.set(map, value);
           return value;
@@ -46068,7 +46068,7 @@ var init_pdf = __esm({
         const id = `g_${this.#docId}_luminosity_map_${this.#id++}`;
         const url = this.#createUrl(id);
         this.#cache.set(map, url);
-        this.#cache.set(key2, url);
+        this.#cache.set(key3, url);
         const filter4 = this.#createFilter(id);
         this.#addLuminosityConversion(filter4);
         if (map) {
@@ -46077,19 +46077,19 @@ var init_pdf = __esm({
         return url;
       }
       addHighlightHCMFilter(filterName, fgColor, bgColor, newFgColor, newBgColor) {
-        const key2 = `${fgColor}-${bgColor}-${newFgColor}-${newBgColor}`;
+        const key3 = `${fgColor}-${bgColor}-${newFgColor}-${newBgColor}`;
         let info2 = this.#hcmCache.get(filterName);
-        if (info2?.key === key2) {
+        if (info2?.key === key3) {
           return info2.url;
         }
         if (info2) {
           info2.filter?.remove();
-          info2.key = key2;
+          info2.key = key3;
           info2.url = "none";
           info2.filter = null;
         } else {
           info2 = {
-            key: key2,
+            key: key3,
             url: "none",
             filter: null
           };
@@ -46987,8 +46987,8 @@ var init_pdf = __esm({
       setFlatness(flatness) {
       }
       setGState(states) {
-        for (const [key2, value] of states) {
-          switch (key2) {
+        for (const [key3, value] of states) {
+          switch (key3) {
             case "LW":
               this.setLineWidth(value);
               break;
@@ -49099,8 +49099,8 @@ var init_pdf = __esm({
         };
         xhr.open("GET", this.url);
         xhr.withCredentials = this.withCredentials;
-        for (const [key2, val] of this.headers) {
-          xhr.setRequestHeader(key2, val);
+        for (const [key3, val] of this.headers) {
+          xhr.setRequestHeader(key3, val);
         }
         if (this.isHttp && "begin" in args && "end" in args) {
           xhr.setRequestHeader("Range", `bytes=${args.begin}-${args.end - 1}`);
@@ -49254,8 +49254,8 @@ var init_pdf = __esm({
         this._manager._responseOrigin = getResponseOrigin(fullRequestXhr.responseURL);
         const rawResponseHeaders = fullRequestXhr.getAllResponseHeaders();
         const responseHeaders = new Headers(rawResponseHeaders ? rawResponseHeaders.trimStart().replace(/[^\S ]+$/, "").split(/[\r\n]+/).map((x) => {
-          const [key2, ...val] = x.split(": ");
-          return [key2, val.join(": ")];
+          const [key3, ...val] = x.split(": ");
+          return [key3, val.join(": ")];
         }) : []);
         const {
           allowRangeRequests,
@@ -51949,14 +51949,14 @@ var init_pdf = __esm({
         if (attributes.type === "radio") {
           attributes.name = `${attributes.name}-${intent}`;
         }
-        for (const [key2, value] of Object.entries(attributes)) {
+        for (const [key3, value] of Object.entries(attributes)) {
           if (value === null || value === void 0) {
             continue;
           }
-          switch (key2) {
+          switch (key3) {
             case "class":
               if (value.length) {
-                html.setAttribute(key2, value.join(" "));
+                html.setAttribute(key3, value.join(" "));
               }
               break;
             case "dataId":
@@ -51971,8 +51971,8 @@ var init_pdf = __esm({
               html.textContent = value;
               break;
             default:
-              if (!isHTMLAnchorElement || key2 !== "href" && key2 !== "newWindow") {
-                html.setAttribute(key2, value);
+              if (!isHTMLAnchorElement || key3 !== "href" && key3 !== "newWindow") {
+                html.setAttribute(key3, value);
               }
           }
         }
@@ -53007,11 +53007,11 @@ var init_pdf = __esm({
           isRenderable
         });
       }
-      setPropertyOnSiblings(base, key2, value, keyInStorage) {
+      setPropertyOnSiblings(base, key3, value, keyInStorage) {
         const storage = this.annotationStorage;
         for (const element of this._getElementsByName(base.name, base.id)) {
           if (element.domElement) {
-            element.domElement[key2] = value;
+            element.domElement[key3] = value;
           }
           storage.setValue(element.id, {
             [keyInStorage]: value
@@ -54565,8 +54565,8 @@ var init_pdf = __esm({
         const annotationId = contentElement.id = `${AnnotationPrefix}${id}`;
         const ariaAttributes = await this.#structTreeLayer?.getAriaAttributes(annotationId);
         if (ariaAttributes) {
-          for (const [key2, value] of ariaAttributes) {
-            contentElement.setAttribute(key2, value);
+          for (const [key3, value] of ariaAttributes) {
+            contentElement.setAttribute(key3, value);
           }
         }
         this.div.append(element);
@@ -57081,11 +57081,11 @@ var init_pdf = __esm({
       }
       static _mergeSVGProperties(p1, p2) {
         const p1Keys = new Set(Object.keys(p1));
-        for (const [key2, value] of Object.entries(p2)) {
-          if (p1Keys.has(key2)) {
-            Object.assign(p1[key2], value);
+        for (const [key3, value] of Object.entries(p2)) {
+          if (p1Keys.has(key3)) {
+            Object.assign(p1[key3], value);
           } else {
-            p1[key2] = value;
+            p1[key3] = value;
           }
         }
         return p1;
@@ -59834,11 +59834,11 @@ var init_pdf = __esm({
         return clipPathId;
       }
       #updateProperties(element, properties) {
-        for (const [key2, value] of Object.entries(properties)) {
+        for (const [key3, value] of Object.entries(properties)) {
           if (value === null) {
-            element.removeAttribute(key2);
+            element.removeAttribute(key3);
           } else {
-            element.setAttribute(key2, value);
+            element.setAttribute(key3, value);
           }
         }
       }
@@ -61334,10 +61334,10 @@ function parseItem(text) {
   }
   const stats = {};
   lines.forEach((l, i) => {
-    for (const [key2, re2] of STATS) {
+    for (const [key3, re2] of STATS) {
       const m = l.match(re2);
-      if (!m || stats[key2] != null) continue;
-      stats[key2] = key2 === "price" ? Number(m[1].replace(/,/g, "")) * COINS[m[2].toLowerCase()] : m[1].trim();
+      if (!m || stats[key3] != null) continue;
+      stats[key3] = key3 === "price" ? Number(m[1].replace(/,/g, "")) * COINS[m[2].toLowerCase()] : m[1].trim();
       used.add(i);
       break;
     }
@@ -62511,6 +62511,339 @@ function defaultLootThemes() {
   return THEMES3.map((t) => ({ onlyTypes: [], ...structuredClone(t), builtin: true }));
 }
 
+// src/loot-flavor.js
+var POCKET = {
+  // ---------------- people ----------------
+  "Tarnished silver ring": "Worn thin on one side from years on the same finger. Somebody polished it for a wedding, once.",
+  "Carved wooden charm": "A little whittled bird, rubbed smooth by a thumb that worried at it every night.",
+  "Pouch of pipe tobacco": "Cheap leaf cut with something that smells faintly of cherries, and faintly of feet.",
+  "Clay pipe": "The stem has been snapped and glued twice. The bowl is black with a lifetime of evenings.",
+  "Whetstone": "A palm-sized grey stone with a dip worn into the middle from a thousand sharpenings.",
+  "Tin flask of cheap brandy": "The label promises \u201CFinest Valley Brandy.\u201D The smell makes no such promises.",
+  "Lucky copper coin with a hole punched through": "Strung on a bit of twine. Clearly it was not lucky enough.",
+  "Bone-handled knife": "A plain working blade, good for bread, rope and arguments.",
+  "Brass buttons": "Cut from a coat that was far finer than whatever its last owner was wearing.",
+  "String of glass beads": "Blue and green beads that look like sea glass from a distance and like glass up close.",
+  "Horn comb": "Missing three teeth. Still has a few hairs in it.",
+  "Wool scarf": "Hand-knitted and lumpy, by someone who loved its owner more than they loved knitting.",
+  "Wedge of hard cheese wrapped in cloth": "Sharp, crumbly and only slightly squashed. Still perfectly edible, which is more than can be said for its owner.",
+  "Small hand mirror": "A disc of polished steel in a wooden frame. It shows you, a bit blurry and a bit judgemental.",
+  "Loaded dice": "A pair of bone dice that roll sixes a little too often. Rattle them and one sounds heavier.",
+  "Stolen silver locket": "Inside: a tiny painting of a stern grandmother who would be very disappointed in all of this.",
+  "Mismatched earrings": "One gold hoop, one silver stud. Each came from a different unlucky traveller.",
+  "Gold tooth": "Knocked loose from someone\u2019s smile. Best not to ask whose.",
+  "Stolen wedding band": "Engraved inside: \u201CForever, M.\u201D Forever turned out to be shorter than planned.",
+  "Merchant\u2019s signet ring": "Bears the seal of a trading house. Somewhere, a merchant is very upset about the letters they can\u2019t sign.",
+  "Pouch of pepper": "Black peppercorns, worth their weight in silver to the right cook.",
+  "Bolt of fine lace": "Folded carefully into a waxed bag. Whoever stole it knew exactly what it was worth.",
+  "Brass knuckles": "Dented in the shape of several jaws.",
+  "Wineskin of sour wine": "Half full of something that was wine a few weeks ago and is working hard at becoming vinegar.",
+  "Faded bandana": "Once red, now the pink of a hundred washings in a hundred streams.",
+  "Set of crude lockpicks": "Bent nails and a hairpin, rolled up in a strip of leather. They work about half the time.",
+  "Silver spoons": "Engraved with someone else\u2019s family crest.",
+  "Cheap tin brooch": "Shaped like a rose. Painted red, mostly.",
+  "Regimental badge": "A stamped tin emblem of a company that may or may not still exist.",
+  "Bone dice": "Hand-carved and slightly lopsided. The pips are burned in.",
+  "Tin cup": "Dented, scorched on the bottom and scratched with initials.",
+  "Polished brass gorget": "A crescent of throat armor, polished for parades rather than battles.",
+  "Oilskin cloak": "Waxed against the rain and smelling powerfully of it.",
+  "Spare bowstring": "Coiled and waxed and kept somewhere dry, the way every archer is told to and few do.",
+  "Deck of worn playing cards": "Soft as cloth from use. The queen of cups is missing and has been replaced with a scrap of paper that says \u201Cqueen.\u201D",
+  "Hip flask of rum": "Dark ship\u2019s rum, sweet and strong enough to make a sergeant smile.",
+  "Silver campaign medal": "Awarded for a battle in a war that history has mostly forgotten.",
+  "Lock of a sweetheart\u2019s hair in a twist of paper": "The paper says \u201Ccome home safe.\u201D It\u2019s worth nothing, and it was worth everything.",
+  "Pipe and tobacco": "A short briar pipe and a pouch of dark leaf, kept together in an oilcloth wrap.",
+  "Field rations": "Hardtack, dried beef and a twist of salt. Calories, technically.",
+  "Whetstone and oil cloth": "Everything a soldier needs to keep a blade keen and a sergeant off their back.",
+  "Wooden prayer beads": "Smooth beads on a waxed cord, each one worn by a prayer.",
+  "Small book of hymns": "Pocket-sized, the spine cracked open at a favourite song.",
+  "Beeswax candles": "They smell of honey and burn clean. Much nicer than tallow.",
+  "Silver offering plate": "Shallow and engraved with a sunburst. Usually it comes back from the congregation fuller than this.",
+  "Pilgrim\u2019s token": "A lead badge from a distant shrine, proof that someone walked a very long way.",
+  "Pouch of alms": "A handful of copper and silver meant for the poor. Taking it may weigh on a conscience.",
+  "Embroidered stole": "A long strip of cloth stitched with holy symbols in gold thread, slightly frayed at the ends.",
+  "Sprig of dried sage": "Burned to cleanse a room of bad spirits, or at least of bad smells.",
+  "Reliquary with a saint\u2019s finger bone": "A little silver box with a glass window. The finger inside points accusingly at whoever holds it.",
+  "Ritual candle stubs": "Black and red, melted down to nubs. The wax has dripped into shapes nobody wants to look at too long.",
+  "Carved obsidian idol": "A squat, many-eyed figure. It is cold to the touch and somehow always facing you.",
+  "Stick of black incense": "Smells of myrrh and something underneath, like a cellar after rain.",
+  "Prayer book in an unknown script": "The pages are covered in looping letters that seem to rearrange when you aren\u2019t looking at them. They don\u2019t, but it seems that way.",
+  "Black wax seal ring": "The seal is a closed eye. It has been pressed into a great many secret letters.",
+  "Necklace of finger bones": "Threaded on sinew. Some are small, and nobody wants to think about that.",
+  "Silver offering bowl": "Stained dark at the bottom. It was not used for wine.",
+  "Hooded robe stitched with sigils": "Heavy black wool with symbols sewn around the hem. It smells of smoke and fear-sweat.",
+  "Pouch of grave dirt": "Dirt from a specific grave, apparently. It looks like dirt.",
+  "Amethyst shard": "A violet crystal, roughly chipped from a larger stone. Cultists swear it helps with the voices.",
+  "Stub of red chalk": "For drawing circles on floors. The other end is still dusted with the last one.",
+  "Vial of animal blood": "A stoppered glass vial of blood. Probably a goat. Hopefully a goat.",
+  "Gold signet ring": "A heavy band bearing a noble crest. Selling it openly might attract questions, and relatives.",
+  "Jeweled hairpin": "A long silver pin topped with a cluster of small garnets. Elegant and, in a pinch, stabby.",
+  "Perfumed silk handkerchief": "Smells of lavender and money.",
+  "Silver snuffbox": "Engraved with hunting hounds. A pinch of snuff still clings to the hinge.",
+  "Pearl earring": "A single creamy pearl. Its partner is somewhere on a ballroom floor.",
+  "Painted lace fan": "Opens to show a pastoral scene of shepherds who have clearly never met a sheep.",
+  "Silver hip flask": "Monogrammed and filled with something amber and expensive.",
+  "Portrait locket": "Holds a miniature of a handsome young person. It is not the owner\u2019s spouse.",
+  "Kidskin gloves": "Butter-soft and dyed a fashionable shade of \u201Cnot for work.\u201D",
+  "Ivory comb": "Carved with a delicate scene of swans. Far too nice for anyone in this party\u2019s hair.",
+  "Gold-chained monocle": "For looking down on people with greater precision.",
+  "Bottle of fine wine": "A dusty bottle from a famous vineyard. The cork is sealed with wax and good intentions.",
+  "Bundle of dried herbs": "Rosemary, mugwort and something grey and fuzzy, tied with string. A hedge-witch\u2019s pantry.",
+  "Small quartz crystal": "Clear as water, with a flaw inside like a frozen feather.",
+  "Pouch of bat guano": "Exactly what it sounds like. Fireball enthusiasts never leave home without it.",
+  "Vial of quicksilver": "Liquid metal that rolls around the glass like it\u2019s trying to escape.",
+  "Bag of coloured chalk": "Stubs in six colours, for magic circles, diagrams and the occasional hopscotch grid.",
+  "Notebook of arcane scribbles": "Half spell theory, half shopping list. A margin note reads \u201CDON\u2019T try the fire one indoors again.\u201D",
+  "Ink-stained quill": "A goose quill chewed at the end. The stains reach halfway up.",
+  "Feather of a rare bird": "Iridescent green-gold. A collector or a wizard would pay to know where it came from.",
+  "Tiny brass astrolabe": "A pocket instrument for reading the stars. Its little gears still turn smoothly.",
+  "Pinch of powdered pearl": "Folded in waxed paper: pearl dust, glittering and costly.",
+  "Sealed jar of sulfur": "Yellow powder in a corked jar. Opening it will make the whole room regret it.",
+  "Spectacles with a cracked lens": "Wire frames bent to fit a very particular nose. The world through them is sharp, and split in two.",
+  "Necklace of teeth": "Wolf, boar and a few that are worryingly human-shaped, strung on gut.",
+  "Scrap of stolen silk": "A torn length of bright silk, probably from a merchant\u2019s caravan. Worn as a sash with great pride.",
+  "Crude iron armband": "Hammered from a single iron bar. Fits anyone with forearms like hams.",
+  "Sack of mismatched cutlery": "Forks, spoons, a ladle and one fish knife. A raider\u2019s idea of treasure.",
+  "Shiny bit of broken glass": "Catches the light beautifully. Its owner clearly thought it was a gem.",
+  "Pot of war paint": "Ochre and soot mixed in fat. It smells awful and looks terrifying.",
+  "Strips of dried meat": "Tough, salty and of uncertain origin.",
+  "Carved bone fetish": "A little figure scratched into a knuckle bone, meant to keep spirits away. It didn\u2019t.",
+  "Tarnished silver spoon": "Black with tarnish. Polish it and it might be worth something, or at least eat soup.",
+  "Copper bracelets": "Green-stained bangles that leave a ring on the wrist.",
+  "Stolen hand mirror": "Its frame is gilded; its glass is cracked from a fall. Seven years\u2019 bad luck for someone.",
+  "Gold earring": "A heavy gold hoop. Sailors say it pays for your funeral if the sea gives your body back.",
+  "Cracked spyglass lens": "Salvaged from a broken telescope. Good for starting fires on sunny days.",
+  "Bottle of rum": "Dark, sweet and strong. Ask nicely and a pirate might fight you for it.",
+  "Pouch of foreign coins": "Square, triangular and holed coins from ports half a world away.",
+  "Bosun\u2019s whistle": "A curved silver pipe that makes a shrill trill heard over any storm.",
+  "Scrimshaw whale tooth": "Etched with a whaling ship and a very large, very angry whale.",
+  "String of pearls": "Lustrous and perfectly matched. Pried from more than one oyster, and possibly one duchess.",
+  "Tarred rope bracelet": "A twist of ship\u2019s rope knotted round the wrist, black and sticky with tar.",
+  "Parrot feather": "Bright red. The parrot is not included and is presumably very angry.",
+  "Sailor\u2019s knife": "Blunt-tipped so it can\u2019t stab a shipmate in a rolling sea. It can still cut rope beautifully.",
+  "Tin of ship\u2019s biscuits": "Hard enough to break teeth. Something small lives in one of them.",
+  "Brass compass": "The needle swings true. On the lid, someone scratched a heart and a woman\u2019s name.",
+  // ---------------- creatures ----------------
+  "Giant-sized copper bracelet": "A ring of hammered copper big enough to wear as a belt.",
+  "Sack of sheep bones": "A giant\u2019s lunch leftovers, picked clean and saved for\u2026 something.",
+  "Hide pouch of small gems": "To a giant, these are pretty pebbles. To anyone else, they\u2019re a small fortune.",
+  "Huge iron ring": "A wagon-wheel rim the giant wore on one finger.",
+  "Dented helmet used as a cup": "A knight\u2019s helm, crumpled and sticky with ale. The knight is not mentioned.",
+  "Club studded with stolen coins": "A tree trunk with silver and copper coins hammered into it. Prying them out is half a day\u2019s work.",
+  "String of trophy shields": "Shields of defeated adventurers, threaded on a rope. Some of the heraldry is still legible.",
+  "Cask of strong ale": "A giant\u2019s pint: about twenty of yours.",
+  "Giant\u2019s tooth": "A molar the size of a fist. Carvers love them.",
+  "Braid of coarse hair": "Thick as a rope and almost as strong.",
+  "Thick hide": "Tough enough to stop a dagger. Turning it into leather will take a tanner and a lot of patience.",
+  "Tarnished locket": "The hinge is rusted shut. Something rattles inside.",
+  "Corroded ring": "Green with age. Whatever stone it held is long gone.",
+  "Ancient copper coins": "Stamped with the faces of kings nobody remembers.",
+  "Grave-goods bracelet": "Buried with its owner as a gift for the afterlife. Its owner did not stay put.",
+  "Funerary coin": "Placed on a dead person\u2019s eye to pay the ferryman. The ferryman was not paid.",
+  "Scrap of burial shroud": "Yellowed linen that smells of dust and old spices.",
+  "Rusted belt buckle": "All that\u2019s left of a fine leather belt.",
+  "Rotted leather purse": "Falls apart in your hands. A few coins tumble out of the mould.",
+  "Frame plating": "Riveted metal panels, still warm from whatever power moved them.",
+  "Power core": "A humming crystal set in brass. It hums louder when held, as if it remembers.",
+  "Servo": "A small motor of gears and wire that twitches when tapped.",
+  "Logic core": "A cube of etched metal plates. Artificers can coax a little of its old programming back out.",
+  "Optics": "Polished glass lenses in a metal socket. Something behind them still seems to look at you.",
+  "Gears and springs": "A jingling handful of clockwork. Tinkerers will want all of it.",
+  "Pelt": "Skinned carefully, it makes a warm cloak, or a decent rug.",
+  "Teeth": "Sharp and good for necklaces, arrowheads or impressing people in taverns.",
+  "Claws": "Curved, hard and sharp enough to scratch steel.",
+  "Meat": "Fresh, if cooked tonight. Worth more to a hungry party than to any merchant.",
+  "Bones": "Good for tools, glue or a hedge-witch\u2019s collection.",
+  "Sinew": "Dried and twisted, it makes bowstrings and stitching thread.",
+  "Horns or antlers": "Carvers turn them into handles, buttons and drinking horns.",
+  "Feathers": "Fletchers pay well for good, straight flight feathers.",
+  "Talons": "Curved, needle-tipped and prized by charm makers.",
+  "Beak": "Hard as horn and wickedly hooked.",
+  "Scaled hide": "Supple and patterned. A cobbler would turn it into the finest boots in town.",
+  "Fangs": "Hollow and sharp. Handle with care; there might still be something in them.",
+  "Venom sac": "A fragile pouch of poison. Squeeze gently, and only into a vial.",
+  "Shed skin": "A paper-thin ghost of the creature, perfect down to the eye scales.",
+  "Tough hide": "Rough as sandpaper when stroked one way, smooth the other.",
+  "Ink sac": "Rich black ink for scribes, if it can be got out without spraying everyone.",
+  "Shell fragments": "Iridescent shards of shell. Jewellers set them in silver.",
+  "Fish oil": "Rendered from the creature\u2019s fat. Burns in a lamp and smells like a harbour.",
+  "Chitin plates": "Light, hard plates of shell, like lacquered armor.",
+  "Venom gland": "A bulb of venom potent enough to interest a poisoner.",
+  "Mandibles": "A pair of pincers that still snap shut when you poke them.",
+  "Spool of silk": "Strong, sticky thread wound around a stick. Ropemakers and tailors will both want it.",
+  "Wing membranes": "Translucent and veined like leaves. Delicate, and lovely for lampshades.",
+  "Compound eye": "Hundreds of tiny lenses in one dome. It shows the world in a mosaic.",
+  "Sap": "Thick, sweet-smelling resin, good for glues, varnish and some potions.",
+  "Bark strips": "Peeled from a living creature, which is an odd thing to say about bark.",
+  "Spores": "A puff of powder collected in a pouch. Don\u2019t breathe in.",
+  "Seeds": "Plant them and something might grow. Something, at least.",
+  "Fibre": "Long tough strands, good for rope, baskets and cloth.",
+  "Heartwood": "The dense core of the creature, dark and fine-grained. A carver\u2019s dream.",
+  "Fungal cap": "A spongy mushroom cap. Alchemists say it\u2019s useful. Cooks say it\u2019s risky.",
+  "Elemental essence": "A swirl of pure element held in a stoppered flask. It pushes against the glass.",
+  "Mote of raw element": "A speck of elemental matter that refuses to behave like ordinary matter.",
+  "Planar residue": "A glittering film left behind where the creature was. It fades in a few days.",
+  "Cinders": "Glowing coals that never quite go out.",
+  "Ember core": "A lump of fire held together by will. Wrap it in iron tongs, not cloth.",
+  "Volcanic glass": "Black, glassy and sharp enough to shave with.",
+  "Smouldering ash": "Warm grey ash that stays warm for days.",
+  "Vial of living water": "Water that swirls on its own, even when the vial sits still.",
+  "Coral fragments": "Pink and white branches of coral, brittle and pretty.",
+  "Ever-cold shard": "A splinter of ice that never melts. Excellent for drinks.",
+  "Brine crystals": "Salt crystals as big as dice, tasting of the deep sea.",
+  "Bottled breeze": "Uncork it and a gentle wind ruffles your hair, once.",
+  "Storm-charged crystal": "Crackles and sparks when touched. Your hair stands on end just holding it.",
+  "Wisps of cloud in a jar": "Soft white vapour that drifts lazily around the jar.",
+  "Static-charged dust": "Fine grey dust that clings to everything and snaps when touched.",
+  "Raw gemstone": "Rough and uncut, but a jeweller can see what it could become.",
+  "Ore chunks": "Heavy lumps of iron, copper and something shinier.",
+  "Crystal geode": "Crack it open and it\u2019s full of sparkling purple crystals.",
+  "Living clay": "A lump of clay that slowly reshapes itself when nobody is looking.",
+  "Gemstone wedged between scales": "Pressed in so tightly that the dragon probably forgot it was there.",
+  "Coin of a long-fallen kingdom": "Pure gold, stamped with a crown that hasn\u2019t ruled anything for a thousand years.",
+  "Crushed golden goblet": "Flattened by a sleeping dragon. Still gold, though.",
+  "Broken jeweled scabbard": "The sword is gone. The gems are still there.",
+  "Dragon claws": "Each as long as a dagger and twice as sharp.",
+  "Dragon horn": "Polished, ridged and heavy. Ground horn is said to cure everything from fevers to cowardice.",
+  "Breath gland ({breath})": "The organ where the dragon\u2019s breath is made. It is still warm, and still dangerous.",
+  "Wing membrane": "Huge and leathery. Sailmakers have dreamed about this.",
+  "Blackened iron token": "A coin-shaped bit of iron stamped with a fiendish rune. In the right hells, it buys favours.",
+  "Brimstone-scented coins": "Ordinary coins, if you ignore the smell of rotten eggs.",
+  "Bloodstone": "Dark green flecked with red, like drops of blood on moss.",
+  "Jagged obsidian ring": "Sharp enough to cut the finger that wears it, which might be the point.",
+  "Fiend horn": "Black, ridged and faintly warm.",
+  "Vial of ichor": "Thick, dark blood that doesn\u2019t behave like blood should.",
+  "Infernal hide": "Leathery skin that smells of sulfur and resists flames.",
+  "Fiend claws": "Hooked and black, with a faint red sheen in sunlight.",
+  "Brimstone ash": "Yellow-grey ash that stinks of the lower planes.",
+  "Acorn carved with a tiny face": "The face winks when nobody is looking. Probably.",
+  "Silver thimble": "Perfectly sized for a pixie, or the very tip of a human finger.",
+  "Bell that makes no sound": "Shake it all you like. Somewhere, perhaps, someone hears it.",
+  "Ribbon that never tangles": "A shimmering green ribbon that slides free of every knot.",
+  "Glimmering dust": "Sparkles in the dark and makes everyone who touches it sneeze.",
+  "Lock of fey hair": "Changes colour with the seasons, even after it\u2019s cut.",
+  "Iridescent wing scales": "Tiny scales like a butterfly\u2019s, shining every colour at once.",
+  "Vial of moonlit dew": "Collected under a full moon. It glows faintly in the dark.",
+  "Half-digested coin purse": "Slimy, but the coins are fine.",
+  "Bones of an earlier victim, with a ring": "The ring is the only part of them worth keeping, alas.",
+  "Torn satchel": "An adventurer\u2019s bag, with a few soggy papers still inside.",
+  "Monstrous hide": "Scarred, tough and strange. A good leatherworker will know what to do with it.",
+  "Eye": "Big, glassy and still unsettling. Alchemists keep these in jars.",
+  "Quills or spines": "Barbed spikes that make excellent arrowheads, or very painful pillows.",
+  "Strange metal disc": "Smooth, warm metal stamped with symbols that hurt the eyes a little.",
+  "Polished stone that hums": "A low hum, like a far-off choir. It stops when put down.",
+  "Tentacle segment": "It twitches occasionally. That\u2019s normal. Probably.",
+  "Eye stalk": "A long stalk with a glassy eye at the end. It follows you around the room.",
+  "Chitinous plate": "A plate of alien shell, oily and iridescent.",
+  "Jar of brain matter": "Grey, wrinkled and pulsing faintly. Sages pay well and ask few questions.",
+  "Gold prayer bead": "A single bead from a heavenly rosary. Warm and comforting to hold.",
+  "Feather-shaped silver pin": "So finely made it seems to float a little when dropped.",
+  "Small vial of holy oil": "Smells of frankincense and summer mornings.",
+  "Radiant feather": "Glows with soft golden light, enough to read by.",
+  "Vial of luminous blood": "Shines silver-white. Holding it, you feel briefly forgiven.",
+  "Horn shard": "A fragment of horn, pearly and faintly singing.",
+  "Strands of shining hair": "Gleaming like spun gold, and light as nothing.",
+  "Jar of acidic residue": "Corrodes cork, wood and patience. Keep it in glass.",
+  "Gelatinous membrane": "A wobbling sheet of clear jelly. Alchemists love it; everyone else does not.",
+  "Undissolved trinkets": "Buttons, buckles, a spoon and a ring the ooze never quite managed to digest.",
+  "Congealed slime": "Sticky, cold and faintly green. Useful to someone, surely."
+};
+var GEAR = {
+  // simple melee
+  "Club": "A heavy stick with ambitions. The oldest weapon there is, and still effective.",
+  "Dagger": "Every adventurer carries one. Most carry three.",
+  "Greatclub": "A log with a handle. Subtle it is not.",
+  "Handaxe": "Chops kindling by day and goblins by night.",
+  "Javelin": "A light throwing spear, balanced for a long arc.",
+  "Light Hammer": "A small hammer that fits nicely in the hand, and nicely at a target\u2019s head.",
+  "Mace": "A flanged iron head on a stout haft. Popular with priests who prefer not to draw blood.",
+  "Quarterstaff": "A long staff of hardwood, good for walking, wading and whacking.",
+  "Sickle": "A farmer\u2019s blade for wheat. It works on other things too.",
+  "Spear": "A point on a stick, and humanity\u2019s longest-running good idea.",
+  // simple ranged
+  "Dart": "Small, weighted and thrown with a flick of the wrist.",
+  "Light Crossbow": "Easy to learn, easy to aim, slow to reload.",
+  "Shortbow": "A compact bow, handy from horseback and in tight forests.",
+  "Sling": "A strip of leather and a stone. Ask the giants how that works out.",
+  // martial melee
+  "Battleaxe": "A broad, bearded blade on a stout haft. Chops through shields and patience alike.",
+  "Flail": "A spiked ball on a chain, as dangerous to a clumsy wielder as to their foe.",
+  "Glaive": "A curved blade on a long pole, for keeping enemies a polite distance away.",
+  "Greataxe": "Enormous, heavy and loud. There is no quiet way to use it.",
+  "Greatsword": "Taller than a halfling and twice as heavy as it looks.",
+  "Halberd": "An axe, a spike and a hook on one pole. Soldiers call it \u201Cthe can opener.\u201D",
+  "Lance": "A long spear for charging on horseback. Awkward on foot, devastating on a horse.",
+  "Longsword": "The knight\u2019s blade: straight, balanced and good for every job.",
+  "Maul": "A two-handed hammer that settles arguments permanently.",
+  "Morningstar": "A spiked ball on a stick, named by somebody with a grim sense of humour.",
+  "Pike": "A very long spear. Lines of them make cavalry very sad.",
+  "Rapier": "A slender, elegant blade for those who duel with style and footwork.",
+  "Scimitar": "A curved blade that slices beautifully from horseback.",
+  "Shortsword": "A quick, sturdy blade for close quarters and second hands.",
+  "Trident": "A three-pronged spear, good for fish and anything that thinks it\u2019s a fish.",
+  "Warhammer": "A hammer built for denting armor, and the people inside it.",
+  "War Pick": "A sharp spike on a hammer\u2019s haft, made to punch through plate.",
+  "Whip": "A coiled length of braided leather that cracks like thunder.",
+  // martial ranged
+  "Blowgun": "A hollow tube for darts, quiet and precise.",
+  "Hand Crossbow": "A small crossbow for one hand, popular with spies and the stylish.",
+  "Heavy Crossbow": "A big crossbow with a crank and a kick, strong enough to punch through a door.",
+  "Longbow": "Taller than its archer, with the reach to match.",
+  "Musket": "Loud, smoky and devastating, when it doesn\u2019t misfire.",
+  "Pistol": "A small firearm for one hand. The bang is half the point.",
+  // armor
+  "Padded Armor": "Quilted layers of cloth. Better than nothing, and hot.",
+  "Leather Armor": "Boiled and hardened leather, shaped to the wearer.",
+  "Studded Leather Armor": "Leather reinforced with rivets and studs. Tough, flexible and a bit flashy.",
+  "Hide Armor": "Thick furs and pelts, warm and rough-and-ready.",
+  "Chain Shirt": "Interlocking metal rings worn under clothing, for a little extra safety on the road.",
+  "Scale Mail": "Overlapping metal scales sewn onto leather, like a dragon on a budget.",
+  "Breastplate": "A fitted steel cuirass that guards the vitals and leaves the legs free.",
+  "Half Plate Armor": "Plates over the torso and limbs. Everything important is covered.",
+  "Ring Mail": "Heavy rings sewn onto leather, an early attempt at chain mail.",
+  "Chain Mail": "Thousands of steel rings, heavy and jingly but dependable.",
+  "Splint Armor": "Vertical strips of metal riveted onto leather.",
+  "Plate Armor": "Full steel from head to toe, made by a smith who knew what they were doing.",
+  "Shield": "Wood, metal or both. Something to put between you and the pointy end.",
+  // ammunition
+  "Arrows": "Feathered shafts with steel heads, bundled in a quiver.",
+  "Bolts": "Short, heavy crossbow quarrels.",
+  "Firearm Bullets": "Small lead balls and a horn of powder to send them on their way.",
+  "Sling Bullets": "Smooth lead pellets, much better than rocks.",
+  "Blowgun Needles": "Fine, sharp needles, sometimes with something nasty on the tip.",
+  // foci
+  "Arcane Focus (Crystal)": "A clear crystal that catches the light and focuses the will.",
+  "Arcane Focus (Orb)": "A glass or stone sphere to channel arcane power through.",
+  "Arcane Focus (Rod)": "A short metal rod, etched with arcane runes.",
+  "Arcane Focus (Wand)": "A slender wooden wand. Not magic on its own; the wizard is.",
+  "Druidic Focus (Sprig of Mistletoe)": "A sprig gathered under the moon, for druids to call on nature\u2019s power.",
+  "Druidic Focus (Yew Wand)": "A length of yew, smooth and dark, carved with leaves.",
+  "Holy Symbol (Amulet)": "A sacred emblem on a chain, worn close to the heart.",
+  "Holy Symbol (Emblem)": "A god\u2019s symbol painted or engraved on a shield or tabard.",
+  "Holy Symbol (Reliquary)": "A small box holding a holy relic: a scrap of cloth, a bone or a lock of hair.",
+  // games
+  "Dice Set": "Bone, wood or ivory dice in a little pouch. There are always more dice.",
+  "Dragonchess Set": "A three-level board game of dragons, kings and endless debates about the rules.",
+  "Playing Cards": "A deck of painted cards, good for gambling and solitaire.",
+  "Three-Dragon Ante Set": "A card game of dragons and bets, loved by soldiers and sore losers.",
+  // instruments
+  "Bagpipes": "Loved by some, feared by most. Audible from three valleys away.",
+  "Drum": "A skin stretched over a hollow frame. Keeps the beat for marching and dancing.",
+  "Dulcimer": "A stringed box played with little hammers, bright and sweet.",
+  "Flute": "A simple wooden flute with a clear, light voice.",
+  "Horn": "A curved horn for calling hunts, rallies and retreats.",
+  "Lute": "The bard\u2019s favourite: pear-shaped, gently curved and always slightly out of tune.",
+  "Lyre": "A small harp with an old, gentle sound.",
+  "Pan Flute": "Pipes of different lengths bound together, played by blowing across the tops.",
+  "Shawm": "A double-reed horn that sounds like a goose with something to say.",
+  "Viol": "A bowed stringed instrument with a low, mournful voice."
+};
+var key2 = (s) => String(s || "").trim().toLowerCase();
+var POCKET_BY = new Map(Object.entries(POCKET).map(([k, v]) => [key2(k), v]));
+var GEAR_BY = new Map(Object.entries(GEAR).map(([k, v]) => [key2(k), v]));
+var flavorOf = (entry) => entry?.desc?.trim() ? entry.desc.trim() : POCKET_BY.get(key2(entry?.name)) || "";
+var gearFlavor = (name) => GEAR_BY.get(key2(name)) || "";
+
 // src/loot.js
 var LOOT_CONFIG = {
   gold: { base: 10, perXp: 200, power: 0.75 },
@@ -62713,7 +63046,7 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
         const chance = Math.min(C2.itemCeiling, C2.itemChance * gen * share);
         for (let k = 0; k < 2 && theme?.items?.length && r() < (k ? chance / 2 : chance); k++) {
           const it = pick3(r, theme.items);
-          if (it) add2(lines, { kind: "item", name: it.name, qty: qtyOf(it.qty, r), value: Number(it.value) || 0 });
+          if (it) add2(lines, { kind: "item", name: it.name, qty: qtyOf(it.qty, r), value: Number(it.value) || 0, desc: flavorOf(it) });
         }
         if (minorPool.length && r() < Math.min(C2.minorCeiling, C2.minorChance * gen * share * extra)) {
           const it = pick3(r, minorPool, (x) => x.creatures?.length && comesFrom(x, [m], tables) ? C2.minorLinkedWeight : 1);
@@ -62721,13 +63054,13 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
         }
       }
       const own = parts.filter((x) => comesFrom(x, [m], tables));
-      const harvested = (name, qty, value, id) => {
+      const harvested = (name, qty, value, id, desc) => {
         const same = harvest.find((y) => y.name === name);
         if (same) {
           same.total += qty * value;
           same.qty += qty;
           if (!same.from.includes(m.name)) same.from.push(m.name);
-        } else harvest.push({ kind: "harvest", name, qty, total: qty * value, from: [m.name], ...id ? { id } : {} });
+        } else harvest.push({ kind: "harvest", name, qty, total: qty * value, from: [m.name], ...id ? { id } : desc ? { desc } : {} });
       };
       if (own.length) {
         const it = own[Math.floor(r() * own.length)];
@@ -62742,7 +63075,7 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
           if (!it) break;
           left.splice(left.indexOf(it), 1);
           const name = it.name.replace(/\s*\(\{breath\}\)/, breathType(m) ? ` (${breathType(m)})` : "").replace("{breath}", breathType(m));
-          harvested(name, qtyOf(it.qty, r), (Number(it.value) || 0) * scale);
+          harvested(name, qtyOf(it.qty, r), (Number(it.value) || 0) * scale, null, flavorOf(it));
         }
       }
     }
@@ -62843,7 +63176,7 @@ function itemTypeLine(it) {
 function itemHtml(it) {
   const value = itemValue(it);
   const stat = (label, v) => v ? `<div class="item-stat"><strong>${label}</strong> ${esc2(v)}</div>` : "";
-  return `<div class="cond-name">${esc2(it.name)}</div><div class="spell-meta">${esc2(itemTypeLine(it))}</div>` + stat(it.category === "magic" && !(Number(it.price) > 0) ? "Value (by rarity)" : "Cost", value != null ? `${priceText(value)}${it.bundle ? ` each (${it.bundle} to a bundle)` : ""}` : "") + stat("Armor Class", it.ac) + stat("Damage", it.damage) + stat("Properties", it.properties) + stat("Mastery", it.mastery) + stat("Strength", it.strength) + stat("Stealth", it.stealth) + stat("Weight", it.weight) + stat("Comes from", (it.creatures || []).join(", ")) + stat("Source", it.book) + (it.text ? `<div class="item-text">${glossify(condify(spellify(markupHtml(it.text))))}</div>` : "") + (it.loot === false ? '<div class="spell-tags">Never drops as loot</div>' : "");
+  return `<div class="cond-name">${esc2(it.name)}</div><div class="spell-meta">${esc2(itemTypeLine(it))}</div>` + stat(it.category === "magic" && !(Number(it.price) > 0) ? "Value (by rarity)" : "Cost", value != null ? `${priceText(value)}${it.bundle ? ` each (${it.bundle} to a bundle)` : ""}` : "") + stat("Armor Class", it.ac) + stat("Damage", it.damage) + stat("Properties", it.properties) + stat("Mastery", it.mastery) + stat("Strength", it.strength) + stat("Stealth", it.stealth) + stat("Weight", it.weight) + stat("Comes from", (it.creatures || []).join(", ")) + stat("Source", it.book) + (it.text ? `<div class="item-text">${glossify(condify(spellify(markupHtml(it.text))))}</div>` : gearFlavor(it.name) ? `<div class="item-text"><p><em>${esc2(gearFlavor(it.name))}</em></p></div>` : "") + (it.loot === false ? '<div class="spell-tags">Never drops as loot</div>' : "");
 }
 var blankItem = (name = "New Item") => ({ name, category: "magic", magic: "wondrous", rarity: "Uncommon", price: null, consumable: false, carried: true, text: "", source: "Homebrew" });
 function itemEditor(it, { changed: changed3, redraw }) {
@@ -63050,10 +63383,10 @@ function revive(c2, hp) {
   return true;
 }
 var totalHp = (c2) => c2.members.reduce((n, m) => n + Math.max(0, m.hp), 0);
-function splitOff(c2, n, key2, name) {
+function splitOff(c2, n, key3, name) {
   const moving = standing(c2).slice(-Math.max(1, Math.min(n, standing(c2).length - 1)));
   c2.members = c2.members.filter((m) => !moving.includes(m));
-  return { ...structuredClone({ ...c2, members: [] }), key: key2, name, members: moving };
+  return { ...structuredClone({ ...c2, members: [] }), key: key3, name, members: moving };
 }
 function mergeInto(c2, others) {
   for (const o of others) {
@@ -63200,14 +63533,14 @@ function nextTurn(s) {
   if (o[i].kind === "monster") s.selectedKey = o[i].key;
   return s.combatants.find((c2) => c2.key === s.turnKey);
 }
-function removeCombatant(s, key2) {
-  if (s.turnKey === key2) {
-    const o = ordered(s).filter((c2) => c2.key !== key2);
-    const at2 = ordered(s).findIndex((c2) => c2.key === key2);
+function removeCombatant(s, key3) {
+  if (s.turnKey === key3) {
+    const o = ordered(s).filter((c2) => c2.key !== key3);
+    const at2 = ordered(s).findIndex((c2) => c2.key === key3);
     s.turnKey = o.length ? o[at2 % o.length].key : null;
   }
-  if (s.selectedKey === key2) s.selectedKey = null;
-  s.combatants = s.combatants.filter((c2) => c2.key !== key2);
+  if (s.selectedKey === key3) s.selectedKey = null;
+  s.combatants = s.combatants.filter((c2) => c2.key !== key3);
 }
 function startOfTurn(c2, m, roll3) {
   if (c2?.kind !== "monster" || !m) return;
@@ -63267,13 +63600,13 @@ function linkPlan(c2) {
   const open2 = c2.members.map((m, i) => i).filter((i) => !c2.members[i].token);
   return (open2.length ? open2 : c2.members.map((m, i) => i)).map((i) => ({ member: i, name: tokenName(c2, i) }));
 }
-function linkToken(s, key2, member2, id) {
+function linkToken(s, key3, member2, id) {
   for (const x of s.combatants) {
     if (isGroup(x)) {
       for (const m of x.members) if (m.token === id) delete m.token;
     } else if (x.tokens?.includes(id)) x.tokens = x.tokens.filter((t) => t !== id);
   }
-  const c2 = s.combatants.find((x) => x.key === key2);
+  const c2 = s.combatants.find((x) => x.key === key3);
   if (!c2) return false;
   if (isGroup(c2)) {
     if (!c2.members[member2]) return false;
@@ -63281,8 +63614,8 @@ function linkToken(s, key2, member2, id) {
   } else c2.tokens = [id];
   return true;
 }
-function unlinkTokens(s, key2) {
-  const c2 = s.combatants.find((x) => x.key === key2);
+function unlinkTokens(s, key3) {
+  const c2 = s.combatants.find((x) => x.key === key3);
   if (!c2) return [];
   const ids = tokensOf(c2);
   if (isGroup(c2)) for (const m of c2.members) delete m.token;
@@ -63327,23 +63660,23 @@ function slotsOf(e2) {
 }
 function entryList(entries, who, section, tracker, recharge, group) {
   return (entries || []).map((e2, i) => {
-    const key2 = `${section}:${i}`;
+    const key3 = `${section}:${i}`;
     const rc = recharge && rechargeOf(e2.name);
-    const chip = (rc ? rechargeChip(key2, recharge.get(key2), rc) : "") + (group && isGroupAttack(e2.name) ? `<button class="sb-group-atk" data-gk="${key2}" title="One attack roll for the group; the damage is multiplied by how many join in">Group attack</button>` : "");
+    const chip = (rc ? rechargeChip(key3, recharge.get(key3), rc) : "") + (group && isGroupAttack(e2.name) ? `<button class="sb-group-atk" data-gk="${key3}" title="One attack roll for the group; the damage is multiplied by how many join in">Group attack</button>` : "");
     const name = e2.name ? `<strong><em>${esc(e2.name)}.</em></strong> ${chip}` : "";
-    return `<p>${name}${glossify(condify(spellify(rollify(richText(e2.text), e2.name || "Roll", who))))}</p>${boxRows({ ...e2, slots: slotsOf(e2) }, key2, tracker)}`;
+    return `<p>${name}${glossify(condify(spellify(rollify(richText(e2.text), e2.name || "Roll", who))))}</p>${boxRows({ ...e2, slots: slotsOf(e2) }, key3, tracker)}`;
   }).join("");
 }
-var rechargeChip = (key2, used, rc) => `<button class="sb-recharge${used ? " used" : ""}" data-rk="${key2}" title="${used ? `Used. ${rc.min ? `It recharges on a ${rc.min === 6 ? "6" : `${rc.min}\u20136`}, rolled at the start of its turn. ` : ""}Click when it's available again.` : "Available. Click when it is used."}">${used ? "Used" : "Ready"}</button>`;
-function boxRows(e2, key2, tracker) {
+var rechargeChip = (key3, used, rc) => `<button class="sb-recharge${used ? " used" : ""}" data-rk="${key3}" title="${used ? `Used. ${rc.min ? `It recharges on a ${rc.min === 6 ? "6" : `${rc.min}\u20136`}, rolled at the start of its turn. ` : ""}Click when it's available again.` : "Available. Click when it is used."}">${used ? "Used" : "Ready"}</button>`;
+function boxRows(e2, key3, tracker) {
   if (!e2.slots?.length) return "";
   const rows = e2.slots.map((row2, r) => {
-    const k = `${key2}:${r}`, used = tracker.get(k);
+    const k = `${key3}:${r}`, used = tracker.get(k);
     const boxes = Array.from({ length: Math.min(60, row2.count | 0) }, (_, b2) => `<button class="sb-box${b2 < used ? " on" : ""}" data-k="${k}" data-i="${b2}" title="${b2 < used ? "Used: click to get it back" : "Click when used"}" aria-pressed="${b2 < used}"></button>`).join("");
     return `<div class="sb-box-row">${row2.label ? `<span class="sb-box-label">${esc(row2.label)}.</span>` : ""}<span class="sb-boxes">${boxes}</span></div>`;
   }).join("");
-  const any = e2.slots.some((_, r) => tracker.get(`${key2}:${r}`) > 0);
-  return `<div class="sb-tracker" data-key="${key2}">${rows}${any ? `<button class="link sb-box-reset" data-reset="${key2}" data-rows="${e2.slots.length}">Reset</button>` : ""}</div>`;
+  const any = e2.slots.some((_, r) => tracker.get(`${key3}:${r}`) > 0);
+  return `<div class="sb-tracker" data-key="${key3}">${rows}${any ? `<button class="link sb-box-reset" data-reset="${key3}" data-rows="${e2.slots.length}">Reset</button>` : ""}</div>`;
 }
 var sessionTicks = /* @__PURE__ */ new Map();
 var sessionTracker = (id) => ({
@@ -63398,7 +63731,7 @@ function statBlock(m, opts2 = {}) {
     ${(m.notes || []).map((n) => prop(esc(n.name), esc(n.text))).join("")}
     ${m.crText ? prop("Challenge", esc(m.crText)) : `<div class="sb-row">${prop("Challenge", esc(crXpText(m)))}${prop("Proficiency Bonus", pbText(m))}</div>`}
     ${m.traits?.length ? `<div class="sb-bar"></div><div class="sb-entries">${entryList(m.traits, who, "traits", tracker, recharge, group)}</div>` : ""}
-    ${sections.map(([title2, list, key2]) => `<div class="sb-section">${title2}</div>${key2 === "legendaryActions" && legUses ? boxRows(legEntry, LEGENDARY_KEY, tracker) : ""}<div class="sb-entries">${entryList(list, who, key2, tracker, recharge, group)}</div>`).join("")}
+    ${sections.map(([title2, list, key3]) => `<div class="sb-section">${title2}</div>${key3 === "legendaryActions" && legUses ? boxRows(legEntry, LEGENDARY_KEY, tracker) : ""}<div class="sb-entries">${entryList(list, who, key3, tracker, recharge, group)}</div>`).join("")}
     ${m.description?.length && opts2.description !== false ? `<div class="sb-section">Description</div><div class="sb-entries sb-desc">${entryList(m.description, who, "description", tracker)}</div>` : ""}
     ${m.source && m.source !== "Homebrew" ? `<div class="sb-source">Source: ${esc(m.source)}</div>` : ""}`;
   const el11 = h("div.statblock", { html });
@@ -63834,14 +64167,14 @@ function renderFilters() {
     renderFilters();
     renderList();
   };
-  const sel = (label, key2, options) => h("label", label, h(
+  const sel = (label, key3, options) => h("label", label, h(
     "select",
     { onchange: (e2) => {
-      filter[key2] = e2.target.value;
+      filter[key3] = e2.target.value;
       changed3();
     } },
     h("option", { value: "" }, "Any"),
-    options.map(([v, t]) => h("option", { value: v, selected: filter[key2] === v }, t))
+    options.map(([v, t]) => h("option", { value: v, selected: filter[key3] === v }, t))
   ));
   fill(
     el2.querySelector("#it-filters"),
@@ -64007,9 +64340,9 @@ function parseDdbSheet(fields2) {
   const classText = get("CLASS LEVEL");
   const classes = [...classText.matchAll(/([A-Za-z][A-Za-z' -]*?)\s+(\d{1,2})\b/g)].map((m) => ({ name: m[1].trim(), level: Number(m[2]) }));
   const level = classes.reduce((n, c2) => n + c2.level, 0) || num(classText) || 1;
-  const abilities = Object.fromEntries(ABILITIES2.map(([ab2, key2]) => [key2, num(get(ab2))]));
-  const saves = ABILITIES2.map(([ab2, key2]) => {
-    const label = key2[0].toUpperCase() + key2.slice(1);
+  const abilities = Object.fromEntries(ABILITIES2.map(([ab2, key3]) => [key3, num(get(ab2))]));
+  const saves = ABILITIES2.map(([ab2, key3]) => {
+    const label = key3[0].toUpperCase() + key3.slice(1);
     return { ability: ab2, bonus: num(get(`ST ${label}`)) ?? 0, proficient: !!getI(`${ab2[0]}${ab2.slice(1).toLowerCase()}Prof`) };
   });
   const skills = SKILLS2.map(([field, name, ab2]) => ({ name, ability: ab2, bonus: num(getI(field)) ?? 0, proficiency: { P: "proficient", E: "expertise", H: "half" }[getI(`${field}Prof`)] || "" }));
@@ -64838,16 +65171,23 @@ function popMenu(anchor, items) {
 }
 
 // src/loot-dialog.js
+init_tooltip();
+var pockets = /* @__PURE__ */ new Map();
+var esc3 = (s) => String(s ?? "").replace(/[&<>"]/g, (c2) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c2]);
+registerTip("pocket", (n) => {
+  const x = pockets.get(Number(n));
+  return x ? `<div class="cond-name">${esc3(x.name)}</div><div class="spell-meta">${x.kind === "harvest" ? "Harvestable" : "Pocket item"}</div><div class="item-stat"><strong>${x.kind === "harvest" ? "Worth about" : "Worth"}</strong> ${esc3(priceText(x.value))}${x.qty > 1 ? " each" : ""}</div><div class="item-text"><p><em>${esc3(x.desc)}</em></p></div>` : "";
+});
 var currentTables = () => lootTables(defaultLootThemes(), store.loot);
 function lootOf(m) {
   const o = !m || isHomebrew(m) ? null : store.loot.find((r) => r.id === MONSTER_LOOT_ID)?.monsters?.[m.id];
   return o ? { ...m, ...o } : m;
 }
-function setSrdLoot(m, key2, value) {
+function setSrdLoot(m, key3, value) {
   const rec = store.loot.find((r) => r.id === MONSTER_LOOT_ID) || { id: MONSTER_LOOT_ID, monsters: {} };
   const entry = rec.monsters[m.id] || {};
-  if (!value || value === "auto") delete entry[key2];
-  else entry[key2] = value;
+  if (!value || value === "auto") delete entry[key3];
+  else entry[key3] = value;
   if (Object.keys(entry).length) rec.monsters[m.id] = entry;
   else delete rec.monsters[m.id];
   save("loot", rec);
@@ -64896,7 +65236,12 @@ function lootDialog(enc2) {
       settings: { generosity: st.generosity, magic: st.magic ? st.magicCount : 0 },
       seed: st.seed
     });
-    const nameOf = (x) => x.id ? h("span.cond-link", { tabindex: 0, dataset: { item: x.id } }, x.name) : x.spell ? h("span.cond-link", { tabindex: 0, dataset: { spell: x.spell } }, x.name) : x.name;
+    pockets.clear();
+    const pocket = (x) => {
+      pockets.set(pockets.size, x);
+      return h("span.cond-link", { tabindex: 0, dataset: { pocket: pockets.size - 1 } }, x.name);
+    };
+    const nameOf = (x) => x.desc && !x.id ? pocket(x) : x.id ? h("span.cond-link", { tabindex: 0, dataset: { item: x.id } }, x.name) : x.spell ? h("span.cond-link", { tabindex: 0, dataset: { spell: x.spell } }, x.name) : x.name;
     const line = (x) => h(
       "li",
       x.qty > 1 ? h("span.loot-qty", `${x.qty} \xD7`) : null,
@@ -65144,12 +65489,12 @@ function renderEdit3() {
     renderSide();
   }, 300);
   const original = defaults().get(t.id);
-  const entries = (key2, title2, help) => {
+  const entries = (key3, title2, help) => {
     const box = h("div.loot-entries");
     const draw2 = () => fill(
       box,
-      t[key2].length ? h("div.loot-entry.head", h("span", "Name"), h("span", "Value (gp)"), h("span", "How often"), h("span", "Quantity"), h("span")) : null,
-      t[key2].map((x, i) => h(
+      t[key3].length ? h("div.loot-entry.head", h("span", "Name"), h("span", "Value (gp)"), h("span", "How often"), h("span", "Quantity"), h("span")) : null,
+      t[key3].map((x, i) => h(
         "div.loot-entry",
         h("input", { type: "text", value: x.name, placeholder: "Name", oninput: (e2) => {
           x.name = e2.target.value;
@@ -65168,12 +65513,23 @@ function renderEdit3() {
           changed3();
         } }),
         h("button.icon-btn", { title: "Remove", onclick: () => {
-          t[key2].splice(i, 1);
+          t[key3].splice(i, 1);
           draw2();
           changed3();
-        } }, "\xD7")
+        } }, "\xD7"),
+        h("input.loot-entry-desc", {
+          type: "text",
+          value: x.desc || "",
+          placeholder: flavorOf({ name: x.name }) || "Description shown when you hover it in the loot list",
+          title: "A line to read out when a player asks about it; blank = the built-in one, if it has one",
+          oninput: (e2) => {
+            if (e2.target.value.trim()) x.desc = e2.target.value;
+            else delete x.desc;
+            changed3();
+          }
+        })
       )),
-      !t[key2].length ? h("div.hint", "None.") : null
+      !t[key3].length ? h("div.hint", "None.") : null
     );
     draw2();
     return [
@@ -65181,7 +65537,7 @@ function renderEdit3() {
       h("div.hint", help),
       box,
       h("button", { onclick: () => {
-        t[key2].push({ name: "", value: 1, weight: 1, qty: "" });
+        t[key3].push({ name: "", value: 1, weight: 1, qty: "" });
         draw2();
         box.querySelector(".loot-entry:last-child input")?.focus();
       } }, `Add ${title2.toLowerCase().replace(/s$/, "")}`)
@@ -65436,19 +65792,19 @@ function renderFilters2() {
     renderFilters2();
     renderList4();
   };
-  const sel = (label, key2, options) => h("label", label, h(
+  const sel = (label, key3, options) => h("label", label, h(
     "select",
     { onchange: (e2) => {
-      filter2[key2] = e2.target.value;
+      filter2[key3] = e2.target.value;
       changed3();
     } },
     h("option", { value: "" }, "Any"),
-    options.map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => h("option", { value: o.value, selected: filter2[key2] === o.value }, o.label))
+    options.map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => h("option", { value: o.value, selected: filter2[key3] === o.value }, o.label))
   ));
-  const cr = (key2) => h("select", { onchange: (e2) => {
-    filter2[key2] = e2.target.value;
+  const cr = (key3) => h("select", { onchange: (e2) => {
+    filter2[key3] = e2.target.value;
     changed3();
-  } }, CR_ORDER.map((c2) => h("option", { value: c2, selected: filter2[key2] === c2 }, c2)));
+  } }, CR_ORDER.map((c2) => h("option", { value: c2, selected: filter2[key3] === c2 }, c2)));
   fill(
     box,
     sel("Type", "type", TYPES),
@@ -65501,8 +65857,8 @@ function renderEdit4() {
       h("div.edit-head", h("h2", m.name), h("button.primary", { onclick: () => duplicate2(m) }, "Copy to my monsters")),
       h("p.muted", "SRD monsters are read-only. Copy one to your monsters to change it (for example to reskin or retune it)."),
       h("p.muted", `Fighting preference (guessed from the stat block): ${STYLES[guessStyle(m)]}. The encounter generator uses it.`),
-      h("div.form-grid", lootFields(lootOf(m), (key2, value) => {
-        setSrdLoot(m, key2, value);
+      h("div.form-grid", lootFields(lootOf(m), (key3, value) => {
+        setSrdLoot(m, key3, value);
         renderEdit4();
       })),
       h("p.hint", "Loot settings work on SRD monsters too: they are kept in your library, not in the monster."),
@@ -65538,10 +65894,10 @@ function editor(m) {
     e2.target.value = get(m);
     changed3();
   } }));
-  const section = (title2, key2) => {
-    m[key2] ??= [];
+  const section = (title2, key3) => {
+    m[key3] ??= [];
     const box = h("div.entries");
-    const draw2 = () => fill(box, ...m[key2].map((entry, i) => h(
+    const draw2 = () => fill(box, ...m[key3].map((entry, i) => h(
       "div.entry",
       h(
         "div.entry-top",
@@ -65550,12 +65906,12 @@ function editor(m) {
           changed3();
         } }),
         h("button.icon-btn", { title: "Move up", disabled: i === 0, onclick: () => {
-          m[key2].splice(i - 1, 0, m[key2].splice(i, 1)[0]);
+          m[key3].splice(i - 1, 0, m[key3].splice(i, 1)[0]);
           draw2();
           changed3();
         } }, "\u2191"),
         h("button.icon-btn", { title: "Remove", onclick: () => {
-          m[key2].splice(i, 1);
+          m[key3].splice(i, 1);
           draw2();
           changed3();
         } }, "\xD7")
@@ -65581,11 +65937,11 @@ function editor(m) {
     draw2();
     return h(
       "details.edit-section",
-      { open: m[key2].length > 0 },
-      h("summary", `${title2} (${m[key2].length})`),
+      { open: m[key3].length > 0 },
+      h("summary", `${title2} (${m[key3].length})`),
       box,
       h("button", { onclick: () => {
-        m[key2].push({ name: "", text: "" });
+        m[key3].push({ name: "", text: "" });
         draw2();
         changed3();
         box.lastChild?.querySelector("input")?.focus();
@@ -65669,9 +66025,9 @@ function editor(m) {
         Object.entries(STYLES).map(([k, v]) => h("option", { value: k, selected: m.fightingStyle === k }, v))
       )),
       // the loot generator: whether it carries loot at all, and which theme (blank = keyword or creature type)
-      lootFields(m, (key2, value) => {
-        if (!value || value === "auto") delete m[key2];
-        else m[key2] = value;
+      lootFields(m, (key3, value) => {
+        if (!value || value === "auto") delete m[key3];
+        else m[key3] = value;
         changed3();
       }),
       // minions (a "Minion" trait) count this XP in the builder and the generator instead of their CR's
@@ -66052,17 +66408,17 @@ function renderFilters3() {
     renderFilters3();
     renderList6();
   };
-  const sel = (label, key2, options) => h("label", label, h(
+  const sel = (label, key3, options) => h("label", label, h(
     "select",
     { onchange: (e2) => {
-      filter3[key2] = e2.target.value;
+      filter3[key3] = e2.target.value;
       changed3();
     } },
     h("option", { value: "" }, "Any"),
-    options.map(([value, text]) => h("option", { value, selected: filter3[key2] === value }, text))
+    options.map(([value, text]) => h("option", { value, selected: filter3[key3] === value }, text))
   ));
-  const check = (label, key2) => h("label.check-row", h("input", { type: "checkbox", checked: filter3[key2], onchange: (e2) => {
-    filter3[key2] = e2.target.checked;
+  const check = (label, key3) => h("label.check-row", h("input", { type: "checkbox", checked: filter3[key3], onchange: (e2) => {
+    filter3[key3] = e2.target.checked;
     changed3();
   } }), label);
   const any = filter3.level || filter3.school || filter3.cls || filter3.concentration || filter3.ritual;
@@ -66193,16 +66549,16 @@ function monsterLabels() {
   return map;
 }
 var monsterName = (id) => findMonster(id)?.name || "Missing monster";
-function chipPicker(key2, placeholder, options, labelOf) {
-  const listId = `gn-dl-${key2}`;
+function chipPicker(key3, placeholder, options, labelOf) {
+  const listId = `gn-dl-${key3}`;
   const input = h("input", { type: "text", placeholder, list: listId, onchange: (e2) => {
     const v = options instanceof Map ? options.get(e2.target.value) : e2.target.value.trim().toLowerCase();
-    if (v && !params[key2].includes(v)) set(key2, [...params[key2], v]);
+    if (v && !params[key3].includes(v)) set(key3, [...params[key3], v]);
     else e2.target.value = "";
   } });
   return h(
     "div.chip-picker",
-    params[key2].length ? h("div.chips", params[key2].map((v) => h("span.chip", labelOf(v), h("button.chip-x", { title: "Remove", onclick: () => set(key2, params[key2].filter((x) => x !== v)) }, "\xD7")))) : null,
+    params[key3].length ? h("div.chips", params[key3].map((v) => h("span.chip", labelOf(v), h("button.chip-x", { title: "Remove", onclick: () => set(key3, params[key3].filter((x) => x !== v)) }, "\xD7")))) : null,
     input,
     h(`datalist#${listId}`, [...options instanceof Map ? options.keys() : options].map((o) => h("option", { value: o })))
   );
@@ -66211,13 +66567,13 @@ function renderParams() {
   const box = el8.querySelector("#gn-params");
   if (!box) return;
   const p = params;
-  const sel = (label, key2, options, conv = (x) => x) => h("label", label, h(
+  const sel = (label, key3, options, conv = (x) => x) => h("label", label, h(
     "select",
-    { onchange: (e2) => set(key2, conv(e2.target.value)) },
-    options.map(([value, text]) => h("option", { value, selected: String(p[key2]) === String(value) }, text))
+    { onchange: (e2) => set(key3, conv(e2.target.value)) },
+    options.map(([value, text]) => h("option", { value, selected: String(p[key3]) === String(value) }, text))
   ));
-  const num2 = (key2, min, max) => h("input.num", { type: "number", min, max, value: p[key2], onchange: (e2) => set(key2, Math.min(max, Math.max(min, Number(e2.target.value) || min))) });
-  const crSel = (key2) => h("select", { onchange: (e2) => set(key2, e2.target.value) }, CR_ORDER.map((c2) => h("option", { value: c2, selected: p[key2] === c2 }, c2)));
+  const num2 = (key3, min, max) => h("input.num", { type: "number", min, max, value: p[key3], onchange: (e2) => set(key3, Math.min(max, Math.max(min, Number(e2.target.value) || min))) });
+  const crSel = (key3) => h("select", { onchange: (e2) => set(key3, e2.target.value) }, CR_ORDER.map((c2) => h("option", { value: c2, selected: p[key3] === c2 }, c2)));
   const levels2 = encounterLevels(p);
   const labels = monsterLabels();
   fill(
@@ -66630,21 +66986,21 @@ function renderEditor() {
   renderSummary();
 }
 function filterPanel() {
-  const sel = (label, key2, options) => h(
+  const sel = (label, key3, options) => h(
     "select",
     { onchange: (ev) => {
-      filters[key2] = ev.target.value;
+      filters[key3] = ev.target.value;
       shown3 = 40;
       renderMonsters();
     } },
     h("option", { value: "" }, label),
-    options.map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => h("option", { value: o.value, selected: filters[key2] === o.value }, o.label))
+    options.map((o) => typeof o === "string" ? { value: o, label: o } : o).map((o) => h("option", { value: o.value, selected: filters[key3] === o.value }, o.label))
   );
-  const cr = (key2) => h("select", { onchange: (ev) => {
-    filters[key2] = ev.target.value;
+  const cr = (key3) => h("select", { onchange: (ev) => {
+    filters[key3] = ev.target.value;
     shown3 = 40;
     renderMonsters();
-  } }, CR_ORDER.map((c2) => h("option", { value: c2, selected: filters[key2] === c2 }, c2)));
+  } }, CR_ORDER.map((c2) => h("option", { value: c2, selected: filters[key3] === c2 }, c2)));
   return h(
     "div.card.filters",
     h("h3", "Monster filters"),
@@ -66662,9 +67018,9 @@ function filterPanel() {
 }
 function filteredMonsters() {
   const list = allMonsters().filter((m) => matches2(m, filters));
-  const key2 = { name: (m) => m.name, type: (m) => m.monsterType, size: (m) => SIZES.indexOf(m.size), cr: (m) => crValue(m.challengeRating), difficulty: (m) => crValue(m.challengeRating) }[sort.key];
+  const key3 = { name: (m) => m.name, type: (m) => m.monsterType, size: (m) => SIZES.indexOf(m.size), cr: (m) => crValue(m.challengeRating), difficulty: (m) => crValue(m.challengeRating) }[sort.key];
   return list.sort((a2, b2) => {
-    const x = key2(a2), y = key2(b2);
+    const x = key3(a2), y = key3(b2);
     return (x < y ? -1 : x > y ? 1 : a2.name.localeCompare(b2.name)) * sort.dir;
   });
 }
@@ -66674,11 +67030,11 @@ function renderMonsters() {
   const levels2 = encounterLevels(current2);
   const party = encounterParty(current2);
   const list = filteredMonsters();
-  const head = (label, key2) => h("button.sort" + (sort.key === key2 ? ".on" : ""), { onclick: () => {
-    sort.dir = sort.key === key2 ? -sort.dir : 1;
-    sort.key = key2;
+  const head = (label, key3) => h("button.sort" + (sort.key === key3 ? ".on" : ""), { onclick: () => {
+    sort.dir = sort.key === key3 ? -sort.dir : 1;
+    sort.key = key3;
     renderMonsters();
-  } }, label, sort.key === key2 ? sort.dir > 0 ? " \u25B2" : " \u25BC" : " \u21C5");
+  } }, label, sort.key === key3 ? sort.dir > 0 ? " \u25B2" : " \u25BC" : " \u21C5");
   const rows = list.slice(0, shown3).map((m) => {
     const r = evaluate([xpItem(m)], party, current2.rules);
     const open2 = expanded2 === m.id;
@@ -67216,10 +67572,10 @@ function startOfTurn2(c2) {
   startOfTurn(c2, findMonster(c2.refId), (expr, label) => doRoll(expr, { who: c2.name, label }));
 }
 var conSave2 = (c2) => conSave(c2, c2.kind === "monster" ? findMonster(c2.refId) : null, c2.kind === "pc" ? findCharacter(c2.refId) : null);
-function concentrationCheck(key2, damage) {
-  const c2 = C().combatants.find((x) => x.key === key2);
+function concentrationCheck(key3, damage) {
+  const c2 = C().combatants.find((x) => x.key === key3);
   concentrationPrompt(c2, damage, () => act((x) => {
-    const y = x.combatants.find((z) => z.key === key2);
+    const y = x.combatants.find((z) => z.key === key3);
     y.conditions = y.conditions.filter((q) => q !== "Concentrating");
   }));
 }
@@ -67279,7 +67635,7 @@ function hpDialog(c2, onApply) {
     if (e2.key === "Enter" && apply(e2.ctrlKey ? "temp" : e2.shiftKey ? "heal" : "damage") !== false) close();
   });
 }
-var find = (s, key2) => s.combatants.find((z) => z.key === key2);
+var find = (s, key3) => s.combatants.find((z) => z.key === key3);
 var numberInput = (value, min, max) => h("input", { type: "number", min, max, value });
 function pips(c2) {
   const minion = c2.group === "minion";
@@ -67473,8 +67829,8 @@ function mergeRows(c2) {
     x.combatants = x.combatants.filter((z) => !others.includes(z));
   });
 }
-function groupAttack(key2, entry) {
-  const c2 = find(C(), key2);
+function groupAttack(key3, entry) {
+  const c2 = find(C(), key3);
   if (!c2 || !entry) return;
   const a2 = groupAttackOf(entry.text);
   const name = entry.name.replace(/\s*\(.*$/, "");
@@ -67799,13 +68155,13 @@ var OWLBEAR_SWITCHES = [
   ["dragTrail", 'Switch players to "Move with trail" during fights', true, "The trail follows the drag square by square. Off: players keep Owlbear\u2019s normal Move tool (the trail is drawn one straight line per drop)."],
   ["stopAtSpeed", "Stop movement at its speed", false, "A token can\u2019t be moved past its speed this turn."]
 ];
-var switchOn = (settings3, key2) => {
-  const s = OWLBEAR_SWITCHES.find((x) => x[0] === key2);
-  return settings3[key2] ?? s?.[2] ?? false;
+var switchOn = (settings3, key3) => {
+  const s = OWLBEAR_SWITCHES.find((x) => x[0] === key3);
+  return settings3[key3] ?? s?.[2] ?? false;
 };
 
 // src/obr/manifest.json
-var version2 = "1.4.1";
+var version2 = "1.4.2";
 
 // src/app.js
 var TABS = [
@@ -68072,7 +68428,7 @@ async function importLibrary(text, fileName, { onDone } = {}) {
   if (error2) return modal("Cannot import", h("p", error2), [["OK", () => {
   }, "primary"]]);
   const plan = planImport(pack, store);
-  const sum = (key2) => Object.fromEntries(PACK_KINDS.map((k) => [k, plan[k][key2]]));
+  const sum = (key3) => Object.fromEntries(PACK_KINDS.map((k) => [k, plan[k][key3]]));
   const add2 = sum("add"), newer = sum("newer"), older = sum("older"), same = sum("same");
   const n = (by) => PACK_KINDS.reduce((t, k) => t + by[k].length, 0);
   const lines = [
@@ -68139,21 +68495,21 @@ var SIZES2 = [[1, "Small (1\xD7)"], [1.5, "Medium (1.5\xD7)"], [2, "Large (2\xD7
 var SECONDS = [[3, "3 seconds"], [5, "5 seconds"], [8, "8 seconds"], [12, "12 seconds"]];
 function settings() {
   const s = toastSettings(), d = diceSettings();
-  const pick4 = (label, key2, options) => h("label", label, h(
+  const pick4 = (label, key3, options) => h("label", label, h(
     "select",
     { onchange: (e2) => {
-      s[key2] = key2 === "position" ? e2.target.value : Number(e2.target.value);
+      s[key3] = key3 === "position" ? e2.target.value : Number(e2.target.value);
       setToastSettings(s);
     } },
-    options.map(([value, text]) => h("option", { value, selected: s[key2] === value }, text))
+    options.map(([value, text]) => h("option", { value, selected: s[key3] === value }, text))
   ));
-  const dicePick = (label, key2, options, conv = (x) => x) => h("label", label, h(
+  const dicePick = (label, key3, options, conv = (x) => x) => h("label", label, h(
     "select",
     { onchange: (e2) => {
-      d[key2] = conv(e2.target.value);
+      d[key3] = conv(e2.target.value);
       setDiceSettings(d);
     } },
-    options.map(([value, text]) => h("option", { value, selected: String(d[key2]) === String(value) }, text))
+    options.map(([value, text]) => h("option", { value, selected: String(d[key3]) === String(value) }, text))
   ));
   const preview = h("div.font-preview", { style: fontStyle(d.font) }, "20 \xB7 17 \xB7 9 \xB7 6 \xB7 1");
   const fontSel = h(
@@ -68223,17 +68579,17 @@ function owlbearSection() {
   const box = h("div.owlbear-switches");
   const draw2 = () => {
     const s = owlbearSettings();
-    fill(box, OWLBEAR_SWITCHES.map(([key2, label, , hint]) => {
-      const under = key2 === "dragTrail" || key2 === "stopAtSpeed";
+    fill(box, OWLBEAR_SWITCHES.map(([key3, label, , hint]) => {
+      const under = key3 === "dragTrail" || key3 === "stopAtSpeed";
       return h(
         `label.check-row${under ? ".indent" : ""}`,
         { title: hint },
         h("input", {
           type: "checkbox",
-          checked: switchOn(s, key2),
+          checked: switchOn(s, key3),
           disabled: under && !switchOn(s, "trackMovement"),
           onchange: (e2) => {
-            setOwlbearSettings({ [key2]: e2.target.checked });
+            setOwlbearSettings({ [key3]: e2.target.checked });
             draw2();
           }
         }),
@@ -68448,23 +68804,23 @@ var lastVoice = () => {
     return "GM";
   }
 };
-var thread = (key2, character, charId) => threads[key2] ??= { character, charId, messages: [], unread: 0 };
-var add = (key2, msg) => {
-  const t = threads[key2];
+var thread = (key3, character, charId) => threads[key3] ??= { character, charId, messages: [], unread: 0 };
+var add = (key3, msg) => {
+  const t = threads[key3];
   t.messages = [...t.messages, msg].slice(-KEEP);
   keep();
 };
 var unread = () => Object.values(threads).reduce((n, t) => n + (t.unread || 0), 0);
 function sendMessage(charId, character, from, text) {
-  const key2 = `pc-${charId}`;
-  thread(key2, character, charId);
+  const key3 = `pc-${charId}`;
+  thread(key3, character, charId);
   try {
     localStorage.setItem(VOICE, from);
   } catch {
   }
   const id = `m-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
-  add(key2, { id, dir: "out", from, text, at: Date.now(), status: "sending" });
-  const ok = linked() && send({ type: "whisper", id, thread: key2, character, from, text, tokens: characterTokens(charId) });
+  add(key3, { id, dir: "out", from, text, at: Date.now(), status: "sending" });
+  const ok = linked() && send({ type: "whisper", id, thread: key3, character, from, text, tokens: characterTokens(charId) });
   if (!ok) setStatus(id, "error", 'Not linked to Owlbear: press "Open / reconnect GM window" in Owlbear, then send again.');
   draw();
 }
@@ -68509,8 +68865,8 @@ function compose({ charId, character }) {
 var button = h("button.chat-btn", { title: "Messages with players", onclick: () => open ? closePanel() : openPanel(latest()) });
 var panel2 = h("div.chat-panel", { hidden: true });
 var latest = () => Object.entries(threads).sort(([, a2], [, b2]) => (b2.messages.at(-1)?.at || 0) - (a2.messages.at(-1)?.at || 0))[0]?.[0] || null;
-function openPanel(key2) {
-  open = key2 || latest() || "";
+function openPanel(key3) {
+  open = key3 || latest() || "";
   if (threads[open]) threads[open].unread = 0;
   keep();
   draw();
@@ -68582,13 +68938,13 @@ function initChat(bridge2) {
     ack({ id, name }) {
       setStatus(id, "delivered", `Delivered to ${name}`);
     },
-    reply({ thread: key2, character, name, text, at: at2 }) {
-      const charId = key2.replace(/^pc-/, "");
-      const t = thread(key2, character || store.party.find((c2) => c2.id === charId)?.name || "Player", charId);
-      add(key2, { id: `r-${at2}`, dir: "in", from: `${name}${t.character ? ` (${t.character})` : ""}`, text, at: at2 });
-      if (open !== key2) t.unread = (t.unread || 0) + 1;
+    reply({ thread: key3, character, name, text, at: at2 }) {
+      const charId = key3.replace(/^pc-/, "");
+      const t = thread(key3, character || store.party.find((c2) => c2.id === charId)?.name || "Player", charId);
+      add(key3, { id: `r-${at2}`, dir: "in", from: `${name}${t.character ? ` (${t.character})` : ""}`, text, at: at2 });
+      if (open !== key3) t.unread = (t.unread || 0) + 1;
       keep();
-      openPanel(key2);
+      openPanel(key3);
     }
   };
 }

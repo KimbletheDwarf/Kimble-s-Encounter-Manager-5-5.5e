@@ -733,6 +733,7 @@ button.temp { background: #13283a; border-color: #2b5a80; color: #8fd0ff; }
 .loot-entries { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
 .loot-entry { display: grid; grid-template-columns: minmax(0, 1fr) 84px 76px 76px 30px; gap: 6px; align-items: center; }
 .loot-entry.head { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.loot-entry-desc { grid-column: 1 / -1; margin: -2px 0 8px; font-size: 12px; font-style: italic; }
 .loot-types { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 10px; }
 .loot-types .check-row { padding: 2px 0; font-size: 13px; }
 #lt-side h3 { margin: 4px 0 6px; }
