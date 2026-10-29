@@ -68161,7 +68161,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.4.2";
+var version2 = "1.4.3";
 
 // src/app.js
 var TABS = [
