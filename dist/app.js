@@ -66181,7 +66181,10 @@ async function call(s, url, { method = "GET", accept = "application/vnd.github+j
   let res;
   try {
     res = await fetch(url, {
+      // no-store: GitHub marks its answers cacheable for a minute, and a browser gives the file's details back for the
+      // raw file (the same address), or an old sha just after a save
       method,
+      cache: "no-store",
       body: body2 && JSON.stringify(body2),
       headers: { Authorization: `Bearer ${s.token}`, Accept: accept, "X-GitHub-Api-Version": "2022-11-28", ...body2 ? { "Content-Type": "application/json" } : {} }
     });
@@ -70085,7 +70088,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.9.0";
+var version2 = "1.9.1";
 
 // src/app.js
 var TABS = [
