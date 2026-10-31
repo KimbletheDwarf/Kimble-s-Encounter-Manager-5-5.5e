@@ -477,13 +477,10 @@ details summary { cursor: pointer; color: var(--muted); margin: 12px 0 8px; }
 .spell-more { font-style: italic; color: #4a3a28; }
 .spell-tags { margin-top: 10px; color: #7a1d10; font: small-caps 700 13px Georgia, serif; }
 .tip-open { margin-top: 8px; font-size: 12px; padding: 4px 10px; }
-.spell-grid { grid-template-columns: 320px minmax(0, 1fr); }
-.spell-pane { display: flex; flex-direction: column; gap: 16px; max-width: 900px; }
 .spell-card { overflow: visible; }
 .spell-checks { display: flex; gap: 14px; align-items: center; }
 .spell-checks .check-row { padding: 0; font-size: 13px; }
 .list-name .tag[title] { cursor: help; }
-@media (max-width: 1250px) { .spell-grid { grid-template-columns: 280px minmax(0, 1fr); } }
 
 .lib-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; background: var(--card-2); border-radius: 4px; padding: 10px; margin-bottom: 8px; }
 .lib-filters .wide { grid-column: 1 / -1; }
@@ -735,7 +732,8 @@ button.temp { background: #13283a; border-color: #2b5a80; color: #8fd0ff; }
 .view-switch { display: flex; flex-shrink: 0; }
 .view-switch button { border-radius: 0; font: 700 13px var(--head); text-transform: uppercase; letter-spacing: .05em; }
 .view-switch button:first-child { border-radius: 3px 0 0 3px; }
-.view-switch button:last-child { border-radius: 0 3px 3px 0; border-left: 0; }
+.view-switch button + button { border-left: 0; }
+.view-switch button:last-child { border-radius: 0 3px 3px 0; }
 .view-switch button.on { background: var(--blue-btn); border-color: var(--blue-btn); color: #fff; }
 .loot-entries { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
 .loot-entry { display: grid; grid-template-columns: minmax(0, 1fr) 84px 76px 76px 30px; gap: 6px; align-items: center; }

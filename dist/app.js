@@ -26750,9 +26750,9 @@ function WebGLRenderList() {
     return variant;
   }
   function getNextRenderItem(object, geometry, material, groupOrder, z, group) {
-    let renderItem2 = renderItems[renderItemsIndex];
-    if (renderItem2 === void 0) {
-      renderItem2 = {
+    let renderItem = renderItems[renderItemsIndex];
+    if (renderItem === void 0) {
+      renderItem = {
         id: object.id,
         object,
         geometry,
@@ -26763,40 +26763,40 @@ function WebGLRenderList() {
         z,
         group
       };
-      renderItems[renderItemsIndex] = renderItem2;
+      renderItems[renderItemsIndex] = renderItem;
     } else {
-      renderItem2.id = object.id;
-      renderItem2.object = object;
-      renderItem2.geometry = geometry;
-      renderItem2.material = material;
-      renderItem2.materialVariant = materialVariant(object);
-      renderItem2.groupOrder = groupOrder;
-      renderItem2.renderOrder = object.renderOrder;
-      renderItem2.z = z;
-      renderItem2.group = group;
+      renderItem.id = object.id;
+      renderItem.object = object;
+      renderItem.geometry = geometry;
+      renderItem.material = material;
+      renderItem.materialVariant = materialVariant(object);
+      renderItem.groupOrder = groupOrder;
+      renderItem.renderOrder = object.renderOrder;
+      renderItem.z = z;
+      renderItem.group = group;
     }
     renderItemsIndex++;
-    return renderItem2;
+    return renderItem;
   }
   function push(object, geometry, material, groupOrder, z, group, camera) {
     if (camera.reversedDepth === true) z = -z;
-    const renderItem2 = getNextRenderItem(object, geometry, material, groupOrder, z, group);
+    const renderItem = getNextRenderItem(object, geometry, material, groupOrder, z, group);
     if (material.transmission > 0) {
-      transmissive.push(renderItem2);
+      transmissive.push(renderItem);
     } else if (material.transparent === true) {
-      transparent.push(renderItem2);
+      transparent.push(renderItem);
     } else {
-      opaque.push(renderItem2);
+      opaque.push(renderItem);
     }
   }
   function unshift(object, geometry, material, groupOrder, z, group) {
-    const renderItem2 = getNextRenderItem(object, geometry, material, groupOrder, z, group);
+    const renderItem = getNextRenderItem(object, geometry, material, groupOrder, z, group);
     if (material.transmission > 0) {
-      transmissive.unshift(renderItem2);
+      transmissive.unshift(renderItem);
     } else if (material.transparent === true) {
-      transparent.unshift(renderItem2);
+      transparent.unshift(renderItem);
     } else {
-      opaque.unshift(renderItem2);
+      opaque.unshift(renderItem);
     }
   }
   function sort2(customOpaqueSort, customTransparentSort) {
@@ -26806,13 +26806,13 @@ function WebGLRenderList() {
   }
   function finish2() {
     for (let i = renderItemsIndex, il = renderItems.length; i < il; i++) {
-      const renderItem2 = renderItems[i];
-      if (renderItem2.id === null) break;
-      renderItem2.id = null;
-      renderItem2.object = null;
-      renderItem2.geometry = null;
-      renderItem2.material = null;
-      renderItem2.group = null;
+      const renderItem = renderItems[i];
+      if (renderItem.id === null) break;
+      renderItem.id = null;
+      renderItem.object = null;
+      renderItem.geometry = null;
+      renderItem.material = null;
+      renderItem.group = null;
     }
   }
   return {
@@ -33846,8 +33846,8 @@ void main() {
           if (extensions.has("WEBGL_multisampled_render_to_texture") === false) {
             let renderTargetNeedsUpdate = false;
             for (let i = 0, l = transmissiveObjects.length; i < l; i++) {
-              const renderItem2 = transmissiveObjects[i];
-              const { object, geometry, material, group } = renderItem2;
+              const renderItem = transmissiveObjects[i];
+              const { object, geometry, material, group } = renderItem;
               if (material.side === DoubleSide && object.layers.test(camera.layers)) {
                 const currentSide = material.side;
                 material.side = BackSide;
@@ -33871,9 +33871,9 @@ void main() {
         function renderObjects(renderList8, scene, camera) {
           const overrideMaterial = scene.isScene === true ? scene.overrideMaterial : null;
           for (let i = 0, l = renderList8.length; i < l; i++) {
-            const renderItem2 = renderList8[i];
-            const { object, geometry, group } = renderItem2;
-            let material = renderItem2.material;
+            const renderItem = renderList8[i];
+            const { object, geometry, group } = renderItem;
+            let material = renderItem.material;
             if (material.allowOverride === true && overrideMaterial !== null) {
               material = overrideMaterial;
             }
@@ -35069,12 +35069,12 @@ function createTray(container) {
       badge2.hidden = !more;
       canvas.style.transition = "none";
       canvas.style.opacity = "1";
-      const t0 = performance.now(), mine2 = {};
-      playing = mine2;
+      const t0 = performance.now(), mine3 = {};
+      playing = mine3;
       return new Promise((resolve) => {
-        mine2.resolve = resolve;
+        mine3.resolve = resolve;
         const frame = (now) => {
-          if (playing !== mine2) return resolve();
+          if (playing !== mine3) return resolve();
           const i = Math.max(0, Math.min(frames2.length - 1, Math.floor((now - t0) / 1e3 * 60 * speed2)));
           const f = frames2[i];
           meshes.forEach((m, k) => {
@@ -35086,7 +35086,7 @@ function createTray(container) {
             raf = requestAnimationFrame(frame);
             return;
           }
-          mine2.settled = true;
+          mine3.settled = true;
           dice2.forEach((d, k) => {
             if (d.dropped) meshes[k].material.forEach((x) => {
               x.opacity = 0.3;
@@ -35094,12 +35094,12 @@ function createTray(container) {
           });
           renderer.render(scene, camera);
           setTimeout(() => {
-            if (playing !== mine2) return resolve();
+            if (playing !== mine3) return resolve();
             canvas.style.transition = "opacity .45s";
             canvas.style.opacity = "0";
             badge2.hidden = true;
             setTimeout(() => {
-              if (playing === mine2) clear();
+              if (playing === mine3) clear();
               resolve();
             }, 480);
           }, hold);
@@ -35748,7 +35748,7 @@ function blankMonster(name = "New Monster") {
     description: []
   };
 }
-var ABBR, typeLine, hpFormula, hpDice, initBonus, crXpText, pbText, walkSpeed, speedText, savesText, skillsText, sensesText, languagesText, listText, parseList, slotsText;
+var ABBR, typeLine, hpFormula, hpDice, initBonus, crXpText, pbText, walkSpeed, speedText, savesText, skillsText, sensesText, languagesText, listText, parseList, slotsText, descriptionText, parseDescriptionText;
 var init_format = __esm({
   "src/format.js"() {
     init_dice();
@@ -35773,6 +35773,8 @@ var init_format = __esm({
     listText = (a2) => (a2 || []).join(", ");
     parseList = (t) => t.split(/[,;]/).map((x) => x.trim()).filter(Boolean);
     slotsText = (slots) => (slots || []).map((r) => r.label ? `${r.label}: ${r.count}` : String(r.count)).join(", ");
+    descriptionText = (m) => (m.description || []).map((e2) => [e2.name, e2.text].filter(Boolean).join("\n")).join("\n\n");
+    parseDescriptionText = (s) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean).map((text) => ({ name: "", text }));
   }
 });
 
@@ -35857,6 +35859,7 @@ __export(store_exports, {
   ITEM_CATEGORIES: () => ITEM_CATEGORIES,
   allItems: () => allItems,
   allMonsters: () => allMonsters,
+  allSpells: () => allSpells,
   chooseLibrary: () => chooseLibrary,
   findCharacter: () => findCharacter,
   findItem: () => findItem,
@@ -35879,11 +35882,11 @@ async function loadLibrary() {
   const { libraryPath } = await window.desktop.settings();
   store.libraryPath = libraryPath;
   if (!store.srd.length) store.srd = await (await fetch("data/srd-monsters.json")).json();
-  if (!store.spells.length) store.spells = await (await fetch("data/srd-spells.json")).json();
+  if (!store.srdSpells.length) store.srdSpells = await (await fetch("data/srd-spells.json")).json();
   if (!store.rules.length) store.rules = await (await fetch("data/srd-rules.json")).json();
   if (!store.srdItems.length) store.srdItems = [...await (await fetch("data/srd-items.json")).json(), ...await (await fetch("data/components.json")).json()];
   store.errors = [];
-  for (const kind of ["monsters", "party", "encounters", "conditions", "loot", "items"]) {
+  for (const kind of ["monsters", "party", "encounters", "conditions", "loot", "items", "spells"]) {
     if (!libraryPath) {
       store[kind] = kind === "conditions" ? defaultConditions() : [];
       continue;
@@ -35972,7 +35975,7 @@ async function remove(kind, item) {
   await window.desktop.remove(kind, item.id);
   emit(kind);
 }
-var CONDITIONS_SRD, listeners, store, onChange, emit, arr, NORMALIZE, timers, writing, pending, statusListeners, onSaveStatus, status, allMonsters, findMonster, findCharacter, isHomebrew, allItems, findItem, ITEM_CATEGORIES;
+var CONDITIONS_SRD, listeners, store, onChange, emit, arr, NORMALIZE, timers, writing, pending, statusListeners, onSaveStatus, status, allMonsters, findMonster, findCharacter, isHomebrew, allItems, findItem, allSpells, ITEM_CATEGORIES;
 var init_store = __esm({
   "src/store.js"() {
     init_format();
@@ -35982,7 +35985,10 @@ var init_store = __esm({
     store = {
       libraryPath: "",
       srd: [],
+      srdSpells: [],
+      // SRD spells (Spells tab, spell tooltips, spell scrolls)
       spells: [],
+      // the user's own spells (made in the Maker or the Spells tab, or brought in with a library pack)
       rules: [],
       // SRD rules glossary (tooltips)
       monsters: [],
@@ -36026,7 +36032,20 @@ var init_store = __esm({
         harvest: arr(t.harvest).filter((x) => x && typeof x.name === "string")
       },
       items: (x) => ({ ...x, name: String(x.name || "Unnamed"), category: ITEM_CATEGORIES.includes(x.category) ? x.category : "gear", text: String(x.text ?? ""), carried: x.carried !== false }),
-      encounters: (e2) => ({ ...e2, name: String(e2.name ?? "Untitled"), characterIds: arr(e2.characterIds), groups: arr(e2.groups).filter((g) => g && g.monsterId && g.count > 0), extraPlayers: e2.extraPlayers || { count: 0, level: 1 } })
+      encounters: (e2) => ({ ...e2, name: String(e2.name ?? "Untitled"), characterIds: arr(e2.characterIds), groups: arr(e2.groups).filter((g) => g && g.monsterId && g.count > 0), extraPlayers: e2.extraPlayers || { count: 0, level: 1 } }),
+      spells: (s) => ({
+        ...s,
+        name: String(s.name || "Unnamed"),
+        level: Math.min(9, Math.max(0, Number(s.level) || 0)),
+        school: String(s.school || "Unknown"),
+        classes: arr(s.classes).map(String),
+        castingTime: String(s.castingTime ?? ""),
+        range: String(s.range ?? ""),
+        components: String(s.components ?? ""),
+        duration: String(s.duration ?? ""),
+        text: String(s.text ?? ""),
+        source: "Homebrew"
+      })
     };
     timers = /* @__PURE__ */ new Map();
     writing = /* @__PURE__ */ new Set();
@@ -36040,6 +36059,7 @@ var init_store = __esm({
     isHomebrew = (m) => !m.source || m.source === "Homebrew";
     allItems = () => [...store.items, ...store.srdItems];
     findItem = (id) => store.items.find((x) => x.id === id) || store.srdItems.find((x) => x.id === id);
+    allSpells = () => [...store.spells, ...store.srdSpells];
     ITEM_CATEGORIES = ["weapon", "armor", "shield", "ammo", "gear", "tool", "focus", "trinket", "magic"];
   }
 });
@@ -38359,16 +38379,16 @@ function parseStatBlock(rawText, { isWord = null } = {}) {
   if (isWord) fixMisreadWords(M, isWord);
   return M;
 }
-function swaps(w) {
+function swaps(w, extra = []) {
   const out = /* @__PURE__ */ new Set();
-  for (const [a2, b2] of MIXUPS) for (let i = w.indexOf(a2); i >= 0; i = w.indexOf(a2, i + 1)) out.add(w.slice(0, i) + b2 + w.slice(i + a2.length));
+  for (const [a2, b2] of [...MIXUPS, ...extra]) for (let i = w.indexOf(a2); i >= 0; i = w.indexOf(a2, i + 1)) out.add(w.slice(0, i) + b2 + w.slice(i + a2.length));
   return out;
 }
-function unmixWord(w, isWord) {
+function unmixWord(w, isWord, extra = []) {
   if (w.length < 4 || isWord(w)) return null;
-  const one = swaps(w);
+  const one = swaps(w, extra);
   let found = [...one].filter(isWord);
-  if (!found.length) found = [...new Set([...one].flatMap((x) => [...swaps(x)]))].filter((x) => x !== w && isWord(x));
+  if (!found.length) found = [...new Set([...one].flatMap((x) => [...swaps(x, extra)]))].filter((x) => x !== w && isWord(x));
   const unique = [...new Set(found.map((x) => x.toLowerCase()))];
   return unique.length === 1 ? found[0] : null;
 }
@@ -38862,7 +38882,7 @@ var require_suggest = __commonJS({
       var group;
       var before;
       var after;
-      var upper;
+      var upper2;
       var insensitive;
       var firstLevel;
       var previous;
@@ -38894,7 +38914,7 @@ var require_suggest = __commonJS({
         before = value.slice(0, index);
         after = value.slice(index + 1);
         insensitive = character.toLowerCase();
-        upper = insensitive !== character;
+        upper2 = insensitive !== character;
         charAdded = {};
         offset = -1;
         while (++offset < self2.flags.KEY.length) {
@@ -38911,7 +38931,7 @@ var require_suggest = __commonJS({
                 continue;
               }
               charAdded[otherCharacter] = true;
-              if (upper) {
+              if (upper2) {
                 otherCharacter = otherCharacter.toUpperCase();
               }
               edits.push(before + otherCharacter + after);
@@ -39009,7 +39029,7 @@ var require_suggest = __commonJS({
       var currentCase;
       var position;
       var after;
-      var upper;
+      var upper2;
       var inject;
       var offset;
       if (edits) {
@@ -39035,11 +39055,11 @@ var require_suggest = __commonJS({
           nextNextAfter = nextAfter.slice(1);
           character = nextCharacter;
           nextCharacter = word.charAt(position + 1);
-          upper = nextUpper;
+          upper2 = nextUpper;
           if (nextCharacter) {
             nextUpper = nextCharacter.toLowerCase() !== nextCharacter;
           }
-          if (nextAfter && upper !== nextUpper) {
+          if (nextAfter && upper2 !== nextUpper) {
             check(before + switchCase(nextAfter));
             check(
               before + switchCase(nextCharacter) + switchCase(character) + nextNextAfter
@@ -39052,7 +39072,7 @@ var require_suggest = __commonJS({
           offset = -1;
           while (++offset < characters.length) {
             inject = characters[offset];
-            if (upper && inject !== inject.toUpperCase()) {
+            if (upper2 && inject !== inject.toUpperCase()) {
               if (currentCase !== "s") {
                 check(before + inject + after);
                 check(before + inject + nextAfter);
@@ -39437,6 +39457,207 @@ var require_lib = __commonJS({
   }
 });
 
+// src/maker/parse-card.js
+function cleanName(line, { isWord = null, warnings = [] } = {}) {
+  const name = line.replace(/[^\p{L}0-9'’()/\- ]/gu, "").replace(/\s*\([^)]*$/, "").replace(/\s+/g, " ").trim();
+  if (!/[A-Z]{3}/.test(name) && !/[a-z][A-Z]/.test(name) && name !== name.toUpperCase()) return name;
+  const words2 = name.toLowerCase().split(" ").map((w) => isWord && unmixWord(w, isWord, SMALL_CAPS) || w).join(" ");
+  if (words2 !== name.toLowerCase()) warnings.push(`Name read as "${cap2(name)}"; corrected to "${cap2(words2)}". Check it.`);
+  return cap2(words2);
+}
+function dropEndNoise(lines) {
+  const out = [...lines];
+  for (let i = out.length - 1; i >= 0; i--) {
+    if (!out[i]) continue;
+    if (!isNoise(out[i])) break;
+    out[i] = "";
+  }
+  return out;
+}
+function paragraphs(lines, { leads = false } = {}) {
+  const paras = [];
+  let para = "", gap = false;
+  const flush = () => {
+    if (para) paras.push(para);
+    para = "";
+  };
+  for (const l of lines) {
+    if (!l) {
+      if (para.startsWith("- ")) gap = true;
+      else if (para && FINISHED.test(para)) flush();
+      continue;
+    }
+    if (gap && !BULLET.test(l) && FINISHED.test(para)) flush();
+    gap = false;
+    const list = para.startsWith("- ");
+    if (BULLET.test(l)) {
+      if (!list) flush();
+      para = `${para ? `${para}
+` : ""}- ${l.replace(BULLET, "")}`;
+    } else if (leads && para && LEAD.test(l) && (list || FINISHED.test(para))) {
+      flush();
+      para = l;
+    } else if (/[a-z]-$/.test(para) && /^[a-z]/.test(l)) para = para.slice(0, -1) + l;
+    else para = para ? `${para} ${l}` : l;
+  }
+  flush();
+  return paras;
+}
+var cap2, SMALL_CAPS, cleanLines, tidyEdges, isNoise, FINISHED, BULLET, WORD2, LEAD, boldLeads;
+var init_parse_card = __esm({
+  "src/maker/parse-card.js"() {
+    init_parse();
+    cap2 = (s) => s.toLowerCase().replace(/(?<![\w'’])\w/g, (c2) => c2.toUpperCase()).replace(/(?!^)\b(Of|The|Or|And|A|An|That)\b/g, (w) => w.toLowerCase());
+    SMALL_CAPS = [["p", "d"]];
+    cleanLines = (text) => String(text || "").replace(/\r/g, "").replace(/[‘’]/g, "\u2019").replace(/[“”]/g, '"').replace(/[ \t]+/g, " ").split("\n").map((l) => l.trim());
+    tidyEdges = (l) => /^\|.*\|.*\|$/.test(l) ? l : l.replace(/^[|¦;:’‘'~_]+\s+/, "").replace(/\s+[|¦~_]+$/, "");
+    isNoise = (l) => l.length < 24 && /^[A-Za-z\s.,;:|'’~_-]+$/.test(l) && !/[a-z]{3}/.test(l);
+    FINISHED = /[.!?:"”)]$/;
+    BULLET = /^[•·▪●*»«–-]\s+/;
+    WORD2 = "(?:[A-Z0-9][\\w\u2019'-]*|d\\d+)";
+    LEAD = new RegExp(`^(${WORD2}(?:\\s+(?:of|the|and|or|to|a|an|in|on|for|with|from|vs\\.?|${WORD2})){0,6}(?:\\s*\\([^)]*\\))?)([.:])\\s+(?=\\S)`);
+    boldLeads = (text) => text.split("\n").map((l) => {
+      const bullet = l.startsWith("- ") ? "- " : "";
+      return bullet + l.slice(bullet.length).replace(LEAD, "**$1$2** ");
+    }).join("\n");
+  }
+});
+
+// src/maker/parse-spell.js
+function parseSpell(text, { isWord = null } = {}) {
+  const warnings = [];
+  const lines = cleanLines(text).map(tidyEdges).flatMap(splitShared);
+  const filled = lines.map((l, i) => i).filter((i) => lines[i]);
+  if (!filled.length) throw new Error("There is no text to read.");
+  const used = /* @__PURE__ */ new Set();
+  const top = filled.slice(0, 6);
+  const firstLabel = top.findIndex((i) => labelOf(lines[i]) && !isLevelLine(lines[i]));
+  const at2 = (firstLabel < 0 ? top : top.slice(0, firstLabel)).findIndex((i) => isLevelLine(lines[i]));
+  let levelLine = "", name = "", start2 = 0;
+  if (at2 >= 0) {
+    levelLine = lines[filled[at2]];
+    filled.slice(0, at2 + 1).forEach((i) => used.add(i));
+    if (at2 > 0) name = lines[filled[at2 - 1]];
+    start2 = at2 + 1;
+    if (levelLine.split("(").length > levelLine.split(")").length && filled[start2] != null) {
+      levelLine += ` ${lines[filled[start2]]}`;
+      used.add(filled[start2++]);
+    }
+  } else if (!labelOf(lines[filled[0]])) {
+    name = lines[filled[0]];
+    used.add(filled[0]);
+    start2 = 1;
+  }
+  const found = {};
+  let open2 = null;
+  for (let n = start2; n < filled.length; n++) {
+    const i = filled[n], l = lines[i], hit = labelOf(l);
+    if (hit) {
+      if (open2) found[open2] = found[open2].trim();
+      open2 = hit.key;
+      found[open2] = hit.value;
+      used.add(i);
+      continue;
+    }
+    if (!open2) {
+      if (n >= start2 + 2) break;
+      continue;
+    }
+    const allFound = NEEDED.every((k) => found[k] != null);
+    const labelSoon = filled.slice(n + 1, n + 4).some((k) => labelOf(lines[k]));
+    if (!unfinished(found[open2]) && (allFound || !labelSoon)) break;
+    found[open2] = `${found[open2]} ${l}`.trim();
+    used.add(i);
+  }
+  lines.forEach((l, i) => {
+    if (used.has(i)) return;
+    const hit = labelOf(l);
+    if (hit && (hit.key === "classes" || hit.key === "book") && hit.value) {
+      found[hit.key] ??= hit.value;
+      used.add(i);
+    }
+  });
+  lines.forEach((l, i) => {
+    const note = !used.has(i) && l.match(/^\*\s*[-–—]?\s*(\(.+\))$/);
+    if (note && /\*\s*$/.test(found.components || "")) {
+      found.components = `${found.components.replace(/\s*\*\s*$/, "")} ${note[1]}`;
+      used.add(i);
+    }
+  });
+  const levelMatch = levelLine.match(LEVEL);
+  const levelField = found.level || "";
+  const levelDigit = levelField.match(/\d/)?.[0];
+  const cantrip = /\bcantrip\b/i.test(levelLine) || /\bcantrip\b/i.test(levelField);
+  const level = cantrip ? 0 : levelMatch ? Number(String(levelMatch[1] || levelMatch[2]).replace(/[Il]/, "1")) : levelDigit ? Number(levelDigit) : null;
+  const school = cap2((levelLine.match(SCHOOL) || (found.school || "").match(SCHOOL) || [])[1] || "");
+  const brackets = levelLine.match(/\(([^)]*)\)/)?.[1] || "";
+  let castingTime = found.castingTime || "";
+  const ritual = /\britual\b/i.test(levelLine) || /\britual\b/i.test(castingTime);
+  castingTime = castingTime.replace(/\s*(?:\bor\s+ritual\b|\(ritual\))/i, "").trim().replace(/^1\s+(action|bonus action|reaction)\b/i, (m, a2) => cap2(a2)).replace(/\.$/, "");
+  let duration = (found.duration || "").replace(/\.$/, "");
+  const concentration = /^concentration\b/i.test(duration);
+  if (concentration) duration = duration.replace(/^concentration\s*,?\s*(?:up to\s*)?/i, "Concentration, up to ");
+  const spell = {
+    name: cleanName(name, { isWord, warnings }),
+    level: level ?? 1,
+    school: school || "Unknown",
+    classes: listOf(found.classes || brackets).filter((c2) => !/^ritual$/i.test(c2) && !SCHOOL.test(c2)).map(cap2),
+    castingTime: upper(castingTime),
+    ritual,
+    range: upper(found.range || ""),
+    components: (found.components || "").replace(/\b([VS])\s*;\s*(?=[SM]\b)/g, "$1, "),
+    duration: upper(duration),
+    concentration,
+    // OCR reads "V, S, M" as "V, S; M"
+    text: "",
+    warnings
+  };
+  if (found.book) spell.book = found.book;
+  const body2 = dropEndNoise(lines.map((l, i) => used.has(i) ? "" : l));
+  spell.text = boldLeads(paragraphs(body2, { leads: true }).join("\n\n").replace(/\s+((?:Using a Higher-Level Spell Slot|At Higher Levels|Cantrip Upgrade)\.)/g, "\n\n$1"));
+  if (!spell.name) warnings.push("No name found: type one in.");
+  if (level == null || !school) warnings.push('No level line found (like "Level 3 Evocation" or "3rd-level evocation"): check the level and school.');
+  const missing = [["castingTime", "Casting Time"], ["range", "Range"], ["components", "Components"], ["duration", "Duration"]].filter(([k]) => !spell[k]).map(([, label]) => label);
+  if (missing.length) warnings.push(`Not found: ${missing.join(", ")}.`);
+  if (!spell.text) warnings.push("No description found.");
+  return spell;
+}
+var SCHOOLS, SCHOOL, LEVEL, isLevelLine, LABELS, NEEDED, labelOf, SHARED, splitShared, unfinished, listOf, upper;
+var init_parse_spell = __esm({
+  "src/maker/parse-spell.js"() {
+    init_parse_card();
+    SCHOOLS = ["Abjuration", "Conjuration", "Divination", "Enchantment", "Evocation", "Illusion", "Necromancy", "Transmutation"];
+    SCHOOL = new RegExp(`\\b(${SCHOOLS.join("|")})\\b`, "i");
+    LEVEL = /\b([1-9Il])(?:st|nd|rd|th)[- ]*level\b|\blevel[- ]*([1-9])\b/i;
+    isLevelLine = (l) => l.length < 120 && SCHOOL.test(l) && (LEVEL.test(l) || /\bcantrip\b/i.test(l));
+    LABELS = [
+      ["castingTime", /^casting\s*time\b\s*:?\s*(.*)$/i],
+      ["range", /^range(?:\s*\/\s*area)?\b\s*:?\s*(.*)$/i],
+      ["components", /^components?\b\s*:?\s*(.*)$/i],
+      ["duration", /^duration\b\s*:?\s*(.*)$/i],
+      ["level", /^level\b\s*:?\s*(.*)$/i],
+      ["school", /^school\b\s*:?\s*(.*)$/i],
+      ["classes", /^(?:classes|spell lists?)\b\s*[:.]?\s*(.*)$/i],
+      ["book", /^source\b\s*:\s*(.*)$/i],
+      ["skip", /^(?:attack\s*\/\s*save|damage\s*\/\s*effect)\b\s*:?\s*(.*)$/i]
+      // D&D Beyond's table has these too
+    ];
+    NEEDED = ["castingTime", "range", "components", "duration"];
+    labelOf = (l) => {
+      for (const [key3, re2] of LABELS) {
+        const m = l.match(re2);
+        if (m) return { key: key3, value: m[1].trim() };
+      }
+      return null;
+    };
+    SHARED = /\b(?:Casting Time|CASTING TIME|Range|RANGE|Components|COMPONENTS|Duration|DURATION|School|SCHOOL)\b/g;
+    splitShared = (l) => (l.match(SHARED) || []).length > 1 ? l.split(new RegExp(`\\s+(?=${SHARED.source})`)) : [l];
+    unfinished = (v) => !v || v.split("(").length > v.split(")").length || /(,|\b(?:or|and|to|up to|which|when|of|a|the))$/i.test(v);
+    listOf = (s) => s.split(/,|\bor\b|\band\b/i).map((x) => x.trim()).filter(Boolean);
+    upper = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  }
+});
+
 // src/snapshot.js
 var snapshot_exports = {};
 __export(snapshot_exports, {
@@ -39640,6 +39861,7 @@ var init_tooltip = __esm({
 var conditions_exports = {};
 __export(conditions_exports, {
   condify: () => condify,
+  conditionEditor: () => conditionEditor,
   conditionHtml: () => conditionHtml,
   conditionNames: () => conditionNames,
   findCondition: () => findCondition,
@@ -39701,6 +39923,54 @@ function markupHtml(text) {
     return `${html}<p>${inline(lines.join(" "))}</p>`;
   }).join("");
 }
+function conditionEditor(c2, { changed: changed3 }) {
+  const kwBox = h("div.kw-list");
+  const drawKeywords = () => fill(
+    kwBox,
+    c2.keywords.map((k, i) => h(
+      "div.kw-row",
+      h("input", { type: "text", value: k.text, placeholder: "word or phrase", oninput: (e2) => {
+        k.text = e2.target.value;
+        changed3();
+      } }),
+      h("label.check-row", h("input", { type: "checkbox", checked: k.caps, onchange: (e2) => {
+        k.caps = e2.target.checked;
+        changed3();
+      } }), "Capitalized only"),
+      h("button.icon-btn", { title: "Remove keyword", onclick: () => {
+        c2.keywords.splice(i, 1);
+        drawKeywords();
+        changed3();
+      } }, "\xD7")
+    )),
+    !c2.keywords.length ? h("div.hint", "No keywords: this condition is never linked in stat blocks, only listed here and in the runner.") : null
+  );
+  drawKeywords();
+  return h(
+    "div.cond-editor",
+    h(
+      "div.form-grid.one",
+      h("label", "Name", h("input", { type: "text", value: c2.name, oninput: (e2) => {
+        c2.name = e2.target.value;
+        changed3({ renamed: true });
+      } }))
+    ),
+    h("h4", "Keywords and phrases"),
+    h("div.hint", 'Stat block text is searched for these (whole words). Tick "Capitalized only" for ordinary words, so "burning oil" stays plain but "gains Burning (1d10)" links. A capitalized-only word is also skipped at the start of a sentence and when it starts a name ("Hidden Dagger").'),
+    kwBox,
+    h("button", { onclick: () => {
+      c2.keywords.push({ text: "", caps: false });
+      drawKeywords();
+      kwBox.querySelector(".kw-row:last-child input")?.focus();
+    } }, "Add keyword"),
+    h("h4", "Description"),
+    h("textarea.cond-text", { rows: 18, value: c2.text, oninput: (e2) => {
+      c2.text = e2.target.value;
+      changed3();
+    } }),
+    h("div.hint", 'Format: a blank line starts a new paragraph. **bold**, *italic*. Start lines with "- " for a list, "> " for a variant/design box, "### " for a small heading, and "| a | b |" for table rows (the first row is the header).')
+  );
+}
 var byWord, keywordRe, capsWords, findCondition, conditionNames, inline, conditionHtml;
 var init_conditions = __esm({
   "src/conditions.js"() {
@@ -39727,9 +39997,11 @@ var init_conditions = __esm({
 // src/spells.js
 var spells_exports = {};
 __export(spells_exports, {
+  blankSpell: () => blankSpell,
   findSpell: () => findSpell,
   setSpellOpener: () => setSpellOpener,
   spellById: () => spellById,
+  spellEditor: () => spellEditor,
   spellHtml: () => spellHtml,
   spellLevelText: () => spellLevelText,
   spellLink: () => spellLink,
@@ -39737,9 +40009,10 @@ __export(spells_exports, {
   spellify: () => spellify
 });
 function rebuild3() {
-  byName = new Map(store.spells.map((s) => [norm(s.name), s]));
-  byId = new Map(store.spells.map((s) => [s.id, s]));
-  const names = store.spells.map((s) => s.name).sort((a2, b2) => b2.length - a2.length);
+  const spells = allSpells().reverse();
+  byName = new Map(spells.map((s) => [norm(s.name), s]));
+  byId = new Map(spells.map((s) => [s.id, s]));
+  const names = spells.map((s) => s.name).filter((n) => n.trim()).sort((a2, b2) => b2.length - a2.length);
   plainRe = names.length ? new RegExp(`\\b(${names.map(escRe).join("|")})\\b`, "gi") : null;
 }
 function spellify(html) {
@@ -39781,23 +40054,93 @@ function spellHtml(s, { body: body2 = (t) => markupHtml(t) } = {}) {
   const prop = (label, value) => `<div><strong>${label}:</strong> ${esc(value)}</div>`;
   return `<div class="cond-name">${esc(s.name)}</div>
     <div class="spell-meta">${esc(spellLevelText(s))}</div>
-    <div class="spell-props">${prop("Casting Time", s.castingTime + (s.ritual ? " or Ritual" : ""))}${prop("Range", s.range)}${prop("Components", s.components)}${prop("Duration", s.duration)}</div>
+    <div class="spell-props">${prop("Casting Time", s.castingTime + (s.ritual ? " or Ritual" : ""))}${prop("Range", s.range)}${prop("Components", s.components)}${prop("Duration", s.duration)}${s.book ? prop("Source", s.book) : ""}</div>
     ${body2(s.text)}`;
 }
-var norm, escRe, byName, byId, plainRe, findSpell, spellById, link, CASTS, spellLevelText, spellTags, opener, setSpellOpener;
+function spellEditor(s, { changed: changed3 }) {
+  const text = (label, k, attrs = {}) => h("label", label, h("input", { type: "text", value: s[k] ?? "", ...attrs, oninput: (e2) => {
+    s[k] = e2.target.value;
+    changed3();
+  } }));
+  const check = (label, on, onchange, title2) => h("label.check-row", { title: title2 }, h("input", { type: "checkbox", checked: on, onchange: (e2) => onchange(e2.target.checked) }), label);
+  return h(
+    "div.item-editor",
+    h(
+      "div.form-grid",
+      h("label", "Name", h("input", { type: "text", value: s.name, oninput: (e2) => {
+        s.name = e2.target.value;
+        changed3({ renamed: true });
+      } })),
+      h("label", "Level", h(
+        "select",
+        { onchange: (e2) => {
+          s.level = Number(e2.target.value);
+          changed3({ renamed: true });
+        } },
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => h("option", { value: n, selected: s.level === n }, n ? `Level ${n}` : "Cantrip"))
+      )),
+      h("label", "School", h(
+        "select",
+        { onchange: (e2) => {
+          s.school = e2.target.value;
+          changed3({ renamed: true });
+        } },
+        [.../* @__PURE__ */ new Set([...SCHOOLS, s.school])].map((x) => h("option", { value: x, selected: s.school === x }, x))
+      )),
+      h(
+        "label",
+        { title: "Separated by commas. The Class filter on the Spells tab uses these." },
+        "Classes",
+        h("input", { type: "text", value: (s.classes || []).join(", "), placeholder: "Sorcerer, Wizard", onchange: (e2) => {
+          s.classes = e2.target.value.split(",").map((x) => x.trim()).filter(Boolean);
+          e2.target.value = s.classes.join(", ");
+          changed3({ renamed: true });
+        } })
+      ),
+      text("Casting time", "castingTime", { placeholder: "Action" }),
+      text("Range", "range", { placeholder: "60 feet" }),
+      text("Components", "components", { placeholder: "V, S, M (a pinch of ash)" }),
+      text("Duration", "duration", { placeholder: "Concentration, up to 1 minute" }),
+      text("Source (book)", "book", { placeholder: "e.g. the book it came from" })
+    ),
+    h(
+      "div.row-gap.item-checks",
+      check("Concentration", !!s.concentration, (on) => {
+        s.concentration = on;
+        changed3({ renamed: true });
+      }),
+      check("Ritual", !!s.ritual, (on) => {
+        s.ritual = on;
+        changed3({ renamed: true });
+      }),
+      check("Can drop as a spell scroll", s.loot !== false, (on) => {
+        if (on) delete s.loot;
+        else s.loot = false;
+        changed3();
+      }, "Off: the loot generator never picks it for a spell scroll")
+    ),
+    h("label", "Description", h("textarea.item-desc", { rows: 12, value: s.text || "", oninput: (e2) => {
+      s.text = e2.target.value;
+      changed3();
+    } })),
+    h("div.hint", 'A blank line starts a new paragraph. **bold**, *italic*, "- " for a list, "| a | b |" rows for a table.')
+  );
+}
+var norm, escRe, byName, byId, plainRe, findSpell, spellById, link, CASTS, spellLevelText, spellTags, blankSpell, opener, setSpellOpener;
 var init_spells = __esm({
   "src/spells.js"() {
     init_ui();
     init_store();
     init_conditions();
     init_tooltip();
+    init_parse_spell();
     norm = (s) => String(s).toLowerCase().replace(/’/g, "'").replace(/\s+/g, " ").trim();
     escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+").replace(/[’']/g, "['\u2019]");
     byName = /* @__PURE__ */ new Map();
     byId = /* @__PURE__ */ new Map();
     plainRe = null;
     onChange((kind) => {
-      if (kind === "all") rebuild3();
+      if (kind === "all" || kind === "spells") rebuild3();
     });
     findSpell = (name) => {
       if (!plainRe) rebuild3();
@@ -39811,6 +40154,7 @@ var init_spells = __esm({
     CASTS = /(?:\bcast(?:s|ing)?\s+(?:the\s+)?|(?:at will|\d+\/day(?: each)?):\s+(?:[^.\n]*,\s*)?)$/i;
     spellLevelText = (s) => (s.level ? `Level ${s.level} ${s.school}` : `${s.school} Cantrip`) + (s.classes?.length ? ` (${s.classes.join(", ")})` : "");
     spellTags = (s) => [s.concentration ? "Concentration" : "", s.ritual ? "Ritual" : ""].filter(Boolean);
+    blankSpell = (name = "New Spell") => ({ name, level: 1, school: "Evocation", classes: [], castingTime: "Action", ritual: false, range: "60 feet", components: "V, S", duration: "Instantaneous", concentration: false, text: "", source: "Homebrew" });
     registerTip("spell", (name, pinned) => {
       const s = findSpell(name);
       if (!s) return "";
@@ -61090,12 +61434,12 @@ var init_pdf = __esm({
 
 // src/platform-web.js
 var DB = "encounter-builder";
-var KINDS = ["monsters", "party", "encounters", "conditions", "loot", "items"];
+var KINDS = ["monsters", "party", "encounters", "conditions", "loot", "items", "spells"];
 var BROWSER_LIBRARY = "Browser library";
 var dbPromise = null;
 function db() {
   dbPromise ??= new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB, 3);
+    const req = indexedDB.open(DB, 4);
     req.onupgradeneeded = () => {
       for (const k of KINDS) if (!req.result.objectStoreNames.contains(k)) req.result.createObjectStore(k, { keyPath: "id" });
     };
@@ -61255,9 +61599,9 @@ init_store();
 
 // src/library-pack.js
 var PACK_FORMAT = "encounter-builder-library";
-var PACK_KINDS = ["monsters", "party", "encounters", "conditions", "loot", "items"];
+var PACK_KINDS = ["monsters", "party", "encounters", "conditions", "loot", "items", "spells"];
 var ID = /^[a-z0-9-]{1,80}$/;
-var LABEL = { monsters: "monsters", party: "characters", encounters: "encounters", conditions: "conditions", loot: "loot tables", items: "items" };
+var LABEL = { monsters: "monsters", party: "characters", encounters: "encounters", conditions: "conditions", loot: "loot tables", items: "items", spells: "spells" };
 function makePack(lists, now = /* @__PURE__ */ new Date()) {
   const pack = { format: PACK_FORMAT, version: 1, exported: now.toISOString() };
   for (const k of PACK_KINDS) pack[k] = (lists[k] || []).map((x) => structuredClone(x));
@@ -61285,10 +61629,10 @@ function readPack(text) {
 function planImport(pack, current3) {
   const plan = {};
   for (const k of PACK_KINDS) {
-    const mine2 = new Map((current3[k] || []).map((x) => [x.id, x]));
+    const mine3 = new Map((current3[k] || []).map((x) => [x.id, x]));
     const p = plan[k] = { add: [], newer: [], older: [], same: [] };
     for (const x of pack[k] || []) {
-      const have = mine2.get(x.id);
+      const have = mine3.get(x.id);
       if (!have) p.add.push(x);
       else if ((x.updated || 0) > (have.updated || 0)) p.newer.push(x);
       else if ((x.updated || 0) < (have.updated || 0)) p.older.push(x);
@@ -61552,11 +61896,11 @@ async function addUserWord(word) {
 }
 
 // src/maker/parse-item.js
+init_parse_card();
 var RARITY = /\b(very rare|uncommon|common|rare|legendary|artifact)\b/i;
 var MAGIC_TYPES = { armor: "armor", potion: "potion", ring: "ring", rod: "rod", scroll: "scroll", staff: "staff", wand: "wand", weapon: "weapon", "wondrous item": "wondrous", wondrous: "wondrous" };
 var TYPE_START = /^(wondrous item|wondrous|armor|potion|ring|rod|scroll|staff|wand|weapon|shield|ammunition|adventuring gear|gear|tools?|equipment|(?:simple|martial)\s+(?:melee|ranged)\s+weapon|(?:light|medium|heavy)\s+armor|spellcasting focus|arcane focus|holy symbol|druidic focus|musical instrument|gaming set|trade good|treasure)\b/i;
 var DAMAGE_TYPES2 = "acid|bludgeoning|cold|fire|force|lightning|necrotic|piercing|poison|psychic|radiant|slashing|thunder";
-var cap2 = (s) => s.toLowerCase().replace(/\b\w/g, (c2) => c2.toUpperCase()).replace(/(?!^)\b(Of|The|Or|And|A|An|That)\b/g, (w) => w.toLowerCase());
 var rarityName = (r) => cap2(r).replace("Very rare", "Very Rare");
 var STATS = [
   ["price", /^(?:cost|price|value)\b\s*:?\s*([\d,.]+)\s*(pp|gp|sp|cp)\b.*$/i],
@@ -61574,8 +61918,7 @@ var STATS = [
 var COINS = { pp: 10, gp: 1, sp: 0.1, cp: 0.01 };
 function parseItem(text) {
   const warnings = [];
-  const raw = String(text || "").replace(/\r/g, "").replace(/[‘’]/g, "\u2019").replace(/[“”]/g, '"').replace(/[ \t]+/g, " ");
-  const lines = raw.split("\n").map((l) => l.trim());
+  const lines = cleanLines(text);
   const nonEmpty = lines.map((l, i) => [l, i]).filter(([l]) => l);
   if (!nonEmpty.length) throw new Error("There is no text to read.");
   const used = /* @__PURE__ */ new Set();
@@ -61662,6 +62005,40 @@ function parseItem(text) {
   if (!typeLine2 && !item.damage && !item.ac) warnings.push('No type line found (like "Wondrous Item, Rare"): check the category and rarity.');
   if (item.category !== "magic" && item.price == null) warnings.push("No price found: add one, or it won\u2019t drop as random gear.");
   return item;
+}
+
+// src/tabs/maker.js
+init_parse_spell();
+
+// src/maker/parse-condition.js
+init_parse_card();
+var NOT_A_NAME = /[.!?,;]\s|[a-z]{3,}\.$/;
+var LABELLED = /^(?:(?:new|optional|variant)\s+)?condition\s*[:–—-]\s*(.+)$/i;
+function parseCondition(text, { isWord = null } = {}) {
+  const warnings = [];
+  const lines = cleanLines(text).map(tidyEdges);
+  const filled = lines.map((l, i) => i).filter((i) => lines[i]);
+  if (!filled.length) throw new Error("There is no text to read.");
+  const labelled = filled.slice(0, 4).find((i) => LABELLED.test(lines[i]));
+  const first = labelled ?? filled[0];
+  let name = labelled != null ? lines[first].match(LABELLED)[1] : lines[first].replace(/\s*[[(]?\bcondition\b[\])]?\s*:?$/i, "");
+  name = name.replace(/[.:]$/, "").trim();
+  const rest = dropEndNoise(lines.slice(first + 1));
+  const inline2 = labelled == null && lines[first].match(LEAD);
+  if (inline2) {
+    name = inline2[1];
+    rest.unshift(lines[first].slice(inline2[0].length));
+  } else if (!name || name.length > 60 || NOT_A_NAME.test(name)) {
+    name = "";
+    rest.unshift(lines[first]);
+  }
+  name = cleanName(name, { isWord, warnings });
+  const label = rest.findIndex(Boolean);
+  if (label >= 0 && /^condition$/i.test(rest[label])) rest[label] = "";
+  const body2 = boldLeads(paragraphs(rest, { leads: true }).join("\n\n"));
+  if (!name) warnings.push("No name found: type one in, and add the keywords it is found by.");
+  if (!body2) warnings.push("No description found.");
+  return { name, keywords: name ? [{ text: name, caps: true }] : [], text: body2, warnings };
 }
 
 // src/items.js
@@ -63149,14 +63526,14 @@ var lowerRarity = (a2, b2) => RARITIES[Math.min(RARITIES.indexOf(a2), RARITIES.i
 var rarityCap = (partyLevel, maxCr) => lowerRarity(band(PARTY_CAP, partyLevel), band(CR_CAP, crValue(maxCr)));
 var gearCap = (partyLevel, generosity) => band(LOOT_CONFIG.gearCaps, partyLevel) * generosity;
 function lootTables(defaults3, records = []) {
-  const mine2 = new Map(records.filter((r) => r.id !== TYPE_MAP_ID && r.id !== MONSTER_LOOT_ID).map((r) => [r.id, r]));
+  const mine3 = new Map(records.filter((r) => r.id !== TYPE_MAP_ID && r.id !== MONSTER_LOOT_ID).map((r) => [r.id, r]));
   const themes = [];
   for (const d of defaults3) {
-    const r = mine2.get(d.id);
+    const r = mine3.get(d.id);
     if (r?.deleted) continue;
     themes.push(r ? { ...d, ...r, builtin: true } : d);
   }
-  for (const r of mine2.values()) if (!r.deleted && !defaults3.some((d) => d.id === r.id)) themes.push({ ...r, builtin: false });
+  for (const r of mine3.values()) if (!r.deleted && !defaults3.some((d) => d.id === r.id)) themes.push({ ...r, builtin: false });
   const typeMap = { ...DEFAULT_TYPE_THEMES, ...records.find((r) => r.id === TYPE_MAP_ID)?.types || {} };
   return { themes, typeMap };
 }
@@ -63567,6 +63944,8 @@ document.addEventListener("click", (e2) => {
 });
 
 // src/tabs/maker.js
+init_spells();
+init_conditions();
 init_constants();
 init_ui();
 
@@ -63722,12 +64101,12 @@ function setupCombat(e2, { character, monster, asGroup }) {
   const lettered = /* @__PURE__ */ new Map();
   for (const { g, gi, m, group } of entries) {
     if (group) {
-      const mine2 = groupsOf(g.monsterId);
+      const mine3 = groupsOf(g.monsterId);
       list.push(makeGroup({
         key: `g-${g.monsterId}-${gi}`,
         kind: "monster",
         refId: g.monsterId,
-        name: mine2.length > 1 ? `${m.name} (${mine2.findIndex((x) => x.gi === gi) + 1})` : m.name,
+        name: mine3.length > 1 ? `${m.name} (${mine3.findIndex((x) => x.gi === gi) + 1})` : m.name,
         ac: m.armorClass ?? null,
         maxHp: m.averageHitPoints ?? 1,
         initBonus: initBonus(m),
@@ -64171,10 +64550,16 @@ var skillsTextOf = (m) => (m.skills || []).map((s) => `${s.skill} ${signed(s.bon
 // src/tabs/maker.js
 init_store();
 var MAX_SIDE = 3e3;
-var state = { images: [], avatar: null, monster: null, unsure: /* @__PURE__ */ new Set(), item: null };
+var state = { images: [], avatar: null, monster: null, unsure: /* @__PURE__ */ new Set(), card: null };
 var mode2 = "monster";
+var CARDS = {
+  item: { kind: "items", tab: "items", place: "Items", blank: "New Item", parse: parseItem, editor: itemEditor, html: itemHtml, source: "Homebrew", more: ", and it can drop as loot" },
+  spell: { kind: "spells", tab: "spells", place: "Spells", blank: "New Spell", parse: parseSpell, editor: spellEditor, html: spellHtml, source: "Homebrew", more: ", and stat blocks link to it" },
+  condition: { kind: "conditions", tab: "conditions", place: "Conditions", blank: "New Condition", parse: parseCondition, editor: conditionEditor, html: conditionHtml, more: ", and stat blocks link to it", settle: settleCondition }
+};
 try {
-  if (localStorage.getItem("makerMode") === "item") mode2 = "item";
+  const saved = localStorage.getItem("makerMode");
+  if (CARDS[saved]) mode2 = saved;
 } catch {
 }
 var el;
@@ -64207,7 +64592,7 @@ function mountMaker(root, navigate) {
     h(
       "div.page-head.view-head",
       h("div", h("h1", "Maker"), h("div.page-sub#mk-sub")),
-      h("div.view-switch", h("button#mk-mode-monster", { onclick: () => setMode("monster") }, "Monster"), h("button#mk-mode-item", { onclick: () => setMode("item") }, "Item"))
+      h("div.view-switch", ["monster", ...Object.keys(CARDS)].map((m) => h(`button#mk-mode-${m}`, { onclick: () => setMode(m) }, m[0].toUpperCase() + m.slice(1))))
     ),
     h(
       "div.maker-grid",
@@ -64250,16 +64635,16 @@ function mountMaker(root, navigate) {
         h("div#mk-preview")
       ),
       h(
-        "div.card.maker-review#mk-item-review",
+        "div.card.maker-review#mk-card-review",
         { hidden: true },
         h("div.review-head", h("h2", h("span.step", "2"), " Review"), h(
           "div.review-actions",
-          h("button", { onclick: () => state.item && go("items", state.item.id) }, "Open in Items"),
-          h("button", { onclick: reset }, "New item")
+          h("button#mk-card-open", { onclick: () => state.card && go(CARDS[mode2].tab, state.card.id) }),
+          h("button#mk-card-new", { onclick: reset })
         )),
-        h("div.status.ok#mk-item-saved", { hidden: true }),
-        h("ul.warnings#mk-item-warnings"),
-        h("div.maker-item", h("div#mk-item-form"), h("div#mk-item-card"))
+        h("div.status.ok#mk-card-saved", { hidden: true }),
+        h("ul.warnings#mk-card-warnings"),
+        h("div.maker-item", h("div#mk-card-form"), h("div#mk-card-view"))
       )
     )
   );
@@ -64292,7 +64677,7 @@ function mountMaker(root, navigate) {
     }
   });
   $("#mk-ocr").onclick = readScreenshots;
-  $("#mk-parse").onclick = () => mode2 === "item" ? readItem() : readText(/* @__PURE__ */ new Set());
+  $("#mk-parse").onclick = () => CARDS[mode2] ? readCard() : readText(/* @__PURE__ */ new Set());
   $("#mk-new").onclick = reset;
   $("#mk-edit").onclick = () => state.monster && go("library", state.monster.id);
   $("#mk-name").oninput = () => {
@@ -64303,7 +64688,7 @@ function mountMaker(root, navigate) {
   setMode(mode2);
 }
 function showMaker(arg) {
-  if (arg === "item" || arg === "monster") setMode(arg);
+  if (arg === "monster" || CARDS[arg]) setMode(arg);
 }
 var MODES = {
   monster: {
@@ -64319,6 +64704,20 @@ var MODES = {
     label: "Item text",
     hint: 'A screenshot of the item card: its name, the type line (like "Weapon (Longsword), Rare"), any Cost / Damage / Properties lines, and the description.',
     placeholder: "\u2026or paste the item text here. Text read from a screenshot also appears here, so you can fix mistakes before reading it.\n\nFrostbite Blade\nWeapon (Longsword), Rare (Requires Attunement)\nThis blade is rimed with frost\u2026"
+  },
+  spell: {
+    sub: "Paste a screenshot of a spell, or its text. The spell is saved to Spells, keeps saving as you edit, and stat blocks link to it by name.",
+    step: " Spell",
+    label: "Spell text",
+    hint: 'A screenshot of the spell: its name, the level line (like "Level 3 Evocation (Sorcerer, Wizard)" or "3rd-level evocation"), Casting Time / Range / Components / Duration, and the description.',
+    placeholder: "\u2026or paste the spell text here. Text read from a screenshot also appears here, so you can fix mistakes before reading it.\n\nEmber Lance\nLevel 2 Evocation (Sorcerer, Wizard)\nCasting Time: Action\nRange: 60 feet\nComponents: V, S\nDuration: Instantaneous\nA lance of embers streaks from your hand\u2026"
+  },
+  condition: {
+    sub: "Paste a screenshot of a condition, or its text. The condition is saved to Conditions, keeps saving as you edit, and stat blocks link to it by its keywords.",
+    step: " Condition",
+    label: "Condition text",
+    hint: 'A screenshot of the condition: its name, then the rule. Lead-ins like "Speed 0." go bold.',
+    placeholder: "\u2026or paste the condition text here. Text read from a screenshot also appears here, so you can fix mistakes before reading it.\n\nBurning\nWhile you have the Burning condition, you experience the following effects.\nFlames. You take 1d4 Fire damage at the start of each of your turns."
   }
 };
 function setMode(m) {
@@ -64337,8 +64736,7 @@ function setMode(m) {
   $("#mk-drop-hint").textContent = t.hint;
   $("#mk-text").placeholder = t.placeholder;
   $("#mk-art").hidden = m !== "monster";
-  $("#mk-mode-monster").classList.toggle("on", m === "monster");
-  $("#mk-mode-item").classList.toggle("on", m === "item");
+  for (const k of Object.keys(MODES)) $(`#mk-mode-${k}`).classList.toggle("on", m === k);
 }
 function wireDrop(zone, onFiles) {
   zone.addEventListener("dragover", (e2) => {
@@ -64392,8 +64790,8 @@ function renderAvatar() {
   }));
 }
 function reset() {
-  Object.assign(state, { images: [], avatar: null, monster: null, unsure: /* @__PURE__ */ new Set(), item: null });
-  $("#mk-item-review").hidden = true;
+  Object.assign(state, { images: [], avatar: null, monster: null, unsure: /* @__PURE__ */ new Set(), card: null });
+  $("#mk-card-review").hidden = true;
   $("#mk-text").value = "";
   renderThumbs();
   renderAvatar();
@@ -64401,7 +64799,7 @@ function reset() {
   ["#mk-ocr-status", "#mk-parse-status"].forEach((s) => status2(s, ""));
 }
 var checker = null;
-var loadChecker = () => getChecker(() => srdVocabulary(store.srd, store.spells, store.conditions)).then((c2) => {
+var loadChecker = () => getChecker(() => srdVocabulary(store.srd, allSpells(), store.conditions)).then((c2) => {
   checker = c2;
 }).catch(() => {
 });
@@ -64426,7 +64824,7 @@ async function readScreenshots() {
     await loadChecker();
     $("#mk-text").value = texts.join("\n\n");
     status2("#mk-ocr-status", `Text read in ${Math.round((Date.now() - started) / 1e3)}s. Check it below, then the review.`, "ok");
-    if (mode2 === "item") readItem();
+    if (CARDS[mode2]) readCard();
     else readText(new Set(unsure.flatMap((u, i) => u ? [i] : [])));
   } catch (e2) {
     status2("#mk-ocr-status", `Could not read the screenshot: ${e2.message || e2}`, "error");
@@ -64487,34 +64885,49 @@ function renderPreview() {
   const safe = { ...m, abilities: Object.fromEntries(ABILITIES.map((a2) => [a2, m.abilities[a2] ?? 10])) };
   fill($("#mk-preview"), statBlock(safe));
 }
-function readItem() {
-  const text = $("#mk-text").value.trim();
-  if (!text) return status2("#mk-parse-status", "Paste a screenshot or the item text first.", "error");
-  if (!store.libraryPath) return status2("#mk-parse-status", "Choose a library folder first (top right), so the item has somewhere to be saved.", "error");
+function readCard() {
+  const c2 = CARDS[mode2], text = $("#mk-text").value.trim();
+  if (!text) return status2("#mk-parse-status", `Paste a screenshot or the ${mode2} text first.`, "error");
+  if (!store.libraryPath) return status2("#mk-parse-status", `Choose a library folder first (top right), so the ${mode2} has somewhere to be saved.`, "error");
   try {
-    const data = parseItem(text);
-    const prev = state.item;
-    state.item = { ...data, id: prev?.id || newId(data.name || "item"), source: "Homebrew", created: prev?.created };
-    if (!state.item.name) state.item.name = "New Item";
+    if (!checker) loadChecker();
+    const data = c2.parse(text, { isWord: checker ? (w) => checker.correct(w) : null });
+    const prev = state.card;
+    state.card = { ...data, name: data.name || c2.blank, id: prev?.id || newId(data.name || mode2), created: prev?.created };
+    if (c2.source) state.card.source = c2.source;
+    c2.settle?.(state.card);
     status2("#mk-parse-status", "");
     $("#mk-review").hidden = true;
-    $("#mk-item-review").hidden = false;
-    renderItem();
-    itemChanged(prev ? "Updated in Items." : "Saved to Items.");
+    $("#mk-card-review").hidden = false;
+    $("#mk-card-open").textContent = `Open in ${c2.place}`;
+    $("#mk-card-new").textContent = `New ${mode2}`;
+    renderCard();
+    cardChanged(`${prev ? "Updated" : "Saved"} to ${c2.place}.`);
   } catch (e2) {
     status2("#mk-parse-status", `Could not read the text: ${e2.message || e2}`, "error");
   }
 }
-function itemChanged(message) {
-  save("items", state.item);
-  if (message) status2("#mk-item-saved", `${message} Changes save automatically, and it can drop as loot.`, "ok");
-  fill($("#mk-item-card"), h("div.cond-ref-body.spell-card", { html: itemHtml(state.item) }));
+function settleCondition(c2) {
+  const taken = (n) => store.conditions.some((x) => x.id !== c2.id && (x.name.toLowerCase() === n.toLowerCase() || x.keywords.some((k) => k.text.toLowerCase() === n.toLowerCase())));
+  if (!taken(c2.name)) return;
+  c2.warnings.push(`You already have a condition called ${c2.name}, so this one is saved as ${c2.name} (copy) with no keywords, and it won\u2019t change what stat blocks link to. Rename it, or delete the one you don\u2019t want.`);
+  c2.name = `${c2.name} (copy)`;
+  c2.keywords = [];
 }
-function renderItem() {
-  const it = state.item;
-  fill($("#mk-item-warnings"), ...(it.warnings || []).map((w) => h("li", w)));
-  fill($("#mk-item-form"), itemEditor(it, { changed: () => itemChanged(), redraw: renderItem }));
-  fill($("#mk-item-card"), h("div.cond-ref-body.spell-card", { html: itemHtml(it) }));
+function drawCard() {
+  fill($("#mk-card-view"), h("div.cond-ref-body.spell-card", { html: CARDS[mode2].html(state.card) }));
+}
+function cardChanged(message) {
+  const c2 = CARDS[mode2];
+  save(c2.kind, state.card);
+  if (message) status2("#mk-card-saved", `${message} Changes save automatically${c2.more}.`, "ok");
+  drawCard();
+}
+function renderCard() {
+  const card = state.card;
+  fill($("#mk-card-warnings"), ...(card.warnings || []).map((w) => h("li", w)));
+  fill($("#mk-card-form"), CARDS[mode2].editor(card, { changed: () => cardChanged(), redraw: renderCard }));
+  drawCard();
 }
 
 // src/tabs/items.js
@@ -65325,7 +65738,7 @@ init_store();
 init_ui();
 init_store();
 var skipped = /* @__PURE__ */ new Set();
-var vocabulary = () => srdVocabulary(store.srd, store.spells, store.conditions);
+var vocabulary = () => srdVocabulary(store.srd, allSpells(), store.conditions);
 async function spellingDialog(monsters, { title: title2 = "Spelling", onOpen, onChanged } = {}) {
   const body2 = h("div.spell-review", h("div.empty", "Loading the dictionary\u2026"));
   const close = modal(title2, body2, [["Done", () => {
@@ -65641,7 +66054,7 @@ function lootDialog(enc2) {
       enemies: enemies.filter((x) => x.on),
       partyLevel: st.level,
       items: allItems(),
-      spells: store.spells,
+      spells: allSpells().filter((s) => s.loot !== false),
       tables,
       settings: { generosity: st.generosity, magic: st.magic ? st.magicCount : 0 },
       seed: st.seed
@@ -66494,6 +66907,15 @@ function editor(m) {
     section("Legendary Actions", "legendaryActions"),
     h(
       "details.edit-section",
+      { open: m.description?.length > 0 },
+      h("summary", "Description"),
+      h("textarea", { rows: 10, value: descriptionText(m), placeholder: "Paste or write a description of the creature, for reference. A blank line starts a new paragraph.", oninput: (e2) => {
+        m.description = parseDescriptionText(e2.target.value);
+        changed3();
+      } })
+    ),
+    h(
+      "details.edit-section",
       { ontoggle: (e2) => {
         if (e2.target.open) json.value = JSON.stringify(m, (k, v) => k === "avatar" ? void 0 : v, 2);
       } },
@@ -66553,7 +66975,7 @@ function mountConditions(root, navigate) {
   el6 = root;
   go3 = navigate;
   el6.append(
-    h("div.page-head", h("h1", "Conditions"), h("div.page-sub", "The conditions stat blocks link to: the SRD 5.2.1 conditions, plus any you add (marked CUSTOM). Change a description, or the keywords a condition is found by; every monster picks up the change right away.")),
+    h("div.page-head", h("h1", "Conditions"), h("div.page-sub", "The conditions stat blocks link to: the SRD 5.2.1 conditions, plus any you add (marked CUSTOM). Change a description, or the keywords a condition is found by; every monster picks up the change right away. Make new ones here or from a screenshot in the Maker.")),
     h(
       "div.lib-grid.cond-grid",
       h(
@@ -66564,6 +66986,7 @@ function mountConditions(root, navigate) {
             query2 = e2.target.value;
             renderList5();
           } }),
+          h("button", { title: "Make a condition from a screenshot or pasted text", onclick: () => go3("maker", "condition") }, "From screenshot"),
           h("button.primary", { onclick: addCondition }, "New")
         ),
         h("div.list#cd-list"),
@@ -66652,6 +67075,15 @@ function addCondition() {
   showConditions();
   el6.querySelector("#cd-edit input")?.select();
 }
+function duplicate3(c2) {
+  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
+  const copy = { ...structuredClone(c2), id: newId(c2.name), name: `${c2.name} (copy)`, keywords: [] };
+  for (const k of ["builtin", "srd", "created", "updated", "warnings"]) delete copy[k];
+  save("conditions", copy, { delay: 0 });
+  selectedId5 = copy.id;
+  showConditions();
+  el6.querySelector("#cd-edit input")?.select();
+}
 function renderEdit5() {
   const pane = el6.querySelector("#cd-edit");
   const c2 = store.conditions.find((x) => x.id === selectedId5);
@@ -66659,33 +67091,15 @@ function renderEdit5() {
     fill(pane, h("div.cond-ref-body", { html: `<div class="cond-name">Conditions</div>${markupHtml(CONDITIONS_INTRO_TEXT)}` }));
     return renderSide2();
   }
-  const changed3 = () => {
+  const changed3 = ({ renamed } = {}) => {
     save("conditions", c2);
     refreshPreview2();
     recount();
+    if (renamed) {
+      el6.querySelector("#cd-edit .edit-head h2").textContent = c2.name;
+      renderList5();
+    }
   };
-  const kwBox = h("div.kw-list");
-  const drawKeywords = () => fill(
-    kwBox,
-    c2.keywords.map((k, i) => h(
-      "div.kw-row",
-      h("input", { type: "text", value: k.text, placeholder: "word or phrase", oninput: (e2) => {
-        k.text = e2.target.value;
-        changed3();
-      } }),
-      h("label.check-row", h("input", { type: "checkbox", checked: k.caps, onchange: (e2) => {
-        k.caps = e2.target.checked;
-        changed3();
-      } }), "Capitalized only"),
-      h("button.icon-btn", { title: "Remove keyword", onclick: () => {
-        c2.keywords.splice(i, 1);
-        drawKeywords();
-        changed3();
-      } }, "\xD7")
-    )),
-    !c2.keywords.length ? h("div.hint", "No keywords: this condition is never linked in stat blocks, only listed here and in the runner.") : null
-  );
-  drawKeywords();
   const preview = h("div.cond-ref-body.cond-preview");
   const refreshPreview2 = () => {
     preview.innerHTML = conditionHtml(c2);
@@ -66704,35 +67118,19 @@ function renderEdit5() {
           showConditions();
         });
       } }, "Reset to original") : null,
+      h("button", { title: "Copy it as a new condition. The copy starts with no keywords, so it doesn\u2019t take over this one\u2019s links.", onclick: () => duplicate3(c2) }, "Duplicate"),
       h("button.danger", { onclick: () => confirmBox(`Delete "${c2.name}"? The file goes to the Recycle Bin.${original ? " You can restore deleted originals from the list." : ""}`, "Delete", async () => {
         await remove("conditions", c2);
         selectedId5 = null;
         showConditions();
       }) }, "Delete")
     )),
-    h(
-      "div.form-grid.one",
-      h("label", "Name", h("input", { type: "text", value: c2.name, oninput: (e2) => {
-        c2.name = e2.target.value;
-        el6.querySelector("#cd-edit .edit-head h2").textContent = c2.name;
-        changed3();
-        renderList5();
-      } }))
-    ),
-    h("h4", "Keywords and phrases"),
-    h("div.hint", 'Stat block text is searched for these (whole words). Tick "Capitalized only" for ordinary words, so "burning oil" stays plain but "gains Burning (1d10)" links. A capitalized-only word is also skipped at the start of a sentence and when it starts a name ("Hidden Dagger").'),
-    kwBox,
-    h("button", { onclick: () => {
-      c2.keywords.push({ text: "", caps: false });
-      drawKeywords();
-      kwBox.querySelector(".kw-row:last-child input")?.focus();
-    } }, "Add keyword"),
-    h("h4", "Description"),
-    h("textarea.cond-text", { rows: 18, value: c2.text, oninput: (e2) => {
-      c2.text = e2.target.value;
+    c2.warnings?.length ? h("div.warn-box", h("ul.warnings", c2.warnings.map((w) => h("li", w))), h("button.link", { onclick: (e2) => {
+      delete c2.warnings;
       changed3();
-    } }),
-    h("div.hint", 'Format: a blank line starts a new paragraph. **bold**, *italic*. Start lines with "- " for a list, "> " for a variant/design box, "### " for a small heading, and "| a | b |" for table rows (the first row is the header).'),
+      e2.target.parentElement.remove();
+    } }, "Dismiss reader notes")) : null,
+    conditionEditor(c2, { changed: changed3 }),
     h("h4", "Preview"),
     preview
   );
@@ -66777,15 +67175,19 @@ init_store();
 init_conditions();
 init_spells();
 var el7;
+var go4;
 var selectedId6 = null;
-var filter3 = { q: "", level: "", school: "", cls: "", concentration: false, ritual: false };
+var noFilter = () => ({ q: "", level: "", school: "", cls: "", source: "", concentration: false, ritual: false });
+var filter3 = noFilter();
 var LEVELS = [["0", "Cantrip"], ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => [String(n), `Level ${n}`])];
-function mountSpells(root) {
+var mine2 = (s) => store.spells.includes(s);
+function mountSpells(root, navigate) {
   el7 = root;
+  go4 = navigate;
   el7.append(
-    h("div.page-head", h("h1", "Spells"), h("div.page-sub", "The SRD 5.2.1 spells. Spell names in stat blocks link here: hover one to read it, click to pin it open.")),
+    h("div.page-head", h("h1", "Spells"), h("div.page-sub", "The SRD 5.2.1 spells and your own (make them here or from a screenshot in the Maker). Spell names in stat blocks link here: hover one to read it, click to pin it open. A spell of yours wins over an SRD spell of the same name.")),
     h(
-      "div.lib-grid.spell-grid",
+      "div.lib-grid",
       h(
         "div.card.list-pane",
         h(
@@ -66793,25 +67195,31 @@ function mountSpells(root) {
           h("input.search#sp-q", { type: "search", placeholder: "Search spells", oninput: (e2) => {
             filter3.q = e2.target.value;
             renderList6();
-          } })
+          } }),
+          h("button", { title: "Make a spell from a screenshot or pasted text", onclick: () => go4("maker", "spell") }, "From screenshot"),
+          h("button.primary", { onclick: newSpell }, "New")
         ),
         h("div.lib-filters#sp-filters"),
         h("div.list-count#sp-count"),
         h("div.list#sp-list")
       ),
-      h("div.card.spell-pane#sp-view")
+      h("div.card.edit-pane#sp-edit"),
+      h("div.card.preview-pane#sp-view")
     )
   );
+  onChange((kind) => {
+    if (!el7.hidden && (kind === "all" || kind === "spells")) renderList6();
+  });
 }
 function showSpells(id) {
   if (id) {
     selectedId6 = id;
-    Object.assign(filter3, { q: "", level: "", school: "", cls: "", concentration: false, ritual: false });
+    Object.assign(filter3, noFilter());
     el7.querySelector("#sp-q").value = "";
   }
   renderFilters3();
   renderList6();
-  renderSpell();
+  renderEdit6();
   if (id) el7.querySelector("#sp-list .active")?.scrollIntoView({ block: "center" });
 }
 var uniq = (xs) => [...new Set(xs)].sort((a2, b2) => a2.localeCompare(b2));
@@ -66833,15 +67241,16 @@ function renderFilters3() {
     filter3[key3] = e2.target.checked;
     changed3();
   } }), label);
-  const any = filter3.level || filter3.school || filter3.cls || filter3.concentration || filter3.ritual;
+  const any = filter3.level || filter3.school || filter3.cls || filter3.source || filter3.concentration || filter3.ritual;
   fill(
     el7.querySelector("#sp-filters"),
     sel("Level", "level", LEVELS),
-    sel("School", "school", uniq(store.spells.map((s) => s.school)).map((s) => [s, s])),
-    sel("Class", "cls", uniq(store.spells.flatMap((s) => s.classes)).map((c2) => [c2, c2])),
+    sel("School", "school", uniq(allSpells().map((s) => s.school)).map((s) => [s, s])),
+    sel("Class", "cls", uniq(allSpells().flatMap((s) => s.classes)).map((c2) => [c2, c2])),
+    sel("Source", "source", [["mine", "My spells"], ["srd", "SRD 5.2.1"]]),
     h("div.spell-checks", check("Concentration", "concentration"), check("Ritual", "ritual")),
     any ? h("button.link.wide", { onclick: () => {
-      Object.assign(filter3, { level: "", school: "", cls: "", concentration: false, ritual: false });
+      Object.assign(filter3, noFilter(), { q: filter3.q });
       changed3();
     } }, "Clear filters") : null
   );
@@ -66852,38 +67261,94 @@ function matches3(s) {
   if (filter3.level && String(s.level) !== filter3.level) return false;
   if (filter3.school && s.school !== filter3.school) return false;
   if (filter3.cls && !s.classes.includes(filter3.cls)) return false;
+  if (filter3.source && filter3.source === "mine" !== mine2(s)) return false;
   if (filter3.concentration && !s.concentration) return false;
   if (filter3.ritual && !s.ritual) return false;
   return true;
 }
 function renderList6() {
-  const list = store.spells.filter(matches3);
+  const list = allSpells().filter(matches3).sort((a2, b2) => a2.name.localeCompare(b2.name));
   el7.querySelector("#sp-count").textContent = `${list.length} spell${list.length === 1 ? "" : "s"}`;
   fill(el7.querySelector("#sp-list"), ...list.length ? list.map((s) => h(
     "button.list-row" + (s.id === selectedId6 ? ".active" : ""),
     { onclick: () => {
       selectedId6 = s.id;
       renderList6();
-      renderSpell();
+      renderEdit6();
     } },
     h(
       "div.list-main",
-      h("div.list-name", s.name, spellTags(s).map((t) => h("span.tag", { title: t }, t === "Concentration" ? "C" : "R"))),
+      h("div.list-name", s.name, spellTags(s).map((t) => h("span.tag", { title: t }, t === "Concentration" ? "C" : "R")), mine2(s) ? h("span.tag", { title: "Your own spell" }, "H") : null),
       h("div.list-sub", spellLevelText(s).replace(/ \(.*\)$/, ""))
     )
   )) : [h("div.empty", "No spells match.")]);
 }
-function renderSpell() {
-  const pane = el7.querySelector("#sp-view");
+function newSpell() {
+  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
+  const s = { ...blankSpell(), id: newId("new-spell") };
+  save("spells", s, { delay: 0 });
+  selectedId6 = s.id;
+  showSpells();
+  el7.querySelector("#sp-edit input")?.select();
+}
+function duplicate4(s) {
+  if (!store.libraryPath) return alert("Choose a library folder first (top right).");
+  const copy = { ...structuredClone(s), id: newId(s.name), source: "Homebrew", basedOn: s.basedOn || s.source || "SRD 5.2.1" };
+  delete copy.created;
+  save("spells", copy, { delay: 0 });
+  selectedId6 = copy.id;
+  showSpells();
+}
+var relist2 = debounce(() => renderList6(), 300);
+var renderCard2 = (s) => fill(
+  el7.querySelector("#sp-view"),
+  h("div.cond-ref-body.spell-card", { html: spellHtml(s, { body: (t) => glossify(condify(markupHtml(t))) }) + (spellTags(s).length ? `<div class="spell-tags">${spellTags(s).join(" \xB7 ")}</div>` : "") }),
+  s.creature ? h("div.spell-creature", statBlock(s.creature, { description: false })) : null
+);
+var refreshCard2 = debounce(renderCard2, 150);
+function renderEdit6() {
+  const pane = el7.querySelector("#sp-edit"), card = el7.querySelector("#sp-view");
   const s = spellById(selectedId6);
   if (!s) {
-    fill(pane, h("div.empty", `Pick a spell from the list. ${store.spells.length} spells from the SRD 5.2.1.`));
+    fill(pane, h("div.empty", `Pick a spell, click New, or make one from a screenshot. ${store.srdSpells.length} SRD spells, ${store.spells.length} of yours.`));
+    card.replaceChildren();
     return;
   }
+  renderCard2(s);
+  if (!mine2(s)) {
+    fill(
+      pane,
+      h("div.edit-head", h("h2", s.name), h("button.primary", { onclick: () => duplicate4(s) }, "Copy to my spells")),
+      h("p.muted", "SRD spells are read-only. Copy one to your spells to change it. Your copy takes over this spell\u2019s name, so stat blocks link to it from then on.")
+    );
+    return;
+  }
+  const changed3 = ({ renamed } = {}) => {
+    save("spells", s);
+    refreshCard2(s);
+    if (renamed) {
+      pane.querySelector(".edit-head h2").textContent = s.name;
+      relist2();
+    }
+  };
   fill(
     pane,
-    h("div.cond-ref-body.spell-card", { html: spellHtml(s, { body: (t) => glossify(condify(markupHtml(t))) }) + (spellTags(s).length ? `<div class="spell-tags">${spellTags(s).join(" \xB7 ")}</div>` : "") }),
-    s.creature ? h("div.spell-creature", statBlock(s.creature, { description: false })) : null
+    h("div.edit-head", h("h2", s.name), h(
+      "div.row-gap",
+      s.url ? h("a", { href: s.url, target: "_blank", rel: "noopener" }, "Full rules text") : null,
+      h("button", { onclick: () => duplicate4(s) }, "Duplicate"),
+      h("button.danger", { onclick: () => confirmBox(`Delete ${s.name}? The file goes to the Recycle Bin.`, "Delete", async () => {
+        await remove("spells", s);
+        selectedId6 = null;
+        showSpells();
+      }) }, "Delete")
+    )),
+    s.warnings?.length ? h("div.warn-box", h("ul.warnings", s.warnings.map((w) => h("li", w))), h("button.link", { onclick: (e2) => {
+      delete s.warnings;
+      changed3();
+      e2.target.parentElement.remove();
+    } }, "Dismiss reader notes")) : null,
+    spellEditor(s, { changed: changed3 })
   );
 }
 
@@ -66961,7 +67426,7 @@ function monsterLabels() {
   return map;
 }
 var monsterName = (id) => findMonster(id)?.name || "Missing monster";
-function chipPicker(key3, placeholder, options, labelOf) {
+function chipPicker(key3, placeholder, options, labelOf2) {
   const listId = `gn-dl-${key3}`;
   const input = h("input", { type: "text", placeholder, list: listId, onchange: (e2) => {
     const v = options instanceof Map ? options.get(e2.target.value) : e2.target.value.trim().toLowerCase();
@@ -66970,7 +67435,7 @@ function chipPicker(key3, placeholder, options, labelOf) {
   } });
   return h(
     "div.chip-picker",
-    params[key3].length ? h("div.chips", params[key3].map((v) => h("span.chip", labelOf(v), h("button.chip-x", { title: "Remove", onclick: () => set(key3, params[key3].filter((x) => x !== v)) }, "\xD7")))) : null,
+    params[key3].length ? h("div.chips", params[key3].map((v) => h("span.chip", labelOf2(v), h("button.chip-x", { title: "Remove", onclick: () => set(key3, params[key3].filter((x) => x !== v)) }, "\xD7")))) : null,
     input,
     h(`datalist#${listId}`, [...options instanceof Map ? options.keys() : options].map((o) => h("option", { value: o })))
   );
@@ -67221,7 +67686,7 @@ function saveAs(openAfter) {
 
 // src/tabs/builder.js
 var el9;
-var go4;
+var go5;
 var current2 = null;
 var view2 = "list";
 var tab = "monsters";
@@ -67232,7 +67697,7 @@ var filters = emptyFilter();
 var sort = { key: "name", dir: 1 };
 function mountBuilder(root, navigate) {
   el9 = root;
-  go4 = navigate;
+  go5 = navigate;
   onChange((kind) => {
     if (el9.hidden) return;
     if (view2 === "list") renderList7();
@@ -67274,7 +67739,7 @@ function renderList7() {
       view2 = "edit";
       render3();
     },
-    onRun: (e2) => go4("runner", e2.id),
+    onRun: (e2) => go5("runner", e2.id),
     menu: (e2) => [
       ["Edit", () => {
         current2 = e2;
@@ -67626,7 +68091,7 @@ var iconPath = (id, size = 64) => `conditions%20symbols/png-${size}/${id}.png`;
 init_format();
 init_rules();
 var el10;
-var go5;
+var go6;
 var enc = null;
 var sameInit = true;
 var UNDO_LIMIT = 100;
@@ -67637,7 +68102,7 @@ var undoStack = () => {
 };
 function mountRunner(root, navigate) {
   el10 = root;
-  go5 = navigate;
+  go6 = navigate;
   onRoll(() => {
     if (!el10.hidden && enc) renderLog();
   });
@@ -67685,7 +68150,7 @@ function render4() {
 function renderPicker() {
   const table = h("div.enc-table-wrap");
   let query3 = "";
-  const draw2 = () => fill(table, encounterTable({ query: query3, onOpen: (e2) => go5("builder", e2.id), onRun: (e2) => showRunner(e2.id) }));
+  const draw2 = () => fill(table, encounterTable({ query: query3, onOpen: (e2) => go6("builder", e2.id), onRun: (e2) => showRunner(e2.id) }));
   const party = activeParty();
   fill(
     el10,
@@ -67871,7 +68336,7 @@ function header() {
     ),
     h(
       "div.row-gap",
-      h("button.outline", { onclick: () => go5("builder", enc.id) }, "Edit encounter"),
+      h("button.outline", { onclick: () => go6("builder", enc.id) }, "Edit encounter"),
       h("button.outline", { title: "Roll the loot for every enemy in this fight", onclick: () => lootDialog(enc) }, "Loot"),
       h("button.dark", { onclick: endCombat }, "End combat")
     )
@@ -68792,7 +69257,7 @@ function renderBlock() {
         }) }, "Back to own shape")
       ) : null,
       m ? statBlock(m, { who: c2.name, description: false, tracker, recharge, group }) : h("div.empty", `${c2.name} has no stat block (manual entry or deleted from the library).`),
-      m ? h("button.outline", { onclick: () => go5("library", m.id) }, "View in Creatures") : null,
+      m ? h("button.outline", { onclick: () => go6("library", m.id) }, "View in Creatures") : null,
       pc2?.sheet ? h("details.own-sheet", h("summary", `${pc2.name}'s own sheet`), characterSheet(pc2, { hp: c2.hp, compact: true })) : null
     );
     return;
@@ -68840,7 +69305,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.6.2";
+var version2 = "1.8.0";
 
 // src/app.js
 var TABS = [
@@ -68859,7 +69324,7 @@ var saveStatus = h("span.save-status");
 var libButton = h("button.lib-btn", { onclick: (e2) => libraryMenu(e2.currentTarget) });
 var settingsButton = h("button.icon-btn.settings-btn", { title: "Settings", onclick: () => settings() }, "\u2699");
 var active = null;
-function go6(id, arg) {
+function go7(id, arg) {
   active = id;
   try {
     localStorage.setItem("tab", id);
@@ -68891,7 +69356,7 @@ function renderGhButton() {
   ghButton.classList.toggle("dirty", !!s.dirty && !ghBusy);
   ghButton.title = s.dirty ? `Changes not saved to GitHub (${s.repo}). Click to save now.${s.auto ? " Autosave is on." : ""}` : `Library saved to GitHub (${s.repo})${s.savedAt ? `, ${new Date(s.savedAt).toLocaleString()}` : ""}. Click for the GitHub library settings.`;
 }
-var USER_KINDS = /* @__PURE__ */ new Set(["monsters", "party", "encounters", "conditions", "loot", "items"]);
+var USER_KINDS = /* @__PURE__ */ new Set(["monsters", "party", "encounters", "conditions", "loot", "items", "spells"]);
 function watchGithub() {
   onChange((kind) => {
     if (!USER_KINDS.has(kind) || !ghReady()) return;
@@ -69123,7 +69588,7 @@ async function importLibrary(text, fileName, { onDone } = {}) {
     for (const k of PACK_KINDS) for (const x of items[k]) save(k, x, { delay: 0, touch: false });
     await flushSaves();
     await loadLibrary();
-    go6(active || "maker");
+    go7(active || "maker");
     modal("Library imported", h("p", `Imported ${countText(items)}.`), [["OK", () => {
     }, "primary"]]);
     onDone?.({ mode: mode3, localNewer: localOnly || mode3 !== "all" && n(older) > 0 });
@@ -69148,7 +69613,7 @@ async function importLibrary(text, fileName, { onDone } = {}) {
 }
 async function pickLibrary() {
   const p = await chooseLibrary();
-  if (p) go6(active || "maker");
+  if (p) go7(active || "maker");
 }
 function renderLibButton() {
   const name = store.libraryPath ? store.libraryPath.split(/[\\/]/).filter(Boolean).pop() : "Choose library folder";
@@ -69346,7 +69811,7 @@ var COMMON_FONTS = [
 function about() {
   modal("About", h(
     "div.about",
-    h("p", h("strong", "Kimble's Encounter Manager 5/5.5e"), h("span.muted", ` \xB7 version ${version2}`), h("br"), "Monster and item maker, party, creatures, conditions, spells, items, encounter builder, combat tracker and loot."),
+    h("p", h("strong", "Kimble's Encounter Manager 5/5.5e"), h("span.muted", ` \xB7 version ${version2}`), h("br"), "Monster, item, spell and condition maker, party, creatures, conditions, spells, items, encounter builder, combat tracker and loot."),
     h("p", "Encounter difficulty uses the 2014 XP thresholds and multipliers, or the 2024 XP budgets."),
     h(
       "p.license",
@@ -69380,7 +69845,7 @@ async function init() {
   }, { passive: false });
   for (const t of TABS) {
     t.el = h(`section.tab.tab-${t.id}`, { hidden: true });
-    t.button = h("button", { onclick: () => go6(t.id) }, t.label);
+    t.button = h("button", { onclick: () => go7(t.id) }, t.label);
     nav.append(t.button);
     main.append(t.el);
   }
@@ -69394,9 +69859,9 @@ async function init() {
     if (kind === "all") renderLibButton();
   });
   await loadLibrary();
-  for (const t of TABS) t.mount(t.el, go6);
-  setSpellOpener((id) => go6("spells", id));
-  setItemOpener((id) => go6("items", id));
+  for (const t of TABS) t.mount(t.el, go7);
+  setSpellOpener((id) => go7("spells", id));
+  setItemOpener((id) => go7("items", id));
   mountDiceTray();
   renderLibButton();
   if (store.errors.length) modal("Some files could not be read", h("ul.warnings", store.errors.map((e2) => h("li", e2))));
@@ -69405,12 +69870,12 @@ async function init() {
     start2 = localStorage.getItem("tab") || "maker";
   } catch {
   }
-  go6(TABS.some((t) => t.id === start2) ? start2 : "maker");
+  go7(TABS.some((t) => t.id === start2) ? start2 : "maker");
   if (!store.libraryPath) welcome();
 }
 if (location.search.includes("test")) {
   Promise.all([Promise.resolve().then(() => (init_ocr(), ocr_exports)), Promise.resolve().then(() => (init_parse(), parse_exports)), Promise.resolve().then(() => (init_store(), store_exports)), Promise.resolve().then(() => (init_conditions(), conditions_exports)), Promise.resolve().then(() => (init_spells(), spells_exports)), Promise.resolve().then(() => (init_snapshot(), snapshot_exports))]).then(([ocr, parse, st, cond, sp, snap]) => {
-    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, condify: cond.condify, spellify: sp.spellify, go: go6, importLibrary, flushSaves: st.flushSaves, elementPng: snap.elementPng };
+    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, condify: cond.condify, spellify: sp.spellify, go: go7, importLibrary, flushSaves: st.flushSaves, elementPng: snap.elementPng };
   });
 }
 init();
@@ -69595,14 +70060,14 @@ function draw() {
   )) : h("div.empty", "No messages yet. Right-click a character in Run Encounter > Send message\u2026"));
   const from = h("input", { type: "text", value: lastVoice(), title: "Who it seems to come from (the title they see)" });
   const text = h("textarea", { rows: 2, placeholder: t ? `Message for ${t.character}\u2026` : "Pick a character first", disabled: !t });
-  const go7 = () => {
+  const go8 = () => {
     if (!t || !text.value.trim()) return;
     sendMessage(t.charId, t.character, from.value.trim() || "GM", text.value.trim());
   };
   text.addEventListener("keydown", (e2) => {
     if (e2.key === "Enter" && !e2.shiftKey) {
       e2.preventDefault();
-      go7();
+      go8();
     }
   });
   fill(
@@ -69615,7 +70080,7 @@ function draw() {
       threads[k].unread ? h("span.chat-count", threads[k].unread) : ""
     ))) : null,
     list,
-    t ? h("div.chat-send", h("label", "From", from), h("div.chat-row", text, h("button.primary", { onclick: go7 }, "Send"))) : null
+    t ? h("div.chat-send", h("label", "From", from), h("div.chat-row", text, h("button.primary", { onclick: go8 }, "Send"))) : null
   );
   list.scrollTop = list.scrollHeight;
 }
