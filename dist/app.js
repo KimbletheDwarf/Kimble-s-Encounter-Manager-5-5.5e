@@ -26677,7 +26677,7 @@ function WebGLPrograms(renderer, environments, extensions, capabilities, binding
 }
 function WebGLProperties() {
   let properties = /* @__PURE__ */ new WeakMap();
-  function has(object) {
+  function has2(object) {
     return properties.has(object);
   }
   function get(object) {
@@ -26698,7 +26698,7 @@ function WebGLProperties() {
     properties = /* @__PURE__ */ new WeakMap();
   }
   return {
-    has,
+    has: has2,
     get,
     remove: remove2,
     update,
@@ -34726,7 +34726,7 @@ function d10(radius) {
   const r = Math.max(...dualVerts.map((v) => v.length()));
   return { vertices: dualVerts.map((v) => v.multiplyScalar(radius / r)), faces };
 }
-function finish(sides, { vertices, faces }, kind = "face") {
+function finish(sides, { vertices, faces }, kind2 = "face") {
   const normals = faces.map((f) => {
     const c2 = f.reduce((s, i) => s.add(vertices[i]), new Vector3()).divideScalar(f.length);
     const n = new Vector3().subVectors(vertices[f[1]], vertices[f[0]]).cross(new Vector3().subVectors(vertices[f[2]], vertices[f[0]])).normalize();
@@ -34736,7 +34736,7 @@ function finish(sides, { vertices, faces }, kind = "face") {
     const n = new Vector3().subVectors(vertices[f[1]], vertices[f[0]]).cross(new Vector3().subVectors(vertices[f[2]], vertices[f[0]]));
     return n.dot(normals[i]) < 0 ? [...f].reverse() : f;
   });
-  if (kind === "vertex") return { sides, kind, vertices, faces, normals, labels: [1, 2, 3, 4], opposite: [], sum: 0 };
+  if (kind2 === "vertex") return { sides, kind: kind2, vertices, faces, normals, labels: [1, 2, 3, 4], opposite: [], sum: 0 };
   if (faces.length !== sides) throw new Error(`d${sides} has ${faces.length} faces`);
   const opposite = normals.map((n) => normals.findIndex((m) => m.dot(n) < -0.999));
   const sum = sides === 10 ? 9 : sides + 1, first = sides === 10 ? 0 : 1;
@@ -34748,7 +34748,7 @@ function finish(sides, { vertices, faces }, kind = "face") {
     labels[opposite[i]] = sum - (first + k);
     k++;
   }
-  return { sides, kind, vertices, faces, normals, labels, opposite, sum };
+  return { sides, kind: kind2, vertices, faces, normals, labels, opposite, sum };
 }
 function relabel(shape, top, want) {
   const have = shape.labels[top];
@@ -35436,9 +35436,9 @@ function toast(entry) {
   setTimeout(() => t.remove(), ms);
   while (toastBox.children.length > 4) toastBox.lastChild.remove();
 }
-function notice(text, kind = "", ms = 6e3) {
+function notice(text, kind2 = "", ms = 6e3) {
   noticeEl?.remove();
-  const el11 = noticeEl = h("div.notice" + (kind ? `.${kind}` : ""), { role: "status", onclick: () => el11.remove() }, text);
+  const el11 = noticeEl = h("div.notice" + (kind2 ? `.${kind2}` : ""), { role: "status", onclick: () => el11.remove() }, text);
   document.body.append(el11);
   setTimeout(() => {
     if (noticeEl === el11) {
@@ -35448,24 +35448,24 @@ function notice(text, kind = "", ms = 6e3) {
   }, ms);
 }
 function modal(title2, body2, actions = []) {
-  const close = () => back.remove();
+  const close2 = () => back.remove();
   const back = h(
     "div.modal-back",
     { onmousedown: (e2) => {
-      if (e2.target === back) close();
+      if (e2.target === back) close2();
     } },
     h(
       "div.modal",
-      h("div.modal-head", h("h3", title2), h("button.icon-btn", { title: "Close", onclick: close }, "\xD7")),
+      h("div.modal-head", h("h3", title2), h("button.icon-btn", { title: "Close", onclick: close2 }, "\xD7")),
       h("div.modal-body", body2),
       actions.length ? h("div.modal-foot", actions.map(([text, fn, cls = ""]) => h(`button${cls ? "." + cls : ""}`, { onclick: () => {
-        if (fn() !== false) close();
+        if (fn() !== false) close2();
       } }, text))) : null
     )
   );
   document.body.append(back);
   back.querySelector("input,select,textarea")?.focus();
-  return close;
+  return close2;
 }
 function confirmBox(text, okText, onOk) {
   modal("Are you sure?", h("p", text), [["Cancel", () => {
@@ -35886,18 +35886,18 @@ async function loadLibrary() {
   if (!store.rules.length) store.rules = await (await fetch("data/srd-rules.json")).json();
   if (!store.srdItems.length) store.srdItems = [...await (await fetch("data/srd-items.json")).json(), ...await (await fetch("data/components.json")).json()];
   store.errors = [];
-  for (const kind of ["monsters", "party", "encounters", "conditions", "loot", "items", "spells"]) {
+  for (const kind2 of ["monsters", "party", "encounters", "conditions", "loot", "items", "spells"]) {
     if (!libraryPath) {
-      store[kind] = kind === "conditions" ? defaultConditions() : [];
+      store[kind2] = kind2 === "conditions" ? defaultConditions() : [];
       continue;
     }
-    const { items, errors } = await window.desktop.list(kind);
+    const { items, errors } = await window.desktop.list(kind2);
     store.errors.push(...errors);
-    store[kind] = items.filter((x) => {
+    store[kind2] = items.filter((x) => {
       const ok = x && typeof x === "object" && !Array.isArray(x) && typeof x.id === "string" && /^[a-z0-9-]{1,80}$/.test(x.id);
-      if (!ok) store.errors.push(`${kind}: skipped a file that is not a valid record`);
+      if (!ok) store.errors.push(`${kind2}: skipped a file that is not a valid record`);
       return ok;
-    }).map(NORMALIZE[kind]);
+    }).map(NORMALIZE[kind2]);
   }
   if (libraryPath && !store.conditions.length) {
     store.conditions = defaultConditions().map((c2) => ({ ...c2, srd: CONDITIONS_SRD }));
@@ -35922,7 +35922,7 @@ async function chooseLibrary() {
   if (p) await loadLibrary();
   return p;
 }
-function save(kind, item, { delay = 500, touch = true } = {}) {
+function save(kind2, item, { delay = 500, touch = true } = {}) {
   if (!store.libraryPath) {
     status("No library folder: changes are not saved");
     return;
@@ -35931,19 +35931,19 @@ function save(kind, item, { delay = 500, touch = true } = {}) {
     item.updated = Date.now();
     item.created ??= item.updated;
   }
-  const list = store[kind];
+  const list = store[kind2];
   if (!list.includes(item)) {
     const i = list.findIndex((x) => x.id === item.id);
     if (i >= 0) list[i] = item;
     else list.push(item);
   }
-  const key3 = `${kind}/${item.id}`;
+  const key3 = `${kind2}/${item.id}`;
   if (timers.has(key3)) clearTimeout(timers.get(key3).timer);
   else pending++;
   status("Saving\u2026");
   const write = async () => {
     timers.delete(key3);
-    const p = window.desktop.save(kind, item.id, item);
+    const p = window.desktop.save(kind2, item.id, item);
     writing.add(p);
     try {
       await p;
@@ -35957,23 +35957,23 @@ function save(kind, item, { delay = 500, touch = true } = {}) {
     }
   };
   timers.set(key3, { timer: setTimeout(write, delay), write });
-  emit(kind);
+  emit(kind2);
 }
 async function flushSaves() {
   const waiting = [...timers.values()];
   for (const t of waiting) clearTimeout(t.timer);
   await Promise.allSettled([...waiting.map((t) => t.write()), ...writing]);
 }
-async function remove(kind, item) {
-  const key3 = `${kind}/${item.id}`;
+async function remove(kind2, item) {
+  const key3 = `${kind2}/${item.id}`;
   if (timers.has(key3)) {
     clearTimeout(timers.get(key3).timer);
     timers.delete(key3);
     pending--;
   }
-  store[kind] = store[kind].filter((x) => x.id !== item.id);
-  await window.desktop.remove(kind, item.id);
-  emit(kind);
+  store[kind2] = store[kind2].filter((x) => x.id !== item.id);
+  await window.desktop.remove(kind2, item.id);
+  emit(kind2);
 }
 var CONDITIONS_SRD, listeners, store, onChange, emit, arr, NORMALIZE, timers, writing, pending, statusListeners, onSaveStatus, status, allMonsters, findMonster, findCharacter, isHomebrew, allItems, findItem, allSpells, ITEM_CATEGORIES;
 var init_store = __esm({
@@ -36008,7 +36008,7 @@ var init_store = __esm({
       listeners.add(fn);
       return () => listeners.delete(fn);
     };
-    emit = (kind) => listeners.forEach((fn) => fn(kind));
+    emit = (kind2) => listeners.forEach((fn) => fn(kind2));
     arr = (v) => Array.isArray(v) ? v : [];
     NORMALIZE = {
       monsters: (m) => {
@@ -37588,7 +37588,7 @@ async function readAbilityRow(worker, img, imaging2, hdr) {
   const out = [];
   for (let i = 0; i < 6; i++) {
     const c2 = cx(hdr[idx[0]]) + (i - idx[0]) * step;
-    let pick4 = null;
+    let pick5 = null;
     for (const [wf, dy, hf] of [[0.9, 0.3, 1.9], [0.8, 0.5, 1.6], [1, 0.2, 2.2], [0.7, 0.4, 1.8]]) {
       const x = Math.max(0, Math.round(c2 - step * wf / 2));
       const w = Math.min(W - x, Math.round(step * wf));
@@ -37597,12 +37597,12 @@ async function readAbilityRow(worker, img, imaging2, hdr) {
       const t = (await worker.recognize(await imaging2.input(cell))).data.text.trim();
       const p = parseAbilityCell(t);
       if (p && p.ok) {
-        pick4 = p;
+        pick5 = p;
         break;
       }
-      if (p && !pick4) pick4 = p;
+      if (p && !pick5) pick5 = p;
     }
-    out.push(pick4);
+    out.push(pick5);
   }
   return out;
 }
@@ -39549,24 +39549,24 @@ function parseSpell(text, { isWord = null } = {}) {
     start2 = 1;
   }
   const found = {};
-  let open2 = null;
+  let open3 = null;
   for (let n = start2; n < filled.length; n++) {
     const i = filled[n], l = lines[i], hit = labelOf(l);
     if (hit) {
-      if (open2) found[open2] = found[open2].trim();
-      open2 = hit.key;
-      found[open2] = hit.value;
+      if (open3) found[open3] = found[open3].trim();
+      open3 = hit.key;
+      found[open3] = hit.value;
       used.add(i);
       continue;
     }
-    if (!open2) {
+    if (!open3) {
       if (n >= start2 + 2) break;
       continue;
     }
     const allFound = NEEDED.every((k) => found[k] != null);
     const labelSoon = filled.slice(n + 1, n + 4).some((k) => labelOf(lines[k]));
-    if (!unfinished(found[open2]) && (allFound || !labelSoon)) break;
-    found[open2] = `${found[open2]} ${l}`.trim();
+    if (!unfinished(found[open3]) && (allFound || !labelSoon)) break;
+    found[open3] = `${found[open3]} ${l}`.trim();
     used.add(i);
   }
   lines.forEach((l, i) => {
@@ -39980,8 +39980,8 @@ var init_conditions = __esm({
     byWord = /* @__PURE__ */ new Map();
     keywordRe = null;
     capsWords = /* @__PURE__ */ new Set();
-    onChange((kind) => {
-      if (kind === "all" || kind === "conditions") rebuild();
+    onChange((kind2) => {
+      if (kind2 === "all" || kind2 === "conditions") rebuild();
     });
     findCondition = (word) => byWord.get(String(word).toLowerCase().replace(/\s+/g, " "));
     conditionNames = () => store.conditions.filter((c2) => c2.id !== "save-ends").map((c2) => c2.name).sort((a2, b2) => a2.localeCompare(b2));
@@ -39990,6 +39990,145 @@ var init_conditions = __esm({
     registerTip("cond", (name) => {
       const c2 = findCondition(name);
       return c2 ? conditionHtml(c2) : "";
+    });
+  }
+});
+
+// src/glossary.js
+function rebuild2() {
+  byTerm = /* @__PURE__ */ new Map();
+  for (const r of store.rules || []) {
+    if (SKIP.has(r.name)) continue;
+    for (const t of [r.name, ...EXTRA[r.name] || []]) byTerm.set(t, r);
+  }
+  const terms = [...byTerm.keys()].sort((a2, b2) => b2.length - a2.length);
+  re = terms.length ? new RegExp(`(?<![\\w\u2019'-])(${terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(?![\\w\u2019'-])`, "g") : null;
+}
+function glossify(html) {
+  if (!re) rebuild2();
+  if (!re) return html;
+  let depth = 0;
+  return html.replace(/(<[^>]+>)|([^<]+)/g, (all, tag, text) => {
+    if (tag) {
+      if (/^<span\b[^>]*class="cond-link/.test(tag)) depth++;
+      else if (depth && /^<span\b/.test(tag)) depth++;
+      else if (depth && tag === "</span>") depth--;
+      return tag;
+    }
+    if (depth) return text;
+    return text.replace(re, (term, _, at2) => {
+      if (/(?:^|[^.!?:;]\s)[A-Z][\w’'-]*\s$/.test(text.slice(Math.max(0, at2 - 30), at2)) && !/\s/.test(term)) return term;
+      if (/^\s+[A-Z][a-z]/.test(text.slice(at2 + term.length, at2 + term.length + 4)) && !/\s/.test(term)) return term;
+      const r = byTerm.get(term);
+      return `<span class="cond-link rule-link" data-rule="${esc(r.name)}" tabindex="0">${term}</span>`;
+    });
+  });
+}
+var SKIP, EXTRA, byTerm, re, findRule, ruleHtml;
+var init_glossary = __esm({
+  "src/glossary.js"() {
+    init_ui();
+    init_store();
+    init_conditions();
+    init_tooltip();
+    SKIP = /* @__PURE__ */ new Set([
+      "Ability Check",
+      "Ability Score and Modifier",
+      "Action",
+      "Adventure",
+      "Alignment",
+      "Ally",
+      "Armor Class",
+      "Armor Training",
+      "Attack",
+      "Attack Roll",
+      "Attitude",
+      "Bonus Action",
+      "Campaign",
+      "Cantrip",
+      "Carrying Capacity",
+      "Challenge Rating",
+      "Character Sheet",
+      "Condition",
+      "Creature",
+      "Creature Type",
+      "Curses",
+      "D20 Test",
+      "Damage",
+      "Damage Roll",
+      "Damage Types",
+      "Dead",
+      "Encounter",
+      "Enemy",
+      "Experience Points",
+      "Expertise",
+      "Hazard",
+      "Healing",
+      "Heroic Inspiration",
+      "Hit Point Dice",
+      "Hit Points",
+      "Illusions",
+      "Initiative",
+      "Magic",
+      "Magical Effect",
+      "Monster",
+      "Nonplayer Character",
+      "Object",
+      "Per Day",
+      "Player Character",
+      "Proficiency",
+      "Reaction",
+      "Round Down",
+      "Save",
+      "Saving Throw",
+      "Simultaneous Effects",
+      "Size",
+      "Skill",
+      "Speed",
+      "Spell",
+      "Spell Attack",
+      "Spellcasting Focus",
+      "Stable",
+      "Stat Block",
+      "Target",
+      "Weapon",
+      "Weapon Attack",
+      "Passive Perception",
+      "Difficulty Class",
+      "Ritual",
+      "Reach",
+      "Possession",
+      "Hostile",
+      "Friendly",
+      "Indifferent"
+    ]);
+    EXTRA = {
+      "Opportunity Attacks": ["Opportunity Attack"],
+      Cover: ["Half Cover", "Three-Quarters Cover", "Total Cover"],
+      Jumping: ["Jump"],
+      "Grappling": ["Grapple"],
+      "Teleportation": ["Teleport", "Teleports", "Teleported"],
+      "Hover": ["Hovers"],
+      "Shape-Shifting": ["Shape-Shift", "Shape-Shifts"],
+      "Unarmed Strike": ["Unarmed Strikes"],
+      "Temporary Hit Points": ["Temporary Hit Point"],
+      "Resistance": ["Resistances"],
+      "Immunity": ["Immunities"],
+      "Vulnerability": ["Vulnerabilities"]
+    };
+    byTerm = /* @__PURE__ */ new Map();
+    re = null;
+    onChange((kind2) => {
+      if (kind2 === "all") rebuild2();
+    });
+    findRule = (name) => {
+      if (!re) rebuild2();
+      return byTerm.get(name) || (store.rules || []).find((r) => r.name === name);
+    };
+    ruleHtml = (r) => `<div class="cond-name">${esc(r.name)}</div>${r.tag ? `<div class="spell-meta">${esc(r.tag)}</div>` : ""}${markupHtml(r.text)}`;
+    registerTip("rule", (name) => {
+      const r = findRule(name);
+      return r ? ruleHtml(r) : "";
     });
   }
 });
@@ -40139,8 +40278,8 @@ var init_spells = __esm({
     byName = /* @__PURE__ */ new Map();
     byId = /* @__PURE__ */ new Map();
     plainRe = null;
-    onChange((kind) => {
-      if (kind === "all" || kind === "spells") rebuild3();
+    onChange((kind2) => {
+      if (kind2 === "all" || kind2 === "spells") rebuild3();
     });
     findSpell = (name) => {
       if (!plainRe) rebuild3();
@@ -40170,6 +40309,2404 @@ var init_spells = __esm({
       unpin();
       opener(b2.dataset.openSpell);
     });
+  }
+});
+
+// src/generator.js
+function attackInfo(e2) {
+  const t = plain(e2.text);
+  const a2 = t.match(ATTACK);
+  if (!a2) return null;
+  const kind2 = /or Ranged/i.test(a2[1]) ? "both" : /^Melee/i.test(a2[1]) ? "melee" : "ranged";
+  const hit = t.slice(Math.max(0, t.search(/Hit:/i)));
+  const dmg = [...hit.matchAll(/(\d+)\s*\(\s*\d+d\d+/g)].reduce((n, x) => n + Number(x[1]), 0) || 1;
+  const type = hit.match(/\b(bludgeoning|piercing|slashing|acid|cold|fire|force|lightning|necrotic|poison|psychic|radiant|thunder)\b/i)?.[1].toLowerCase();
+  const magic = /Spell Attack/i.test(a2[0]) || type && !["bludgeoning", "piercing", "slashing", "poison", "acid"].includes(type);
+  return { name: String(e2.name || "").replace(/\s*\(.*\)$/, "").trim().toLowerCase(), kind: kind2, dmg, magic };
+}
+function spellCount(e2) {
+  const t = String(e2.text || "");
+  const marked = (t.match(/<(em|spell)>/g) || []).length;
+  if (marked) return marked;
+  return plain(t).split("\n").filter((l) => /:/.test(l)).reduce((n, l) => n + l.split(":").pop().split(",").filter((x) => x.trim()).length, 0);
+}
+function guessStyle(m) {
+  const acts = entriesOf(m, ACTION_KEYS);
+  const attacks = acts.map(attackInfo).filter(Boolean);
+  const multi = plain(acts.find((e2) => /^multiattack/i.test(e2.name || ""))?.text).toLowerCase();
+  let melee = 0, ranged = 0, magic = 0;
+  for (const a2 of attacks) {
+    const w = a2.dmg * (multi && a2.name && multi.includes(a2.name) ? 2 : 1);
+    if (a2.kind === "melee") melee += w;
+    else if (a2.kind === "ranged") ranged += w;
+    else {
+      melee += w * 0.6;
+      ranged += w * 0.4;
+    }
+    if (a2.magic) magic += w;
+  }
+  const spellActions = acts.filter((e2) => SPELL_ACTION.test(e2.name || ""));
+  for (const e2 of spellActions) {
+    if (attackInfo(e2)) {
+      magic += attackInfo(e2).dmg;
+      continue;
+    }
+    const w = [...plain(e2.text).matchAll(/(\d+)\s*\(\s*\d+d\d+/g)].reduce((n, x) => n + Number(x[1]), 0) || 1;
+    ranged += w;
+    magic += w;
+  }
+  const sc = spellcasting(m);
+  const spells = (sc ? spellCount(sc) : 0) + spellActions.length;
+  if (spells >= 2 && (!attacks.length || magic >= (melee + ranged) / 2)) return "caster";
+  if (!melee && !ranged) return "mixed";
+  const r = ranged / (melee + ranged);
+  return r >= 0.6 ? "ranged" : r <= 0.4 ? "melee" : "mixed";
+}
+function extraTags(m) {
+  const tags = [];
+  const all = entriesOf(m, ["traits", ...ACTION_KEYS, "reactions"]).map((e2) => plain(e2.text)).join("\n");
+  if (/saving throw/i.test(all) && /\b(Cone|Line|Sphere|Emanation|Cube|Cylinder|radius|each creature)\b/i.test(all)) tags.push("Area");
+  if (m.legendaryActions?.length) tags.push("Legendary");
+  return tags;
+}
+function poolFilters(p) {
+  return [
+    ["Never use list", (m) => !p.exclude.includes(m.id)],
+    ["CR 0 creatures are skipped", (m) => !p.skipCr0 || crValue(m.challengeRating) > 0],
+    ["Source", (m) => !p.source || p.source === "homebrew" === isHomebrew2(m)],
+    ["Creature types", (m) => !p.types.length || p.types.includes(m.monsterType)],
+    ["Races", (m) => !p.races.length || (m.subtypes || []).some((s) => p.races.includes(lc2(s)))],
+    ["Size", (m) => !p.size || m.size === p.size],
+    ["CR range", (m) => crValue(m.challengeRating) >= crValue(p.crMin) && crValue(m.challengeRating) <= crValue(p.crMax)]
+  ];
+}
+function buildPool(monsters, p) {
+  let pool = monsters.filter((m) => xpFor(m.challengeRating) > 0 || !p.skipCr0);
+  for (const [name, ok] of poolFilters(p)) {
+    const next2 = pool.filter(ok);
+    if (!next2.length) return { pool: [], emptiedBy: name };
+    pool = next2;
+  }
+  return { pool: pool.map((m) => ({ m, id: m.id, xp: monsterXp(m), style: styleOf(m), tags: extraTags(m) })), emptiedBy: null };
+}
+function rng(seed) {
+  let a2 = 0;
+  for (const c2 of String(seed)) a2 = Math.imul(a2 ^ c2.charCodeAt(0), 2654435761) + 2654435769 | 0;
+  return () => {
+    a2 = a2 + 1831565813 | 0;
+    let t = Math.imul(a2 ^ a2 >>> 15, 1 | a2);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick2(r, list, weight) {
+  const ws = list.map(weight);
+  const sum = ws.reduce((a2, b2) => a2 + b2, 0);
+  if (!(sum > 0)) return null;
+  let x = r() * sum;
+  for (let i = 0; i < list.length; i++) if ((x -= ws[i]) <= 0) return list[i];
+  return list[list.length - 1];
+}
+function styleWeight(goal, style) {
+  switch (goal) {
+    case "mostlyMelee":
+      return style === "melee" ? 4 : style === "mixed" ? 1.5 : 0.4;
+    case "mostlyRanged":
+      return style === "ranged" || style === "caster" ? 4 : style === "mixed" ? 1.5 : 0.4;
+    case "mostlyCasters":
+      return style === "caster" ? 5 : 0.4;
+    case "someCasters":
+      return style === "caster" ? 2 : 1;
+    case "meleeOnly":
+      return style === "melee" ? 1 : 0;
+    case "rangedOnly":
+      return style === "ranged" || style === "caster" ? 1 : 0;
+    default:
+      return 1;
+  }
+}
+function styleMiss(goal, creatures) {
+  const n = creatures.length;
+  if (!n) return 0;
+  const share = (f) => creatures.reduce((a2, c2) => a2 + f(c2.style), 0) / n;
+  const casters = creatures.filter((c2) => c2.style === "caster").length;
+  switch (goal) {
+    case "mostlyMelee":
+      return Math.max(0, 0.7 - share(meleeShare));
+    case "mostlyRanged":
+      return Math.max(0, 0.7 - share(rangedShare));
+    case "mostlyCasters":
+      return Math.max(0, 0.7 - casters / n);
+    case "someCasters":
+      return casters ? 0 : 1;
+    case "mixed": {
+      if (n < 2) return 0;
+      const s = share(meleeShare);
+      return s < 0.25 ? 0.25 - s : s > 0.75 ? s - 0.75 : 0;
+    }
+    case "meleeOnly":
+      return creatures.every((c2) => c2.style === "melee") ? 0 : 1;
+    case "rangedOnly":
+      return creatures.every((c2) => c2.style === "ranged" || c2.style === "caster") ? 0 : 1;
+    default:
+      return 0;
+  }
+}
+function sharesTheme(theme, a2, b2) {
+  const race = racesOf(a2).some((r) => racesOf(b2).includes(r));
+  const type = a2.monsterType && a2.monsterType === b2.monsterType;
+  return theme === "race" ? race : theme === "type" ? type : theme === "either" ? race || type : true;
+}
+function themeName(theme, ms) {
+  if (theme === "none" || ms.length < 2) return "";
+  const races = racesOf(ms[0]).filter((r) => ms.every((m) => racesOf(m).includes(r)));
+  if (races.length && theme !== "type") return races[0].replace(/\b\w/g, (c2) => c2.toUpperCase());
+  if (ms.every((m) => m.monsterType === ms[0].monsterType) && theme !== "race") return ms[0].monsterType;
+  return "";
+}
+function generate({ params: p0, monsters, party, seed = newSeed(), seen: seen2 = /* @__PURE__ */ new Set(), locked = [] }) {
+  const p = { ...defaultParams(), ...p0 };
+  const r = rng(seed);
+  const base = { ok: false, groups: [], notes: [], seed };
+  if (!party.length) return { ...base, error: "Add characters first (Manage characters), so the generator knows who it is for." };
+  const names = difficultyNames(p.rules);
+  const di = Math.max(0, names.indexOf(p.difficulty));
+  const steps = evaluate([], party, p.rules).steps;
+  const target = { name: names[di], lower: steps[di].xp, upper: steps[di + 1] ? steps[di + 1].xp - 1 : Math.round(steps[di].xp * 1.25) };
+  const byId2 = new Map(monsters.map((m) => [m.id, m]));
+  const entry = (m) => ({ m, id: m.id, xp: monsterXp(m), style: styleOf(m), tags: extraTags(m) });
+  const fixed = [];
+  for (const g of locked) {
+    const m = byId2.get(g.monsterId);
+    if (m) fixed.push({ ...entry(m), count: g.count, locked: true });
+  }
+  for (const id of p.include) {
+    const m = byId2.get(id);
+    if (m && !fixed.some((f) => f.id === id)) fixed.push({ ...entry(m), count: 1, include: true });
+  }
+  const { pool: fullPool, emptiedBy } = buildPool(monsters, p);
+  const pool = fullPool.filter((c2) => styleWeight(p.style, c2.style) > 0);
+  if (!pool.length && !fixed.length) {
+    return { ...base, error: emptiedBy ? `No monsters left after the "${emptiedBy}" filter. Loosen it and try again.` : `No monsters match "${STYLE_GOALS[p.style]}" with these filters.` };
+  }
+  const fixedCount = fixed.reduce((n, f) => n + f.count, 0);
+  const user = p.countMode === "exact" ? [p.count, p.count] : p.countMode === "range" ? [Math.min(p.countMin, p.countMax), Math.max(p.countMin, p.countMax)] : [1, p.maxCount];
+  user[0] = Math.max(user[0], fixedCount, 1);
+  user[1] = Math.max(user[0], user[1]);
+  const fits = (s) => SHAPE_COUNT[s][0] <= user[1] && SHAPE_COUNT[s][1] >= user[0];
+  const shapes = Object.keys(SHAPE_COUNT).filter(fits);
+  if (p.shape !== "random" && !fits(p.shape)) base.notes.push(`${SHAPES[p.shape]} doesn't fit ${user[0] === user[1] ? user[0] : `${user[0]}\u2013${user[1]}`} creatures, so another shape was used.`);
+  let attempts = tryShapes(p.shape !== "random" && fits(p.shape) ? [p.shape] : shapes);
+  if (p.shape !== "random" && fits(p.shape) && !(attempts[0]?.score < 1e3)) {
+    const other = tryShapes(shapes);
+    if (other[0]?.score < 1e3) {
+      attempts = other;
+      base.notes.push(`A ${SHAPES[p.shape].toLowerCase()} couldn't reach ${target.name} with these creatures, so another shape was used.`);
+    }
+  }
+  if (!attempts.length) return { ...base, error: "Could not put an encounter together with these settings." };
+  const best = attempts[0];
+  const evaluation = evaluate(best.groups.flatMap((g) => Array(g.count).fill(xpItem(g.m))), party, p.rules);
+  const inBand = evaluation.adjusted >= target.lower && evaluation.adjusted <= target.upper;
+  const notes = [...base.notes];
+  if (!inBand) notes.push(diagnose(evaluation.adjusted < target.lower));
+  if (best.styleMiss > 0 && p.style !== "any") notes.push(`Couldn't fully meet "${STYLE_GOALS[p.style]}" with these creatures.`);
+  if (p.theme !== "none" && !best.themed) notes.push(`Couldn't keep it to one ${p.theme === "type" ? "creature type" : "race"} with these creatures.`);
+  const creatures = best.groups.flatMap((g) => Array(g.count).fill(g));
+  const why = [
+    SHAPES[best.shape],
+    `${creatures.length} creature${creatures.length === 1 ? "" : "s"}`,
+    themeName(p.theme, best.groups.map((g) => g.m)) && `themed: ${themeName(p.theme, best.groups.map((g) => g.m))}`,
+    styleSummary(creatures)
+  ].filter(Boolean).join(" \xB7 ");
+  return {
+    ok: true,
+    seed,
+    shape: best.shape,
+    target,
+    inBand,
+    evaluation,
+    why,
+    notes,
+    signature: best.signature,
+    groups: best.groups.map((g) => ({ monsterId: g.id, count: g.count, ...g.locked ? { locked: true } : {} }))
+  };
+  function tryShapes(list) {
+    const out = [];
+    for (let t = 0; t < 90; t++) {
+      const shape = list.length ? list[int(r, 0, list.length - 1)] : "squad";
+      const lo = Math.max(user[0], SHAPE_COUNT[shape][0]), hi = Math.min(user[1], SHAPE_COUNT[shape][1]);
+      const mix = build3(shape, lo <= hi ? int(r, lo, hi) : user[0], list.length === 1);
+      if (mix) out.push(mix);
+    }
+    return out.sort((a2, b2) => a2.score - b2.score);
+  }
+  function build3(shape, n, keepShape) {
+    const freeCount = Math.max(0, n - fixedCount);
+    let kinds2 = { solo: 1, elite: int(r, 1, 2), boss: freeCount >= 5 ? int(r, 2, 3) : 2, squad: int(r, 2, 3), horde: int(r, 1, 2) }[shape];
+    if (p.variety > 0) kinds2 = Math.min(kinds2, p.variety);
+    kinds2 = Math.max(0, Math.min(kinds2 - fixed.length, freeCount));
+    if (p.variety > 0 && fixed.length >= p.variety) kinds2 = 0;
+    const aim = target.lower + (target.upper - target.lower) * (0.25 + r() * 0.5);
+    const mult = evaluate(Array(n).fill("1"), party, p.rules).multiplier;
+    const budget = Math.max(1, aim / mult - fixed.reduce((s, f) => s + f.xp * f.count, 0));
+    const plan = [];
+    if (freeCount && kinds2) {
+      if (shape === "boss" && !fixed.length && kinds2 >= 2) {
+        const share = 0.45 + r() * 0.25;
+        plan.push({ count: 1, xp: budget * share, boss: true });
+        splitEven(freeCount - 1, Math.max(1, kinds2 - 1), budget * (1 - share));
+      } else if (shape === "solo" || shape === "elite" && kinds2 === 1) plan.push({ count: freeCount, xp: budget / freeCount, boss: true });
+      else splitEven(freeCount, kinds2, budget);
+    }
+    function splitEven(count, k, xp) {
+      if (count <= 0) return;
+      k = Math.min(k, count);
+      const counts = Array(k).fill(Math.floor(count / k));
+      for (let i = 0; i < count % k; i++) counts[i]++;
+      const weights = counts.map((c2) => c2 * (0.7 + r() * 0.6));
+      const total = weights.reduce((a2, b2) => a2 + b2, 0);
+      counts.forEach((c2, i) => plan.push({ count: c2, xp: xp * weights[i] / total / c2 }));
+    }
+    const groups = fixed.map((f) => ({ ...f }));
+    let anchor = groups[0]?.m || null;
+    const needCaster = p.style === "someCasters" && !groups.some((g) => g.style === "caster");
+    for (const [i, slot] of plan.entries()) {
+      const used = new Set(groups.map((g) => g.id));
+      const c2 = pick2(r, pool.filter((x) => !used.has(x.id)), (x) => {
+        const d = Math.log(x.xp / slot.xp);
+        let w = 1 / (1 + d * d * 4);
+        w *= styleWeight(p.style, x.style) * (needCaster && i === 0 && x.style === "caster" ? 4 : 1);
+        if (anchor && p.theme !== "none") w *= sharesTheme(p.theme, anchor, x.m) ? 6 : 0.15;
+        if (slot.boss && x.tags.includes("Legendary")) w *= 2;
+        return w;
+      });
+      if (!c2) break;
+      groups.push({ ...c2, count: slot.count });
+      anchor ??= c2.m;
+    }
+    if (!groups.length) return null;
+    const bounds = keepShape ? [Math.max(user[0], SHAPE_COUNT[shape][0]), Math.min(user[1], SHAPE_COUNT[shape][1])] : user;
+    adjust(groups, bounds[0] <= bounds[1] ? bounds : user);
+    return score(groups, keepShape ? shape : shapeOf(groups));
+  }
+  function adjust(groups, [minN, maxN0]) {
+    const maxN = Math.max(maxN0, fixedCount);
+    for (let k = 0; k < 10; k++) {
+      const ev = evaluate(groups.flatMap((g) => Array(g.count).fill(xpItem(g.m))), party, p.rules);
+      const low = ev.adjusted < target.lower, high = ev.adjusted > target.upper;
+      if (!low && !high) return;
+      const total = groups.reduce((a2, g) => a2 + g.count, 0);
+      const free = groups.map((g, i) => [g, i]).filter(([g]) => !g.locked);
+      const moves = [];
+      for (const [g, i] of free) {
+        if (!g.include) {
+          const used = new Set(groups.map((x) => x.id));
+          const options = pool.filter((x) => !used.has(x.id) && (low ? x.xp > g.xp : x.xp < g.xp) && styleWeight(p.style, x.style) > 0.5 && (p.theme === "none" || groups.length < 2 || sharesTheme(p.theme, groups.find((x2) => x2 !== g).m, x.m)));
+          if (options.length) {
+            const next2 = options.reduce((a2, b2) => Math.abs(b2.xp - g.xp) < Math.abs(a2.xp - g.xp) ? b2 : a2);
+            moves.push(() => {
+              groups[i] = { ...next2, count: g.count };
+            });
+          }
+        }
+        if (low && total < maxN && (p.countMode === "any" || total < user[1])) moves.push(() => {
+          g.count++;
+        });
+        if (high && g.count > 1 && total > minN) moves.push(() => {
+          g.count--;
+        });
+      }
+      if (!moves.length) return;
+      moves[int(r, 0, moves.length - 1)]();
+    }
+  }
+  function score(groups, shape) {
+    const crs = groups.flatMap((g) => Array(g.count).fill(xpItem(g.m)));
+    const ev = evaluate(crs, party, p.rules);
+    const mid = (target.lower + target.upper) / 2;
+    const out = ev.adjusted < target.lower ? (target.lower - ev.adjusted) / target.lower : ev.adjusted > target.upper ? (ev.adjusted - target.upper) / target.upper : 0;
+    const creatures2 = groups.flatMap((g) => Array(g.count).fill(g));
+    const miss = styleMiss(p.style, creatures2);
+    const themed = p.theme === "none" || groups.every((g) => sharesTheme(p.theme, groups[0].m, g.m));
+    const signature = groups.map((g) => `${g.id}x${g.count}`).sort().join("|");
+    const s = (out ? 1e3 + out * 100 : 0) + miss * 60 + (themed ? 0 : 25) + Math.abs(ev.adjusted - mid) / mid * 10 + (seen2.has(signature) ? 40 : 0) + r() * 4;
+    return { groups, shape, score: s, styleMiss: miss, themed, signature };
+  }
+  function diagnose(tooWeak) {
+    const xs = pool.map((c2) => c2.xp);
+    const strongest = Math.max(0, ...xs), weakest = Math.min(...xs);
+    if (tooWeak) return `Closest found is below ${target.name}. The strongest allowed creature is worth ${strongest.toLocaleString()} XP: allow higher CRs${p.countMode !== "any" ? " or more creatures" : ""}, or pick an easier difficulty.`;
+    return `Closest found is above ${target.name}. The weakest allowed creature is worth ${weakest.toLocaleString()} XP: allow lower CRs${p.countMode !== "any" ? " or fewer creatures" : ""}, or pick a harder difficulty.`;
+  }
+}
+function shapeOf(groups) {
+  const all = groups.flatMap((g) => Array(g.count).fill(g.xp));
+  const total = all.reduce((a2, b2) => a2 + b2, 0);
+  if (all.length === 1) return "solo";
+  if (all.length === 2) return "elite";
+  if (Math.max(...all) >= total * 0.45 && groups.some((g) => g.count === 1)) return "boss";
+  return all.length >= 6 ? "horde" : "squad";
+}
+function styleSummary(creatures) {
+  const n = creatures.length;
+  const melee = creatures.reduce((a2, c2) => a2 + meleeShare(c2.style), 0) / n;
+  const casters = creatures.filter((c2) => c2.style === "caster").length;
+  const parts = [`${Math.round(melee * 100)}% melee`];
+  if (casters) parts.push(`${casters} caster${casters === 1 ? "" : "s"}`);
+  return parts.join(", ");
+}
+var STYLES, plain, ATTACK, entriesOf, ACTION_KEYS, SPELL_ACTION, spellcasting, styleOf, SHAPES, SHAPE_COUNT, STYLE_GOALS, THEMES2, difficultyNames, defaultParams, lc2, isHomebrew2, newSeed, int, rangedShare, meleeShare, racesOf;
+var init_generator = __esm({
+  "src/generator.js"() {
+    init_rules();
+    STYLES = { melee: "Melee", ranged: "Ranged", mixed: "Mixed", caster: "Spellcaster" };
+    plain = (s) => String(s || "").replace(/<[^>]+>/g, "");
+    ATTACK = /(Melee or Ranged|Melee|Ranged) (?:Weapon |Spell )?Attack(?: Roll)?:/i;
+    entriesOf = (m, keys) => keys.flatMap((k) => m[k] || []);
+    ACTION_KEYS = ["actions", "bonusActions", "legendaryActions"];
+    SPELL_ACTION = /\b(?:Level \d|\d(?:st|nd|rd|th) Level) Spell\b|\bCantrip\b/i;
+    spellcasting = (m) => entriesOf(m, ["traits", ...ACTION_KEYS]).find((e2) => /spellcasting/i.test(e2.name || "") || /casts one of the following spells/i.test(plain(e2.text)));
+    styleOf = (m) => STYLES[m.fightingStyle] ? m.fightingStyle : guessStyle(m);
+    SHAPES = { random: "Random", solo: "Solo", boss: "Boss + minions", elite: "Elite pair", squad: "Squad", horde: "Horde" };
+    SHAPE_COUNT = { solo: [1, 1], elite: [2, 2], boss: [3, 9], squad: [3, 5], horde: [6, 12] };
+    STYLE_GOALS = {
+      any: "Any",
+      mixed: "Mixed",
+      mostlyMelee: "Mostly melee",
+      mostlyRanged: "Mostly ranged",
+      meleeOnly: "Melee only",
+      rangedOnly: "Ranged only",
+      someCasters: "Includes spellcasters",
+      mostlyCasters: "Mostly spellcasters"
+    };
+    THEMES2 = { none: "Off", race: "Same race", type: "Same creature type", either: "Same race or type" };
+    difficultyNames = (rules) => (rules === "2024" ? DIFFICULTIES_2024 : DIFFICULTIES).slice(1);
+    defaultParams = () => ({
+      rules: "2024",
+      characterIds: [],
+      extraPlayers: { count: 0, level: 1 },
+      difficulty: "Moderate",
+      countMode: "any",
+      count: 4,
+      countMin: 3,
+      countMax: 6,
+      maxCount: 12,
+      source: "",
+      size: "",
+      crMin: "0",
+      crMax: "30",
+      types: [],
+      races: [],
+      skipCr0: true,
+      style: "any",
+      shape: "random",
+      variety: 0,
+      theme: "none",
+      include: [],
+      exclude: []
+    });
+    lc2 = (s) => String(s || "").trim().toLowerCase();
+    isHomebrew2 = (m) => !m.source || m.source === "Homebrew";
+    newSeed = () => Math.floor(Math.random() * 36 ** 6).toString(36).padStart(6, "0");
+    int = (r, lo, hi) => lo + Math.floor(r() * (hi - lo + 1));
+    rangedShare = (style) => style === "ranged" || style === "caster" ? 1 : style === "mixed" ? 0.5 : 0;
+    meleeShare = (style) => style === "melee" ? 1 : style === "mixed" ? 0.5 : 0;
+    racesOf = (m) => (m.subtypes || []).map(lc2).filter((s) => s && !/^any/.test(s));
+  }
+});
+
+// src/loot-data.js
+function defaultLootThemes() {
+  return THEMES3.map((t) => ({ onlyTypes: [], ...structuredClone(t), builtin: true }));
+}
+var LOOT_LEVELS, e, THEMES3, DEFAULT_TYPE_THEMES, TYPE_MAP_ID, MONSTER_LOOT_ID;
+var init_loot_data = __esm({
+  "src/loot-data.js"() {
+    LOOT_LEVELS = {
+      full: { label: "Full loot", share: 1 },
+      most: { label: "Most loot", share: 0.75 },
+      some: { label: "Some loot", share: 0.4 },
+      little: { label: "A little loot", share: 0.15 },
+      none: { label: "No loot (harvest only)", share: 0 }
+    };
+    e = (name, value, weight = 1, qty = "") => ({ name, value, weight, qty });
+    THEMES3 = [
+      // ---------------- people ----------------
+      {
+        id: "humanoid",
+        name: "Humanoid (general)",
+        loot: "full",
+        keywords: ["commoner", "villager", "peasant", "farmer"],
+        items: [
+          e("Tarnished silver ring", 5),
+          e("Carved wooden charm", 0.1, 2),
+          e("Pouch of pipe tobacco", 0.2, 2),
+          e("Clay pipe", 0.1),
+          e("Whetstone", 0.01),
+          e("Tin flask of cheap brandy", 0.2, 2),
+          e("Lucky copper coin with a hole punched through", 0.01),
+          e("Bone-handled knife", 0.5),
+          e("Brass buttons", 0.05, 1, "1d4"),
+          e("String of glass beads", 1),
+          e("Horn comb", 0.3),
+          e("Wool scarf", 0.2),
+          e("Wedge of hard cheese wrapped in cloth", 0.1, 2),
+          e("Small hand mirror", 2, 0.5)
+        ],
+        harvest: []
+      },
+      {
+        id: "bandit",
+        name: "Bandit",
+        loot: "full",
+        keywords: ["bandit", "thug", "brigand", "highwayman", "outlaw", "tough", "thief", "cutpurse", "spy", "assassin", "smuggler"],
+        items: [
+          e("Loaded dice", 0.1, 2),
+          e("Stolen silver locket", 15),
+          e("Mismatched earrings", 3),
+          e("Gold tooth", 2),
+          e("Stolen wedding band", 10, 0.7),
+          e("Merchant\u2019s signet ring", 25, 0.4),
+          e("Pouch of pepper", 2),
+          e("Bolt of fine lace", 5, 0.7),
+          e("Brass knuckles", 0.5),
+          e("Wineskin of sour wine", 0.2, 2),
+          e("Faded bandana", 0.05, 2),
+          e("Set of crude lockpicks", 1),
+          e("Silver spoons", 1, 1, "1d4"),
+          e("Cheap tin brooch", 0.2, 2)
+        ],
+        harvest: []
+      },
+      {
+        id: "soldier",
+        name: "Soldier",
+        loot: "full",
+        keywords: ["guard", "soldier", "warrior", "veteran", "infantry", "knight", "gladiator", "scout", "sergeant", "mercenary", "militia", "sentry", "champion"],
+        items: [
+          e("Regimental badge", 1, 2),
+          e("Bone dice", 0.1, 2),
+          e("Tin cup", 0.02, 2),
+          e("Polished brass gorget", 5),
+          e("Oilskin cloak", 1),
+          e("Spare bowstring", 0.1, 2),
+          e("Deck of worn playing cards", 0.5, 2),
+          e("Hip flask of rum", 0.5),
+          e("Silver campaign medal", 10, 0.6),
+          e("Lock of a sweetheart\u2019s hair in a twist of paper", 0, 1),
+          e("Pipe and tobacco", 0.3),
+          e("Field rations", 0.5, 2, "1d3"),
+          e("Whetstone and oil cloth", 0.1)
+        ],
+        harvest: []
+      },
+      {
+        id: "priest",
+        name: "Priest",
+        loot: "full",
+        keywords: ["priest", "acolyte", "cleric", "monk", "nun", "friar", "templar", "paladin", "pilgrim"],
+        items: [
+          e("Wooden prayer beads", 1, 2),
+          e("Small book of hymns", 5),
+          e("Beeswax candles", 0.01, 2, "1d4"),
+          e("Silver offering plate", 15, 0.5),
+          e("Pilgrim\u2019s token", 0.1, 2),
+          e("Pouch of alms", 0.5, 1.5),
+          e("Embroidered stole", 3),
+          e("Sprig of dried sage", 0.01, 2),
+          e("Reliquary with a saint\u2019s finger bone", 25, 0.4)
+        ],
+        harvest: []
+      },
+      {
+        id: "cultist",
+        name: "Cultist",
+        loot: "full",
+        keywords: ["cultist", "cult", "fanatic", "zealot", "heretic"],
+        items: [
+          e("Ritual candle stubs", 0.01, 2, "1d6"),
+          e("Carved obsidian idol", 10, 0.7),
+          e("Stick of black incense", 0.5, 2, "1d4"),
+          e("Prayer book in an unknown script", 5),
+          e("Black wax seal ring", 2),
+          e("Necklace of finger bones", 0.1),
+          e("Silver offering bowl", 15, 0.5),
+          e("Hooded robe stitched with sigils", 1),
+          e("Pouch of grave dirt", 0),
+          e("Amethyst shard", 10, 0.6),
+          e("Stub of red chalk", 0.01),
+          e("Vial of animal blood", 0)
+        ],
+        harvest: []
+      },
+      {
+        id: "noble",
+        name: "Noble",
+        loot: "full",
+        keywords: ["noble", "aristocrat", "merchant", "baron", "baroness", "duke", "duchess", "courtier", "envoy"],
+        items: [
+          e("Gold signet ring", 50, 0.7),
+          e("Jeweled hairpin", 25),
+          e("Perfumed silk handkerchief", 1, 2),
+          e("Silver snuffbox", 20),
+          e("Pearl earring", 15),
+          e("Painted lace fan", 5),
+          e("Silver hip flask", 15),
+          e("Portrait locket", 30, 0.7),
+          e("Kidskin gloves", 3, 2),
+          e("Ivory comb", 10),
+          e("Gold-chained monocle", 40, 0.5),
+          e("Bottle of fine wine", 10, 0.7)
+        ],
+        harvest: []
+      },
+      {
+        id: "caster",
+        name: "Spellcaster",
+        loot: "full",
+        keywords: ["mage", "archmage", "wizard", "sorcerer", "warlock", "druid", "apprentice", "necromancer", "witch", "conjurer", "evoker", "illusionist", "diviner", "enchanter", "magus"],
+        items: [
+          e("Bundle of dried herbs", 0.5, 2),
+          e("Small quartz crystal", 5),
+          e("Pouch of bat guano", 0.1),
+          e("Vial of quicksilver", 5, 0.7),
+          e("Bag of coloured chalk", 0.2, 2),
+          e("Notebook of arcane scribbles", 3),
+          e("Ink-stained quill", 0.02, 2),
+          e("Feather of a rare bird", 2),
+          e("Tiny brass astrolabe", 25, 0.4),
+          e("Pinch of powdered pearl", 10, 0.6),
+          e("Sealed jar of sulfur", 1),
+          e("Spectacles with a cracked lens", 2)
+        ],
+        harvest: []
+      },
+      {
+        id: "raider",
+        name: "Raider",
+        loot: "full",
+        keywords: ["raider", "goblin", "hobgoblin", "bugbear", "gnoll", "kobold", "orc", "lizardfolk", "sahuagin", "berserker", "centaur", "merfolk", "troglodyte", "barbarian", "tribal", "marauder", "reaver"],
+        items: [
+          e("Necklace of teeth", 0.5, 2),
+          e("Scrap of stolen silk", 2),
+          e("Crude iron armband", 0.2, 2),
+          e("Bone dice", 0.1),
+          e("Sack of mismatched cutlery", 0.5),
+          e("Shiny bit of broken glass", 0, 2),
+          e("Pot of war paint", 0.1),
+          e("Strips of dried meat", 0.01, 2, "1d4"),
+          e("Carved bone fetish", 0.2, 2),
+          e("Tarnished silver spoon", 1),
+          e("Copper bracelets", 1, 1, "1d3"),
+          e("Stolen hand mirror", 2, 0.5)
+        ],
+        harvest: []
+      },
+      {
+        id: "pirate",
+        name: "Pirate",
+        loot: "full",
+        keywords: ["pirate", "buccaneer", "corsair", "sailor", "deckhand", "privateer"],
+        items: [
+          e("Gold earring", 5),
+          e("Cracked spyglass lens", 2),
+          e("Bottle of rum", 1, 2),
+          e("Pouch of foreign coins", 3),
+          e("Bosun\u2019s whistle", 0.5),
+          e("Scrimshaw whale tooth", 5),
+          e("String of pearls", 25, 0.4),
+          e("Tarred rope bracelet", 0.01, 2),
+          e("Parrot feather", 0, 1),
+          e("Sailor\u2019s knife", 0.5),
+          e("Tin of ship\u2019s biscuits", 0.1, 2),
+          e("Brass compass", 25, 0.4)
+        ],
+        harvest: []
+      },
+      // ---------------- by creature type ----------------
+      {
+        id: "giant",
+        name: "Giant",
+        loot: "most",
+        keywords: [],
+        items: [
+          e("Giant-sized copper bracelet", 15),
+          e("Sack of sheep bones", 0),
+          e("Hide pouch of small gems", 10, 0.6, "1d3"),
+          e("Huge iron ring", 5),
+          e("Dented helmet used as a cup", 2),
+          e("Club studded with stolen coins", 8),
+          e("String of trophy shields", 10, 0.5),
+          e("Cask of strong ale", 5, 0.5)
+        ],
+        harvest: [e("Giant\u2019s tooth", 5), e("Braid of coarse hair", 1), e("Thick hide", 8, 0.6)]
+      },
+      {
+        id: "undead",
+        name: "Undead",
+        loot: "little",
+        keywords: [],
+        items: [
+          e("Tarnished locket", 5),
+          e("Corroded ring", 2),
+          e("Ancient copper coins", 0.05, 2, "2d6"),
+          e("Grave-goods bracelet", 10, 0.6),
+          e("Funerary coin", 1),
+          e("Scrap of burial shroud", 0, 2),
+          e("Rusted belt buckle", 0.1),
+          e("Rotted leather purse", 0.1)
+        ],
+        harvest: []
+      },
+      {
+        id: "construct",
+        name: "Construct",
+        loot: "none",
+        keywords: [],
+        items: [],
+        harvest: [
+          e("Frame plating", 10, 2),
+          e("Power core", 50, 0.6),
+          e("Servo", 5, 2, "1d4"),
+          e("Logic core", 30, 0.7),
+          e("Optics", 15),
+          e("Gears and springs", 2, 1.5, "2d4")
+        ]
+      },
+      {
+        id: "beast",
+        name: "Beast",
+        loot: "none",
+        keywords: [],
+        items: [],
+        harvest: [
+          e("Pelt", 2, 2),
+          e("Teeth", 0.5, 1.5, "1d6"),
+          e("Claws", 0.5, 1, "1d4"),
+          e("Meat", 0.1, 1.5, "1d4"),
+          e("Bones", 0.1),
+          e("Sinew", 0.2),
+          e("Horns or antlers", 2, 0.6)
+        ]
+      },
+      {
+        id: "bird",
+        name: "Bird",
+        loot: "none",
+        keywords: ["hawk", "eagle", "owl", "raven", "vulture", "crow", "falcon", "bird", "roc", "pteranodon"],
+        onlyTypes: ["Beast", "Monstrosity", "Celestial"],
+        items: [],
+        harvest: [
+          e("Feathers", 0.2, 2, "2d6"),
+          e("Talons", 1, 1.5, "1d4"),
+          e("Beak", 1),
+          e("Meat", 0.1, 1, "1d2")
+        ]
+      },
+      {
+        id: "reptile",
+        name: "Reptile",
+        loot: "none",
+        keywords: ["snake", "lizard", "crocodile", "serpent", "viper", "cobra", "toad", "frog", "tortoise", "turtle", "dinosaur", "allosaurus", "ankylosaurus", "triceratops", "tyrannosaurus", "plesiosaurus"],
+        onlyTypes: ["Beast"],
+        items: [],
+        harvest: [
+          e("Scaled hide", 3, 2),
+          e("Fangs", 1, 1.5, "1d4"),
+          e("Venom sac", 8, 0.7),
+          e("Meat", 0.1, 1, "1d4"),
+          e("Shed skin", 0.5)
+        ]
+      },
+      {
+        id: "sea-creature",
+        name: "Sea creature",
+        loot: "none",
+        keywords: ["shark", "whale", "octopus", "piranha", "seahorse", "crab", "eel", "squid", "fish", "archelon"],
+        onlyTypes: ["Beast", "Monstrosity"],
+        items: [],
+        harvest: [
+          e("Teeth", 0.5, 2, "1d6"),
+          e("Tough hide", 3),
+          e("Ink sac", 5, 0.6),
+          e("Shell fragments", 1, 1, "1d4"),
+          e("Fish oil", 0.5, 1.5)
+        ]
+      },
+      {
+        id: "bug",
+        name: "Bug",
+        loot: "none",
+        keywords: ["spider", "wasp", "centipede", "scorpion", "beetle", "insect", "insects", "ant", "ankheg", "mantis", "tick", "fly", "stirge", "ettercap"],
+        onlyTypes: ["Beast", "Monstrosity"],
+        items: [],
+        harvest: [
+          e("Chitin plates", 2, 2, "1d4"),
+          e("Venom gland", 10, 0.8),
+          e("Mandibles", 1),
+          e("Spool of silk", 5, 0.6),
+          e("Wing membranes", 1, 0.7),
+          e("Compound eye", 3, 0.7)
+        ]
+      },
+      {
+        id: "plant",
+        name: "Plant",
+        loot: "none",
+        keywords: [],
+        items: [],
+        harvest: [
+          e("Sap", 1, 2),
+          e("Bark strips", 0.5, 1.5, "1d4"),
+          e("Spores", 2),
+          e("Seeds", 1, 1, "1d6"),
+          e("Fibre", 0.2),
+          e("Heartwood", 10, 0.5),
+          e("Fungal cap", 2, 0.8)
+        ]
+      },
+      {
+        id: "elemental",
+        name: "Elemental",
+        loot: "none",
+        keywords: [],
+        items: [],
+        harvest: [
+          e("Elemental essence", 25, 1),
+          e("Mote of raw element", 5, 2, "1d4"),
+          e("Planar residue", 2, 1.5)
+        ]
+      },
+      {
+        id: "fire-elemental",
+        name: "Elemental: fire",
+        loot: "none",
+        keywords: ["fire", "flame", "magma", "magmin", "salamander", "efreeti", "azer", "ember", "lava"],
+        onlyTypes: ["Elemental"],
+        items: [],
+        harvest: [
+          e("Cinders", 1, 2, "1d6"),
+          e("Ember core", 25, 0.7),
+          e("Volcanic glass", 3, 1.5, "1d3"),
+          e("Smouldering ash", 0.5)
+        ]
+      },
+      {
+        id: "water-elemental",
+        name: "Elemental: water and ice",
+        loot: "none",
+        keywords: ["water", "ice", "steam", "frost", "mist", "tide"],
+        onlyTypes: ["Elemental"],
+        items: [],
+        harvest: [
+          e("Vial of living water", 10, 1.5, "1d3"),
+          e("Coral fragments", 2, 1.5, "1d4"),
+          e("Ever-cold shard", 15, 0.7),
+          e("Brine crystals", 1)
+        ]
+      },
+      {
+        id: "air-elemental",
+        name: "Elemental: air",
+        loot: "none",
+        keywords: ["air", "djinni", "stalker", "wind", "storm", "cloud"],
+        onlyTypes: ["Elemental"],
+        items: [],
+        harvest: [
+          e("Bottled breeze", 10, 1.5),
+          e("Storm-charged crystal", 25, 0.6),
+          e("Wisps of cloud in a jar", 5, 1.5),
+          e("Static-charged dust", 1)
+        ]
+      },
+      {
+        id: "earth-elemental",
+        name: "Elemental: earth",
+        loot: "none",
+        keywords: ["earth", "gargoyle", "xorn", "dust", "mud", "stone", "galeb"],
+        onlyTypes: ["Elemental"],
+        items: [],
+        harvest: [
+          e("Raw gemstone", 10, 1, "1d3"),
+          e("Ore chunks", 2, 2, "1d4"),
+          e("Crystal geode", 25, 0.5),
+          e("Living clay", 3)
+        ]
+      },
+      {
+        id: "dragon",
+        name: "Dragon",
+        loot: "little",
+        keywords: ["dragon", "wyrmling", "wyvern", "drake", "wyrm"],
+        items: [
+          e("Gemstone wedged between scales", 25),
+          e("Coin of a long-fallen kingdom", 1, 2, "1d6"),
+          e("Crushed golden goblet", 15),
+          e("Broken jeweled scabbard", 20, 0.6)
+        ],
+        harvest: [
+          // scales, teeth and blood are creature parts in data/components.json (always one of them per dragon)
+          e("Dragon claws", 5, 1.5, "1d4"),
+          e("Dragon horn", 25, 0.8),
+          e("Breath gland ({breath})", 50, 1),
+          e("Wing membrane", 10, 0.8)
+        ]
+      },
+      {
+        id: "fiend",
+        name: "Fiend",
+        loot: "little",
+        keywords: [],
+        items: [
+          e("Blackened iron token", 1, 2),
+          e("Brimstone-scented coins", 0.1, 1, "2d6"),
+          e("Bloodstone", 10, 0.6),
+          e("Jagged obsidian ring", 5)
+        ],
+        harvest: [
+          e("Fiend horn", 10, 1.5),
+          e("Vial of ichor", 5, 2, "1d3"),
+          e("Infernal hide", 10),
+          e("Fiend claws", 5, 1, "1d4"),
+          e("Brimstone ash", 1)
+        ]
+      },
+      {
+        id: "fey",
+        name: "Fey",
+        loot: "little",
+        keywords: [],
+        items: [
+          e("Acorn carved with a tiny face", 0, 2),
+          e("Silver thimble", 2),
+          e("Bell that makes no sound", 5),
+          e("Ribbon that never tangles", 1)
+        ],
+        harvest: [
+          e("Glimmering dust", 5, 2),
+          e("Lock of fey hair", 2),
+          e("Iridescent wing scales", 5),
+          e("Vial of moonlit dew", 10, 0.7)
+        ]
+      },
+      {
+        id: "monstrosity",
+        name: "Monstrosity",
+        loot: "little",
+        keywords: [],
+        items: [
+          e("Half-digested coin purse", 2),
+          e("Bones of an earlier victim, with a ring", 5, 0.7),
+          e("Torn satchel", 0.5)
+        ],
+        harvest: [
+          e("Monstrous hide", 5, 2),
+          e("Fangs", 2, 1.5, "1d4"),
+          e("Venom sac", 10, 0.6),
+          e("Eye", 5, 0.7),
+          e("Quills or spines", 1, 1, "2d6"),
+          e("Claws", 2, 1, "1d4"),
+          e("Beak", 3, 0.5)
+        ]
+      },
+      {
+        id: "aberration",
+        name: "Aberration",
+        loot: "little",
+        keywords: [],
+        items: [
+          e("Strange metal disc", 5),
+          e("Polished stone that hums", 10, 0.6),
+          e("Bones of an earlier victim, with a ring", 5, 0.7)
+        ],
+        harvest: [
+          e("Vial of ichor", 5, 2, "1d3"),
+          e("Tentacle segment", 2, 1.5),
+          e("Eye stalk", 10, 0.8),
+          e("Chitinous plate", 3),
+          e("Jar of brain matter", 15, 0.5)
+        ]
+      },
+      {
+        id: "celestial",
+        name: "Celestial",
+        loot: "little",
+        keywords: [],
+        items: [
+          e("Gold prayer bead", 5),
+          e("Feather-shaped silver pin", 10),
+          e("Small vial of holy oil", 10, 0.7)
+        ],
+        harvest: [
+          e("Radiant feather", 10, 2, "1d4"),
+          e("Vial of luminous blood", 25, 0.7),
+          e("Horn shard", 15, 0.7),
+          e("Strands of shining hair", 5)
+        ]
+      },
+      {
+        id: "ooze",
+        name: "Ooze",
+        loot: "none",
+        keywords: ["ooze", "pudding", "jelly", "cube", "slime"],
+        items: [],
+        harvest: [
+          e("Jar of acidic residue", 5, 2),
+          e("Gelatinous membrane", 2, 1.5),
+          e("Undissolved trinkets", 3),
+          e("Congealed slime", 1)
+        ]
+      }
+    ];
+    DEFAULT_TYPE_THEMES = {
+      Aberration: "aberration",
+      Beast: "beast",
+      Celestial: "celestial",
+      Construct: "construct",
+      Dragon: "dragon",
+      Elemental: "elemental",
+      Fey: "fey",
+      Fiend: "fiend",
+      Giant: "giant",
+      Humanoid: "humanoid",
+      Monstrosity: "monstrosity",
+      Ooze: "ooze",
+      Plant: "plant",
+      Undead: "undead"
+    };
+    TYPE_MAP_ID = "loot-type-defaults";
+    MONSTER_LOOT_ID = "loot-monster-settings";
+  }
+});
+
+// src/loot-flavor.js
+var POCKET, GEAR, key2, POCKET_BY, GEAR_BY, flavorOf, gearFlavor;
+var init_loot_flavor = __esm({
+  "src/loot-flavor.js"() {
+    POCKET = {
+      // ---------------- people ----------------
+      "Tarnished silver ring": "Worn thin on one side from years on the same finger. Somebody polished it for a wedding, once.",
+      "Carved wooden charm": "A little whittled bird, rubbed smooth by a thumb that worried at it every night.",
+      "Pouch of pipe tobacco": "Cheap leaf cut with something that smells faintly of cherries, and faintly of feet.",
+      "Clay pipe": "The stem has been snapped and glued twice. The bowl is black with a lifetime of evenings.",
+      "Whetstone": "A palm-sized grey stone with a dip worn into the middle from a thousand sharpenings.",
+      "Tin flask of cheap brandy": "The label promises \u201CFinest Valley Brandy.\u201D The smell makes no such promises.",
+      "Lucky copper coin with a hole punched through": "Strung on a bit of twine. Clearly it was not lucky enough.",
+      "Bone-handled knife": "A plain working blade, good for bread, rope and arguments.",
+      "Brass buttons": "Cut from a coat that was far finer than whatever its last owner was wearing.",
+      "String of glass beads": "Blue and green beads that look like sea glass from a distance and like glass up close.",
+      "Horn comb": "Missing three teeth. Still has a few hairs in it.",
+      "Wool scarf": "Hand-knitted and lumpy, by someone who loved its owner more than they loved knitting.",
+      "Wedge of hard cheese wrapped in cloth": "Sharp, crumbly and only slightly squashed. Still perfectly edible, which is more than can be said for its owner.",
+      "Small hand mirror": "A disc of polished steel in a wooden frame. It shows you, a bit blurry and a bit judgemental.",
+      "Loaded dice": "A pair of bone dice that roll sixes a little too often. Rattle them and one sounds heavier.",
+      "Stolen silver locket": "Inside: a tiny painting of a stern grandmother who would be very disappointed in all of this.",
+      "Mismatched earrings": "One gold hoop, one silver stud. Each came from a different unlucky traveller.",
+      "Gold tooth": "Knocked loose from someone\u2019s smile. Best not to ask whose.",
+      "Stolen wedding band": "Engraved inside: \u201CForever, M.\u201D Forever turned out to be shorter than planned.",
+      "Merchant\u2019s signet ring": "Bears the seal of a trading house. Somewhere, a merchant is very upset about the letters they can\u2019t sign.",
+      "Pouch of pepper": "Black peppercorns, worth their weight in silver to the right cook.",
+      "Bolt of fine lace": "Folded carefully into a waxed bag. Whoever stole it knew exactly what it was worth.",
+      "Brass knuckles": "Dented in the shape of several jaws.",
+      "Wineskin of sour wine": "Half full of something that was wine a few weeks ago and is working hard at becoming vinegar.",
+      "Faded bandana": "Once red, now the pink of a hundred washings in a hundred streams.",
+      "Set of crude lockpicks": "Bent nails and a hairpin, rolled up in a strip of leather. They work about half the time.",
+      "Silver spoons": "Engraved with someone else\u2019s family crest.",
+      "Cheap tin brooch": "Shaped like a rose. Painted red, mostly.",
+      "Regimental badge": "A stamped tin emblem of a company that may or may not still exist.",
+      "Bone dice": "Hand-carved and slightly lopsided. The pips are burned in.",
+      "Tin cup": "Dented, scorched on the bottom and scratched with initials.",
+      "Polished brass gorget": "A crescent of throat armor, polished for parades rather than battles.",
+      "Oilskin cloak": "Waxed against the rain and smelling powerfully of it.",
+      "Spare bowstring": "Coiled and waxed and kept somewhere dry, the way every archer is told to and few do.",
+      "Deck of worn playing cards": "Soft as cloth from use. The queen of cups is missing and has been replaced with a scrap of paper that says \u201Cqueen.\u201D",
+      "Hip flask of rum": "Dark ship\u2019s rum, sweet and strong enough to make a sergeant smile.",
+      "Silver campaign medal": "Awarded for a battle in a war that history has mostly forgotten.",
+      "Lock of a sweetheart\u2019s hair in a twist of paper": "The paper says \u201Ccome home safe.\u201D It\u2019s worth nothing, and it was worth everything.",
+      "Pipe and tobacco": "A short briar pipe and a pouch of dark leaf, kept together in an oilcloth wrap.",
+      "Field rations": "Hardtack, dried beef and a twist of salt. Calories, technically.",
+      "Whetstone and oil cloth": "Everything a soldier needs to keep a blade keen and a sergeant off their back.",
+      "Wooden prayer beads": "Smooth beads on a waxed cord, each one worn by a prayer.",
+      "Small book of hymns": "Pocket-sized, the spine cracked open at a favourite song.",
+      "Beeswax candles": "They smell of honey and burn clean. Much nicer than tallow.",
+      "Silver offering plate": "Shallow and engraved with a sunburst. Usually it comes back from the congregation fuller than this.",
+      "Pilgrim\u2019s token": "A lead badge from a distant shrine, proof that someone walked a very long way.",
+      "Pouch of alms": "A handful of copper and silver meant for the poor. Taking it may weigh on a conscience.",
+      "Embroidered stole": "A long strip of cloth stitched with holy symbols in gold thread, slightly frayed at the ends.",
+      "Sprig of dried sage": "Burned to cleanse a room of bad spirits, or at least of bad smells.",
+      "Reliquary with a saint\u2019s finger bone": "A little silver box with a glass window. The finger inside points accusingly at whoever holds it.",
+      "Ritual candle stubs": "Black and red, melted down to nubs. The wax has dripped into shapes nobody wants to look at too long.",
+      "Carved obsidian idol": "A squat, many-eyed figure. It is cold to the touch and somehow always facing you.",
+      "Stick of black incense": "Smells of myrrh and something underneath, like a cellar after rain.",
+      "Prayer book in an unknown script": "The pages are covered in looping letters that seem to rearrange when you aren\u2019t looking at them. They don\u2019t, but it seems that way.",
+      "Black wax seal ring": "The seal is a closed eye. It has been pressed into a great many secret letters.",
+      "Necklace of finger bones": "Threaded on sinew. Some are small, and nobody wants to think about that.",
+      "Silver offering bowl": "Stained dark at the bottom. It was not used for wine.",
+      "Hooded robe stitched with sigils": "Heavy black wool with symbols sewn around the hem. It smells of smoke and fear-sweat.",
+      "Pouch of grave dirt": "Dirt from a specific grave, apparently. It looks like dirt.",
+      "Amethyst shard": "A violet crystal, roughly chipped from a larger stone. Cultists swear it helps with the voices.",
+      "Stub of red chalk": "For drawing circles on floors. The other end is still dusted with the last one.",
+      "Vial of animal blood": "A stoppered glass vial of blood. Probably a goat. Hopefully a goat.",
+      "Gold signet ring": "A heavy band bearing a noble crest. Selling it openly might attract questions, and relatives.",
+      "Jeweled hairpin": "A long silver pin topped with a cluster of small garnets. Elegant and, in a pinch, stabby.",
+      "Perfumed silk handkerchief": "Smells of lavender and money.",
+      "Silver snuffbox": "Engraved with hunting hounds. A pinch of snuff still clings to the hinge.",
+      "Pearl earring": "A single creamy pearl. Its partner is somewhere on a ballroom floor.",
+      "Painted lace fan": "Opens to show a pastoral scene of shepherds who have clearly never met a sheep.",
+      "Silver hip flask": "Monogrammed and filled with something amber and expensive.",
+      "Portrait locket": "Holds a miniature of a handsome young person. It is not the owner\u2019s spouse.",
+      "Kidskin gloves": "Butter-soft and dyed a fashionable shade of \u201Cnot for work.\u201D",
+      "Ivory comb": "Carved with a delicate scene of swans. Far too nice for anyone in this party\u2019s hair.",
+      "Gold-chained monocle": "For looking down on people with greater precision.",
+      "Bottle of fine wine": "A dusty bottle from a famous vineyard. The cork is sealed with wax and good intentions.",
+      "Bundle of dried herbs": "Rosemary, mugwort and something grey and fuzzy, tied with string. A hedge-witch\u2019s pantry.",
+      "Small quartz crystal": "Clear as water, with a flaw inside like a frozen feather.",
+      "Pouch of bat guano": "Exactly what it sounds like. Fireball enthusiasts never leave home without it.",
+      "Vial of quicksilver": "Liquid metal that rolls around the glass like it\u2019s trying to escape.",
+      "Bag of coloured chalk": "Stubs in six colours, for magic circles, diagrams and the occasional hopscotch grid.",
+      "Notebook of arcane scribbles": "Half spell theory, half shopping list. A margin note reads \u201CDON\u2019T try the fire one indoors again.\u201D",
+      "Ink-stained quill": "A goose quill chewed at the end. The stains reach halfway up.",
+      "Feather of a rare bird": "Iridescent green-gold. A collector or a wizard would pay to know where it came from.",
+      "Tiny brass astrolabe": "A pocket instrument for reading the stars. Its little gears still turn smoothly.",
+      "Pinch of powdered pearl": "Folded in waxed paper: pearl dust, glittering and costly.",
+      "Sealed jar of sulfur": "Yellow powder in a corked jar. Opening it will make the whole room regret it.",
+      "Spectacles with a cracked lens": "Wire frames bent to fit a very particular nose. The world through them is sharp, and split in two.",
+      "Necklace of teeth": "Wolf, boar and a few that are worryingly human-shaped, strung on gut.",
+      "Scrap of stolen silk": "A torn length of bright silk, probably from a merchant\u2019s caravan. Worn as a sash with great pride.",
+      "Crude iron armband": "Hammered from a single iron bar. Fits anyone with forearms like hams.",
+      "Sack of mismatched cutlery": "Forks, spoons, a ladle and one fish knife. A raider\u2019s idea of treasure.",
+      "Shiny bit of broken glass": "Catches the light beautifully. Its owner clearly thought it was a gem.",
+      "Pot of war paint": "Ochre and soot mixed in fat. It smells awful and looks terrifying.",
+      "Strips of dried meat": "Tough, salty and of uncertain origin.",
+      "Carved bone fetish": "A little figure scratched into a knuckle bone, meant to keep spirits away. It didn\u2019t.",
+      "Tarnished silver spoon": "Black with tarnish. Polish it and it might be worth something, or at least eat soup.",
+      "Copper bracelets": "Green-stained bangles that leave a ring on the wrist.",
+      "Stolen hand mirror": "Its frame is gilded; its glass is cracked from a fall. Seven years\u2019 bad luck for someone.",
+      "Gold earring": "A heavy gold hoop. Sailors say it pays for your funeral if the sea gives your body back.",
+      "Cracked spyglass lens": "Salvaged from a broken telescope. Good for starting fires on sunny days.",
+      "Bottle of rum": "Dark, sweet and strong. Ask nicely and a pirate might fight you for it.",
+      "Pouch of foreign coins": "Square, triangular and holed coins from ports half a world away.",
+      "Bosun\u2019s whistle": "A curved silver pipe that makes a shrill trill heard over any storm.",
+      "Scrimshaw whale tooth": "Etched with a whaling ship and a very large, very angry whale.",
+      "String of pearls": "Lustrous and perfectly matched. Pried from more than one oyster, and possibly one duchess.",
+      "Tarred rope bracelet": "A twist of ship\u2019s rope knotted round the wrist, black and sticky with tar.",
+      "Parrot feather": "Bright red. The parrot is not included and is presumably very angry.",
+      "Sailor\u2019s knife": "Blunt-tipped so it can\u2019t stab a shipmate in a rolling sea. It can still cut rope beautifully.",
+      "Tin of ship\u2019s biscuits": "Hard enough to break teeth. Something small lives in one of them.",
+      "Brass compass": "The needle swings true. On the lid, someone scratched a heart and a woman\u2019s name.",
+      // ---------------- creatures ----------------
+      "Giant-sized copper bracelet": "A ring of hammered copper big enough to wear as a belt.",
+      "Sack of sheep bones": "A giant\u2019s lunch leftovers, picked clean and saved for\u2026 something.",
+      "Hide pouch of small gems": "To a giant, these are pretty pebbles. To anyone else, they\u2019re a small fortune.",
+      "Huge iron ring": "A wagon-wheel rim the giant wore on one finger.",
+      "Dented helmet used as a cup": "A knight\u2019s helm, crumpled and sticky with ale. The knight is not mentioned.",
+      "Club studded with stolen coins": "A tree trunk with silver and copper coins hammered into it. Prying them out is half a day\u2019s work.",
+      "String of trophy shields": "Shields of defeated adventurers, threaded on a rope. Some of the heraldry is still legible.",
+      "Cask of strong ale": "A giant\u2019s pint: about twenty of yours.",
+      "Giant\u2019s tooth": "A molar the size of a fist. Carvers love them.",
+      "Braid of coarse hair": "Thick as a rope and almost as strong.",
+      "Thick hide": "Tough enough to stop a dagger. Turning it into leather will take a tanner and a lot of patience.",
+      "Tarnished locket": "The hinge is rusted shut. Something rattles inside.",
+      "Corroded ring": "Green with age. Whatever stone it held is long gone.",
+      "Ancient copper coins": "Stamped with the faces of kings nobody remembers.",
+      "Grave-goods bracelet": "Buried with its owner as a gift for the afterlife. Its owner did not stay put.",
+      "Funerary coin": "Placed on a dead person\u2019s eye to pay the ferryman. The ferryman was not paid.",
+      "Scrap of burial shroud": "Yellowed linen that smells of dust and old spices.",
+      "Rusted belt buckle": "All that\u2019s left of a fine leather belt.",
+      "Rotted leather purse": "Falls apart in your hands. A few coins tumble out of the mould.",
+      "Frame plating": "Riveted metal panels, still warm from whatever power moved them.",
+      "Power core": "A humming crystal set in brass. It hums louder when held, as if it remembers.",
+      "Servo": "A small motor of gears and wire that twitches when tapped.",
+      "Logic core": "A cube of etched metal plates. Artificers can coax a little of its old programming back out.",
+      "Optics": "Polished glass lenses in a metal socket. Something behind them still seems to look at you.",
+      "Gears and springs": "A jingling handful of clockwork. Tinkerers will want all of it.",
+      "Pelt": "Skinned carefully, it makes a warm cloak, or a decent rug.",
+      "Teeth": "Sharp and good for necklaces, arrowheads or impressing people in taverns.",
+      "Claws": "Curved, hard and sharp enough to scratch steel.",
+      "Meat": "Fresh, if cooked tonight. Worth more to a hungry party than to any merchant.",
+      "Bones": "Good for tools, glue or a hedge-witch\u2019s collection.",
+      "Sinew": "Dried and twisted, it makes bowstrings and stitching thread.",
+      "Horns or antlers": "Carvers turn them into handles, buttons and drinking horns.",
+      "Feathers": "Fletchers pay well for good, straight flight feathers.",
+      "Talons": "Curved, needle-tipped and prized by charm makers.",
+      "Beak": "Hard as horn and wickedly hooked.",
+      "Scaled hide": "Supple and patterned. A cobbler would turn it into the finest boots in town.",
+      "Fangs": "Hollow and sharp. Handle with care; there might still be something in them.",
+      "Venom sac": "A fragile pouch of poison. Squeeze gently, and only into a vial.",
+      "Shed skin": "A paper-thin ghost of the creature, perfect down to the eye scales.",
+      "Tough hide": "Rough as sandpaper when stroked one way, smooth the other.",
+      "Ink sac": "Rich black ink for scribes, if it can be got out without spraying everyone.",
+      "Shell fragments": "Iridescent shards of shell. Jewellers set them in silver.",
+      "Fish oil": "Rendered from the creature\u2019s fat. Burns in a lamp and smells like a harbour.",
+      "Chitin plates": "Light, hard plates of shell, like lacquered armor.",
+      "Venom gland": "A bulb of venom potent enough to interest a poisoner.",
+      "Mandibles": "A pair of pincers that still snap shut when you poke them.",
+      "Spool of silk": "Strong, sticky thread wound around a stick. Ropemakers and tailors will both want it.",
+      "Wing membranes": "Translucent and veined like leaves. Delicate, and lovely for lampshades.",
+      "Compound eye": "Hundreds of tiny lenses in one dome. It shows the world in a mosaic.",
+      "Sap": "Thick, sweet-smelling resin, good for glues, varnish and some potions.",
+      "Bark strips": "Peeled from a living creature, which is an odd thing to say about bark.",
+      "Spores": "A puff of powder collected in a pouch. Don\u2019t breathe in.",
+      "Seeds": "Plant them and something might grow. Something, at least.",
+      "Fibre": "Long tough strands, good for rope, baskets and cloth.",
+      "Heartwood": "The dense core of the creature, dark and fine-grained. A carver\u2019s dream.",
+      "Fungal cap": "A spongy mushroom cap. Alchemists say it\u2019s useful. Cooks say it\u2019s risky.",
+      "Elemental essence": "A swirl of pure element held in a stoppered flask. It pushes against the glass.",
+      "Mote of raw element": "A speck of elemental matter that refuses to behave like ordinary matter.",
+      "Planar residue": "A glittering film left behind where the creature was. It fades in a few days.",
+      "Cinders": "Glowing coals that never quite go out.",
+      "Ember core": "A lump of fire held together by will. Wrap it in iron tongs, not cloth.",
+      "Volcanic glass": "Black, glassy and sharp enough to shave with.",
+      "Smouldering ash": "Warm grey ash that stays warm for days.",
+      "Vial of living water": "Water that swirls on its own, even when the vial sits still.",
+      "Coral fragments": "Pink and white branches of coral, brittle and pretty.",
+      "Ever-cold shard": "A splinter of ice that never melts. Excellent for drinks.",
+      "Brine crystals": "Salt crystals as big as dice, tasting of the deep sea.",
+      "Bottled breeze": "Uncork it and a gentle wind ruffles your hair, once.",
+      "Storm-charged crystal": "Crackles and sparks when touched. Your hair stands on end just holding it.",
+      "Wisps of cloud in a jar": "Soft white vapour that drifts lazily around the jar.",
+      "Static-charged dust": "Fine grey dust that clings to everything and snaps when touched.",
+      "Raw gemstone": "Rough and uncut, but a jeweller can see what it could become.",
+      "Ore chunks": "Heavy lumps of iron, copper and something shinier.",
+      "Crystal geode": "Crack it open and it\u2019s full of sparkling purple crystals.",
+      "Living clay": "A lump of clay that slowly reshapes itself when nobody is looking.",
+      "Gemstone wedged between scales": "Pressed in so tightly that the dragon probably forgot it was there.",
+      "Coin of a long-fallen kingdom": "Pure gold, stamped with a crown that hasn\u2019t ruled anything for a thousand years.",
+      "Crushed golden goblet": "Flattened by a sleeping dragon. Still gold, though.",
+      "Broken jeweled scabbard": "The sword is gone. The gems are still there.",
+      "Dragon claws": "Each as long as a dagger and twice as sharp.",
+      "Dragon horn": "Polished, ridged and heavy. Ground horn is said to cure everything from fevers to cowardice.",
+      "Breath gland ({breath})": "The organ where the dragon\u2019s breath is made. It is still warm, and still dangerous.",
+      "Wing membrane": "Huge and leathery. Sailmakers have dreamed about this.",
+      "Blackened iron token": "A coin-shaped bit of iron stamped with a fiendish rune. In the right hells, it buys favours.",
+      "Brimstone-scented coins": "Ordinary coins, if you ignore the smell of rotten eggs.",
+      "Bloodstone": "Dark green flecked with red, like drops of blood on moss.",
+      "Jagged obsidian ring": "Sharp enough to cut the finger that wears it, which might be the point.",
+      "Fiend horn": "Black, ridged and faintly warm.",
+      "Vial of ichor": "Thick, dark blood that doesn\u2019t behave like blood should.",
+      "Infernal hide": "Leathery skin that smells of sulfur and resists flames.",
+      "Fiend claws": "Hooked and black, with a faint red sheen in sunlight.",
+      "Brimstone ash": "Yellow-grey ash that stinks of the lower planes.",
+      "Acorn carved with a tiny face": "The face winks when nobody is looking. Probably.",
+      "Silver thimble": "Perfectly sized for a pixie, or the very tip of a human finger.",
+      "Bell that makes no sound": "Shake it all you like. Somewhere, perhaps, someone hears it.",
+      "Ribbon that never tangles": "A shimmering green ribbon that slides free of every knot.",
+      "Glimmering dust": "Sparkles in the dark and makes everyone who touches it sneeze.",
+      "Lock of fey hair": "Changes colour with the seasons, even after it\u2019s cut.",
+      "Iridescent wing scales": "Tiny scales like a butterfly\u2019s, shining every colour at once.",
+      "Vial of moonlit dew": "Collected under a full moon. It glows faintly in the dark.",
+      "Half-digested coin purse": "Slimy, but the coins are fine.",
+      "Bones of an earlier victim, with a ring": "The ring is the only part of them worth keeping, alas.",
+      "Torn satchel": "An adventurer\u2019s bag, with a few soggy papers still inside.",
+      "Monstrous hide": "Scarred, tough and strange. A good leatherworker will know what to do with it.",
+      "Eye": "Big, glassy and still unsettling. Alchemists keep these in jars.",
+      "Quills or spines": "Barbed spikes that make excellent arrowheads, or very painful pillows.",
+      "Strange metal disc": "Smooth, warm metal stamped with symbols that hurt the eyes a little.",
+      "Polished stone that hums": "A low hum, like a far-off choir. It stops when put down.",
+      "Tentacle segment": "It twitches occasionally. That\u2019s normal. Probably.",
+      "Eye stalk": "A long stalk with a glassy eye at the end. It follows you around the room.",
+      "Chitinous plate": "A plate of alien shell, oily and iridescent.",
+      "Jar of brain matter": "Grey, wrinkled and pulsing faintly. Sages pay well and ask few questions.",
+      "Gold prayer bead": "A single bead from a heavenly rosary. Warm and comforting to hold.",
+      "Feather-shaped silver pin": "So finely made it seems to float a little when dropped.",
+      "Small vial of holy oil": "Smells of frankincense and summer mornings.",
+      "Radiant feather": "Glows with soft golden light, enough to read by.",
+      "Vial of luminous blood": "Shines silver-white. Holding it, you feel briefly forgiven.",
+      "Horn shard": "A fragment of horn, pearly and faintly singing.",
+      "Strands of shining hair": "Gleaming like spun gold, and light as nothing.",
+      "Jar of acidic residue": "Corrodes cork, wood and patience. Keep it in glass.",
+      "Gelatinous membrane": "A wobbling sheet of clear jelly. Alchemists love it; everyone else does not.",
+      "Undissolved trinkets": "Buttons, buckles, a spoon and a ring the ooze never quite managed to digest.",
+      "Congealed slime": "Sticky, cold and faintly green. Useful to someone, surely."
+    };
+    GEAR = {
+      // simple melee
+      "Club": "A heavy stick with ambitions. The oldest weapon there is, and still effective.",
+      "Dagger": "Every adventurer carries one. Most carry three.",
+      "Greatclub": "A log with a handle. Subtle it is not.",
+      "Handaxe": "Chops kindling by day and goblins by night.",
+      "Javelin": "A light throwing spear, balanced for a long arc.",
+      "Light Hammer": "A small hammer that fits nicely in the hand, and nicely at a target\u2019s head.",
+      "Mace": "A flanged iron head on a stout haft. Popular with priests who prefer not to draw blood.",
+      "Quarterstaff": "A long staff of hardwood, good for walking, wading and whacking.",
+      "Sickle": "A farmer\u2019s blade for wheat. It works on other things too.",
+      "Spear": "A point on a stick, and humanity\u2019s longest-running good idea.",
+      // simple ranged
+      "Dart": "Small, weighted and thrown with a flick of the wrist.",
+      "Light Crossbow": "Easy to learn, easy to aim, slow to reload.",
+      "Shortbow": "A compact bow, handy from horseback and in tight forests.",
+      "Sling": "A strip of leather and a stone. Ask the giants how that works out.",
+      // martial melee
+      "Battleaxe": "A broad, bearded blade on a stout haft. Chops through shields and patience alike.",
+      "Flail": "A spiked ball on a chain, as dangerous to a clumsy wielder as to their foe.",
+      "Glaive": "A curved blade on a long pole, for keeping enemies a polite distance away.",
+      "Greataxe": "Enormous, heavy and loud. There is no quiet way to use it.",
+      "Greatsword": "Taller than a halfling and twice as heavy as it looks.",
+      "Halberd": "An axe, a spike and a hook on one pole. Soldiers call it \u201Cthe can opener.\u201D",
+      "Lance": "A long spear for charging on horseback. Awkward on foot, devastating on a horse.",
+      "Longsword": "The knight\u2019s blade: straight, balanced and good for every job.",
+      "Maul": "A two-handed hammer that settles arguments permanently.",
+      "Morningstar": "A spiked ball on a stick, named by somebody with a grim sense of humour.",
+      "Pike": "A very long spear. Lines of them make cavalry very sad.",
+      "Rapier": "A slender, elegant blade for those who duel with style and footwork.",
+      "Scimitar": "A curved blade that slices beautifully from horseback.",
+      "Shortsword": "A quick, sturdy blade for close quarters and second hands.",
+      "Trident": "A three-pronged spear, good for fish and anything that thinks it\u2019s a fish.",
+      "Warhammer": "A hammer built for denting armor, and the people inside it.",
+      "War Pick": "A sharp spike on a hammer\u2019s haft, made to punch through plate.",
+      "Whip": "A coiled length of braided leather that cracks like thunder.",
+      // martial ranged
+      "Blowgun": "A hollow tube for darts, quiet and precise.",
+      "Hand Crossbow": "A small crossbow for one hand, popular with spies and the stylish.",
+      "Heavy Crossbow": "A big crossbow with a crank and a kick, strong enough to punch through a door.",
+      "Longbow": "Taller than its archer, with the reach to match.",
+      "Musket": "Loud, smoky and devastating, when it doesn\u2019t misfire.",
+      "Pistol": "A small firearm for one hand. The bang is half the point.",
+      // armor
+      "Padded Armor": "Quilted layers of cloth. Better than nothing, and hot.",
+      "Leather Armor": "Boiled and hardened leather, shaped to the wearer.",
+      "Studded Leather Armor": "Leather reinforced with rivets and studs. Tough, flexible and a bit flashy.",
+      "Hide Armor": "Thick furs and pelts, warm and rough-and-ready.",
+      "Chain Shirt": "Interlocking metal rings worn under clothing, for a little extra safety on the road.",
+      "Scale Mail": "Overlapping metal scales sewn onto leather, like a dragon on a budget.",
+      "Breastplate": "A fitted steel cuirass that guards the vitals and leaves the legs free.",
+      "Half Plate Armor": "Plates over the torso and limbs. Everything important is covered.",
+      "Ring Mail": "Heavy rings sewn onto leather, an early attempt at chain mail.",
+      "Chain Mail": "Thousands of steel rings, heavy and jingly but dependable.",
+      "Splint Armor": "Vertical strips of metal riveted onto leather.",
+      "Plate Armor": "Full steel from head to toe, made by a smith who knew what they were doing.",
+      "Shield": "Wood, metal or both. Something to put between you and the pointy end.",
+      // ammunition
+      "Arrows": "Feathered shafts with steel heads, bundled in a quiver.",
+      "Bolts": "Short, heavy crossbow quarrels.",
+      "Firearm Bullets": "Small lead balls and a horn of powder to send them on their way.",
+      "Sling Bullets": "Smooth lead pellets, much better than rocks.",
+      "Blowgun Needles": "Fine, sharp needles, sometimes with something nasty on the tip.",
+      // foci
+      "Arcane Focus (Crystal)": "A clear crystal that catches the light and focuses the will.",
+      "Arcane Focus (Orb)": "A glass or stone sphere to channel arcane power through.",
+      "Arcane Focus (Rod)": "A short metal rod, etched with arcane runes.",
+      "Arcane Focus (Wand)": "A slender wooden wand. Not magic on its own; the wizard is.",
+      "Druidic Focus (Sprig of Mistletoe)": "A sprig gathered under the moon, for druids to call on nature\u2019s power.",
+      "Druidic Focus (Yew Wand)": "A length of yew, smooth and dark, carved with leaves.",
+      "Holy Symbol (Amulet)": "A sacred emblem on a chain, worn close to the heart.",
+      "Holy Symbol (Emblem)": "A god\u2019s symbol painted or engraved on a shield or tabard.",
+      "Holy Symbol (Reliquary)": "A small box holding a holy relic: a scrap of cloth, a bone or a lock of hair.",
+      // games
+      "Dice Set": "Bone, wood or ivory dice in a little pouch. There are always more dice.",
+      "Dragonchess Set": "A three-level board game of dragons, kings and endless debates about the rules.",
+      "Playing Cards": "A deck of painted cards, good for gambling and solitaire.",
+      "Three-Dragon Ante Set": "A card game of dragons and bets, loved by soldiers and sore losers.",
+      // instruments
+      "Bagpipes": "Loved by some, feared by most. Audible from three valleys away.",
+      "Drum": "A skin stretched over a hollow frame. Keeps the beat for marching and dancing.",
+      "Dulcimer": "A stringed box played with little hammers, bright and sweet.",
+      "Flute": "A simple wooden flute with a clear, light voice.",
+      "Horn": "A curved horn for calling hunts, rallies and retreats.",
+      "Lute": "The bard\u2019s favourite: pear-shaped, gently curved and always slightly out of tune.",
+      "Lyre": "A small harp with an old, gentle sound.",
+      "Pan Flute": "Pipes of different lengths bound together, played by blowing across the tops.",
+      "Shawm": "A double-reed horn that sounds like a goose with something to say.",
+      "Viol": "A bowed stringed instrument with a low, mournful voice."
+    };
+    key2 = (s) => String(s || "").trim().toLowerCase();
+    POCKET_BY = new Map(Object.entries(POCKET).map(([k, v]) => [key2(k), v]));
+    GEAR_BY = new Map(Object.entries(GEAR).map(([k, v]) => [key2(k), v]));
+    flavorOf = (entry) => entry?.desc?.trim() ? entry.desc.trim() : POCKET_BY.get(key2(entry?.name)) || "";
+    gearFlavor = (name) => GEAR_BY.get(key2(name)) || "";
+  }
+});
+
+// src/loot.js
+function lootTables(defaults3, records = []) {
+  const mine3 = new Map(records.filter((r) => r.id !== TYPE_MAP_ID && r.id !== MONSTER_LOOT_ID).map((r) => [r.id, r]));
+  const themes = [];
+  for (const d of defaults3) {
+    const r = mine3.get(d.id);
+    if (r?.deleted) continue;
+    themes.push(r ? { ...d, ...r, builtin: true } : d);
+  }
+  for (const r of mine3.values()) if (!r.deleted && !defaults3.some((d) => d.id === r.id)) themes.push({ ...r, builtin: false });
+  const typeMap = { ...DEFAULT_TYPE_THEMES, ...records.find((r) => r.id === TYPE_MAP_ID)?.types || {} };
+  return { themes, typeMap };
+}
+function nameHas(name, phrase) {
+  const n = words(name), k = words(phrase);
+  if (!k.length) return false;
+  for (let i = 0; i + k.length <= n.length; i++) if (k.every((w, j) => n[i + j] === w || j === k.length - 1 && n[i + j] === `${w}s`)) return true;
+  return false;
+}
+function comesFrom(item, monsters, tables = null) {
+  return (item.creatures || []).some((c2) => monsters.some((m) => {
+    const name = typeof m === "string" ? m : m?.name, type = typeof m === "string" ? null : m?.monsterType;
+    const [, kind2, value] = String(c2).match(/^\s*(type|theme)\s*:\s*(.+?)\s*$/i) || [];
+    if (kind2?.toLowerCase() === "type") return !!type && type.toLowerCase() === value.toLowerCase();
+    if (kind2) {
+      if (!tables || typeof m === "string") return false;
+      const t = themeFor(m, tables).theme;
+      return !!t && [t.name, t.id].some((x) => String(x).toLowerCase() === value.toLowerCase());
+    }
+    return nameHas(name, c2) && (!item.onlyTypes?.length || !type || item.onlyTypes.includes(type));
+  }));
+}
+function themeFor(m, { themes, typeMap }) {
+  if (m.lootTheme) {
+    const t2 = themes.find((x) => x.id === m.lootTheme);
+    if (t2) return { theme: t2, why: "set on the monster" };
+  }
+  const name = words(m.name);
+  let best = null;
+  for (const t2 of themes) {
+    if (t2.onlyTypes?.length && !t2.onlyTypes.includes(m.monsterType)) continue;
+    for (const k of t2.keywords || []) {
+      const kw = words(k);
+      if (!kw.length) continue;
+      for (let i = 0; i + kw.length <= name.length; i++) {
+        const hit = kw.every((w, j) => name[i + j] === w || j === kw.length - 1 && name[i + j] === `${w}s`);
+        if (hit && (!best || i < best.at || i === best.at && kw.length > best.len)) best = { theme: t2, at: i, len: kw.length, word: k };
+      }
+    }
+  }
+  if (best) return { theme: best.theme, why: `\u201C${best.word}\u201D in its name` };
+  const t = themes.find((x) => x.id === typeMap[m.monsterType]);
+  return t ? { theme: t, why: `its type (${m.monsterType || "none"})` } : { theme: null, why: "no theme" };
+}
+function carriedGear(m, items) {
+  const found = /* @__PURE__ */ new Set();
+  const named = (text) => items.find((x) => x.category !== "magic" && (lc3(x.name) === text || `${lc3(x.name)}s` === text)) || items.find((x) => x.category !== "magic" && (lc3(x.name).startsWith(`${text} (`) || lc3(x.name).endsWith(`(${text})`)));
+  const gear = (m.notes || []).filter((n) => /^gear$/i.test(n.name || "")).flatMap((n) => String(n.text || "").split(","));
+  for (const g of gear) {
+    const it = named(lc3(g).replace(/\s*\(.*$/, "").trim());
+    if (it) found.add(it);
+  }
+  const attacks = ["actions", "bonusActions", "reactions"].flatMap((k) => (m[k] || []).map((e2) => lc3(e2.name).replace(/\s*\(.*$/, "").trim()));
+  for (const a2 of attacks) {
+    const it = named(a2);
+    if (it?.category === "weapon") found.add(it);
+  }
+  const ac = lc3(m.armorClassType);
+  const armor = items.filter((x) => (x.category === "armor" || x.category === "shield") && ac.includes(lc3(x.name).replace(/ armor$/, "")));
+  for (const a2 of armor) if (!armor.some((b2) => b2 !== a2 && lc3(b2.name).includes(lc3(a2.name).replace(/ armor$/, "")))) found.add(a2);
+  return [...found];
+}
+function breathType(m) {
+  const b2 = [...m.actions || [], ...m.bonusActions || []].find((e2) => /breath/i.test(e2.name || ""));
+  const t = b2 && String(b2.text || "").match(/\b(Acid|Cold|Fire|Lightning|Poison|Necrotic|Radiant|Thunder|Force|Psychic)\b/);
+  return t ? t[1].toLowerCase() : "";
+}
+function pick3(r, list, weight = (x) => x.weight ?? 1) {
+  const ws = list.map((x2) => Math.max(0, Number(weight(x2)) || 0));
+  const sum = ws.reduce((a2, b2) => a2 + b2, 0);
+  if (!(sum > 0)) return null;
+  let x = r() * sum;
+  for (let i = 0; i < list.length; i++) if ((x -= ws[i]) <= 0) return list[i];
+  return list[list.length - 1];
+}
+function goldFor(xp, partyLevel, generosity) {
+  const { base, perXp, power } = LOOT_CONFIG.gold;
+  return base * (xp / perXp) ** power * band(LOOT_CONFIG.levelSteps, partyLevel) * generosity;
+}
+function generateLoot({ enemies, partyLevel, items, spells = [], tables, settings: settings3 = {}, seed = newSeed() }) {
+  const r = rng(seed);
+  const gen = Math.min(GENEROSITY.max, Math.max(GENEROSITY.min, Number(settings3.generosity) || 1));
+  const level = Math.min(20, Math.max(1, Math.round(Number(partyLevel) || 1)));
+  const cap3 = gearCap(level, gen);
+  const C2 = LOOT_CONFIG;
+  let coins = 0;
+  const lines = [], harvest = [], notes = [];
+  const add2 = (list, x) => {
+    const same = list.find((y) => y.kind === x.kind && y.name === x.name && !!y.damaged === !!x.damaged && y.value === x.value);
+    if (same) same.qty += x.qty;
+    else list.push({ ...x });
+  };
+  const pool = items.filter((x) => x.category !== "magic" && x.carried && x.loot !== false && !isPart(x) && C2.gearWeights[x.category] && x.price != null);
+  const minorPool = items.filter(isMinorMagic);
+  const parts = items.filter(isPart);
+  for (const { monster: m, count } of enemies) {
+    if (!m || !(count > 0)) continue;
+    const setting = m.loot || "auto";
+    if (setting === "none") {
+      notes.push(`${m.name}: set to carry no loot`);
+      continue;
+    }
+    const { theme } = themeFor(m, tables);
+    const share = LOOT_LEVELS[theme?.loot]?.share ?? 1;
+    const extra = setting === "extra" ? C2.extra : 1;
+    const xp = xpFor(m.challengeRating), minion = isMinion(m) ? C2.minion : 1;
+    const carried = carriedGear(m, items);
+    const caster = isCaster(m);
+    for (let n = 0; n < count; n++) {
+      if (share > 0) {
+        const [lo, hi] = C2.spread;
+        const gp = goldFor(xp, level, gen) * minion * share * extra * (lo + r() * (hi - lo));
+        coins += gp >= 1 ? Math.round(gp) * 100 : Math.round(gp * 100);
+        if (r() < Math.min(C2.gearCeiling, C2.gearChance * gen * share * extra)) {
+          let it = null;
+          if (carried.length && r() < C2.carriedShare) it = carried[Math.floor(r() * carried.length)];
+          if (it) {
+            if (it.price > cap3) add2(lines, { kind: "gear", name: `${it.name} (damaged)`, qty: 1, value: round2(it.price * C2.damagedShare), damaged: true, scrap: true, id: it.id });
+            else add2(lines, { kind: "gear", name: it.name, qty: 1, value: it.price, id: it.id });
+          } else {
+            const ok = pool.filter((x) => x.price <= cap3 && (x.category !== "focus" || caster));
+            const cat = pick3(r, Object.keys(C2.gearWeights).filter((c2) => ok.some((x) => x.category === c2)), (c2) => C2.gearWeights[c2]);
+            const list = ok.filter((x) => x.category === cat);
+            const got = list[Math.floor(r() * list.length)];
+            if (got) {
+              const qty = got.bundle ? Math.min(got.bundle, roll("2d10", "normal", r).total) : 1;
+              add2(lines, { kind: "gear", name: got.name, qty, value: got.price, id: got.id });
+            }
+          }
+        }
+        const chance = Math.min(C2.itemCeiling, C2.itemChance * gen * share);
+        for (let k = 0; k < 2 && theme?.items?.length && r() < (k ? chance / 2 : chance); k++) {
+          const it = pick3(r, theme.items);
+          if (it) add2(lines, { kind: "item", name: it.name, qty: qtyOf(it.qty, r), value: Number(it.value) || 0, desc: flavorOf(it) });
+        }
+        if (minorPool.length && r() < Math.min(C2.minorCeiling, C2.minorChance * gen * share * extra)) {
+          const it = pick3(r, minorPool, (x) => x.creatures?.length && comesFrom(x, [m], tables) ? C2.minorLinkedWeight : 1);
+          add2(lines, { kind: "minor", id: it.id, name: it.name, qty: 1, value: Number(it.price) > 0 ? Number(it.price) : RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1) || 0 });
+        }
+      }
+      const own = parts.filter((x) => comesFrom(x, [m], tables));
+      const harvested = (name, qty, value, id, desc) => {
+        const same = harvest.find((y) => y.name === name);
+        if (same) {
+          same.total += qty * value;
+          same.qty += qty;
+          if (!same.from.includes(m.name)) same.from.push(m.name);
+        } else harvest.push({ kind: "harvest", name, qty, total: qty * value, from: [m.name], ...id ? { id } : desc ? { desc } : {} });
+      };
+      if (own.length) {
+        const it = own[Math.floor(r() * own.length)];
+        harvested(it.name, qtyOf(it.qty, r), Number(it.price) || 0, it.id);
+      }
+      if (theme?.harvest?.length) {
+        const picks2 = Math.max(1, Math.round(C2.harvestPicks * Math.sqrt(gen)) - (own.length ? 1 : 0));
+        const left = [...theme.harvest];
+        const scale = Math.min(30, Math.max(0.5, Math.sqrt(xpFor(m.challengeRating) / 200)));
+        for (let k = 0; k < picks2 && left.length; k++) {
+          const it = pick3(r, left);
+          if (!it) break;
+          left.splice(left.indexOf(it), 1);
+          const name = it.name.replace(/\s*\(\{breath\}\)/, breathType(m) ? ` (${breathType(m)})` : "").replace("{breath}", breathType(m));
+          harvested(name, qtyOf(it.qty, r), (Number(it.value) || 0) * scale, null, flavorOf(it));
+        }
+      }
+    }
+  }
+  const magicCount = Math.max(0, Math.round(Number(settings3.magic) || 0));
+  if (magicCount) {
+    const crs = enemies.filter((x) => x.monster && x.monster.loot !== "none").map((x) => x.monster.challengeRating);
+    const maxCr = crs.reduce((a2, b2) => crValue(b2) > crValue(a2) ? b2 : a2, "0");
+    const top = rarityCap(level, maxCr);
+    const allowed = RARITIES.slice(1, RARITIES.indexOf(top) + 1);
+    const magic = items.filter((x) => isToggleMagic(x) && allowed.includes(x.rarity));
+    const foes = enemies.filter((x) => x.monster).map((x) => x.monster);
+    for (let n = 0; n < magicCount; n++) {
+      const rarity = pick3(r, allowed, (x) => C2.rarityWeights[x] * (gen > 1 ? gen ** RARITIES.indexOf(x) : 1));
+      const choices = [...magic.filter((x) => x.rarity === rarity), ...spells.length ? [{ scroll: true, rarity, consumable: true }] : []];
+      const it = pick3(r, choices, (x) => (x.consumable ? C2.consumableWeight : 1) * (comesFrom(x, foes, tables) ? C2.linkedWeight : 1));
+      if (!it) continue;
+      add2(lines, it.scroll ? spellScroll(r, rarity, spells) : magicLine(r, it, items));
+    }
+    notes.push(`Magic items up to ${top} (party level ${level}, strongest enemy CR ${maxCr}).`);
+  }
+  for (const x of harvest) {
+    x.value = roughly(x.total / x.qty);
+    delete x.total;
+  }
+  const worth = (kind2) => round2(lines.filter((x) => kind2 === "magic" === (x.kind === "magic")).reduce((n, x) => n + x.qty * x.value, 0));
+  return { seed, coins, lines, harvest, totalGp: round2(coins / 100 + worth("other")), magicGp: worth("magic"), notes, partyLevel: level, generosity: gen };
+}
+function spellScroll(r, rarity, spells) {
+  const levels2 = SCROLL_LEVELS[rarity].filter((l) => spells.some((s2) => s2.level === l));
+  const lvl = levels2[Math.floor(r() * levels2.length)] ?? 1;
+  const list = spells.filter((s2) => s2.level === lvl);
+  const s = list[Math.floor(r() * list.length)];
+  return { kind: "magic", name: `Spell Scroll: ${s?.name || "unknown spell"} (${lvl ? `level ${lvl}` : "cantrip"})`, qty: 1, value: SCROLL_VALUE[lvl], rarity, ...s ? { spell: s.name } : {} };
+}
+function magicLine(r, it, items) {
+  let value = Number(it.price) > 0 ? Number(it.price) : RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1);
+  let name = it.name;
+  const options = it.base ? baseOptions(it.base, items) : [];
+  if (options.length) {
+    const b2 = options[Math.floor(r() * options.length)];
+    if (b2.category === "ammo") {
+      value = RARITY_VALUE[it.rarity] / 2;
+      name = `${/^\+\d Ammunition$/.test(name) ? `${name.split(" ")[0]} ${b2.name}` : `${name} (${b2.name})`}, 10 pieces`;
+    } else {
+      value += b2.price;
+      if (/^\+\d (Armor|Weapon)$/.test(name)) name = `${name.split(" ")[0]} ${b2.name}`;
+      else if (options.length > 1) name = `${name} (${b2.name})`;
+    }
+  }
+  return { kind: "magic", name, qty: 1, value: round2(value), rarity: it.rarity, id: it.id };
+}
+function baseOptions(text, items) {
+  const t = lc3(text);
+  const [want, except = ""] = t.split(/,?\s*except\s+/);
+  let list;
+  if (/ammunition/.test(want)) list = items.filter((x) => x.category === "ammo");
+  else if (/^shield$/.test(want.trim())) list = items.filter((x) => x.category === "shield");
+  else if (/\bany\b/.test(want)) {
+    const armorKinds = ["light", "medium", "heavy"].filter((k) => new RegExp(`\\b${k}\\b`).test(want));
+    const weaponKinds = ["simple", "martial"].filter((k) => want.includes(k));
+    if (armorKinds.length) list = items.filter((x) => x.category === "armor" && armorKinds.includes(x.armor));
+    else list = items.filter((x) => x.category === "weapon" && (!weaponKinds.length || weaponKinds.includes(x.weapon?.simple ? "simple" : "martial")) && (!/melee/.test(want) || !x.weapon?.ranged) && (!/ranged/.test(want) || x.weapon?.ranged));
+  } else {
+    const named = items.filter((x) => ["weapon", "armor", "shield"].includes(x.category) && new RegExp(`\\b${lc3(x.name)}\\b`).test(want));
+    list = named.filter((x) => !named.some((y) => y !== x && lc3(y.name).includes(lc3(x.name))));
+  }
+  return list.filter((x) => !except || !except.includes(lc3(x.name)));
+}
+function coinText(cp) {
+  const gp = Math.floor(cp / 100), sp = Math.floor(cp % 100 / 10), c2 = cp % 10;
+  return [gp ? `${gp.toLocaleString()} gp` : "", sp ? `${sp} sp` : "", c2 ? `${c2} cp` : ""].filter(Boolean).join(", ") || "none";
+}
+function priceText(gp) {
+  if (!gp) return "worthless";
+  if (gp >= 1) return `${Number(gp.toFixed(2)).toLocaleString()} gp`;
+  return coinText(Math.max(1, Math.round(gp * 100)));
+}
+var LOOT_CONFIG, RARITIES, RARITY_VALUE, PARTY_CAP, CR_CAP, SCROLL_LEVELS, SCROLL_VALUE, GENEROSITY, generosityName, LOOT_SETTINGS, band, lowerRarity, rarityCap, gearCap, words, isPart, isTrueMagic, isToggleMagic, isMinorMagic, lc3, isCaster, qtyOf, round2, roughly;
+var init_loot = __esm({
+  "src/loot.js"() {
+    init_rules();
+    init_dice();
+    init_generator();
+    init_loot_data();
+    init_loot_flavor();
+    LOOT_CONFIG = {
+      gold: { base: 10, perXp: 200, power: 0.75 },
+      // gold = base × (xp / perXp)^power × level step × generosity × spread
+      spread: [0.5, 1.5],
+      levelSteps: [[4, 1], [10, 0.85], [16, 0.7], [20, 0.55]],
+      // [up to party level, gold factor]: fight loot shrinks as the party grows
+      minion: 0.25,
+      extra: 2,
+      // a creature set to "Extra": ×2 coins and ×2 gear chance
+      gearChance: 0.2,
+      gearCeiling: 0.9,
+      carriedShare: 0.7,
+      gearCaps: [[4, 75], [10, 400], [20, Infinity]],
+      // [up to party level, gp]: × generosity
+      gearWeights: { gear: 40, weapon: 30, ammo: 15, tool: 10, focus: 5 },
+      damagedShare: 0.1,
+      itemChance: 0.5,
+      itemCeiling: 0.9,
+      // pocket items from the theme
+      harvestPicks: 2,
+      // different harvestables per body at Standard
+      // "Magic items found" starts at Uncommon: Common magic is minor magic, found in regular loot instead
+      rarityWeights: { Uncommon: 30, Rare: 8, "Very Rare": 2, Legendary: 1 },
+      consumableWeight: 3,
+      linkedWeight: 10,
+      // an item that comes from a creature in the fight (item.creatures)
+      minorChance: 0.04,
+      minorCeiling: 0.15,
+      // now and then a minor magic item (a trinket, or a Common magic item) in regular loot
+      minorLinkedWeight: 4
+      // which one: an item that comes from this creature (item.creatures) is 4x as likely
+    };
+    RARITIES = ["Common", "Uncommon", "Rare", "Very Rare", "Legendary"];
+    RARITY_VALUE = { Common: 100, Uncommon: 400, Rare: 4e3, "Very Rare": 4e4, Legendary: 2e5 };
+    PARTY_CAP = [[4, "Uncommon"], [10, "Rare"], [16, "Very Rare"], [20, "Legendary"]];
+    CR_CAP = [[2, "Uncommon"], [7, "Rare"], [14, "Very Rare"], [Infinity, "Legendary"]];
+    SCROLL_LEVELS = { Common: [0, 1], Uncommon: [2, 3], Rare: [4, 5], "Very Rare": [6, 7, 8], Legendary: [9] };
+    SCROLL_VALUE = [30, 50, 200, 300, 2e3, 3e3, 2e4, 25e3, 3e4, 1e5];
+    GENEROSITY = { min: 0.25, max: 3, stops: [[0.5, "Stingy"], [1, "Standard"], [1.5, "Generous"], [2, "Lavish"]] };
+    generosityName = (g) => GENEROSITY.stops.reduce((best, s) => Math.abs(s[0] - g) < Math.abs(best[0] - g) ? s : best)[1];
+    LOOT_SETTINGS = { auto: "Auto", none: "None", normal: "Normal", extra: "Extra (\xD72 coins and gear chance)" };
+    band = (table, x) => table.find(([upTo]) => x <= upTo)?.[1] ?? table[table.length - 1][1];
+    lowerRarity = (a2, b2) => RARITIES[Math.min(RARITIES.indexOf(a2), RARITIES.indexOf(b2))];
+    rarityCap = (partyLevel, maxCr) => lowerRarity(band(PARTY_CAP, partyLevel), band(CR_CAP, crValue(maxCr)));
+    gearCap = (partyLevel, generosity) => band(LOOT_CONFIG.gearCaps, partyLevel) * generosity;
+    words = (s) => String(s || "").toLowerCase().replace(/[’']/g, "").split(/[^a-z0-9]+/).filter(Boolean);
+    isPart = (x) => x.category !== "magic" && (x.component || x.creatures?.length && x.category !== "trinket");
+    isTrueMagic = (x) => x.category === "magic" && x.loot !== false && !!String(x.text || "").trim();
+    isToggleMagic = (x) => isTrueMagic(x) && x.rarity !== "Common";
+    isMinorMagic = (x) => x.loot !== false && !isPart(x) && (x.category === "trinket" || isTrueMagic(x) && x.rarity === "Common");
+    lc3 = (s) => String(s || "").toLowerCase();
+    isCaster = (m) => ["traits", "actions"].some((k) => (m[k] || []).some((e2) => /spellcasting/i.test(e2.name || "")));
+    qtyOf = (q, r) => {
+      if (q === "" || q == null) return 1;
+      const n = Number(q);
+      return Number.isFinite(n) ? Math.max(1, Math.round(n)) : Math.max(1, roll(String(q), "normal", r)?.total ?? 1);
+    };
+    round2 = (n) => Math.round(n * 100) / 100;
+    roughly = (gp) => gp >= 100 ? Math.round(gp / 10) * 10 : gp >= 1 ? Math.round(gp) : round2(gp);
+  }
+});
+
+// src/groups.js
+function makeGroup(base, count, minion) {
+  return { ...base, group: minion ? "minion" : "pack", members: Array.from({ length: count }, () => ({ hp: base.maxHp ?? 1, conditions: [] })), conditions: [] };
+}
+function down(member2) {
+  member2.hp = 0;
+  member2.conditions = [];
+}
+function killMinions(c2, n) {
+  const list = standing(c2).slice(0, Math.max(0, n));
+  list.forEach(down);
+  return list.length;
+}
+function minionOtherDamage(c2, damage, n) {
+  return damage >= (c2.maxHp ?? 1) ? killMinions(c2, n) : 0;
+}
+function damagePack(c2, damage) {
+  let left = Math.max(0, Math.round(damage));
+  const absorbed = Math.min(c2.tempHp || 0, left);
+  c2.tempHp = (c2.tempHp || 0) - absorbed;
+  if (!c2.tempHp) delete c2.tempHp;
+  left -= absorbed;
+  let killed = 0;
+  for (const m of hurtFirst(c2)) {
+    if (left <= 0) break;
+    const take = Math.min(m.hp, left);
+    m.hp -= take;
+    left -= take;
+    if (m.hp <= 0) {
+      down(m);
+      killed++;
+    }
+  }
+  return { killed, absorbed };
+}
+function damageEach(c2, damage, n) {
+  let killed = 0;
+  for (const m of hurtFirst(c2).slice(0, Math.max(0, n))) {
+    m.hp = Math.max(0, m.hp - Math.max(0, Math.round(damage)));
+    if (m.hp <= 0) {
+      down(m);
+      killed++;
+    }
+  }
+  return killed;
+}
+function healPack(c2, amount) {
+  let left = Math.max(0, Math.round(amount));
+  for (const m of hurtFirst(c2)) {
+    if (left <= 0) break;
+    const take = Math.min((c2.maxHp ?? m.hp) - m.hp, left);
+    m.hp += take;
+    left -= take;
+  }
+}
+function revive(c2, hp) {
+  const m = c2.members.find((x) => x.hp <= 0);
+  if (!m) return false;
+  m.hp = c2.group === "minion" ? c2.maxHp ?? 1 : Math.max(1, Math.min(c2.maxHp ?? 1, hp ?? 1));
+  return true;
+}
+function splitOff(c2, n, key3, name) {
+  const moving = standing(c2).slice(-Math.max(1, Math.min(n, standing(c2).length - 1)));
+  c2.members = c2.members.filter((m) => !moving.includes(m));
+  return { ...structuredClone({ ...c2, members: [] }), key: key3, name, members: moving };
+}
+function mergeInto(c2, others) {
+  for (const o of others) {
+    if (isGroup(o)) c2.members.push(...o.members);
+    else {
+      const m = { hp: c2.group === "minion" ? (o.hp ?? 1) > 0 ? c2.maxHp ?? 1 : 0 : Math.max(0, o.hp ?? c2.maxHp ?? 1), conditions: [...o.conditions || []] };
+      if (o.tokens?.[0]) m.token = o.tokens[0];
+      c2.members.push(m);
+    }
+  }
+}
+function groupAttackOf(text) {
+  const t = String(text || "").replace(/<[^>]+>/g, "").replace(/[−–]/g, "-");
+  const bonus = t.match(/Attack Roll:\s*([+-]\s?\d+)/i)?.[1] || t.match(/([+-]\s?\d+)\s+to hit/i)?.[1] || null;
+  const hit = t.match(/Hit:\s*(\d+)\s*(?:\(([^)]*)\))?\s*([a-z]+)?\s*damage/i);
+  return { bonus: bonus && bonus.replace(/\s/g, ""), damage: hit ? Number(hit[1]) : null, dice: hit?.[2] || null, type: hit?.[3] || "" };
+}
+var isGroup, standing, groupOut, hurtFirst, totalHp, isGroupAttack;
+var init_groups = __esm({
+  "src/groups.js"() {
+    isGroup = (c2) => Array.isArray(c2?.members);
+    standing = (c2) => c2.members.filter((m) => m.hp > 0);
+    groupOut = (c2) => !c2.members.some((m) => m.hp > 0);
+    hurtFirst = (c2) => standing(c2).sort((a2, b2) => a2.hp - b2.hp);
+    totalHp = (c2) => c2.members.reduce((n, m) => n + Math.max(0, m.hp), 0);
+    isGroupAttack = (name) => /\(\s*Group Attack\s*\)/i.test(String(name || ""));
+  }
+});
+
+// src/combat.js
+function rechargeOf(name) {
+  const n = String(name || "");
+  const x = n.match(/\(\s*Recharge\s*(\d)(?:\s*[–-]\s*6)?/i) || n.match(/\(\s*R\s*(\d)\s*[–-]\s*6/);
+  if (x) return { min: Number(x[1]) };
+  return /\(\s*Recharges?\s+(?:after|when|on)/i.test(n) ? { min: 0 } : null;
+}
+function partyCombatant(ch) {
+  const live2 = ch.live || {};
+  const c2 = {
+    key: `pc-${ch.id}`,
+    kind: "pc",
+    refId: ch.id,
+    name: ch.name,
+    ac: ch.armorClass ?? null,
+    hp: live2.hp ?? (ch.maxHp || null),
+    maxHp: ch.maxHp || null,
+    initBonus: Number(ch.initiativeBonus) || 0,
+    init: null,
+    conditions: [...live2.conditions || []]
+  };
+  if (live2.tempHp) c2.tempHp = live2.tempHp;
+  if (live2.tokens?.length) c2.tokens = [...live2.tokens];
+  if (live2.form) {
+    c2.form = { ...live2.form };
+    c2.ac = live2.form.ac ?? c2.ac;
+    if (live2.form.pool) c2.maxHp = live2.form.maxHp;
+  }
+  if (live2.timers) c2.timers = structuredClone(live2.timers);
+  return c2;
+}
+function liveOf(c2) {
+  const live2 = { hp: c2.hp ?? null, conditions: [...c2.conditions || []] };
+  if (c2.timers) live2.timers = structuredClone(c2.timers);
+  if (c2.tempHp) live2.tempHp = c2.tempHp;
+  if (c2.tokens?.length) live2.tokens = [...c2.tokens];
+  if (c2.form) live2.form = { ...c2.form };
+  return live2;
+}
+function setupCombat(e2, { character, monster, asGroup }) {
+  const list = [];
+  for (const c2 of (e2.characterIds || []).map(character).filter(Boolean)) {
+    list.push(partyCombatant(c2));
+    for (const comp of c2.companions || []) if (comp.on && monster(comp.monsterId)) list.push(companionCombatant(c2, comp, monster(comp.monsterId), e2.rules));
+  }
+  for (let i = 0; i < (e2.extraPlayers?.count || 0); i++) {
+    list.push({ key: `player-${i}`, kind: "pc", name: `Player ${i + 1}`, ac: null, hp: null, maxHp: null, initBonus: 0, init: null, conditions: [] });
+  }
+  const entries = (e2.groups || []).map((g, gi) => ({ g, gi, m: monster(g.monsterId) }));
+  for (const x of entries) x.group = !!x.m && asGroup(x.g);
+  const groupsOf = (id) => entries.filter((x) => x.group && x.g.monsterId === id);
+  const singlesOf = (id) => entries.filter((x) => !x.group && x.g.monsterId === id).reduce((n, x) => n + x.g.count, 0);
+  const lettered = /* @__PURE__ */ new Map();
+  for (const { g, gi, m, group } of entries) {
+    if (group) {
+      const mine3 = groupsOf(g.monsterId);
+      list.push(makeGroup({
+        key: `g-${g.monsterId}-${gi}`,
+        kind: "monster",
+        refId: g.monsterId,
+        name: mine3.length > 1 ? `${m.name} (${mine3.findIndex((x) => x.gi === gi) + 1})` : m.name,
+        ac: m.armorClass ?? null,
+        maxHp: m.averageHitPoints ?? 1,
+        initBonus: initBonus(m),
+        init: null
+      }, g.count, isMinion(m)));
+      continue;
+    }
+    const total = singlesOf(g.monsterId);
+    for (let k = 0; k < g.count; k++) {
+      const i = lettered.get(g.monsterId) || 0;
+      lettered.set(g.monsterId, i + 1);
+      list.push({
+        key: `m-${g.monsterId}-${i}`,
+        kind: "monster",
+        refId: g.monsterId,
+        name: total > 1 ? `${m?.name || g.name} (${LETTERS[i % 26]}${i >= 26 ? Math.floor(i / 26) + 1 : ""})` : m?.name || g.name,
+        ac: m?.armorClass ?? null,
+        hp: m?.averageHitPoints ?? null,
+        maxHp: m?.averageHitPoints ?? null,
+        initBonus: m ? initBonus(m) : 0,
+        init: null,
+        conditions: []
+      });
+    }
+  }
+  return { phase: "setup", round: 1, turnKey: null, selectedKey: list.find((c2) => c2.kind === "monster")?.key || null, combatants: list };
+}
+function splitEntry(groups, i, n) {
+  const g = groups[i];
+  n = Math.round(Number(n));
+  if (!g || !(n >= 1 && n < g.count)) return false;
+  g.count -= n;
+  groups.splice(i + 1, 0, { ...structuredClone(g), count: n });
+  return true;
+}
+function mergeEntries(groups, i) {
+  const g = groups[i];
+  if (!g) return false;
+  const others = groups.filter((x) => x !== g && x.monsterId === g.monsterId);
+  if (!others.length) return false;
+  g.count += others.reduce((n, x) => n + x.count, 0);
+  for (const x of others) groups.splice(groups.indexOf(x), 1);
+  return true;
+}
+function ordered(s) {
+  const here = new Set(s.combatants.map((c2) => c2.key));
+  const leads = s.combatants.filter((c2) => !c2.owner || !here.has(c2.owner)).sort((a2, b2) => (b2.init ?? -99) - (a2.init ?? -99) || (b2.initBonus || 0) - (a2.initBonus || 0) || (a2.kind === "pc" ? -1 : 0) - (b2.kind === "pc" ? -1 : 0) || a2.name.localeCompare(b2.name, void 0, { numeric: true }));
+  const out = [], seen2 = /* @__PURE__ */ new Set();
+  const add2 = (c2) => {
+    if (seen2.has(c2.key)) return;
+    seen2.add(c2.key);
+    out.push(c2);
+    for (const f of s.combatants) if (f.owner === c2.key) add2(f);
+  };
+  leads.forEach(add2);
+  for (const c2 of s.combatants) add2(c2);
+  return out;
+}
+function startCombat(s, rollInit2) {
+  for (const c2 of s.combatants) if (c2.init == null && !c2.owner) c2.init = rollInit2(c2);
+  for (const c2 of s.combatants) if (c2.owner) c2.init = ownerInit(s, c2) ?? c2.init ?? rollInit2(c2);
+  s.phase = "active";
+  s.round = 1;
+  const first = ordered(s).find((c2) => ownTurn(s, c2));
+  s.turnKey = first?.key || null;
+  if (first?.kind === "monster") s.selectedKey = first.key;
+}
+function nextTurn(s) {
+  const o = ordered(s);
+  if (!o.length) return null;
+  let i = o.findIndex((c2) => c2.key === s.turnKey);
+  for (let step = 0; step < o.length; step++) {
+    i++;
+    if (i >= o.length) {
+      i = 0;
+      s.round++;
+    }
+    if (!isOut(o[i]) && ownTurn(s, o[i])) break;
+  }
+  s.turnKey = o[i].key;
+  if (o[i].kind === "monster") s.selectedKey = o[i].key;
+  return s.combatants.find((c2) => c2.key === s.turnKey);
+}
+function companionCombatant(ch, comp, m, rules = "2014") {
+  const base = {
+    key: `cp-${ch.id}-${comp.id}`,
+    kind: "monster",
+    refId: comp.monsterId,
+    name: comp.name || m?.name || "Companion",
+    ac: m?.armorClass ?? null,
+    maxHp: m?.averageHitPoints ?? null,
+    initBonus: m ? initBonus(m) : 0,
+    init: null,
+    owner: `pc-${ch.id}`,
+    ally: true,
+    companion: { char: ch.id, id: comp.id, ...comp.type === "summon" ? { summon: true } : {} }
+  };
+  if (rules === "2024") base.during = true;
+  const live2 = comp.live || {};
+  let c2;
+  if ((comp.count || 1) > 1) {
+    c2 = makeGroup({ ...base, maxHp: base.maxHp ?? 1 }, comp.count, false);
+    if (live2.members?.length === comp.count) c2.members = structuredClone(live2.members);
+    if (live2.conditions) c2.conditions = [...live2.conditions];
+  } else {
+    c2 = { ...base, hp: live2.hp ?? base.maxHp, conditions: [...live2.conditions || []] };
+    if (live2.tokens?.length) c2.tokens = [...live2.tokens];
+    if (live2.timers) c2.timers = structuredClone(live2.timers);
+    if (live2.form) {
+      c2.form = { ...live2.form };
+      c2.ac = live2.form.ac ?? c2.ac;
+      if (live2.form.pool) c2.maxHp = live2.form.maxHp;
+    }
+  }
+  if (live2.tempHp) c2.tempHp = live2.tempHp;
+  return c2;
+}
+function companionLiveOf(c2) {
+  if (!isGroup(c2)) return liveOf(c2);
+  const live2 = { members: structuredClone(c2.members), conditions: [...c2.conditions || []] };
+  if (c2.tempHp) live2.tempHp = c2.tempHp;
+  if (c2.timers) live2.timers = structuredClone(c2.timers);
+  return live2;
+}
+function summon(s, ownerKey, m, n = 1, rules = "2014") {
+  const owner = s.combatants.find((c3) => c3.key === ownerKey);
+  if (!owner || !m) return null;
+  const taken = new Set(s.combatants.map((c3) => c3.name));
+  let name = m.name;
+  for (let k = 2; taken.has(name); k++) name = `${m.name} (${k})`;
+  const base = {
+    key: `sm-${m.id}-${Date.now().toString(36)}-${s.combatants.length}`,
+    kind: "monster",
+    refId: m.id,
+    name,
+    ac: m.armorClass ?? null,
+    maxHp: m.averageHitPoints ?? 1,
+    initBonus: initBonus(m),
+    init: owner.init ?? null,
+    owner: owner.key,
+    summoned: true
+  };
+  if (owner.kind === "pc" || owner.ally) base.ally = true;
+  if (rules === "2024") base.during = true;
+  const c2 = n > 1 ? makeGroup(base, n, isMinion(m)) : { ...base, hp: base.maxHp, conditions: [] };
+  s.combatants.push(c2);
+  return c2;
+}
+function removeCombatant(s, key3) {
+  if (s.turnKey === key3) {
+    const o = ordered(s).filter((c2) => c2.key !== key3);
+    const at2 = ordered(s).findIndex((c2) => c2.key === key3);
+    s.turnKey = o.length ? o[at2 % o.length].key : null;
+  }
+  if (s.selectedKey === key3) s.selectedKey = null;
+  s.combatants = s.combatants.filter((c2) => c2.key !== key3);
+}
+function startOfTurn(c2, m, roll3) {
+  if (c2?.kind !== "monster" || !m) return;
+  if (c2.used?.[`${LEGENDARY_KEY}:0`]) c2.used[`${LEGENDARY_KEY}:0`] = 0;
+  for (const [k, used] of Object.entries(c2.recharge || {})) {
+    if (!used) continue;
+    const [section, i] = k.split(":");
+    const e2 = (m[section] || [])[Number(i)], rc = e2 && rechargeOf(e2.name);
+    if (!rc?.min) continue;
+    const r = roll3("1d6", `Recharge: ${e2.name.replace(/\s*\(.*$/, "")}`);
+    if (r && r.total >= rc.min) c2.recharge[k] = false;
+  }
+}
+function applyHp(y, mode3, n) {
+  const cur = y.hp ?? y.maxHp ?? 0;
+  if (mode3 === "damage") {
+    const absorbed = Math.min(y.tempHp || 0, Math.max(0, n));
+    y.tempHp = (y.tempHp || 0) - absorbed;
+    y.hp = Math.max(0, cur - (n - absorbed));
+    if (y.form?.pool && y.hp <= 0) revertShape(y, n - absorbed - cur);
+  } else if (mode3 === "heal") y.hp = y.maxHp != null ? Math.min(y.maxHp, cur + n) : cur + n;
+  else if (mode3 === "set") y.hp = Math.max(0, n);
+  else if (mode3 === "max") {
+    y.maxHp = Math.max(1, n);
+    y.hp ??= y.maxHp;
+  } else if (mode3 === "temp") y.tempHp = Math.max(0, Math.round(n));
+  if (!y.tempHp) delete y.tempHp;
+}
+function shiftInto(c2, f, m) {
+  if (!c2 || !f || !m || isGroup(c2)) return false;
+  if (c2.form) revertShape(c2);
+  const form = { id: f.id, monsterId: f.monsterId, name: f.name || m.name, ac: m.armorClass ?? c2.ac ?? null, ac0: c2.ac ?? null };
+  c2.ac = form.ac;
+  if (f.hp === "form") {
+    Object.assign(form, { pool: true, maxHp: m.averageHitPoints ?? 1, hp0: c2.hp ?? c2.maxHp ?? null, maxHp0: c2.maxHp ?? null, temp0: c2.tempHp || 0 });
+    c2.hp = c2.maxHp = form.maxHp;
+    delete c2.tempHp;
+  }
+  c2.form = form;
+  return true;
+}
+function revertShape(c2, overflow = 0) {
+  const f = c2?.form;
+  if (!f) return false;
+  delete c2.form;
+  c2.ac = f.ac0;
+  if (f.pool) {
+    c2.maxHp = f.maxHp0;
+    c2.hp = f.hp0;
+    if (f.temp0) c2.tempHp = f.temp0;
+    else delete c2.tempHp;
+    if (overflow > 0) applyHp(c2, "damage", overflow);
+  }
+  return true;
+}
+function setTimer(s, c2, name, rounds) {
+  const n = Math.max(0, Math.round(Number(rounds)) || 0);
+  if (!n) {
+    if (c2.timers) delete c2.timers[name];
+    if (c2.timers && !Object.keys(c2.timers).length) delete c2.timers;
+    return;
+  }
+  const onTurn = s?.turnKey === c2.key || c2.during && s?.turnKey === c2.owner;
+  (c2.timers ??= {})[name] = { left: n, ...onTurn ? { wait: true } : {} };
+}
+function endOfTurn(s) {
+  const turn = s.combatants.find((c2) => c2.key === s.turnKey), out = [];
+  if (!turn) return out;
+  for (const c2 of [turn, ...s.combatants.filter((f) => f.during && f.owner === turn.key)]) {
+    for (const [condition, t] of Object.entries(c2.timers || {})) {
+      if (t.wait) {
+        delete t.wait;
+        continue;
+      }
+      if (--t.left > 0) continue;
+      delete c2.timers[condition];
+      c2.conditions = (c2.conditions || []).filter((q) => q !== condition);
+      out.push({ name: c2.name, condition });
+    }
+    if (c2.timers && !Object.keys(c2.timers).length) delete c2.timers;
+  }
+  return out;
+}
+function pruneTimers(c2) {
+  if (!c2.timers) return;
+  for (const q of Object.keys(c2.timers)) if (!c2.conditions?.includes(q)) delete c2.timers[q];
+  if (!Object.keys(c2.timers).length) delete c2.timers;
+}
+function settleDown(c2) {
+  if (c2.kind === "monster" && isGroup(c2)) {
+    for (const m of c2.members) if (m.hp <= 0 && m.conditions.length) m.conditions = [];
+    if (groupOut(c2) && c2.conditions?.length) c2.conditions = [];
+  } else if (c2.kind === "monster" && down2(c2.hp) && c2.conditions?.length) c2.conditions = [];
+  pruneTimers(c2);
+}
+function rowMarks(c2) {
+  const conds = c2.conditions || [];
+  if (c2.kind === "monster") return (isGroup(c2) ? groupOut(c2) : down2(c2.hp)) ? [DEAD] : [...conds];
+  return down2(c2.hp) && !conds.includes(UNCONSCIOUS) ? [...conds, UNCONSCIOUS] : [...conds];
+}
+function tokenMarks(c2) {
+  if (!isGroup(c2)) {
+    const marks = rowMarks(c2);
+    return tokensOf(c2).map((token) => ({ token, marks }));
+  }
+  return c2.members.filter((m) => m.token).map((m) => ({
+    token: m.token,
+    marks: m.hp <= 0 ? [DEAD] : [.../* @__PURE__ */ new Set([...c2.conditions || [], ...m.conditions])]
+  }));
+}
+function linkPlan(c2) {
+  if (!isGroup(c2)) return [{ member: -1, name: tokenName(c2) }];
+  const open3 = c2.members.map((m, i) => i).filter((i) => !c2.members[i].token);
+  return (open3.length ? open3 : c2.members.map((m, i) => i)).map((i) => ({ member: i, name: tokenName(c2, i) }));
+}
+function linkToken(s, key3, member2, id) {
+  for (const x of s.combatants) {
+    if (isGroup(x)) {
+      for (const m of x.members) if (m.token === id) delete m.token;
+    } else if (x.tokens?.includes(id)) x.tokens = x.tokens.filter((t) => t !== id);
+  }
+  const c2 = s.combatants.find((x) => x.key === key3);
+  if (!c2) return false;
+  if (isGroup(c2)) {
+    if (!c2.members[member2]) return false;
+    c2.members[member2].token = id;
+  } else c2.tokens = [id];
+  return true;
+}
+function unlinkTokens(s, key3) {
+  const c2 = s.combatants.find((x) => x.key === key3);
+  if (!c2) return [];
+  const ids = tokensOf(c2);
+  if (isGroup(c2)) for (const m of c2.members) delete m.token;
+  else delete c2.tokens;
+  return ids;
+}
+function matchPartyTokens(party, tokens) {
+  const links = /* @__PURE__ */ new Map(), twice = [];
+  for (const ch of party) {
+    const hits = tokensNamed(tokens, ch.name);
+    if (hits.length === 1) links.set(ch.id, hits[0].id);
+    else if (hits.length > 1) twice.push(ch.name);
+  }
+  return { links, twice };
+}
+function matchFightTokens(s, tokens) {
+  const links = [], twice = [];
+  for (const c2 of s.combatants) {
+    const slots = isGroup(c2) ? c2.members.map((m, i) => ({ member: i, name: tokenName(c2, i), now: m.token ? [m.token] : [] })) : [{ member: -1, name: tokenName(c2), now: tokensOf(c2) }];
+    for (const { member: member2, name, now } of slots) {
+      const hits = tokensNamed(tokens, name);
+      if (hits.length > 1) twice.push(name);
+      else if (hits.length === 1 && !(now.length === 1 && now[0] === hits[0].id)) links.push({ key: c2.key, member: member2, token: hits[0].id });
+    }
+  }
+  return { links, twice };
+}
+function conSave(c2, m, pc) {
+  if (c2.kind === "monster") {
+    if (!m) return null;
+    return m.savingThrows?.find((s) => s.ability === "CON")?.bonus ?? Math.floor(((m.abilities?.constitution ?? 10) - 10) / 2);
+  }
+  return pc?.sheet?.saves?.find((s) => s.ability === "CON")?.bonus ?? null;
+}
+var LEGENDARY_KEY, sameLive, LETTERS, isOut, ownTurn, ownerInit, formsOf, statRef, DEAD, UNCONSCIOUS, down2, tokensOf, tokenName, tokenRenames, normName, tokensNamed, concentrationDc;
+var init_combat = __esm({
+  "src/combat.js"() {
+    init_format();
+    init_rules();
+    init_groups();
+    LEGENDARY_KEY = "legendaryActions:uses";
+    sameLive = (a2 = {}, b2 = {}) => (a2.hp ?? null) === (b2.hp ?? null) && (a2.tempHp || 0) === (b2.tempHp || 0) && JSON.stringify(a2.conditions || []) === JSON.stringify(b2.conditions || []) && JSON.stringify(a2.tokens || []) === JSON.stringify(b2.tokens || []) && JSON.stringify(a2.form || null) === JSON.stringify(b2.form || null) && JSON.stringify(a2.timers || null) === JSON.stringify(b2.timers || null);
+    LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    isOut = (c2) => c2.kind === "monster" && (isGroup(c2) ? groupOut(c2) : c2.hp != null && c2.hp <= 0);
+    ownTurn = (s, c2) => !(c2.during && s.combatants.some((o) => o.key === c2.owner));
+    ownerInit = (s, c2) => s.combatants.find((o) => o.key === c2.owner)?.init ?? null;
+    formsOf = (x) => x?.shifter ? (x.forms || []).filter((f) => f.monsterId) : [];
+    statRef = (c2) => c2?.form?.monsterId || c2?.refId;
+    DEAD = "Dead";
+    UNCONSCIOUS = "Unconscious";
+    down2 = (hp) => hp != null && hp <= 0;
+    tokensOf = (c2) => isGroup(c2) ? c2.members.map((m) => m.token).filter(Boolean) : (c2.tokens || []).filter(Boolean);
+    tokenName = (c2, i = -1) => i >= 0 ? `${c2.name} ${i + 1}` : c2.name;
+    tokenRenames = (c2) => isGroup(c2) ? c2.members.map((m, i) => m.token ? { id: m.token, name: tokenName(c2, i) } : null).filter(Boolean) : tokensOf(c2).map((id) => ({ id, name: c2.name }));
+    normName = (x) => String(x ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+    tokensNamed = (tokens, name) => {
+      const n = normName(name);
+      return n ? tokens.filter((t) => normName(t.name) === n || normName(t.label) === n) : [];
+    };
+    concentrationDc = (damage) => Math.min(30, Math.max(10, Math.floor(damage / 2)));
+  }
+});
+
+// src/statblock.js
+function rollify(html, label, who) {
+  html = html.replace(/(Attack Roll:\s*(?:<\/em>)?\s*)([+\-−–]\s?\d+)/g, (m, lead, bonus) => {
+    const b2 = bonus.replace(/\s/g, "").replace(/[−–]/, "-");
+    return lead + rollButton(b2, `1d20${b2}`, `${label}: to hit`, who);
+  });
+  return html.replace(/(^|>)([^<]+)/g, (all, gt, text) => gt + text.replace(ROLLABLE, (m, hit, dice2) => {
+    if (hit) return rollButton(hit.replace(/\s/g, ""), `1d20${hit.replace(/[\s−–]/g, (c2) => c2.trim() ? "-" : "")}`, `${label}: to hit`, who);
+    return rollButton(dice2, dice2.replace(/[−–]/g, "-"), `${label}: damage`, who);
+  }));
+}
+function legendaryUses(m) {
+  const text = (m.legendaryActions || []).map((e2) => e2.text).join(" ").replace(/<[^>]+>/g, "");
+  const x = text.match(/Legendary Action Uses:\s*(\d+)/i) || text.match(/can take (\w+) legendary actions?/i);
+  return x ? Number(x[1]) || WORDS[x[1].toLowerCase()] || 0 : 0;
+}
+function slotsOf(e2) {
+  if (e2.slots?.length) return e2.slots;
+  const d = String(e2.name || "").match(/\b(\d{1,2})\s*\/\s*Day\b/i);
+  return d ? [{ label: "", count: Math.min(10, Number(d[1])) }] : [];
+}
+function entryList(entries, who, section, tracker, recharge, group) {
+  return (entries || []).map((e2, i) => {
+    const key3 = `${section}:${i}`;
+    const rc = recharge && rechargeOf(e2.name);
+    const chip = (rc ? rechargeChip(key3, recharge.get(key3), rc) : "") + (group && isGroupAttack(e2.name) ? `<button class="sb-group-atk" data-gk="${key3}" title="One attack roll for the group; the damage is multiplied by how many join in">Group attack</button>` : "");
+    const name = e2.name ? `<strong><em>${esc(e2.name)}.</em></strong> ${chip}` : "";
+    return `<p>${name}${glossify(condify(spellify(rollify(richText(e2.text), e2.name || "Roll", who))))}</p>${boxRows({ ...e2, slots: slotsOf(e2) }, key3, tracker)}`;
+  }).join("");
+}
+function boxRows(e2, key3, tracker) {
+  if (!e2.slots?.length) return "";
+  const rows = e2.slots.map((row2, r) => {
+    const k = `${key3}:${r}`, used = tracker.get(k);
+    const boxes = Array.from({ length: Math.min(60, row2.count | 0) }, (_, b2) => `<button class="sb-box${b2 < used ? " on" : ""}" data-k="${k}" data-i="${b2}" title="${b2 < used ? "Used: click to get it back" : "Click when used"}" aria-pressed="${b2 < used}"></button>`).join("");
+    return `<div class="sb-box-row">${row2.label ? `<span class="sb-box-label">${esc(row2.label)}.</span>` : ""}<span class="sb-boxes">${boxes}</span></div>`;
+  }).join("");
+  const any = e2.slots.some((_, r) => tracker.get(`${key3}:${r}`) > 0);
+  return `<div class="sb-tracker" data-key="${key3}">${rows}${any ? `<button class="link sb-box-reset" data-reset="${key3}" data-rows="${e2.slots.length}">Reset</button>` : ""}</div>`;
+}
+function statBlock(m, opts2 = {}) {
+  const who = opts2.who || m.name;
+  const tracker = opts2.tracker || sessionTracker(m.id || m.name);
+  const recharge = opts2.recharge || null;
+  const group = opts2.group || null;
+  const legUses = legendaryUses(m);
+  const legEntry = { slots: [{ label: "Uses", count: legUses }] };
+  const entryFor = (k) => k === LEGENDARY_KEY ? legEntry : (() => {
+    const [s, i] = k.split(":");
+    const e2 = (m[s] || [])[Number(i)];
+    return e2 && { ...e2, slots: slotsOf(e2) };
+  })();
+  const prop = (label, value) => value ? `<div class="sb-prop"><span class="sb-label">${label}</span> ${value}</div>` : "";
+  const linkedList = (text, rx) => esc(text).replace(rx, (x, name, bonus) => `${name} ${rollButton(bonus, `1d20${bonus}`, `${name.trim()} ${rx === SAVE_RX ? "save" : "check"}`, who)}`);
+  const abil = ABILITIES.map((a2, i) => {
+    const s = m.abilities?.[a2] ?? 10;
+    return `<div class="sb-abil"><div class="sb-abil-name">${ABBR[i]}</div><div>${s}</div>${rollButton(`(${signed(mod(s))})`, `1d20${signed(mod(s))}`, `${ABBR[i]} check`, who)}</div>`;
+  }).join("");
+  const sections = [
+    ["Actions", m.actions, "actions"],
+    ["Bonus Actions", m.bonusActions, "bonusActions"],
+    ["Reactions", m.reactions, "reactions"],
+    ["Legendary Actions", m.legendaryActions, "legendaryActions"],
+    ["Mythic Actions", m.mythicActions, "mythicActions"],
+    ["Lair Actions", m.lairActions, "lairActions"]
+  ].filter(([, list]) => list?.length);
+  const html = `
+    <div class="sb-name">${esc(m.name)}</div>
+    <div class="sb-meta">${esc(typeLine(m))}</div>
+    <div class="sb-bar"></div>
+    ${prop("Armor Class", `${m.armorClass}${m.armorClassType ? ` (${esc(m.armorClassType)})` : ""}`)}
+    ${m.initiativeBonus !== "" && m.initiativeBonus != null ? prop("Initiative", rollButton(signed(initBonus(m)), `1d20${signed(initBonus(m))}`, "Initiative", who)) : ""}
+    ${prop("Hit Points", m.hpText ? esc(m.hpText) : `${m.averageHitPoints} ${rollButton(`(${hpFormula(m)})`, hpDice(m), "Hit points", who)}`)}
+    ${prop("Speed", esc(speedText(m)))}
+    <div class="sb-bar"></div>
+    <div class="sb-abils">${abil}</div>
+    <div class="sb-bar"></div>
+    ${prop("Saving Throws", linkedList(savesText(m), SAVE_RX))}
+    ${prop("Skills", linkedList(skillsTextOf(m), SKILL_RX))}
+    ${prop("Damage Vulnerabilities", esc(listText(m.damageVulnerabilities)))}
+    ${prop("Damage Resistances", esc(listText(m.damageResistances)))}
+    ${prop("Damage Immunities", esc(listText(m.damageImmunities)))}
+    ${prop("Condition Immunities", condify(esc(listText(m.conditionImmunities))))}
+    ${prop("Senses", esc([sensesText(m), `passive Perception ${m.passivePerception ?? 10}`].filter(Boolean).join(", ")))}
+    ${prop("Languages", esc(languagesText(m)))}
+    ${(m.notes || []).map((n) => prop(esc(n.name), esc(n.text))).join("")}
+    ${m.crText ? prop("Challenge", esc(m.crText)) : `<div class="sb-row">${prop("Challenge", esc(crXpText(m)))}${prop("Proficiency Bonus", pbText(m))}</div>`}
+    ${m.traits?.length ? `<div class="sb-bar"></div><div class="sb-entries">${entryList(m.traits, who, "traits", tracker, recharge, group)}</div>` : ""}
+    ${sections.map(([title2, list, key3]) => `<div class="sb-section">${title2}</div>${key3 === "legendaryActions" && legUses ? boxRows(legEntry, LEGENDARY_KEY, tracker) : ""}<div class="sb-entries">${entryList(list, who, key3, tracker, recharge, group)}</div>`).join("")}
+    ${m.description?.length && opts2.description !== false ? `<div class="sb-section">Description</div><div class="sb-entries sb-desc">${entryList(m.description, who, "description", tracker)}</div>` : ""}
+    ${m.source && m.source !== "Homebrew" ? `<div class="sb-source">Source: ${esc(m.source)}</div>` : ""}`;
+  const el11 = h("div.statblock", { html });
+  el11.addEventListener("click", (e2) => {
+    const atk = e2.target.closest(".sb-group-atk");
+    if (atk && group) {
+      e2.preventDefault();
+      group.attack(entryFor(atk.dataset.gk));
+      return;
+    }
+    const chip = e2.target.closest(".sb-recharge");
+    if (chip && recharge) {
+      e2.preventDefault();
+      const k2 = chip.dataset.rk, used = !recharge.get(k2);
+      recharge.set(k2, used);
+      chip.outerHTML = rechargeChip(k2, used, rechargeOf(entryFor(k2)?.name));
+      return;
+    }
+    const box = e2.target.closest(".sb-box"), reset2 = e2.target.closest(".sb-box-reset");
+    if (!box && !reset2) return;
+    e2.preventDefault();
+    if (reset2) {
+      for (let r = 0; r < Number(reset2.dataset.rows); r++) tracker.set(`${reset2.dataset.reset}:${r}`, 0);
+    } else {
+      const i = Number(box.dataset.i), used = tracker.get(box.dataset.k);
+      tracker.set(box.dataset.k, i < used ? i : i + 1);
+    }
+    const k = (box || reset2).closest(".sb-tracker").dataset.key;
+    (box || reset2).closest(".sb-tracker").outerHTML = boxRows(entryFor(k), k, tracker);
+  });
+  return el11;
+}
+var ROLLABLE, WORDS, rechargeChip, sessionTicks, sessionTracker, SAVE_RX, SKILL_RX, skillsTextOf;
+var init_statblock = __esm({
+  "src/statblock.js"() {
+    init_ui();
+    init_conditions();
+    init_spells();
+    init_glossary();
+    init_groups();
+    init_combat();
+    init_tooltip();
+    init_store();
+    init_dice();
+    init_constants();
+    init_format();
+    ROLLABLE = /([+\-−–]\s?\d+)(?=\s+to hit)|\b(\d+d\d+(?:\s*[+\-−–]\s*\d+)?)/g;
+    WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5 };
+    rechargeChip = (key3, used, rc) => `<button class="sb-recharge${used ? " used" : ""}" data-rk="${key3}" title="${used ? `Used. ${rc.min ? `It recharges on a ${rc.min === 6 ? "6" : `${rc.min}\u20136`}, rolled at the start of its turn. ` : ""}Click when it's available again.` : "Available. Click when it is used."}">${used ? "Used" : "Ready"}</button>`;
+    sessionTicks = /* @__PURE__ */ new Map();
+    sessionTracker = (id) => ({
+      get: (k) => sessionTicks.get(`${id}|${k}`) || 0,
+      set: (k, n) => sessionTicks.set(`${id}|${k}`, n)
+    });
+    registerTip("desc", (id) => {
+      const m = findMonster(id);
+      if (!m?.description?.length) return "";
+      const paras = m.description.map((e2) => `<p>${e2.name ? `<strong><em>${esc(e2.name)}.</em></strong> ` : ""}${glossify(condify(spellify(richText(e2.text))))}</p>`).join("");
+      return `<div class="cond-name">${esc(m.name)}</div>${paras}`;
+    });
+    SAVE_RX = /(\b(?:Str|Dex|Con|Int|Wis|Cha)\w*)\s([+\-]\d+)/g;
+    SKILL_RX = /([A-Z][A-Za-z' ]+?)\s([+\-]\d+)/g;
+    skillsTextOf = (m) => (m.skills || []).map((s) => `${s.skill} ${signed(s.bonus)}`).join(", ");
+  }
+});
+
+// src/monster-picker.js
+function pickMonster({ title: title2, okText = "Add", count = null, hint = "", onPick }) {
+  let chosen = null, query2 = "";
+  const search = h("input.search", { type: "search", placeholder: "Search creatures by name" });
+  const list = h("div.pick-list");
+  const many = count != null ? h("input", { type: "number", min: 1, max: 30, value: count }) : null;
+  const draw2 = () => {
+    const q = query2.trim().toLowerCase();
+    const found = allMonsters().filter((m) => !q || m.name.toLowerCase().includes(q)).sort((a2, b2) => (q ? (a2.name.toLowerCase().startsWith(q) ? 0 : 1) - (b2.name.toLowerCase().startsWith(q) ? 0 : 1) : 0) || (isHomebrew(a2) ? 0 : 1) - (isHomebrew(b2) ? 0 : 1) || a2.name.localeCompare(b2.name)).slice(0, 60);
+    fill(list, found.length ? found.map((m) => h(
+      "button.pick-row" + (chosen === m ? ".active" : ""),
+      {
+        onclick: () => {
+          chosen = m;
+          draw2();
+        },
+        ondblclick: () => {
+          chosen = m;
+          if (ok() !== false) close2();
+        }
+      },
+      avatar(m.avatar, m.name, "xs"),
+      h("span.pick-name", m.name),
+      h("span.muted", [m.challengeRating != null && `CR ${m.challengeRating}`, m.typeText || m.monsterType, isHomebrew(m) ? "yours" : "SRD"].filter(Boolean).join(" \xB7 "))
+    )) : h("div.empty", "No creature by that name. Make one in the Maker or the Creatures tab first."));
+  };
+  search.addEventListener("input", () => {
+    query2 = search.value;
+    draw2();
+  });
+  const ok = () => {
+    if (!chosen) return false;
+    onPick(chosen, many ? Math.max(1, Math.min(30, Math.round(Number(many.value)) || 1)) : 1);
+  };
+  const close2 = modal(title2, h(
+    "div.pick",
+    search,
+    list,
+    many ? h("label.mg-row", "How many", many) : null,
+    hint ? h("div.hint", hint) : null
+  ), [["Cancel", () => {
+  }], [okText, ok, "primary"]]);
+  draw2();
+  search.focus();
+}
+var init_monster_picker = __esm({
+  "src/monster-picker.js"() {
+    init_ui();
+    init_store();
+  }
+});
+
+// src/sheet.js
+function characterSheet(c2, opts2 = {}) {
+  const s = c2.sheet, who = c2.name;
+  if (!s) return h("div.empty", "No character sheet yet. Import this character's D&D Beyond PDF on the Party tab to see the full sheet here.");
+  const imported = new Date(s.importedAt).toLocaleDateString(void 0, { month: "short", day: "numeric", year: "numeric" });
+  const abil = Object.entries(s.abilities).map(([k, v]) => `<div class="sh-abil"><div class="sh-k">${ABBR2[k]}</div><div class="sh-score">${v ?? "\u2014"}</div>${roll2(sign(mod3(v)), `1d20${sign(mod3(v))}`, `${ABBR2[k]} check`, who)}</div>`).join("");
+  const saves = s.saves.map((x) => `<span class="sh-chip${x.proficient ? " prof" : ""}" title="${x.proficient ? "Proficient" : ""}">${x.ability} ${roll2(sign(x.bonus), `1d20${sign(x.bonus)}`, `${x.ability} save`, who)}</span>`).join("");
+  const skills = s.skills.map((k) => `<div class="sh-skill${k.proficiency ? ` ${k.proficiency}` : ""}"><span class="sh-mark" title="${k.proficiency}">${k.proficiency === "expertise" ? "E" : k.proficiency === "proficient" ? "P" : k.proficiency === "half" ? "\xBD" : ""}</span><span>${esc(k.name)} <small>${k.ability}</small></span>${roll2(sign(k.bonus), `1d20${sign(k.bonus)}`, k.name, who)}</div>`).join("");
+  const attacks = s.attacks.length ? `<table class="sh-table"><thead><tr><th>Attack</th><th>Hit</th><th>Damage</th><th>Notes</th></tr></thead><tbody>${s.attacks.map((a2) => `<tr><td>${esc(a2.name)}</td><td>${roll2(a2.hit, bonusExpr(a2.hit), `${a2.name}: to hit`, who)}</td><td>${a2.damageDice && /d/.test(a2.damageDice) ? rollButton(a2.damageDice, a2.damageDice, `${a2.name}: damage`, who) : esc(a2.damageDice)} ${esc(a2.damageType)}</td><td class="sh-notes">${esc(a2.notes)}</td></tr>`).join("")}</tbody></table>` : "";
+  const levels2 = [...new Set(s.spells.map((x) => x.level))];
+  const spells = levels2.map((lv, i) => {
+    const list = s.spells.filter((x) => x.level === lv);
+    return `<details class="sh-spells"${i < 2 ? " open" : ""}><summary>${esc(lv)} <span class="muted">${esc(s.slots[lv] || "")} \xB7 ${list.length}</span></summary><table class="sh-table"><tbody>${list.map((x) => `<tr><td>${spellLink(x.name)}${x.prepared ? ' <span class="tag">ALWAYS</span>' : ""}</td><td>${/^[+\-]\d/.test(x.saveHit) ? roll2(x.saveHit, bonusExpr(x.saveHit), `${x.name}: spell attack`, who) : esc(x.saveHit)}</td><td>${esc(x.time)}</td><td>${esc(x.range)}</td><td class="sh-notes">${esc(x.duration)}</td></tr>`).join("")}</tbody></table></details>`;
+  }).join("");
+  const casting = s.casting.map((k) => `<span class="sh-chip">${esc(k.className || "Spellcasting")} \xB7 ${esc(k.ability)} \xB7 DC ${k.saveDC ?? "\u2014"} \xB7 ${roll2(k.attack, bonusExpr(k.attack), "Spell attack", who)}</span>`).join("");
+  const look = Object.entries(s.appearance || {}).map(([k, v]) => `${k[0].toUpperCase()}${k.slice(1)}: ${v}`).join(" \xB7 ");
+  const person = Object.entries(s.personality || {}).map(([k, v]) => `${k[0].toUpperCase()}${k.slice(1)}:
+${v}`).join("\n\n");
+  const html = `
+    <div class="sh-head">${esc([s.classText, s.species, s.background, s.appearance?.alignment].filter(Boolean).join(" \xB7 "))}<span class="sh-imported">Imported ${imported}</span></div>
+    <div class="sh-combat">
+      <div><div class="sh-k">AC</div><div class="sh-v">${c2.armorClass ?? "\u2014"}</div></div>
+      <div><div class="sh-k">HP</div><div class="sh-v">${opts2.hp != null ? `${opts2.hp}/` : ""}${c2.maxHp ?? "\u2014"}</div><div class="sh-sub">${esc(s.hitDice)}</div></div>
+      <div><div class="sh-k">Speed</div><div class="sh-v">${c2.speed ?? "\u2014"}</div><div class="sh-sub">ft.</div></div>
+      <div><div class="sh-k">Init</div><div class="sh-v">${rollButton(sign(c2.initiativeBonus || 0), `1d20${sign(c2.initiativeBonus || 0)}`, "Initiative", who)}</div></div>
+      <div><div class="sh-k">Prof.</div><div class="sh-v">${esc(s.proficiencyBonus)}</div></div>
+    </div>
+    <div class="sh-abils">${abil}</div>
+    <div class="sh-row"><span class="sh-label">Saves</span> ${saves}</div>
+    <div class="sh-row sh-small"><span class="sh-label">Passive</span> Perception ${s.passives.perception ?? "\u2014"} \xB7 Insight ${s.passives.insight ?? "\u2014"} \xB7 Investigation ${s.passives.investigation ?? "\u2014"}${s.senses ? ` \xB7 ${esc(s.senses)}` : ""}</div>
+    ${s.defenses ? `<div class="sh-row sh-small"><span class="sh-label">Defenses</span> ${condify(esc(s.defenses))}</div>` : ""}
+    ${attacks ? `<div class="sh-section">Attacks</div>${attacks}` : ""}
+    ${s.spells.length || s.casting.length ? `<div class="sh-section">Spells</div><div class="sh-row">${casting}</div>${spells}` : ""}
+    <details class="sh-text"${opts2.compact ? "" : " open"}><summary>Skills</summary><div class="sh-skills">${skills}</div></details>
+    ${block("Actions", s.actions)}
+    ${block("Features & traits", s.features)}
+    ${opts2.compact ? "" : block("Proficiencies & languages", s.proficiencies)}
+    ${opts2.compact ? "" : s.equipment?.length ? block("Equipment", s.equipment.map((e2) => `${e2.name}${e2.qty > 1 ? ` \xD7${e2.qty}` : ""}`).join(", ")) : ""}
+    ${opts2.compact ? "" : block("Appearance & personality", [look, person].filter(Boolean).join("\n\n"))}`;
+  return h("div.sheet", { html });
+}
+var sign, mod3, ABBR2, bonusExpr, roll2, block;
+var init_sheet = __esm({
+  "src/sheet.js"() {
+    init_ui();
+    init_conditions();
+    init_spells();
+    sign = (n) => n >= 0 ? `+${n}` : `${n}`;
+    mod3 = (s) => Math.floor(((s ?? 10) - 10) / 2);
+    ABBR2 = { strength: "STR", dexterity: "DEX", constitution: "CON", intelligence: "INT", wisdom: "WIS", charisma: "CHA" };
+    bonusExpr = (b2) => {
+      const n = parseInt(String(b2).replace(/[−–]/, "-"), 10);
+      return Number.isFinite(n) ? `1d20${sign(n)}` : null;
+    };
+    roll2 = (text, expr, label, who) => expr ? rollButton(text, expr, label, who) : esc(text);
+    block = (title2, text, open3 = false) => text ? `<details class="sh-text"${open3 ? " open" : ""}><summary>${title2}</summary><div>${condify(spellify(esc(text.replace(/[ \t]+\n/g, "\n").trim()))).replace(/\n/g, "<br>")}</div></details>` : "";
   }
 });
 
@@ -41179,9 +43716,9 @@ function resetCtxToDefault(ctx) {
   }
   if (!isNodeJS) {
     const {
-      filter: filter4
+      filter: filter5
     } = ctx;
-    if (filter4 !== "none" && filter4 !== "") {
+    if (filter5 !== "none" && filter5 !== "") {
       ctx.filter = "none";
     }
   }
@@ -47372,8 +49909,8 @@ var init_pdf = __esm({
         const url = this.#createUrl(id);
         this.#cache.set(maps, url);
         this.#cache.set(key3, url);
-        const filter4 = this.#createFilter(id);
-        this.#addTransferMapConversion(tableR, tableG, tableB, filter4);
+        const filter5 = this.#createFilter(id);
+        this.#addTransferMapConversion(tableR, tableG, tableB, filter5);
         return url;
       }
       addHCMFilter(fgColor, bgColor) {
@@ -47414,9 +49951,9 @@ var init_pdf = __esm({
         }
         const table = map.join(",");
         const id = `g_${this.#docId}_hcm_filter`;
-        const filter4 = info2.filter = this.#createFilter(id);
-        this.#addTransferMapConversion(table, table, table, filter4);
-        this.#addGrayConversion(filter4);
+        const filter5 = info2.filter = this.#createFilter(id);
+        this.#addTransferMapConversion(table, table, table, filter5);
+        this.#addGrayConversion(filter5);
         const getSteps = (c2, n) => {
           const start2 = fgRGB[c2] / 255;
           const end = bgRGB[c2] / 255;
@@ -47426,7 +49963,7 @@ var init_pdf = __esm({
           }
           return arr2.join(",");
         };
-        this.#addTransferMapConversion(getSteps(0, 5), getSteps(1, 5), getSteps(2, 5), filter4);
+        this.#addTransferMapConversion(getSteps(0, 5), getSteps(1, 5), getSteps(2, 5), filter5);
         info2.url = this.#createUrl(id);
         return info2.url;
       }
@@ -47446,8 +49983,8 @@ var init_pdf = __esm({
         const url = this.#createUrl(id);
         this.#cache.set(map, url);
         this.#cache.set(key3, url);
-        const filter4 = this.#createFilter(id);
-        this.#addTransferMapAlphaConversion(tableA, filter4);
+        const filter5 = this.#createFilter(id);
+        this.#addTransferMapAlphaConversion(tableA, filter5);
         return url;
       }
       addLuminosityFilter(map) {
@@ -47471,10 +50008,10 @@ var init_pdf = __esm({
         const url = this.#createUrl(id);
         this.#cache.set(map, url);
         this.#cache.set(key3, url);
-        const filter4 = this.#createFilter(id);
-        this.#addLuminosityConversion(filter4);
+        const filter5 = this.#createFilter(id);
+        this.#addLuminosityConversion(filter5);
         if (map) {
-          this.#addTransferMapAlphaConversion(tableA, filter4);
+          this.#addTransferMapAlphaConversion(tableA, filter5);
         }
         return url;
       }
@@ -47528,9 +50065,9 @@ var init_pdf = __esm({
           return arr2.join(",");
         };
         const id = `g_${this.#docId}_hcm_${filterName}_filter`;
-        const filter4 = info2.filter = this.#createFilter(id);
-        this.#addGrayConversion(filter4);
-        this.#addTransferMapConversion(getSteps(newFgRGB[0], newBgRGB[0], 5), getSteps(newFgRGB[1], newBgRGB[1], 5), getSteps(newFgRGB[2], newBgRGB[2], 5), filter4);
+        const filter5 = info2.filter = this.#createFilter(id);
+        this.#addGrayConversion(filter5);
+        this.#addTransferMapConversion(getSteps(newFgRGB[0], newBgRGB[0], 5), getSteps(newFgRGB[1], newBgRGB[1], 5), getSteps(newFgRGB[2], newBgRGB[2], 5), filter5);
         info2.url = this.#createUrl(id);
         return info2.url;
       }
@@ -47546,24 +50083,24 @@ var init_pdf = __esm({
         this.#_hcmCache = null;
         this.#id = 0;
       }
-      #addLuminosityConversion(filter4) {
+      #addLuminosityConversion(filter5) {
         const feColorMatrix = this.#document.createElementNS(SVG_NS, "feColorMatrix");
         feColorMatrix.setAttribute("type", "matrix");
         feColorMatrix.setAttribute("values", "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0.59 0.11 0 0");
-        filter4.append(feColorMatrix);
+        filter5.append(feColorMatrix);
       }
-      #addGrayConversion(filter4) {
+      #addGrayConversion(filter5) {
         const feColorMatrix = this.#document.createElementNS(SVG_NS, "feColorMatrix");
         feColorMatrix.setAttribute("type", "matrix");
         feColorMatrix.setAttribute("values", "0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0 0 0 1 0");
-        filter4.append(feColorMatrix);
+        filter5.append(feColorMatrix);
       }
       #createFilter(id) {
-        const filter4 = this.#document.createElementNS(SVG_NS, "filter");
-        filter4.setAttribute("color-interpolation-filters", "sRGB");
-        filter4.setAttribute("id", id);
-        this.#defs.append(filter4);
-        return filter4;
+        const filter5 = this.#document.createElementNS(SVG_NS, "filter");
+        filter5.setAttribute("color-interpolation-filters", "sRGB");
+        filter5.setAttribute("id", id);
+        this.#defs.append(filter5);
+        return filter5;
       }
       #appendFeFunc(feComponentTransfer, func, table) {
         const feFunc = this.#document.createElementNS(SVG_NS, func);
@@ -47571,16 +50108,16 @@ var init_pdf = __esm({
         feFunc.setAttribute("tableValues", table);
         feComponentTransfer.append(feFunc);
       }
-      #addTransferMapConversion(rTable, gTable, bTable, filter4) {
+      #addTransferMapConversion(rTable, gTable, bTable, filter5) {
         const feComponentTransfer = this.#document.createElementNS(SVG_NS, "feComponentTransfer");
-        filter4.append(feComponentTransfer);
+        filter5.append(feComponentTransfer);
         this.#appendFeFunc(feComponentTransfer, "feFuncR", rTable);
         this.#appendFeFunc(feComponentTransfer, "feFuncG", gTable);
         this.#appendFeFunc(feComponentTransfer, "feFuncB", bTable);
       }
-      #addTransferMapAlphaConversion(aTable, filter4) {
+      #addTransferMapAlphaConversion(aTable, filter5) {
         const feComponentTransfer = this.#document.createElementNS(SVG_NS, "feComponentTransfer");
-        filter4.append(feComponentTransfer);
+        filter5.append(feComponentTransfer);
         this.#appendFeFunc(feComponentTransfer, "feFuncA", aTable);
       }
       #getRGB(color) {
@@ -48508,12 +51045,12 @@ var init_pdf = __esm({
         ctx.drawImage(layerCtx.canvas, 0, 0);
         ctx.restore();
       }
-      genericComposeSMask(maskCtx, layerCtx, width, height, subtype, backdrop, transferMap, layerOffsetX, layerOffsetY, maskOffsetX, maskOffsetY) {
+      genericComposeSMask(maskCtx, layerCtx, width, height, subtype, backdrop2, transferMap, layerOffsetX, layerOffsetY, maskOffsetX, maskOffsetY) {
         let maskCanvas = maskCtx.canvas;
         let maskX = layerOffsetX - maskOffsetX;
         let maskY = layerOffsetY - maskOffsetY;
-        if (backdrop) {
-          const backdropRGB = Util.makeHexColor(...backdrop);
+        if (backdrop2) {
+          const backdropRGB = Util.makeHexColor(...backdrop2);
           if (maskX < 0 || maskY < 0 || maskX + width > maskCanvas.width || maskY + height > maskCanvas.height) {
             const canvas = this.cachedCanvases.getCanvas("maskExtension", width, height);
             const ctx = canvas.context;
@@ -49522,9 +52059,9 @@ var init_pdf = __esm({
         this.save();
         if (!isNodeJS) {
           const {
-            filter: filter4
+            filter: filter5
           } = ctx;
-          if (filter4 !== "none" && filter4 !== "") {
+          if (filter5 !== "none" && filter5 !== "") {
             ctx.filter = "none";
           }
         }
@@ -55192,7 +57729,7 @@ var init_pdf = __esm({
         parent,
         rect,
         parentRect,
-        open: open2
+        open: open3
       }) {
         this.#container = container;
         this.#titleObj = titleObj;
@@ -55215,7 +57752,7 @@ var init_pdf = __esm({
           element.container?.addEventListener("keydown", this.#boundKeyDown);
         }
         this.#container.hidden = true;
-        if (open2) {
+        if (open3) {
           this.#toggle();
         }
       }
@@ -61432,6 +63969,1976 @@ var init_pdf = __esm({
   }
 });
 
+// src/encounters.js
+function rulesDefault() {
+  try {
+    return localStorage.getItem("encounterRules") || "2024";
+  } catch {
+    return "2024";
+  }
+}
+function setRulesDefault(rules) {
+  try {
+    localStorage.setItem("encounterRules", rules);
+  } catch {
+  }
+}
+function newEncounter() {
+  return { id: newId("encounter"), name: "New Encounter", rules: rulesDefault(), characterIds: store.party.map((c2) => c2.id), extraPlayers: { count: 0, level: 1 }, groups: [], summary: "", combat: null };
+}
+function encounterParty(enc2) {
+  const chars = (enc2.characterIds || []).map(findCharacter).filter(Boolean);
+  const extra = enc2.extraPlayers?.count > 0 ? Array(enc2.extraPlayers.count).fill({ level: Number(enc2.extraPlayers.level) || 1, power: 1 }) : [];
+  return [...chars.map((c2) => ({ level: Number(c2.level) || 1, power: clampPower(c2.power ?? 1) })), ...extra];
+}
+function partyPower(enc2) {
+  const p = encounterParty(enc2);
+  return p.length ? p.reduce((n, x) => n + x.power, 0) / p.length : 1;
+}
+function difficultyClass(name) {
+  return `diff-${String(name).toLowerCase()}`;
+}
+function dots(rank, max) {
+  return h(`span.dots.r${rank}`, { title: "" }, Array.from({ length: max }, (_, i) => h("span.dot" + (i < rank ? ".on" : ""))));
+}
+function encounterTable(opts2) {
+  const q = (opts2.query || "").toLowerCase();
+  const list = store.encounters.filter((e2) => (!q || e2.name.toLowerCase().includes(q)) && (!opts2.only || opts2.only(e2))).sort((a2, b2) => a2.name.localeCompare(b2.name, void 0, { numeric: true }));
+  if (!list.length) return h("div.empty", store.encounters.length ? "No encounters match." : "No encounters yet. Click Create New to build one.");
+  return h(
+    "div.enc-table",
+    h("div.enc-row.enc-headrow", h("div", "Name"), h("div", "Created"), h("div", "Rules"), h("div", "Difficulty"), h("div", "Party"), h("div", "Last saved"), h("div")),
+    list.map((e2) => {
+      const r = evaluateEncounter(e2);
+      return h(
+        "div.enc-row",
+        h("button.enc-name", { onclick: () => opts2.onOpen(e2) }, e2.name || "Untitled"),
+        h("div", fmtDate(e2.created)),
+        h("div.muted", e2.rules === "2024" ? "2024" : "2014"),
+        h(`div.${difficultyClass(r.difficulty)}`, r.difficulty),
+        h("div", partyLabel(encounterLevels(e2))),
+        h("div.when", fmtTime(e2.updated), h("br"), fmtDate(e2.updated)),
+        h(
+          "div.enc-actions",
+          h("button.outline", { onclick: () => opts2.onRun(e2) }, e2.combat ? "Resume" : "Run"),
+          opts2.menu ? h("button.icon-btn.kebab", { title: "More", onclick: (ev) => popMenu(ev.currentTarget, opts2.menu(e2)) }, "\u22EE") : null
+        )
+      );
+    })
+  );
+}
+function manageCharactersDialog(target, onSave) {
+  const picked = new Set(target.characterIds || []);
+  const extra = { ...target.extraPlayers || { count: 0, level: 1 } };
+  const body2 = h(
+    "div.manage",
+    store.party.length ? h("div.check-list", [...store.party].sort((a2, b2) => a2.name.localeCompare(b2.name)).map((c2) => h(
+      "label.check-row",
+      h("input", { type: "checkbox", checked: picked.has(c2.id), onchange: (ev) => ev.target.checked ? picked.add(c2.id) : picked.delete(c2.id) }),
+      avatar(c2.avatar, c2.name, "xs"),
+      h("span", c2.name),
+      h("span.muted", `Level ${c2.level}${c2.className ? ` \xB7 ${c2.className}` : ""}${(c2.power ?? 1) !== 1 ? ` \xB7 ${powerText(c2.power)}` : ""}`)
+    ))) : h("p.muted", "No characters in your party yet. Add them in the Party tab, or use generic players below."),
+    h("h4", "Generic players"),
+    h(
+      "div.row-gap",
+      h("label.inline", "Count", h("input", { type: "number", min: 0, max: 20, value: extra.count, oninput: (ev) => {
+        extra.count = Math.max(0, Number(ev.target.value) || 0);
+      } })),
+      h("label.inline", "Level", h("input", { type: "number", min: 1, max: 20, value: extra.level, oninput: (ev) => {
+        extra.level = Math.min(20, Math.max(1, Number(ev.target.value) || 1));
+      } }))
+    ),
+    h("p.hint", `Party: ${partyLabel(encounterLevels(target))} now.`)
+  );
+  modal("Manage characters", body2, [
+    ["Cancel", () => {
+    }],
+    ["Save", () => {
+      target.characterIds = [...picked];
+      target.extraPlayers = extra;
+      onSave();
+    }, "primary"]
+  ]);
+}
+function popMenu(anchor, items) {
+  document.querySelector(".pop-menu")?.remove();
+  const r = anchor.getBoundingClientRect();
+  const menu = h(
+    "div.pop-menu",
+    { style: `top:${r.bottom + 4}px;left:${Math.max(8, r.right - 180)}px` },
+    items.map(([label, fn, cls = "", attrs = {}]) => h(`button${cls ? "." + cls : ""}`, { ...attrs, onclick: () => {
+      menu.remove();
+      fn();
+    } }, label))
+  );
+  document.body.append(menu);
+  setTimeout(() => document.addEventListener("mousedown", function off(e2) {
+    if (!menu.contains(e2.target)) {
+      menu.remove();
+      document.removeEventListener("mousedown", off);
+    }
+  }), 0);
+}
+var DIFF_HELP, encounterLevels, groupCr, encounterCrs, runsAsGroup, evaluateEncounter, fmtDate, fmtTime, powerText;
+var init_encounters = __esm({
+  "src/encounters.js"() {
+    init_ui();
+    init_store();
+    init_rules();
+    DIFF_HELP = {
+      Trivial: "Below the lowest threshold: barely a speed bump.",
+      Easy: "Easy (2014): the party should win without real risk.",
+      Medium: "Medium (2014): a scare or two, but no one should die.",
+      Hard: "Hard (2014): could go badly; a character might drop.",
+      Deadly: "Deadly (2014): could kill one or more characters.",
+      Low: "Low (2024): a scary moment or two; the party should win with no casualties, maybe using some healing.",
+      Moderate: "Moderate (2024): without healing and other resources it could go badly; a character might go down.",
+      High: "High (2024): could be lethal for one or more characters; needs smart tactics and some luck."
+    };
+    encounterLevels = (enc2) => encounterParty(enc2).map((p) => p.level);
+    groupCr = (g) => findMonster(g.monsterId)?.challengeRating ?? g.cr ?? "0";
+    encounterCrs = (enc2) => (enc2.groups || []).flatMap((g) => {
+      const m = findMonster(g.monsterId);
+      return Array(g.count).fill(m ? xpItem(m) : g.cr ?? "0");
+    });
+    runsAsGroup = (g) => g.count > 1 && (g.runAsGroup ?? isMinion(findMonster(g.monsterId)));
+    evaluateEncounter = (enc2) => evaluate(encounterCrs(enc2), encounterParty(enc2), enc2.rules);
+    fmtDate = (t) => t ? new Date(t).toLocaleDateString(void 0, { month: "short", day: "numeric", year: "numeric" }) : "";
+    fmtTime = (t) => t ? new Date(t).toLocaleTimeString(void 0, { hour: "numeric", minute: "2-digit" }) : "";
+    powerText = (p) => `\xD7${Number(Number(p).toFixed(2))}`;
+  }
+});
+
+// src/loot-dialog.js
+function lootOf(m) {
+  const o = !m || isHomebrew(m) ? null : store.loot.find((r) => r.id === MONSTER_LOOT_ID)?.monsters?.[m.id];
+  return o ? { ...m, ...o } : m;
+}
+function setSrdLoot(m, key3, value) {
+  const rec = store.loot.find((r) => r.id === MONSTER_LOOT_ID) || { id: MONSTER_LOOT_ID, monsters: {} };
+  const entry = rec.monsters[m.id] || {};
+  if (!value || value === "auto") delete entry[key3];
+  else entry[key3] = value;
+  if (Object.keys(entry).length) rec.monsters[m.id] = entry;
+  else delete rec.monsters[m.id];
+  save("loot", rec);
+}
+function lootSettings() {
+  try {
+    return { ...LOOT_DEFAULTS, ...JSON.parse(localStorage.getItem("lootSettings") || "{}") };
+  } catch {
+    return { ...LOOT_DEFAULTS };
+  }
+}
+function setLootSettings(s) {
+  try {
+    localStorage.setItem("lootSettings", JSON.stringify(s));
+  } catch {
+  }
+}
+function encounterEnemies(enc2) {
+  const by = /* @__PURE__ */ new Map();
+  const add2 = (id, n) => {
+    const m = lootOf(findMonster(id));
+    if (m) by.set(id, { monster: m, count: (by.get(id)?.count || 0) + n });
+  };
+  if (enc2.combat?.combatants?.length) {
+    for (const c2 of enc2.combat.combatants) if (c2.kind === "monster" && c2.refId && !c2.ally && !c2.summoned) add2(c2.refId, isGroup(c2) ? c2.members.length : 1);
+  } else for (const g of enc2.groups || []) add2(g.monsterId, g.count);
+  return [...by.values()];
+}
+function encounterLevel(enc2) {
+  const p = encounterParty(enc2);
+  return p.length ? Math.round(p.reduce((n, x) => n + x.level, 0) / p.length) : null;
+}
+function lootDialog(enc2) {
+  const enemies = encounterEnemies(enc2).map((x) => ({ ...x, on: true }));
+  const tables = currentTables();
+  const st = { generosity: lootSettings().generosity, magic: false, magicCount: 1, level: encounterLevel(enc2) ?? 1, seed: newSeed() };
+  const out = h("div.loot-out");
+  const draw2 = () => {
+    const res = generateLoot({
+      enemies: enemies.filter((x) => x.on),
+      partyLevel: st.level,
+      items: allItems(),
+      spells: allSpells().filter((s) => s.loot !== false),
+      tables,
+      settings: { generosity: st.generosity, magic: st.magic ? st.magicCount : 0 },
+      seed: st.seed
+    });
+    pockets.clear();
+    const pocket = (x) => {
+      pockets.set(pockets.size, x);
+      return h("span.cond-link", { tabindex: 0, dataset: { pocket: pockets.size - 1 } }, x.name);
+    };
+    const nameOf = (x) => x.desc && !x.id ? pocket(x) : x.id ? h("span.cond-link", { tabindex: 0, dataset: { item: x.id } }, x.name) : x.spell ? h("span.cond-link", { tabindex: 0, dataset: { spell: x.spell } }, x.name) : x.name;
+    const line = (x) => h(
+      "li",
+      x.qty > 1 ? h("span.loot-qty", `${x.qty} \xD7`) : null,
+      " ",
+      nameOf(x),
+      " ",
+      h("span.muted", x.scrap ? `scrap ${priceText(x.value)}` : x.qty > 1 ? `${priceText(x.value)} each` : priceText(x.value)),
+      x.rarity ? h("span.tag", x.rarity.toUpperCase()) : x.kind === "minor" ? h("span.tag", "MINOR MAGIC") : null
+    );
+    const gear = res.lines.filter((x) => x.kind !== "magic"), magic = res.lines.filter((x) => x.kind === "magic");
+    fill(
+      out,
+      h("div.loot-coins", h("span.loot-label", "Coins"), coinText(res.coins)),
+      h("h4", "Items"),
+      gear.length ? h("ul.loot-list", gear.map(line)) : h("p.muted", "Nothing worth taking."),
+      st.magic ? [h("h4", "Magic items"), magic.length ? h("ul.loot-list", magic.map(line)) : h("p.muted", "No magic item could be chosen.")] : null,
+      res.harvest.length ? [
+        h("h4", "Harvestable"),
+        h("p.hint", "Not picked up with the rest: the party has to take the time to harvest these."),
+        h("ul.loot-list", res.harvest.map((x) => h(
+          "li",
+          x.qty > 1 ? h("span.loot-qty", `${x.qty} \xD7`) : null,
+          " ",
+          nameOf(x),
+          " ",
+          h("span.muted", `~${priceText(x.value)}${x.qty > 1 ? " each" : ""} \xB7 ${x.from.join(", ")}`)
+        )))
+      ] : null,
+      h("p.hint", "Hover an underlined name to read it; click to pin it, then Copy as image."),
+      h("p.loot-total", res.totalGp ? `Worth about ${priceText(Math.round(res.totalGp) || res.totalGp)} in coins and items` : "No coins or items", res.magicGp ? `, plus ${priceText(res.magicGp)} in magic items` : "", "."),
+      res.notes.map((n) => h("p.hint", n))
+    );
+  };
+  const again = () => {
+    st.seed = newSeed();
+    draw2();
+  };
+  const gLabel = h("strong.loot-gen-label");
+  const showGen = () => {
+    gLabel.textContent = `${generosityName(st.generosity)} (${Number(st.generosity.toFixed(2))}\xD7)`;
+  };
+  const slider = h("input.loot-slider", {
+    type: "range",
+    min: GENEROSITY.min,
+    max: GENEROSITY.max,
+    step: 0.05,
+    value: st.generosity,
+    oninput: (e2) => {
+      st.generosity = Number(e2.target.value);
+      showGen();
+      draw2();
+    }
+  });
+  const stops = h("div.loot-stops", GENEROSITY.stops.map(([g, name]) => h("button.link", { onclick: () => {
+    st.generosity = g;
+    slider.value = g;
+    showGen();
+    draw2();
+  } }, name)));
+  showGen();
+  const count = h("input.loot-count", {
+    type: "number",
+    min: 1,
+    max: 10,
+    value: st.magicCount,
+    disabled: !st.magic,
+    oninput: (e2) => {
+      st.magicCount = Math.min(10, Math.max(1, Number(e2.target.value) || 1));
+      draw2();
+    }
+  });
+  const who = h("div.loot-enemies", enemies.length ? enemies.map((x) => {
+    const t = themeFor(x.monster, tables).theme;
+    const none = x.monster.loot === "none";
+    return h(
+      "label.check-row",
+      { title: none ? "Set to carry no loot in Creatures" : `Loot theme: ${t?.name || "none"} (${LOOT_LEVELS[t?.loot]?.label || "no loot"})` },
+      h("input", { type: "checkbox", checked: x.on, disabled: none, onchange: (e2) => {
+        x.on = e2.target.checked;
+        draw2();
+      } }),
+      `${x.count} \xD7 ${x.monster.name}`,
+      h("span.muted", none ? " (no loot)" : ` \xB7 ${t?.name || "no theme"}`)
+    );
+  }) : h("p.muted", "This encounter has no monsters from Creatures."));
+  const body2 = h(
+    "div.loot-dialog",
+    h(
+      "div.loot-controls",
+      h("div", h("div.loot-row", h("span", "Generosity"), gLabel), slider, stops),
+      h(
+        "div.form-grid",
+        h("label", "Party level", h("input", { type: "number", min: 1, max: 20, value: st.level, oninput: (e2) => {
+          st.level = Math.min(20, Math.max(1, Number(e2.target.value) || 1));
+          draw2();
+        } })),
+        h(
+          "div",
+          h("label.check-row", h("input", { type: "checkbox", checked: st.magic, onchange: (e2) => {
+            st.magic = e2.target.checked;
+            count.disabled = !st.magic;
+            draw2();
+          } }), "Magic items found"),
+          h("div.loot-row", h("span.muted", "How many"), count)
+        )
+      ),
+      h("details", h("summary", `From ${enemies.reduce((n, x) => n + x.count, 0)} enemies`), who)
+    ),
+    out
+  );
+  draw2();
+  modal(`Loot: ${enc2.name}`, body2, [["Close", () => {
+  }], ["Regenerate", () => {
+    again();
+    return false;
+  }, "primary"]]);
+  body2.closest(".modal")?.classList.add("wide");
+}
+var pockets, esc3, currentTables, LOOT_DEFAULTS;
+var init_loot_dialog = __esm({
+  "src/loot-dialog.js"() {
+    init_ui();
+    init_store();
+    init_groups();
+    init_encounters();
+    init_loot_data();
+    init_loot();
+    init_generator();
+    init_tooltip();
+    pockets = /* @__PURE__ */ new Map();
+    esc3 = (s) => String(s ?? "").replace(/[&<>"]/g, (c2) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c2]);
+    registerTip("pocket", (n) => {
+      const x = pockets.get(Number(n));
+      return x ? `<div class="cond-name">${esc3(x.name)}</div><div class="spell-meta">${x.kind === "harvest" ? "Harvestable" : "Pocket item"}</div><div class="item-stat"><strong>${x.kind === "harvest" ? "Worth about" : "Worth"}</strong> ${esc3(priceText(x.value))}${x.qty > 1 ? " each" : ""}</div><div class="item-text"><p><em>${esc3(x.desc)}</em></p></div>` : "";
+    });
+    currentTables = () => lootTables(defaultLootThemes(), store.loot);
+    LOOT_DEFAULTS = { generosity: 1 };
+  }
+});
+
+// src/condition-icons.js
+var CONDITION_ICONS;
+var init_condition_icons = __esm({
+  "src/condition-icons.js"() {
+    CONDITION_ICONS = /* @__PURE__ */ new Set(["asleep", "attached", "banished", "bleeding", "blinded", "burning", "charmed", "choking", "concentrating", "confused", "cursed", "dazed", "dead", "deafened", "diseased", "dominated", "exhaustion", "flanked", "frightened", "grappled", "hidden", "incapacitated", "invisible", "levitating", "limb-damage", "paralyzed", "petrified", "poisoned", "possessed", "prone", "reduced-statistics", "restrained", "save-ends", "stunned", "suffocating", "swallowed", "temporary-hit-points", "turned", "unconscious"]);
+  }
+});
+
+// src/condition-icon.js
+function iconOf(name, conditions = []) {
+  const id = conditionId2(name, conditions);
+  return CONDITION_ICONS.has(id) ? id : CONDITION_ICONS.has(slug(name)) ? slug(name) : null;
+}
+function iconLetters(name) {
+  const words2 = String(name).split("/")[0].trim().split(/\s+/).filter(Boolean);
+  if (!words2.length) return "?";
+  return words2.length > 1 ? (words2[0][0] + words2[1][0]).toUpperCase() : words2[0][0].toUpperCase() + (words2[0][1] || "").toLowerCase();
+}
+var slug, conditionId2, iconPath;
+var init_condition_icon = __esm({
+  "src/condition-icon.js"() {
+    init_condition_icons();
+    slug = (name) => String(name).split("/")[0].toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    conditionId2 = (name, conditions = []) => conditions.find((c2) => c2.name === name)?.id || slug(name);
+    iconPath = (id, size = 64) => `conditions%20symbols/png-${size}/${id}.png`;
+  }
+});
+
+// src/tabs/runner.js
+function mountRunner(root, navigate) {
+  el10 = root;
+  go7 = navigate;
+  onRoll(() => {
+    if (!el10.hidden && enc) renderLog();
+  });
+  document.addEventListener("keydown", onKey);
+  el10.addEventListener("click", (e2) => {
+    const row2 = pick4 && e2.target.closest(".turn-row");
+    if (!row2) return;
+    e2.preventDefault();
+    e2.stopPropagation();
+    pickRow(row2);
+  }, true);
+  onChange((kind2) => {
+    if (el10.hidden) return;
+    if (kind2 === "all") enc = enc && store.encounters.find((e2) => e2.id === enc.id);
+    if (!enc) render4();
+  });
+}
+function showRunner(id) {
+  if (id) {
+    enc = store.encounters.find((e2) => e2.id === id) || null;
+    if (enc && !enc.combat) enc.combat = setupCombat2(enc);
+    if (enc) setLive(enc.id);
+  }
+  render4();
+}
+function setLive(id) {
+  live = id;
+  try {
+    localStorage.setItem("liveEncounter", id);
+  } catch {
+  }
+}
+function runnerCommand(cmd) {
+  const e2 = liveEncounter();
+  if (e2?.combat?.phase !== "active") return false;
+  enc = e2;
+  if (cmd === "next") next();
+  else if (cmd === "undo") undo();
+  else return false;
+  return true;
+}
+function render4() {
+  if (!enc) return renderPicker();
+  if (enc.combat.phase === "setup") renderSetup();
+  else renderTracker();
+}
+function renderPicker() {
+  const party = activeParty();
+  const fights = store.encounters.some((e2) => e2.combat);
+  fill(
+    el10,
+    h("div.page-head", h("h1", "Run Encounter"), h("div.page-sub", "Your active party, and any fights in progress. Pick an encounter to run from the Encounters tab.")),
+    h(
+      "div.run-home",
+      h(
+        "div.card.party-panel",
+        h(
+          "div.tracker-head",
+          h("h2", "Active party"),
+          h(
+            "div.row-gap",
+            h("button.dark", { onclick: partyUndoLast, disabled: !partyUndo.length, title: "Undo the last change to the party" }, "Undo"),
+            h("button.outline", { onclick: chooseParty }, "Choose characters")
+          )
+        ),
+        party.length ? h("div.party-list", party.flatMap((ch) => [partyCard(ch), ...(ch.companions || []).map((comp) => companionCard(ch, comp))])) : h("div.empty", store.party.length ? "No one is in the active party yet. Choose characters to track their HP and conditions between fights." : "Add your characters in the Party tab first."),
+        party.length ? h("div.hint", `Their HP, conditions and linked token carry into every encounter you run, and back out again. Companions and summons (added in the Party tab) join them when In play.${linker ? " Right-click a character to link its token in Owlbear." : ""}`) : null
+      ),
+      h(
+        "div.run-encounters",
+        h("div.tracker-head.bare", h("h2", "Fights in progress"), h("button.primary", { onclick: () => go7("builder") }, "Choose an encounter")),
+        fights ? h("div.enc-table-wrap", encounterTable({ only: (e2) => e2.combat, onOpen: (e2) => go7("builder", e2.id), onRun: (e2) => showRunner(e2.id) })) : h("div.empty", "No fights in progress.")
+      )
+    )
+  );
+}
+function numberPop(anchor, { title: title2, hint, value = "", min = 0, onEnter }) {
+  closePop();
+  const input = h("input.hp-input", { type: "number", min, value, placeholder: value === "" ? "Amount" : "" });
+  const box = h("div.pop-menu.num-pop", h("div.num-pop-title", title2), input, hint ? h("div.hint", hint) : null);
+  const r = anchor.getBoundingClientRect();
+  document.body.append(box);
+  box.style.left = `${Math.min(window.innerWidth - box.offsetWidth - 8, Math.max(8, r.right - box.offsetWidth))}px`;
+  box.style.top = `${r.bottom + box.offsetHeight + 8 > window.innerHeight ? Math.max(8, r.top - box.offsetHeight - 4) : r.bottom + 4}px`;
+  const away = (e2) => {
+    if (!box.contains(e2.target)) closePop();
+  };
+  setTimeout(() => document.addEventListener("mousedown", away), 0);
+  closePop = () => {
+    box.remove();
+    document.removeEventListener("mousedown", away);
+    closePop = () => {
+    };
+  };
+  input.addEventListener("keydown", (e2) => {
+    if (e2.key === "Escape") {
+      e2.stopPropagation();
+      closePop();
+    }
+    if (e2.key !== "Enter") return;
+    e2.preventDefault();
+    const n = Number(input.value);
+    if (input.value === "" && value === "") return;
+    closePop();
+    onEnter(Number.isFinite(n) ? n : 0);
+  });
+  input.focus();
+  input.select();
+}
+function condChips(c2, { add: add2, remove: remove2, timed = false, setRounds }) {
+  const left = (q) => c2.timers?.[q]?.left;
+  return h(
+    "div.conds",
+    c2.conditions.map((cond) => h("button.cond", {
+      title: `Click to remove.${timed ? " Right-click to set its rounds." : ""}${left(cond) ? ` ${left(cond)} round${left(cond) === 1 ? "" : "s"} left.` : ""}`,
+      dataset: { cond },
+      onclick: (e2) => {
+        e2.stopPropagation();
+        remove2(cond);
+      },
+      oncontextmenu: timed ? (e2) => {
+        e2.preventDefault();
+        e2.stopPropagation();
+        roundsPop(e2.currentTarget, cond, left(cond) ?? 0, (n) => setRounds(cond, n));
+      } : null
+    }, condIcon(cond), cond, left(cond) ? h("span.cond-left", left(cond)) : null, " \xD7")),
+    // shown by HP, not set by hand: the skull for a monster at 0 HP, Unconscious for a player at 0 HP
+    rowMarks(c2).filter((q) => !c2.conditions.includes(q)).map((q) => h("span.cond.auto", { title: q === "Dead" ? "At 0 HP. Healing it above 0 removes this." : "At 0 HP: unconscious until healed.", dataset: { cond: q } }, condIcon(q), q)),
+    isOut(c2) ? null : h("button.cond.add", { title: "Add a condition", onclick: (e2) => {
+      e2.stopPropagation();
+      const anchor = e2.currentTarget;
+      popMenu(anchor, [...conditionNames(), "Concentrating", "Dodging"].filter((q) => !c2.conditions.includes(q)).map((q) => [[condIcon(q), q], () => timed ? roundsPop(anchor, q, 0, (n) => add2(q, n)) : add2(q), "", { dataset: { cond: q } }]));
+    } }, "+ Condition")
+  );
+}
+function act(fn, { redraw = true } = {}) {
+  const c2 = C();
+  const stack = undoStack();
+  stack.push(JSON.stringify(c2));
+  if (stack.length > UNDO_LIMIT) stack.shift();
+  fn(c2);
+  c2.combatants.forEach(settleDown);
+  syncParty(c2);
+  save("encounters", enc);
+  if (redraw) render4();
+}
+function undo() {
+  const last = undoStack().pop();
+  if (!last) return;
+  enc.combat = JSON.parse(last);
+  syncParty(enc.combat);
+  save("encounters", enc);
+  render4();
+}
+function syncParty(s) {
+  for (const c2 of s.combatants) {
+    if (c2.companion) {
+      const ch2 = findCharacter(c2.companion.char), comp = ch2?.companions?.find((x) => x.id === c2.companion.id);
+      const live2 = companionLiveOf(c2);
+      if (!comp || JSON.stringify(comp.live || {}) === JSON.stringify(live2)) continue;
+      comp.live = live2;
+      save("party", ch2);
+      continue;
+    }
+    const ch = c2.kind === "pc" && c2.refId && findCharacter(c2.refId);
+    if (!ch || sameLive(ch.live, liveOf(c2))) continue;
+    ch.live = liveOf(c2);
+    save("party", ch);
+  }
+}
+function rollInit(c2, quiet = true) {
+  return doRoll(`1d20${signed(c2.initBonus)}`, { who: c2.name, label: "Initiative", quiet })?.total ?? 10;
+}
+function rollFor(which) {
+  act((s) => {
+    const shared = /* @__PURE__ */ new Map();
+    for (const c2 of s.combatants) {
+      if (c2.owner || which === "monsters" && c2.kind !== "monster") continue;
+      if (sameInit && c2.kind === "monster" && c2.refId) {
+        if (!shared.has(c2.refId)) shared.set(c2.refId, rollInit(c2));
+        c2.init = shared.get(c2.refId);
+      } else c2.init = rollInit(c2);
+    }
+  });
+}
+function renderSetup() {
+  const s = C();
+  fill(
+    el10,
+    header(),
+    h(
+      "div.run-grid",
+      h(
+        "div.card.tracker",
+        h("div.tracker-head", h("h2", "Roll initiative"), h("button.outline", { onclick: addCombatant }, "Manual entry")),
+        h("p.muted", "Type each initiative, or roll. Players usually roll their own; monsters can be rolled here."),
+        h("label.check-row", h("input", { type: "checkbox", checked: sameInit, onchange: (e2) => {
+          sameInit = e2.target.checked;
+        } }), "Identical monsters share one initiative roll"),
+        h("div.setup-list", underOwners(s.combatants).map((c2) => h(
+          "div.setup-row" + (c2.owner ? ".follow" : ""),
+          { oncontextmenu: (e2) => tokenMenu(e2, c2) },
+          avatarFor(c2, "sm"),
+          h("div.setup-name", c2.name, linkTag(c2), h("div.muted", `${c2.owner ? followText(c2) : c2.kind === "pc" ? "Character" : isGroup(c2) ? `Group of ${c2.members.length} ${c2.group === "minion" ? "minions" : "(pack)"}` : "Monster"}${c2.owner ? "" : ` \xB7 init ${signed(c2.initBonus)}`}`)),
+          c2.owner ? h("span.muted.follow-init", "\u21B3") : h("input.init-input", { type: "number", value: c2.init ?? "", placeholder: "\u2014", oninput: (e2) => {
+            c2.init = e2.target.value === "" ? null : Number(e2.target.value);
+            save("encounters", enc);
+            updateStart();
+          } }),
+          c2.owner ? h("span") : h("button.icon-btn", { title: "Roll", onclick: () => act((x) => {
+            x.combatants.find((y) => y.key === c2.key).init = rollInit(c2, false);
+          }) }, "\u{1F3B2}"),
+          h("button.icon-btn", { title: "Remove from this fight", onclick: () => act((x) => {
+            x.combatants = x.combatants.filter((y) => y.key !== c2.key);
+          }) }, "\xD7")
+        ))),
+        h(
+          "div.setup-actions",
+          h("button.outline", { onclick: () => rollFor("monsters") }, "Roll for monsters"),
+          h("button.outline", { onclick: () => rollFor("all") }, "Roll for everyone"),
+          h("div.spacer"),
+          h("button.primary#run-start", { onclick: start }, "Start combat")
+        ),
+        h("div.hint#run-missing")
+      )
+    )
+  );
+  updateStart();
+  function updateStart() {
+    const n = s.combatants.filter((c2) => c2.init == null && !c2.owner).length;
+    el10.querySelector("#run-missing").textContent = n ? `${n} without initiative: they will roll automatically when you start.` : "";
+  }
+}
+function underOwners(list) {
+  const keys = new Set(list.map((c2) => c2.key)), out = [];
+  const add2 = (c2) => {
+    if (out.includes(c2)) return;
+    out.push(c2);
+    list.filter((f) => f.owner === c2.key).forEach(add2);
+  };
+  list.filter((c2) => !c2.owner || !keys.has(c2.owner)).forEach(add2);
+  return out;
+}
+function followText(c2) {
+  const o = C().combatants.find((x) => x.key === c2.owner);
+  return `${o ? `${o.name}'s` : "A"} ${c2.summoned || c2.companion?.summon ? "summon" : "companion"}: ${c2.during ? "acts during their turn" : "right after their turn"}`;
+}
+function start() {
+  act((s) => startCombat(s, rollInit));
+}
+function shortcutsDialog() {
+  modal("Keyboard shortcuts", h("div.shortcuts", SHORTCUTS.map(([k, what]) => h("div.shortcut", h("kbd", k), h("span", what)))), [["Done", () => {
+  }, "primary"]]);
+}
+function startPick(mode3, many = false) {
+  pick4 = { mode: mode3, many, keys: /* @__PURE__ */ new Set() };
+  drawPick();
+}
+function endPick() {
+  pick4 = null;
+  drawPick();
+}
+function drawPick() {
+  const bar = el10.querySelector("#run-pick");
+  if (!bar) return;
+  el10.querySelector(".tracker")?.classList.toggle("picking", !!pick4);
+  el10.querySelectorAll(".turn-row").forEach((r) => r.classList.toggle("picked", !!pick4?.keys.has(r.dataset.key)));
+  bar.hidden = !pick4;
+  if (!pick4) return bar.replaceChildren();
+  const n = pick4.keys.size;
+  fill(
+    bar,
+    h("strong", pick4.many ? `${PICKS[pick4.mode]} several` : PICKS[pick4.mode]),
+    h("span", pick4.many ? n ? `${n} picked. Enter for the amount.` : "Click each creature, then press Enter." : "Click a creature."),
+    h("div.spacer"),
+    pick4.many && n ? h("button.primary", { onclick: askAmount }, "Amount") : null,
+    h("button.link", { onclick: endPick }, "Cancel (Esc)")
+  );
+}
+function pickRow(row2) {
+  const c2 = find(C(), row2.dataset.key);
+  if (!c2) return;
+  if (pick4.many) {
+    if (pick4.keys.has(c2.key)) pick4.keys.delete(c2.key);
+    else pick4.keys.add(c2.key);
+    return drawPick();
+  }
+  const { mode: mode3 } = pick4;
+  endPick();
+  if (mode3 === "summon") return summonDialog(c2);
+  if (mode3 === "link") return linker ? startLink(c2) : notice("Token links are for Owlbear: open this from the Owlbear panel.", "error");
+  if (isGroup(c2) && c2.group === "minion") return minionDialog(c2);
+  numberPop(el10.querySelector(`.turn-row[data-key="${CSS.escape(c2.key)}"] .hp-box`) || row2, { title: `${c2.name}: ${mode3 === "damage" ? "damage" : "healing"}`, onEnter: (n) => applyAmount(mode3, [c2.key], n) });
+}
+function askAmount() {
+  if (!pick4?.many || !pick4.keys.size) return;
+  const { mode: mode3, keys } = pick4;
+  const list = [...keys];
+  numberPop(el10.querySelector("#run-pick"), {
+    title: `${mode3 === "damage" ? "Damage" : "Heal"} ${list.length} creature${list.length === 1 ? "" : "s"}`,
+    hint: list.map((k) => find(C(), k)?.name).filter(Boolean).join(", "),
+    onEnter: (n) => {
+      endPick();
+      applyAmount(mode3, list, n);
+    }
+  });
+}
+function applyAmount(mode3, keys, n) {
+  const many = keys.length > 1, hit = [], minions = [];
+  act((x) => {
+    for (const key3 of keys) {
+      const y = find(x, key3);
+      if (!y) continue;
+      if (isGroup(y) && y.group === "minion") {
+        minions.push(key3);
+        continue;
+      }
+      if (isGroup(y)) {
+        if (mode3 === "heal") healPack(y, n);
+        else if (many) damageEach(y, n, standing(y).length);
+        else damagePack(y, n);
+      } else applyHp(y, mode3, n);
+      hit.push(key3);
+    }
+  });
+  if (mode3 === "damage") for (const key3 of hit) setTimeout(() => concentrationCheck(key3, n), 0);
+  for (const key3 of minions) if (mode3 === "damage") minionDialog(find(C(), key3));
+}
+function onKey(e2) {
+  if (el10.hidden) return;
+  if (e2.key === "Escape" && pick4) {
+    e2.preventDefault();
+    return endPick();
+  }
+  if (enc?.combat?.phase !== "active" || document.querySelector(".modal-back, .pop-menu") || /^(INPUT|TEXTAREA|SELECT)$/.test(e2.target.tagName)) return;
+  const ctrl = e2.ctrlKey || e2.metaKey, key3 = e2.key.toLowerCase();
+  const take = (fn) => {
+    e2.preventDefault();
+    e2.stopPropagation();
+    fn();
+  };
+  if (key3 === " " && !ctrl && !e2.altKey) {
+    document.activeElement?.blur?.();
+    return take(next);
+  }
+  if (key3 === "enter" && pick4?.many) return take(askAmount);
+  if (ctrl && !e2.shiftKey && key3 === "z") return take(undo);
+  if (ctrl && key3 === "d") return take(() => startPick("damage", e2.shiftKey));
+  if (ctrl && key3 === "h") return take(() => startPick("heal", e2.shiftKey));
+  if (ctrl && !e2.shiftKey && key3 === "s") return take(() => startPick("summon"));
+  if (ctrl && !e2.shiftKey && key3 === "t" || e2.altKey && !ctrl && key3 === "t") return take(() => startPick("link"));
+}
+function header() {
+  const r = evaluateEncounter(enc);
+  return h(
+    "div.run-header",
+    h(
+      "div",
+      h("div.crumbs", h("button.link", { onclick: () => {
+        enc = null;
+        render4();
+      } }, "Run Encounter"), h("span", "\u203A"), h("span", enc.name)),
+      h("h1", enc.name),
+      h("div.page-sub", h(`span.${difficultyClass(r.difficulty)}`, r.difficulty), ` \xB7 ${r.total.toLocaleString()} XP total \xB7 ${r.perPlayer.toLocaleString()} XP per player`)
+    ),
+    h(
+      "div.row-gap",
+      h("button.link", { onclick: shortcutsDialog }, "Shortcuts"),
+      h("button.outline", { onclick: () => go7("builder", enc.id) }, "Edit encounter"),
+      h("button.outline", { title: "Roll the loot for every enemy in this fight", onclick: () => lootDialog(enc) }, "Loot"),
+      h("button.dark", { onclick: endCombat }, "End combat")
+    )
+  );
+}
+function endCombat() {
+  const end = () => {
+    enc.combat = null;
+    undoStacks.delete(enc.id);
+    save("encounters", enc, { delay: 0 });
+    enc = null;
+    render4();
+  };
+  modal("Are you sure?", h("p", "End this combat? HP, initiative and turns are cleared (the encounter itself stays)."), [
+    ["Cancel", () => {
+    }],
+    ["End and roll loot", () => {
+      const e2 = enc;
+      lootDialog(structuredClone(e2));
+      end();
+    }],
+    ["End combat", end, "danger"]
+  ]);
+}
+function renderTracker() {
+  const s = C();
+  const order = ordered2();
+  const turnIndex = Math.max(0, order.findIndex((c2) => c2.key === s.turnKey));
+  fill(
+    el10,
+    header(),
+    h(
+      "div.run-grid",
+      h(
+        "div.card.tracker",
+        h("div.tracker-head.slim", h("h2", `Initiative (${order.length})`), h("button.outline", { onclick: addCombatant }, "Manual entry")),
+        h("div.pick-bar#run-pick", { hidden: true }),
+        h("div.turn-list", order.map((c2) => combatantRow(c2, c2.key === s.turnKey))),
+        h(
+          "div.turn-bar",
+          h("button.dark", { onclick: undo, disabled: !undoStack().length, title: "Undo the last change (Ctrl+Z)" }, "Undo"),
+          h("div.counter-box", "Round ", h("strong", s.round)),
+          h("div.counter-box", "Turn ", h("strong", turnIndex + 1)),
+          h("button.primary", { onclick: next, title: "Next turn (Space)" }, "Next")
+        )
+      ),
+      h("div.run-side", h("div.card.side-block#run-block"), h("div.card.log#run-log"))
+    )
+  );
+  renderBlock();
+  renderLog();
+  drawPick();
+  el10.querySelector(".turn-row.current")?.scrollIntoView({ block: "nearest" });
+}
+function avatarFor(c2, size) {
+  const src = c2.form ? findMonster(c2.form.monsterId)?.avatar : c2.kind === "pc" ? findCharacter(c2.refId)?.avatar : findMonster(c2.refId)?.avatar;
+  return avatar(src, c2.name.replace(/\s\([A-Z]\d*\)$/, ""), size);
+}
+function combatantRow(c2, current3) {
+  const s = C();
+  const m = c2.kind === "monster" || c2.form ? findMonster(statRef(c2)) : null;
+  const pc = c2.kind === "pc" ? findCharacter(c2.refId) : null;
+  const grp = isGroup(c2);
+  const stats = c2.kind === "monster" || c2.form && m ? [h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "CR "), m?.challengeRating ?? "?"), h("span", h("b", "HP "), grp ? `${c2.maxHp} each` : m ? `${m.averageHitPoints} (${hpFormula(m)})` : "\u2014")] : [h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "Speed "), `${pc?.speed ?? 30} ft`), h("span", { title: "Passive Perception" }, h("b", "PP "), pc?.passivePerception ?? "\u2014")];
+  const hpBox = grp ? h(
+    "button.hp-box.tracked.group",
+    { title: c2.group === "minion" ? "Minions left: click when some are hit or caught" : `Pack HP: click to damage or heal (damage rolls over)${c2.tempHp ? `; ${c2.tempHp} temporary hit points` : ""}`, onclick: () => c2.group === "minion" ? minionDialog(c2) : packDialog(c2) },
+    c2.group === "minion" ? [h("span.hp-cur", standing(c2).length), h("span.hp-sep", "/"), h("span.hp-max", c2.members.length), h("span.hp-lbl", "left")] : [h("span.hp-cur", totalHp(c2)), h("span.hp-sep", "/"), h("span.hp-max", c2.maxHp * c2.members.length), c2.tempHp ? h("span.hp-temp", `+${c2.tempHp}`) : null]
+  ) : h(
+    "button.hp-box" + (c2.kind === "monster" ? ".tracked" : ""),
+    { title: c2.tempHp ? `Change HP (${c2.tempHp} temporary hit points)` : "Change HP", onclick: () => editHp(c2) },
+    h("span.hp-cur", c2.hp ?? "\u2014"),
+    h("span.hp-sep", "/"),
+    h("span.hp-max", c2.maxHp ?? "\u2014"),
+    c2.tempHp ? h("span.hp-temp", `+${c2.tempHp}`) : null
+  );
+  const same = s.combatants.filter((x) => x.key !== c2.key && x.kind === "monster" && x.refId && x.refId === c2.refId);
+  const groupItems = [
+    grp && standing(c2).length > 1 ? ["Split off\u2026", () => splitDialog2(c2)] : null,
+    same.length ? [grp ? `Merge the other ${m?.name || c2.name} rows into this group` : `Merge identical creatures into a group (${same.length + 1})`, () => mergeRows(c2)] : null
+  ].filter(Boolean);
+  const withTurn = c2.during && c2.owner === s.turnKey;
+  return h(
+    "div.turn-row" + (current3 ? ".current" : "") + (withTurn ? ".with-turn" : "") + (c2.owner ? ".follow" : "") + (c2.key === s.selectedKey ? ".selected" : "") + (isOut(c2) ? ".out" : "") + (c2.kind === "pc" ? ".pc" : "") + (c2.ally ? ".ally" : ""),
+    { dataset: { key: c2.key }, oncontextmenu: (e2) => tokenMenu(e2, c2) },
+    c2.owner ? h("div.init-box.follow-box", { title: followText(c2) }, h("div.follow-init", "\u21B3")) : h("div.init-box", { title: "Initiative" }, h("input", { type: "number", value: c2.init ?? "", onchange: (e2) => act((x) => {
+      x.combatants.find((y) => y.key === c2.key).init = Number(e2.target.value) || 0;
+    }) })),
+    h(
+      "div.turn-main",
+      { onclick: () => {
+        s.selectedKey = c2.key;
+        save("encounters", enc);
+        renderTracker();
+      } },
+      avatarFor(c2, "sm"),
+      h(
+        "div.turn-info",
+        h("div.turn-name", c2.name, grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null, isOut(c2) ? h("span.tag.dead", "Down") : null, shapeTag(c2), c2.owner ? h("span.tag.follow", { title: followText(c2) }, c2.summoned || c2.companion?.summon ? "Summon" : "Companion") : null, linkTag(c2)),
+        h("div.turn-stats", stats),
+        grp ? pips(c2) : null,
+        condChips(c2, {
+          timed: true,
+          add: (q, n) => act((x) => {
+            const y = find(x, c2.key);
+            y.conditions.push(q);
+            setTimer(x, y, q, n);
+          }),
+          remove: (q) => act((x) => {
+            const y = find(x, c2.key);
+            y.conditions = y.conditions.filter((z) => z !== q);
+          }),
+          setRounds: (q, n) => act((x) => {
+            setTimer(x, find(x, c2.key), q, n);
+          })
+        })
+      )
+    ),
+    hpBox,
+    h("button.icon-btn.kebab", { title: "More", onclick: (e2) => popMenu(e2.currentTarget, [
+      ["Make it their turn", () => act((x) => {
+        x.turnKey = c2.key;
+      })],
+      ...linker ? tokenItems(c2) : [],
+      ...shapeItems(c2, (fn) => act((x) => fn(find(x, c2.key)))),
+      ...summonItems(c2),
+      ["Rename", () => renameCombatant(c2)],
+      ...groupItems,
+      ["Duplicate", () => act((x) => {
+        const copy = { ...structuredClone(c2), key: `${c2.key}-copy-${Date.now().toString(36)}`, name: `${c2.name} copy` };
+        x.combatants.push(copy);
+      })],
+      ["Remove from combat", () => act((x) => removeCombatant(x, c2.key)), "danger"]
+    ]) }, "\u22EE")
+  );
+}
+function next() {
+  let over = [];
+  act((s) => {
+    over = endOfTurn(s);
+    startOfTurn2(nextTurn(s));
+  });
+  if (over.length) notice(over.map((o) => `${o.condition} ended on ${o.name}.`).join(" "));
+}
+function startOfTurn2(c2) {
+  if (c2?.kind !== "monster") return;
+  startOfTurn(c2, findMonster(statRef(c2)), (expr, label) => doRoll(expr, { who: c2.name, label }));
+}
+function concentrationCheck(key3, damage) {
+  const c2 = C().combatants.find((x) => x.key === key3);
+  concentrationPrompt(c2, damage, () => act((x) => {
+    const y = x.combatants.find((z) => z.key === key3);
+    y.conditions = y.conditions.filter((q) => q !== "Concentrating");
+  }));
+}
+function concentrationPrompt(c2, damage, end) {
+  if (!c2 || !c2.conditions.includes("Concentrating") || damage <= 0) return;
+  if ((c2.hp ?? 1) <= 0) {
+    end();
+    return modal(`${c2.name}: concentration`, h("p", `${c2.name} dropped to 0 Hit Points, so its concentration ends.`), [["OK", () => {
+    }, "primary"]]);
+  }
+  const dc = concentrationDc(damage);
+  const bonus = conSave2(c2);
+  const result = h("div.conc-result");
+  const body2 = h(
+    "div.conc",
+    h("p", `${c2.name} took ${damage} damage while concentrating.`),
+    h("div.conc-dc", "Constitution saving throw ", h("strong", `DC ${dc}`)),
+    bonus != null ? h("button.primary", { onclick: (e2) => {
+      const r = doRoll(`1d20${signed(bonus)}`, { who: c2.name, label: "Concentration save" });
+      if (!r) return;
+      e2.currentTarget.disabled = true;
+      const kept = r.total >= dc;
+      fill(result, h(`strong.${kept ? "ok-text" : "bad-text"}`, `${r.total}: ${kept ? "concentration holds" : "concentration is lost"}`));
+      body2.closest(".modal").querySelector(kept ? ".keep" : ".end")?.focus();
+    } }, `Roll the save (${signed(bonus)})`) : h("p.muted", "The player rolls this save."),
+    result
+  );
+  modal(`${c2.name}: concentration`, body2, [["Keep concentrating", () => {
+  }, "keep"], ["End concentration", end, "danger.end"]]);
+}
+function editHp(c2) {
+  hpDialog(c2, (mode3, n) => {
+    act((x) => applyHp(x.combatants.find((z) => z.key === c2.key), mode3, n));
+    if (mode3 === "damage") setTimeout(() => concentrationCheck(c2.key, n), 0);
+  });
+}
+function hpDialog(c2, onApply) {
+  const input = h("input.hp-input", { type: "number", min: 0, placeholder: "Amount" });
+  const apply = (mode3) => {
+    const n = Number(input.value);
+    if (!Number.isFinite(n) || input.value === "") return false;
+    onApply(mode3, n);
+  };
+  const close2 = modal(`${c2.name}: hit points`, h(
+    "div.hp-edit",
+    h("div.hp-now", `${c2.hp ?? "\u2014"} / ${c2.maxHp ?? "\u2014"}`, c2.tempHp ? h("span.hp-temp", `+${c2.tempHp} temp`) : null),
+    input,
+    h("div.hint", "Enter applies damage (temporary HP absorb it first). Shift+Enter heals. Ctrl+Enter sets temporary HP: they replace any the creature has, and 0 removes them.")
+  ), [
+    ["Temp HP", () => apply("temp"), "temp"],
+    ["Set max HP", () => apply("max")],
+    ["Set HP", () => apply("set")],
+    ["Heal", () => apply("heal"), "ok"],
+    ["Damage", () => apply("damage"), "danger"]
+  ]);
+  input.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && apply(e2.ctrlKey ? "temp" : e2.shiftKey ? "heal" : "damage") !== false) close2();
+  });
+}
+function pips(c2) {
+  const minion = c2.group === "minion";
+  return h(
+    "div.pips",
+    { onclick: (e2) => e2.stopPropagation() },
+    c2.members.map((mem, i) => {
+      const dead = mem.hp <= 0;
+      const title2 = `${c2.name} ${i + 1}: ${dead ? "down" : minion ? "standing" : `${mem.hp}/${c2.maxHp} HP`}${mem.conditions.length ? ` \xB7 ${mem.conditions.join(", ")}` : ""}
+${minion ? "Click: down / back up" : "Click: change just its HP"}. Right-click: its own conditions.`;
+      return h("button.pip" + (dead ? ".dead" : "") + (minion ? "" : ".bar") + (mem.conditions.length ? ".marked" : ""), {
+        title: title2,
+        onclick: () => minion ? act((x) => {
+          const y = find(x, c2.key);
+          const m = y.members[i];
+          if (m.hp > 0) {
+            m.hp = 0;
+            m.conditions = [];
+          } else m.hp = y.maxHp ?? 1;
+        }) : memberHp(c2, i),
+        oncontextmenu: (e2) => {
+          e2.preventDefault();
+          e2.stopPropagation();
+          memberConditions(e2.currentTarget, c2, i);
+        }
+      }, minion ? null : h("span.pip-fill", { style: `width:${Math.max(0, Math.min(100, mem.hp / (c2.maxHp || 1) * 100))}%` }));
+    }),
+    minion && standing(c2).length ? h("button.minus-one", { title: "One minion is hit and dies", onclick: () => act((x) => {
+      killMinions(find(x, c2.key), 1);
+    }) }, "\u22121") : null
+  );
+}
+function memberConditions(anchor, c2, i) {
+  const has2 = c2.members[i].conditions;
+  popMenu(anchor, [...conditionNames(), "Concentrating"].map((q) => [[has2.includes(q) ? "\u2713 " : "", condIcon(q), q], () => act((x) => {
+    const m = find(x, c2.key).members[i];
+    m.conditions = m.conditions.includes(q) ? m.conditions.filter((z) => z !== q) : [...m.conditions, q];
+  }), "", { dataset: { cond: q } }]));
+}
+function minionDialog(c2, change = (fn) => act((x) => fn(find(x, c2.key)))) {
+  const left = standing(c2).length;
+  const killN = h("input.hp-input", { type: "number", min: 0, max: left, value: Math.min(1, left) });
+  const dmg = h("input", { type: "number", min: 0, placeholder: "Damage" });
+  const caught = numberInput(left, 1, left);
+  const msg = h("div.hint");
+  const kill = () => {
+    const n = Number(killN.value);
+    if (!(n > 0)) return false;
+    change((y) => {
+      killMinions(y, n);
+    });
+  };
+  const other = () => {
+    const d = Number(dmg.value), n = Number(caught.value);
+    if (dmg.value === "" || !(n > 0)) return false;
+    if (d < (c2.maxHp ?? 1)) {
+      msg.textContent = `${d} is less than their maximum HP (${c2.maxHp}), so it does nothing to them.`;
+      return false;
+    }
+    change((y) => {
+      minionOtherDamage(y, d, n);
+    });
+  };
+  const close2 = modal(`${c2.name}: minions`, h(
+    "div.hp-edit.group-edit",
+    h("div.hp-now", `${left} / ${c2.members.length} left`),
+    h("label.mg-row", "Hit by an attack or failed the save:", killN),
+    h("div.hint", "Any damage from an attack or a failed saving throw kills a minion. Enter kills this many."),
+    h("div.mg-row", h("label", "Other damage", dmg), h("label", "Minions caught", caught), h("button.danger", { onclick: () => {
+      if (other() !== false) close2();
+    } }, "Apply")),
+    h("div.hint", `Other damage (an aura, a fall, a hazard) kills only if it's at least their maximum HP (${c2.maxHp}).`),
+    msg
+  ), [
+    ...left < c2.members.length ? [["Revive one", () => change((y) => {
+      revive(y);
+    })]] : [],
+    ["Kill", kill, "danger"]
+  ]);
+  killN.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && kill() !== false) close2();
+  });
+  killN.select();
+}
+function packDialog(c2, custom = null) {
+  const change = custom || ((fn) => act((x) => fn(find(x, c2.key))));
+  const left = standing(c2).length;
+  const input = h("input.hp-input", { type: "number", min: 0, placeholder: "Amount" });
+  const caught = numberInput(left, 1, left);
+  const apply = (mode3) => {
+    const n = Number(input.value);
+    if (!Number.isFinite(n) || input.value === "") return false;
+    change((y) => {
+      if (mode3 === "damage") damagePack(y, n);
+      else if (mode3 === "each") damageEach(y, n, Number(caught.value) || 1);
+      else if (mode3 === "heal") healPack(y, n);
+      else if (mode3 === "temp") {
+        y.tempHp = Math.max(0, Math.round(n));
+        if (!y.tempHp) delete y.tempHp;
+      }
+    });
+    if (!custom && (mode3 === "damage" || mode3 === "each")) setTimeout(() => concentrationCheck(c2.key, n), 0);
+  };
+  const close2 = modal(`${c2.name}: pack hit points`, h(
+    "div.hp-edit.group-edit",
+    h("div.hp-now", `${totalHp(c2)} / ${c2.maxHp * c2.members.length}`, c2.tempHp ? h("span.hp-temp", `+${c2.tempHp} temp`) : null),
+    h("div.muted", `${left} of ${c2.members.length} standing \xB7 ${c2.maxHp} HP each \xB7 `, c2.members.filter((m) => m.hp > 0).map((m) => m.hp).join(", ")),
+    input,
+    h("div.hint", "Enter: damage from one hit. The hurt creature takes it first and the rest rolls on to the next. Shift+Enter heals (the most hurt first). Ctrl+Enter sets temporary HP for the whole pack."),
+    h("div.mg-row", h("label", "Creatures caught", caught), h("button.outline", { onclick: () => {
+      if (apply("each") !== false) close2();
+    } }, "Damage each")),
+    h("div.hint", "Damage each: an area effect. Each creature caught takes the full amount, the hurt ones first, with no rollover.")
+  ), [
+    ["Temp HP", () => apply("temp"), "temp"],
+    ...left < c2.members.length ? [["Revive one", () => change((y) => {
+      revive(y, Number(input.value) || 1);
+    })]] : [],
+    ["Heal", () => apply("heal"), "ok"],
+    ["Damage", () => apply("damage"), "danger"]
+  ]);
+  input.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && apply(e2.ctrlKey ? "temp" : e2.shiftKey ? "heal" : "damage") !== false) close2();
+  });
+}
+function memberHp(c2, i) {
+  const mem = c2.members[i];
+  const input = h("input.hp-input", { type: "number", min: 0, placeholder: "Amount" });
+  const apply = (mode3) => {
+    const n = Number(input.value);
+    if (!Number.isFinite(n) || input.value === "") return false;
+    act((x) => {
+      const y = find(x, c2.key), m = y.members[i];
+      if (mode3 === "damage") m.hp = Math.max(0, m.hp - n);
+      else if (mode3 === "heal") {
+        if (m.hp > 0) m.hp = Math.min(y.maxHp, m.hp + n);
+      } else m.hp = Math.max(0, Math.min(y.maxHp, n));
+      if (m.hp <= 0) m.conditions = [];
+    });
+  };
+  const close2 = modal(`${c2.name} ${i + 1}: hit points`, h(
+    "div.hp-edit",
+    h("div.hp-now", `${mem.hp} / ${c2.maxHp}`),
+    input,
+    h("div.hint", "Only this creature: no rollover. Enter applies damage, Shift+Enter heals.")
+  ), [
+    ["Set HP", () => apply("set")],
+    ["Heal", () => apply("heal"), "ok"],
+    ["Damage", () => apply("damage"), "danger"]
+  ]);
+  input.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && apply(e2.shiftKey ? "heal" : "damage") !== false) close2();
+  });
+}
+function splitDialog2(c2) {
+  const left = standing(c2).length;
+  const n = numberInput(Math.floor(left / 2), 1, left - 1);
+  modal(`Split off from ${c2.name}`, h(
+    "div.form-grid",
+    h("label", "How many move to the new group", n),
+    h("div.hint", "The new group gets its own row and turn, starting on the same initiative.")
+  ), [
+    ["Cancel", () => {
+    }],
+    ["Split", () => act((x) => {
+      const y = find(x, c2.key);
+      const k = Math.max(1, Math.min(left - 1, Math.round(Number(n.value)) || 1));
+      const rows = x.combatants.filter((z) => z.refId === c2.refId).length;
+      const nu = splitOff(y, k, `${c2.key}-s${Date.now().toString(36)}`, `${c2.name.replace(/\s\(\d+\)$/, "")} (${rows + 1})`);
+      delete nu.tempHp;
+      x.combatants.push(nu);
+    }), "primary"]
+  ]);
+}
+function mergeRows(c2) {
+  act((x) => {
+    const idx = x.combatants.findIndex((z) => z.key === c2.key);
+    let y = x.combatants[idx];
+    const others = x.combatants.filter((z) => z.key !== c2.key && z.kind === "monster" && z.refId === c2.refId);
+    if (!isGroup(y)) {
+      const m = findMonster(c2.refId);
+      const g = makeGroup({ ...y, name: m?.name || y.name.replace(/\s\([A-Z]\d*\)$/, ""), maxHp: y.maxHp ?? m?.averageHitPoints ?? 1 }, 0, isMinion(m));
+      delete g.hp;
+      delete g.tempHp;
+      mergeInto(g, [y]);
+      x.combatants[idx] = y = g;
+    }
+    mergeInto(y, others);
+    if (others.some((o) => o.key === x.turnKey)) x.turnKey = y.key;
+    if (others.some((o) => o.key === x.selectedKey)) x.selectedKey = y.key;
+    x.combatants = x.combatants.filter((z) => !others.includes(z));
+  });
+}
+function groupAttack(key3, entry) {
+  const c2 = find(C(), key3);
+  if (!c2 || !entry) return;
+  const a2 = groupAttackOf(entry.text);
+  const name = entry.name.replace(/\s*\(.*$/, "");
+  const left = standing(c2).length;
+  const n = h("input.hp-input", { type: "number", min: 1, max: left, value: left });
+  const result = h("div.conc-result");
+  const run3 = (mode3) => {
+    const k = Math.max(1, Math.min(left, Math.round(Number(n.value)) || left));
+    const r = a2.bonus ? rollFromClick(btn, `1d20${a2.bonus}`, { who: c2.name, label: `${name}: group attack (${k} joining)`, mode: mode3 }) : null;
+    if (a2.bonus && !r) return;
+    fill(
+      result,
+      r ? h("div", "Attack roll ", h("strong", r.total), r.natural20 ? " (natural 20)" : r.natural1 ? " (natural 1: a miss)" : "") : null,
+      a2.damage != null ? h("div", "On a hit: ", h("strong", `${a2.damage} \xD7 ${k} = ${a2.damage * k}`), ` ${a2.type} damage`) : h("div.muted", "This attack has no fixed damage: its hit effect is in the stat block.")
+    );
+  };
+  const btn = h("button.primary", { onclick: (e2) => run3(e2.shiftKey ? "advantage" : e2.ctrlKey ? "disadvantage" : "normal") }, a2.bonus ? `Roll the attack (${a2.bonus})` : "Work out the damage");
+  modal(`${c2.name}: ${name}`, h(
+    "div.hp-edit.group-edit",
+    h("label.mg-row", "How many join in:", n),
+    h("div.hint", `${left} standing. Enter rolls; Shift-click the button for advantage, Ctrl-click for disadvantage.`),
+    btn,
+    result
+  ), [["Done", () => {
+  }]]);
+  n.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter") {
+      e2.preventDefault();
+      btn.click();
+    }
+  });
+  n.select();
+}
+function renameCombatant(c2) {
+  const input = h("input", { type: "text", value: c2.name });
+  modal("Rename", input, [["Cancel", () => {
+  }], ["Save", () => act((x) => {
+    const y = x.combatants.find((z) => z.key === c2.key);
+    y.name = input.value || c2.name;
+    if (linker?.available()) linker.rename(tokenRenames(y));
+  }), "primary"]]);
+}
+function addCombatant() {
+  const f = { name: h("input", { type: "text", placeholder: "Name" }), init: h("input", { type: "number", placeholder: "roll" }), hp: h("input", { type: "number" }), ac: h("input", { type: "number" }), bonus: h("input", { type: "number", value: 0 }) };
+  modal("Manual entry", h(
+    "div.form-grid",
+    h("label", "Name", f.name),
+    h("label", "Initiative", f.init),
+    h("label", "Initiative bonus", f.bonus),
+    h("label", "Max HP", f.hp),
+    h("label", "Armor Class", f.ac)
+  ), [
+    ["Cancel", () => {
+    }],
+    ["Add", () => {
+      if (!f.name.value.trim()) return false;
+      act((x) => {
+        const c2 = { key: `manual-${Date.now().toString(36)}`, kind: "monster", name: f.name.value.trim(), ac: f.ac.value ? Number(f.ac.value) : null, hp: f.hp.value ? Number(f.hp.value) : null, maxHp: f.hp.value ? Number(f.hp.value) : null, initBonus: Number(f.bonus.value) || 0, init: null, conditions: [] };
+        c2.init = f.init.value !== "" ? Number(f.init.value) : x.phase === "active" ? rollInit(c2, false) : null;
+        x.combatants.push(c2);
+      });
+    }, "primary"]
+  ]);
+}
+function setMessenger(m) {
+  messenger = m;
+}
+function characterTokens(charId) {
+  const c2 = liveEncounter()?.combat?.combatants.find((x) => x.key === `pc-${charId}`);
+  return c2 ? tokensOf(c2) : findCharacter(charId)?.live?.tokens || [];
+}
+function setTokenLinker(l) {
+  linker = l;
+}
+function tokenItems(c2) {
+  const n = tokensOf(c2).length, plan = linkPlan(c2);
+  const label = !n ? "Link to token\u2026" : isGroup(c2) ? n < c2.members.length ? `Link the other ${plan.length} token${plan.length === 1 ? "" : "s"}\u2026` : "Relink tokens\u2026" : "Link to a different token\u2026";
+  return [
+    [label, () => startLink(c2)],
+    ...n ? [[n === 1 ? "Unlink token" : `Unlink ${n} tokens`, () => unlinkCombatant(c2)]] : [],
+    ...c2.kind === "pc" && c2.refId ? messageItem(c2.refId, c2.name) : []
+  ];
+}
+function tokenMenu(e2, c2) {
+  e2.preventDefault();
+  popMenu(e2.currentTarget.querySelector(".turn-name, .setup-name") || e2.currentTarget, [...linker ? tokenItems(c2) : [], ...shapeItems(c2, (fn) => act((x) => fn(find(x, c2.key)))), ...summonItems(c2)]);
+}
+function shapeItems(c2, change) {
+  if (isGroup(c2)) return [];
+  const self2 = c2.kind === "pc" ? findCharacter(c2.refId) : findMonster(c2.refId);
+  const forms = formsOf(self2);
+  return [
+    ...forms.filter((f) => f.id !== c2.form?.id).map((f) => {
+      const m = findMonster(f.monsterId);
+      return m ? [`Shapeshift: ${f.name || m.name}`, () => change((y) => {
+        shiftInto(y, f, m);
+      })] : null;
+    }).filter(Boolean),
+    ...c2.form ? [[`Back to ${self2?.name || c2.name}'s own shape`, () => change((y) => {
+      revertShape(y);
+    })]] : []
+  ];
+}
+function summonItems(c2) {
+  return [
+    [`Summon for ${c2.name}\u2026`, () => summonDialog(c2)],
+    ...c2.owner ? [[c2.companion ? "Dismiss (switch it off)" : "Dismiss", () => dismiss(c2), "danger"]] : []
+  ];
+}
+function summonDialog(c2) {
+  const rules = enc.rules === "2024" ? "acts during their turn (2024 rules)" : "takes its turn right after theirs (2014 rules)";
+  pickMonster({
+    title: `Summon for ${c2.name}`,
+    okText: "Summon",
+    count: 1,
+    hint: `It joins on ${c2.kind === "pc" || c2.ally ? "the players\u2019" : "the monsters\u2019"} side and ${rules}. Several make one group, "Skeleton 1", "Skeleton 2"\u2026: name their tokens like that in Owlbear and they link by themselves.`,
+    onPick: (m, n) => act((s) => {
+      const y = summon(s, c2.key, m, n, enc.rules);
+      if (y && s.phase === "active" && y.init == null) y.init = rollInit(y);
+    })
+  });
+}
+function dismiss(c2) {
+  act((s) => removeCombatant(s, c2.key));
+  if (c2.companion) setCompanionOn(c2.companion.char, c2.companion.id, false);
+}
+function actOn(encId, fn) {
+  if (enc?.id === encId) return act(fn);
+  const e2 = store.encounters.find((x) => x.id === encId);
+  if (!e2?.combat) return;
+  fn(e2.combat);
+  save("encounters", e2);
+}
+function startLink(c2) {
+  if (!linker.available()) return notice('Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".', "error");
+  const encId = enc.id, plan = linkPlan(c2);
+  linker.pick(
+    { names: plan.map((p) => p.name) },
+    (i, id) => {
+      unlinkedByHand.delete(id);
+      actOn(encId, (s) => {
+        linkToken(s, c2.key, plan[i].member, id);
+      });
+    },
+    (reason) => {
+      if (reason === "cancelled") notice("Linking stopped.");
+    }
+  );
+  notice(plan.length > 1 ? `In Owlbear, click the tokens for ${c2.name}, one after another (Esc stops).` : `In Owlbear, click the token for ${c2.name} (Esc cancels).`);
+}
+function unlinkCombatant(c2) {
+  let ids = [];
+  act((s) => {
+    ids = unlinkTokens(s, c2.key);
+  });
+  for (const id of ids) unlinkedByHand.add(id);
+  if (ids.length && linker.available()) linker.unlink(ids);
+}
+function partyAct(id, fn) {
+  const ch = findCharacter(id);
+  if (!ch) return;
+  partyUndo.push({ id, live: structuredClone(ch.live || {}) });
+  if (partyUndo.length > UNDO_LIMIT) partyUndo.shift();
+  const pc = partyCombatant(ch);
+  fn(pc);
+  setPartyLive(ch, liveOf(pc));
+  render4();
+}
+function setPartyLive(ch, next2) {
+  ch.live = next2;
+  save("party", ch);
+  const e2 = liveEncounter();
+  const c2 = e2?.combat?.combatants.find((x) => x.key === `pc-${ch.id}`);
+  if (!c2 || sameLive(liveOf(c2), next2)) return;
+  c2.hp = next2.hp ?? c2.hp;
+  c2.conditions = [...next2.conditions || []];
+  if (next2.tempHp) c2.tempHp = next2.tempHp;
+  else delete c2.tempHp;
+  if (next2.tokens?.length) c2.tokens = [...next2.tokens];
+  else delete c2.tokens;
+  if (next2.timers) c2.timers = structuredClone(next2.timers);
+  else delete c2.timers;
+  save("encounters", e2);
+}
+function partyUndoLast() {
+  const u = partyUndo.pop();
+  const ch = u && findCharacter(u.id);
+  if (ch && u.companions) {
+    ch.companions = u.companions;
+    save("party", ch);
+  } else if (ch) setPartyLive(ch, u.live);
+  render4();
+}
+function companionCombatants(ch) {
+  return (ch.companions || []).filter((comp) => comp.on && findMonster(comp.monsterId)).map((comp) => companionCombatant(ch, comp, findMonster(comp.monsterId)));
+}
+function fightChange(e2, fn) {
+  if (enc === e2) return act(fn);
+  fn(e2.combat);
+  e2.combat.combatants.forEach(settleDown);
+  syncParty(e2.combat);
+  save("encounters", e2);
+}
+function companionAct(charId, compId, fn, { undo: undo2 = true } = {}) {
+  const ch = findCharacter(charId), comp = ch?.companions?.find((x) => x.id === compId);
+  if (!comp) return;
+  const key3 = companionKey(charId, compId), e2 = liveEncounter();
+  if (e2?.combat?.combatants.some((x) => x.key === key3)) {
+    fightChange(e2, (s) => fn(find(s, key3), s));
+    render4();
+    return;
+  }
+  if (undo2) {
+    partyUndo.push({ id: charId, companions: structuredClone(ch.companions) });
+    if (partyUndo.length > UNDO_LIMIT) partyUndo.shift();
+  }
+  const c2 = companionCombatant(ch, comp, findMonster(comp.monsterId));
+  fn(c2, { combatants: [c2] });
+  settleDown(c2);
+  comp.live = companionLiveOf(c2);
+  save("party", ch);
+  render4();
+}
+function setCompanionOn(charId, compId, on) {
+  const ch = findCharacter(charId), comp = ch?.companions?.find((x) => x.id === compId);
+  if (!comp || !!comp.on === on) return;
+  comp.on = on;
+  if (comp.type === "summon") delete comp.live;
+  save("party", ch);
+  const e2 = liveEncounter(), key3 = companionKey(charId, compId), m = findMonster(comp.monsterId);
+  const s = e2?.combat, here = s?.combatants.some((x) => x.key === key3);
+  if (s && on && !here && m && s.combatants.some((x) => x.key === `pc-${charId}`)) {
+    fightChange(e2, (x) => {
+      const y = companionCombatant(ch, comp, m, e2.rules);
+      y.init = x.combatants.find((o) => o.key === y.owner)?.init ?? null;
+      x.combatants.push(y);
+    });
+  } else if (s && !on && here) fightChange(e2, (x) => removeCombatant(x, key3));
+  render4();
+}
+function companionCard(ch, comp) {
+  const m = findMonster(comp.monsterId), e2 = liveEncounter();
+  const c2 = e2?.combat?.combatants.find((x) => x.key === companionKey(ch.id, comp.id)) || companionCombatant(ch, comp, m);
+  const grp = isGroup(c2), on = !!comp.on && !!m;
+  const change = (fn) => companionAct(ch.id, comp.id, (y) => fn(y));
+  const items = () => on ? [...linker ? companionTokenItems(ch, comp, c2) : [], ...shapeItems(c2, change)] : [];
+  const hp = !on ? h("span") : grp ? h(
+    "button.hp-box.group",
+    { title: "Hit points: click to damage or heal", onclick: () => c2.group === "minion" ? minionDialog(c2, change) : packDialog(c2, change) },
+    h("span.hp-cur", c2.group === "minion" ? standing(c2).length : totalHp(c2)),
+    h("span.hp-sep", "/"),
+    h("span.hp-max", c2.group === "minion" ? c2.members.length : c2.maxHp * c2.members.length)
+  ) : h(
+    "button.hp-box",
+    { title: "Change HP", onclick: () => hpDialog(c2, (mode3, n) => change((y) => applyHp(y, mode3, n))) },
+    h("span.hp-cur", c2.hp ?? "\u2014"),
+    h("span.hp-sep", "/"),
+    h("span.hp-max", c2.maxHp ?? "\u2014"),
+    c2.tempHp ? h("span.hp-temp", `+${c2.tempHp}`) : null
+  );
+  return h(
+    "div.party-card.comp-card" + (on ? "" : ".off") + (on && isOut(c2) ? ".down" : ""),
+    {
+      oncontextmenu: (ev) => {
+        if (!items().length) return;
+        ev.preventDefault();
+        popMenu(ev.currentTarget.querySelector(".party-name"), items());
+      }
+    },
+    avatar(m?.avatar, c2.name, "sm"),
+    h(
+      "div.party-main",
+      h(
+        "div.party-name",
+        c2.name,
+        grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null,
+        h("span.tag.follow", comp.type === "summon" ? "Summon" : "Companion"),
+        on ? linkTag(c2) : null,
+        m ? h("label.comp-on", { title: "In play: it joins fights and shows in Owlbear" }, h("input", { type: "checkbox", checked: !!comp.on, onchange: (ev) => setCompanionOn(ch.id, comp.id, ev.target.checked) }), "In play") : h("span.bad-text", " Its stat block is missing from the library")
+      ),
+      on ? h("div.turn-stats", h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "HP "), `${c2.maxHp ?? "\u2014"}${grp ? " each" : ""}`), h("span.muted", `${ch.name}'s ${comp.type === "summon" ? "summon" : "companion"}`)) : null,
+      on && !grp ? condChips(c2, {
+        add: (q) => change((y) => {
+          y.conditions.push(q);
+        }),
+        remove: (q) => change((y) => {
+          y.conditions = y.conditions.filter((z) => z !== q);
+        })
+      }) : null
+    ),
+    hp,
+    items().length ? h("button.icon-btn.kebab", { title: "More", onclick: (ev) => popMenu(ev.currentTarget, items()) }, "\u22EE") : h("span")
+  );
+}
+function companionTokenItems(ch, comp, c2) {
+  const n = tokensOf(c2).length, plan = linkPlan(c2);
+  return [
+    [!n ? "Link to token\u2026" : isGroup(c2) ? "Relink tokens\u2026" : "Link to a different token\u2026", () => {
+      if (!linker.available()) return notice('Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".', "error");
+      linker.pick(
+        { names: plan.map((p) => p.name) },
+        (i, id) => {
+          unlinkedByHand.delete(id);
+          companionAct(ch.id, comp.id, (y, s) => {
+            linkToken(s, y.key, plan[i].member, id);
+          });
+        },
+        (reason) => {
+          if (reason === "cancelled") notice("Linking stopped.");
+        }
+      );
+      notice(plan.length > 1 ? `In Owlbear, click the tokens for ${c2.name}, one after another (Esc stops).` : `In Owlbear, click the token for ${c2.name} (Esc cancels).`);
+    }],
+    ...n ? [[n === 1 ? "Unlink token" : `Unlink ${n} tokens`, () => {
+      let ids = [];
+      companionAct(ch.id, comp.id, (y, s) => {
+        ids = unlinkTokens(s, y.key);
+      });
+      for (const id of ids) unlinkedByHand.add(id);
+      if (ids.length && linker.available()) linker.unlink(ids);
+    }]] : []
+  ];
+}
+function partyCard(ch) {
+  const c2 = partyCombatant(ch);
+  const items = () => [...partyTokenItems(ch), ...shapeItems(c2, (fn) => partyAct(ch.id, fn))];
+  const menu = (anchor) => popMenu(anchor, items());
+  const shape = c2.form && findMonster(c2.form.monsterId);
+  return h(
+    "div.party-card" + (c2.hp != null && c2.hp <= 0 ? ".down" : ""),
+    { oncontextmenu: (e2) => {
+      if (!items().length) return;
+      e2.preventDefault();
+      menu(e2.currentTarget.querySelector(".party-name"));
+    } },
+    avatar(shape?.avatar || ch.avatar, ch.name, "md"),
+    h(
+      "div.party-main",
+      h("div.party-name", ch.name, shapeTag(c2), linkTag(c2)),
+      h("div.turn-stats", h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "Speed "), `${shape ? walkSpeed(shape) || "\u2014" : ch.speed ?? 30} ft`), h("span", h("b", "Pass. Perception "), ch.passivePerception ?? "\u2014")),
+      condChips(c2, {
+        add: (q) => partyAct(ch.id, (p) => {
+          p.conditions.push(q);
+        }),
+        remove: (q) => partyAct(ch.id, (p) => {
+          p.conditions = p.conditions.filter((z) => z !== q);
+        })
+      })
+    ),
+    h(
+      "button.hp-box",
+      { title: c2.tempHp ? `Change HP (${c2.tempHp} temporary hit points)` : "Change HP", onclick: () => partyHp(ch) },
+      h("span.hp-cur", c2.hp ?? "\u2014"),
+      h("span.hp-sep", "/"),
+      h("span.hp-max", c2.maxHp ?? "\u2014"),
+      c2.tempHp ? h("span.hp-temp", `+${c2.tempHp}`) : null
+    ),
+    items().length ? h("button.icon-btn.kebab", { title: "More", onclick: (e2) => menu(e2.currentTarget) }, "\u22EE") : null
+  );
+}
+function partyHp(ch) {
+  hpDialog(partyCombatant(ch), (mode3, n) => {
+    partyAct(ch.id, (p) => applyHp(p, mode3, n));
+    if (mode3 !== "damage") return;
+    setTimeout(() => concentrationPrompt(
+      partyCombatant(findCharacter(ch.id)),
+      n,
+      () => partyAct(ch.id, (p) => {
+        p.conditions = p.conditions.filter((q) => q !== "Concentrating");
+      })
+    ), 0);
+  });
+}
+function chooseParty() {
+  const rows = store.party.map((ch) => ({ ch, box: h("input", { type: "checkbox", checked: !!ch.active }) }));
+  modal("Active party", h(
+    "div.choose-party",
+    h("p.muted", "Tick the characters to track between fights. They come from the Party tab."),
+    rows.length ? rows.map(({ ch, box }) => h(
+      "label.check-row",
+      box,
+      avatar(ch.avatar, ch.name, "xs"),
+      ch.name,
+      h("span.muted", [ch.className, ch.level && `level ${ch.level}`].filter(Boolean).join(" "))
+    )) : h("p", "There are no characters yet: add them in the Party tab.")
+  ), [
+    ["Cancel", () => {
+    }],
+    ["Save", () => {
+      for (const { ch, box } of rows) if (!!ch.active !== box.checked) {
+        ch.active = box.checked;
+        save("party", ch);
+      }
+      render4();
+    }, "primary"]
+  ]);
+}
+function partyTokenItems(ch) {
+  const n = ch.live?.tokens?.length || 0;
+  if (!linker) return [];
+  return [[n ? "Link to a different token\u2026" : "Link to token\u2026", () => startPartyLink(ch)], ...n ? [["Unlink token", () => unlinkParty(ch)]] : [], ...messageItem(ch.id, ch.name)];
+}
+function startPartyLink(ch) {
+  if (!linker.available()) return notice('Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".', "error");
+  linker.pick({ names: [ch.name] }, (i, id) => {
+    unlinkedByHand.delete(id);
+    for (const o of store.party) if (o !== ch && o.live?.tokens?.includes(id)) setPartyLive(o, { ...o.live, tokens: o.live.tokens.filter((t) => t !== id) });
+    partyAct(ch.id, (p) => {
+      p.tokens = [id];
+    });
+  }, (reason) => {
+    if (reason === "cancelled") notice("Linking stopped.");
+  });
+  notice(`In Owlbear, click the token for ${ch.name} (Esc cancels).`);
+}
+function unlinkParty(ch) {
+  const ids = ch.live?.tokens || [];
+  for (const id of ids) unlinkedByHand.add(id);
+  partyAct(ch.id, (p) => {
+    delete p.tokens;
+  });
+  if (ids.length && linker.available()) linker.unlink(ids);
+}
+function linkByName(all) {
+  if (linking) return;
+  const tokens = all.filter((t) => !unlinkedByHand.has(t.id));
+  const linked2 = [], twice = [];
+  linking = true;
+  try {
+    const party = matchPartyTokens(activeParty(), tokens);
+    twice.push(...party.twice);
+    for (const [id, token] of party.links) {
+      const ch = findCharacter(id), now = characterTokens(id);
+      if (now.length === 1 && now[0] === token) continue;
+      setPartyLive(ch, { ...liveOf(partyCombatant(ch)), tokens: [token] });
+      linked2.push(ch.name);
+    }
+    const e2 = liveEncounter();
+    if (e2?.combat) {
+      const fight = matchFightTokens(e2.combat, tokens);
+      twice.push(...fight.twice.filter((n) => !twice.includes(n)));
+      for (const l of fight.links) {
+        linkToken(e2.combat, l.key, l.member, l.token);
+        const c2 = e2.combat.combatants.find((x) => x.key === l.key);
+        linked2.push(l.member >= 0 ? `${c2.name} ${l.member + 1}` : c2.name);
+      }
+      if (fight.links.length) {
+        syncParty(e2.combat);
+        save("encounters", e2);
+      }
+    }
+    const inFight = new Set(e2?.combat?.combatants.map((c2) => c2.key) || []);
+    const away = activeParty().flatMap(companionCombatants).filter((c2) => !inFight.has(c2.key));
+    const comps = matchFightTokens({ combatants: away }, tokens);
+    twice.push(...comps.twice.filter((n) => !twice.includes(n)));
+    for (const l of comps.links) {
+      const c2 = away.find((x) => x.key === l.key);
+      companionAct(c2.companion.char, c2.companion.id, (y, s) => {
+        linkToken(s, y.key, l.member, l.token);
+      }, { undo: false });
+      linked2.push(l.member >= 0 ? `${c2.name} ${l.member + 1}` : c2.name);
+    }
+  } finally {
+    linking = false;
+  }
+  if (linked2.length) {
+    render4();
+    notice(`Owlbear: linked ${linked2.length > 5 ? `${linked2.length} tokens` : linked2.join(", ")} on this scene.`);
+  }
+  const warn3 = twice.join(", ");
+  if (warn3 && warn3 !== warnedTwice) notice(`Owlbear: more than one token is named ${twice.join(" / ")}, so ${twice.length === 1 ? "it was" : "they were"} not linked. Link by hand, or rename the extras.`);
+  warnedTwice = warn3;
+}
+function renderBlock() {
+  const box = el10.querySelector("#run-block");
+  if (!box) return;
+  const c2 = C().combatants.find((x) => x.key === C().selectedKey);
+  if (!c2) return fill(box, h("div.empty", "Click a creature to see its stat block. Click any bonus or dice in it to roll."));
+  if (c2.kind === "monster" || c2.form) {
+    const m = findMonster(statRef(c2));
+    const tracker = {
+      get: (k) => C().combatants.find((x) => x.key === c2.key)?.used?.[k] || 0,
+      set: (k, n) => act((s) => {
+        const x = s.combatants.find((y) => y.key === c2.key);
+        if (x) {
+          x.used ??= {};
+          x.used[k] = n;
+        }
+      }, { redraw: false })
+    };
+    const recharge = {
+      get: (k) => !!C().combatants.find((x) => x.key === c2.key)?.recharge?.[k],
+      set: (k, used) => act((s) => {
+        const x = s.combatants.find((y) => y.key === c2.key);
+        if (x) {
+          x.recharge ??= {};
+          x.recharge[k] = used;
+        }
+      }, { redraw: false })
+    };
+    const group = isGroup(c2) ? { attack: (entry) => groupAttack(c2.key, entry) } : null;
+    const pc2 = c2.kind === "pc" ? findCharacter(c2.refId) : null;
+    fill(
+      box,
+      c2.form ? h(
+        "div.shape-banner",
+        h("span", `${c2.name} in ${c2.form.name} form${c2.form.pool ? ` \xB7 own HP ${c2.form.hp0 ?? "\u2014"}/${c2.form.maxHp0 ?? "\u2014"} waiting` : ""}`),
+        h("button.outline", { onclick: () => act((s) => {
+          revertShape(find(s, c2.key));
+        }) }, "Back to own shape")
+      ) : null,
+      m ? h(
+        "div.block-tools",
+        m.description?.length ? h("button.outline", { dataset: { desc: m.id }, title: "Hover to read it; click to pin it open" }, "Description") : null,
+        h("button.outline", { onclick: () => go7("library", m.id) }, "View in Creatures")
+      ) : null,
+      m ? statBlock(m, { who: c2.name, description: false, tracker, recharge, group }) : h("div.empty", `${c2.name} has no stat block (manual entry or deleted from the library).`),
+      pc2?.sheet ? h("details.own-sheet", h("summary", `${pc2.name}'s own sheet`), characterSheet(pc2, { hp: c2.hp, compact: true })) : null
+    );
+    return;
+  }
+  const pc = findCharacter(c2.refId);
+  fill(
+    box,
+    h("div.pc-card", avatarFor(c2, "lg"), h(
+      "div",
+      h("div.sb-name", c2.name),
+      h("div.sb-meta", [pc?.className, pc && `Level ${pc.level}`, pc?.player && `played by ${pc.player}`].filter(Boolean).join(" \xB7 ")),
+      h("div.pc-stats", `AC ${c2.ac ?? "\u2014"} \xB7 HP ${c2.hp ?? "\u2014"}/${c2.maxHp ?? "\u2014"}${c2.tempHp ? ` (+${c2.tempHp} temp)` : ""} \xB7 Speed ${pc?.speed ?? 30} ft \xB7 Passive Perception ${pc?.passivePerception ?? "\u2014"}`)
+    )),
+    pc?.sheet ? characterSheet(pc, { hp: c2.hp, compact: true }) : null
+  );
+}
+function renderLog() {
+  const box = el10.querySelector("#run-log");
+  if (!box) return;
+  fill(box, h("h3", "Roll log"), rollLog.length ? h("div.log-list", rollLog.slice(0, 40).map((r) => h(
+    "div.log-row" + (r.natural20 ? ".crit" : r.natural1 ? ".fumble" : ""),
+    h("div.log-what", h("strong", r.who), ` ${r.label}`),
+    h("div.log-detail", `${r.expr}: ${r.detail}${r.mode !== "normal" ? ` (${r.mode})` : ""}`),
+    h("div.log-total", r.total)
+  ))) : h("div.empty", "Rolls show here. Click dice in a stat block; Shift-click rolls with advantage, Ctrl-click with disadvantage."));
+}
+var el10, go7, enc, sameInit, UNDO_LIMIT, undoStacks, undoStack, live, liveEncounter, condIcon, closePop, roundsPop, setupCombat2, C, ordered2, PICKS, pick4, SHORTCUTS, conSave2, find, numberInput, linker, messenger, messageItem, linkTag, shapeTag, activeParty, partyUndo, companionKey, warnedTwice, linking, unlinkedByHand;
+var init_runner = __esm({
+  "src/tabs/runner.js"() {
+    init_ui();
+    init_store();
+    init_statblock();
+    init_combat();
+    init_monster_picker();
+    init_sheet();
+    init_loot_dialog();
+    init_dice();
+    init_conditions();
+    init_condition_icon();
+    init_format();
+    init_encounters();
+    init_rules();
+    init_groups();
+    enc = null;
+    sameInit = true;
+    UNDO_LIMIT = 100;
+    undoStacks = /* @__PURE__ */ new Map();
+    undoStack = () => {
+      if (!undoStacks.has(enc.id)) undoStacks.set(enc.id, []);
+      return undoStacks.get(enc.id);
+    };
+    live = null;
+    try {
+      live = localStorage.getItem("liveEncounter");
+    } catch {
+    }
+    liveEncounter = () => store.encounters.find((e2) => e2.id === live) || null;
+    condIcon = (name) => {
+      const i = iconOf(name, store.conditions);
+      return i ? h("img.cond-icon", { src: iconPath(i, 64), alt: "" }) : h("span.cond-badge", iconLetters(name));
+    };
+    closePop = () => {
+    };
+    roundsPop = (anchor, cond, now, onEnter) => numberPop(anchor, { title: `${cond}: rounds`, hint: "0 = until removed. Otherwise it counts down at the end of each of their turns.", value: now, onEnter });
+    setupCombat2 = (e2) => setupCombat(e2, { character: findCharacter, monster: findMonster, asGroup: runsAsGroup });
+    C = () => enc.combat;
+    ordered2 = () => ordered(C());
+    PICKS = { damage: "Damage", heal: "Heal", summon: "Summon for", link: "Link a token to" };
+    pick4 = null;
+    SHORTCUTS = [
+      ["Space", "Next turn"],
+      ["Ctrl+Z", "Undo"],
+      ["Ctrl+D, then click", "Damage: type the amount, Enter applies"],
+      ["Ctrl+H, then click", "Heal: the same"],
+      ["Ctrl+Shift+D", "Damage several: click each, Enter, the amount, Enter"],
+      ["Ctrl+Shift+H", "Heal several: the same"],
+      ["Ctrl+S, then click", "Summon for that creature"],
+      ["Ctrl+T or Alt+T, then click", "Link its token in Owlbear (browsers keep Ctrl+T for a new tab, so use Alt+T there)"],
+      ["Esc", "Stop picking"],
+      ["Ctrl+K", "Search everything (any tab)"]
+    ];
+    conSave2 = (c2) => conSave(c2, c2.kind === "monster" ? findMonster(statRef(c2)) : null, c2.kind === "pc" ? findCharacter(c2.refId) : null);
+    find = (s, key3) => s.combatants.find((z) => z.key === key3);
+    numberInput = (value, min, max) => h("input", { type: "number", min, max, value });
+    linker = null;
+    messenger = null;
+    messageItem = (charId, name) => messenger ? [["Send message\u2026", () => messenger.compose({ charId, character: name })]] : [];
+    linkTag = (c2) => {
+      const n = tokensOf(c2).length;
+      return n ? h("span.tag.link", { title: `Linked to ${n === 1 ? "a token" : `${n} tokens`} in Owlbear` }, n > 1 ? `\u{1F517} ${n}` : "\u{1F517}") : null;
+    };
+    shapeTag = (c2) => c2.form ? h("span.tag.shape", { title: c2.form.pool ? `In ${c2.form.name} form, with its hit points (its own: ${c2.form.hp0 ?? "\u2014"}/${c2.form.maxHp0 ?? "\u2014"})` : `In ${c2.form.name} form` }, c2.form.name) : null;
+    activeParty = () => store.party.filter((c2) => c2.active);
+    partyUndo = [];
+    companionKey = (charId, compId) => `cp-${charId}-${compId}`;
+    warnedTwice = "";
+    linking = false;
+    unlinkedByHand = /* @__PURE__ */ new Set();
+  }
+});
+
+// src/obr/chat.js
+var chat_exports = {};
+__export(chat_exports, {
+  initChat: () => initChat
+});
+function load() {
+  try {
+    return JSON.parse(localStorage.getItem(STORE) || "{}");
+  } catch {
+    return {};
+  }
+}
+function keep() {
+  try {
+    localStorage.setItem(STORE, JSON.stringify(threads));
+  } catch {
+  }
+}
+function sendMessage(charId, character, from, text) {
+  const key3 = `pc-${charId}`;
+  thread(key3, character, charId);
+  try {
+    localStorage.setItem(VOICE, from);
+  } catch {
+  }
+  const id = `m-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+  add(key3, { id, dir: "out", from, text, at: Date.now(), status: "sending" });
+  const ok = linked() && send({ type: "whisper", id, thread: key3, character, from, text, tokens: characterTokens(charId) });
+  if (!ok) setStatus(id, "error", 'Not linked to Owlbear: press "Open / reconnect GM window" in Owlbear, then send again.');
+  draw();
+}
+function setStatus(id, status4, note) {
+  for (const t of Object.values(threads)) {
+    const m = t.messages.find((x) => x.id === id);
+    if (m) {
+      m.status = status4;
+      m.note = note;
+      keep();
+    }
+  }
+  draw();
+}
+function compose({ charId, character }) {
+  const from = h("input", { type: "text", value: lastVoice(), placeholder: "e.g. Elder Voss, A voice in your head" });
+  const text = h("textarea", { rows: 5, placeholder: `Message for ${character}'s player\u2026` });
+  const close2 = modal(`Message to ${character}`, h(
+    "div.chat-compose",
+    h("label", "From (the title they see)", from),
+    h("label", "Message", text),
+    h("div.hint", "Only the player who owns this character's linked token sees it. Their replies appear in Messages (top bar).")
+  ), [
+    ["Cancel", () => {
+    }],
+    ["Send", () => {
+      if (!text.value.trim()) return false;
+      sendMessage(charId, character, from.value.trim() || "GM", text.value.trim());
+      openPanel(`pc-${charId}`);
+    }, "primary"]
+  ]);
+  text.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && (e2.ctrlKey || e2.metaKey)) {
+      e2.preventDefault();
+      close2();
+      sendMessage(charId, character, from.value.trim() || "GM", text.value.trim());
+      openPanel(`pc-${charId}`);
+    }
+  });
+  text.focus();
+}
+function openPanel(key3) {
+  open2 = key3 || latest() || "";
+  if (threads[open2]) threads[open2].unread = 0;
+  keep();
+  draw();
+}
+function closePanel() {
+  open2 = null;
+  draw();
+}
+function clearThread(key3) {
+  threads[key3].messages = [];
+  threads[key3].unread = 0;
+  keep();
+  draw();
+}
+function deleteThread(key3) {
+  delete threads[key3];
+  keep();
+  open2 = latest() || "";
+  draw();
+}
+function draw() {
+  const n = unread();
+  button.replaceChildren("\u{1F4AC} Messages", n ? h("span.chat-count", n) : "");
+  button.classList.toggle("has-unread", !!n);
+  panel2.hidden = open2 === null;
+  if (open2 === null) return;
+  const keys = Object.keys(threads);
+  const t = threads[open2];
+  const status4 = (m) => m.status === "sending" ? "Sending\u2026" : m.status === "error" ? m.note : m.note || "";
+  const list = h("div.chat-list", t ? t.messages.map((m) => h(
+    `div.chat-msg.${m.dir}${m.status === "error" ? ".error" : ""}`,
+    h("div.chat-who", m.dir === "out" ? `As ${m.from}` : m.from, h("span.chat-time", new Date(m.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }))),
+    h("div.chat-text", m.text),
+    m.dir === "out" && status4(m) ? h("div.chat-status", status4(m)) : null
+  )) : h("div.empty", "No messages yet. Right-click a character in Run Encounter > Send message\u2026"));
+  const from = h("input", { type: "text", value: lastVoice(), title: "Who it seems to come from (the title they see)" });
+  const text = h("textarea", { rows: 2, placeholder: t ? `Message for ${t.character}\u2026` : "Pick a character first", disabled: !t });
+  const go9 = () => {
+    if (!t || !text.value.trim()) return;
+    sendMessage(t.charId, t.character, from.value.trim() || "GM", text.value.trim());
+  };
+  text.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter" && !e2.shiftKey) {
+      e2.preventDefault();
+      go9();
+    }
+  });
+  fill(
+    panel2,
+    h("div.chat-head", h("strong", "Messages"), h("button.icon-btn", { title: "Close", onclick: closePanel }, "\xD7")),
+    keys.length ? h("div.chat-tabs", keys.map((k) => h(
+      "button" + (k === open2 ? ".active" : ""),
+      { onclick: () => openPanel(k) },
+      threads[k].character,
+      threads[k].unread ? h("span.chat-count", threads[k].unread) : ""
+    ))) : null,
+    t ? h(
+      "div.chat-tools",
+      h("button.link", { disabled: !t.messages.length, onclick: () => confirmBox(`Clear the messages with ${t.character}? This clears them here; the player keeps their own copy.`, "Clear history", () => clearThread(open2)) }, "Clear history"),
+      h("button.link.danger-text", { onclick: () => confirmBox(`Delete the chat with ${t.character}? It leaves your Messages until you write to them again; the player keeps their own copy.`, "Delete chat", () => deleteThread(open2)) }, "Delete chat")
+    ) : null,
+    list,
+    t ? h("div.chat-send", h("label", "From", from), h("div.chat-row", text, h("button.primary", { onclick: go9 }, "Send"))) : null
+  );
+  list.scrollTop = list.scrollHeight;
+}
+function initChat(bridge2) {
+  send = bridge2.send;
+  linked = bridge2.linked;
+  setMessenger({ available: linked, compose });
+  const mount2 = () => {
+    const bar = document.querySelector("header.top .top-right");
+    if (!bar) return setTimeout(mount2, 100);
+    bar.prepend(button);
+    document.body.append(panel2);
+    draw();
+  };
+  mount2();
+  return {
+    result({ id, error: error2, sentTo }) {
+      if (error2) {
+        setStatus(id, "error", error2);
+        notice(error2, "error");
+      } else setStatus(id, "sent", `Sent to ${sentTo.join(", ")}`);
+    },
+    ack({ id, name }) {
+      setStatus(id, "delivered", `Delivered to ${name}`);
+    },
+    reply({ thread: key3, character, name, text, at: at2 }) {
+      const charId = key3.replace(/^pc-/, "");
+      const t = thread(key3, character || store.party.find((c2) => c2.id === charId)?.name || "Player", charId);
+      add(key3, { id: `r-${at2}`, dir: "in", from: `${name}${t.character ? ` (${t.character})` : ""}`, text, at: at2 });
+      if (open2 !== key3) t.unread = (t.unread || 0) + 1;
+      keep();
+      openPanel(key3);
+    }
+  };
+}
+var STORE, VOICE, KEEP, threads, open2, send, linked, lastVoice, thread, add, unread, button, panel2, latest;
+var init_chat = __esm({
+  "src/obr/chat.js"() {
+    init_ui();
+    init_store();
+    init_runner();
+    STORE = "kemChats";
+    VOICE = "kemChatVoice";
+    KEEP = 200;
+    threads = load();
+    open2 = null;
+    send = () => false;
+    linked = () => false;
+    lastVoice = () => {
+      try {
+        return localStorage.getItem(VOICE) || "GM";
+      } catch {
+        return "GM";
+      }
+    };
+    thread = (key3, character, charId) => threads[key3] ??= { character, charId, messages: [], unread: 0 };
+    add = (key3, msg) => {
+      const t = threads[key3];
+      t.messages = [...t.messages, msg].slice(-KEEP);
+      keep();
+    };
+    unread = () => Object.values(threads).reduce((n, t) => n + (t.unread || 0), 0);
+    button = h("button.chat-btn", { title: "Messages with players", onclick: () => open2 ? closePanel() : openPanel(latest()) });
+    panel2 = h("div.chat-panel", { hidden: true });
+    latest = () => Object.entries(threads).sort(([, a2], [, b2]) => (b2.messages.at(-1)?.at || 0) - (a2.messages.at(-1)?.at || 0))[0]?.[0] || null;
+  }
+});
+
 // src/platform-web.js
 var DB = "encounter-builder";
 var KINDS = ["monsters", "party", "encounters", "conditions", "loot", "items", "spells"];
@@ -61451,10 +65958,10 @@ function db() {
   });
   return dbPromise;
 }
-async function run(kind, mode3, fn) {
-  if (!KINDS.includes(kind)) throw new Error(`Unknown library section "${kind}".`);
-  const tx = (await db()).transaction(kind, mode3);
-  const req = fn(tx.objectStore(kind));
+async function run(kind2, mode3, fn) {
+  if (!KINDS.includes(kind2)) throw new Error(`Unknown library section "${kind2}".`);
+  const tx = (await db()).transaction(kind2, mode3);
+  const req = fn(tx.objectStore(kind2));
   return new Promise((resolve, reject) => {
     tx.oncomplete = () => resolve(req?.result);
     tx.onerror = tx.onabort = () => reject(new Error(tx.error?.name === "QuotaExceededError" ? "The browser is out of space for the library." : `Could not save: ${tx.error?.message || "unknown error"}`));
@@ -61470,14 +65977,14 @@ window.desktop = {
   chooseLibrary: async () => null,
   openLibrary: async () => {
   },
-  list: async (kind) => ({ items: await run(kind, "readonly", (s) => s.getAll()), errors: [] }),
+  list: async (kind2) => ({ items: await run(kind2, "readonly", (s) => s.getAll()), errors: [] }),
   // structuredClone keeps IndexedDB from holding on to the live object the app goes on editing
-  save: async (kind, id, data) => {
-    await run(kind, "readwrite", (s) => s.put(structuredClone(data)));
+  save: async (kind2, id, data) => {
+    await run(kind2, "readwrite", (s) => s.put(structuredClone(data)));
     return true;
   },
-  remove: async (kind, id) => {
-    await run(kind, "readwrite", (s) => s.delete(id));
+  remove: async (kind2, id) => {
+    await run(kind2, "readwrite", (s) => s.delete(id));
     return true;
   },
   // without the desktop app's downloader, only sites that allow it work; the message says what to do instead
@@ -61527,10 +66034,10 @@ function mountDiceTray() {
     if (e2.key === "Escape" && !panel.hidden) toggle(false);
   });
 }
-function toggle(open2 = panel.hidden) {
-  panel.hidden = !open2;
-  fab.classList.toggle("open", open2);
-  if (open2) render();
+function toggle(open3 = panel.hidden) {
+  panel.hidden = !open3;
+  fab.classList.toggle("open", open3);
+  if (open3) render();
 }
 function trayExpression() {
   const parts = DICE.filter((d) => pick[d]).map((d) => `${pick[d]}d${d}`);
@@ -61830,6 +66337,9 @@ function fields(m) {
   (m.notes || []).forEach((n) => out.push([n.name, () => n.text, (v) => {
     n.text = v;
   }]));
+  if (typeof m.text === "string") out.push(["Description", () => m.text, (v) => {
+    m.text = v;
+  }]);
   return out.filter(([, get]) => typeof get() === "string" && get());
 }
 var textParts = (s) => [...String(s).matchAll(/(^|>)([^<]+)/g)].map((x) => ({ text: x[2], at: x.index + x[1].length }));
@@ -61916,7 +66426,7 @@ var STATS = [
   ["type", /^(?:type|item type|category)\b\s*:?\s*(.+)$/i]
 ];
 var COINS = { pp: 10, gp: 1, sp: 0.1, cp: 0.01 };
-function parseItem(text) {
+function parseItem(text, { isWord = null } = {}) {
   const warnings = [];
   const lines = cleanLines(text);
   const nonEmpty = lines.map((l, i) => [l, i]).filter(([l]) => l);
@@ -61964,19 +66474,19 @@ function parseItem(text) {
   const rarity = rarityMatch ? rarityName(rarityMatch[1]) : null;
   const attune = stats.attunement && !/^no\b/i.test(stats.attunement) ? `Requires Attunement${/^yes\b/i.test(stats.attunement) ? "" : ` ${stats.attunement}`}` : null;
   const attunement = attune || typeLine2.match(/\((requires attunement[^)]*)\)?/i)?.[1].replace(/^requires attunement/i, "Requires Attunement").trim() || null;
-  const kind = (typeLine2.match(TYPE_START)?.[1] || "").toLowerCase();
+  const kind2 = (typeLine2.match(TYPE_START)?.[1] || "").toLowerCase();
   const base = typeLine2.match(/^(?:weapon|armor)\s*\(([^)]*)\)/i)?.[1]?.trim() || null;
-  const item = { name: name.trim(), category: "gear", rarity: null, price, text: "", warnings };
+  const item = { name: cleanName(name.trim(), { isWord, warnings }), category: "gear", rarity: null, price, text: "", warnings };
   if (rarity && rarity !== "Artifact") {
     item.category = "magic";
     item.rarity = rarity;
-    item.magic = MAGIC_TYPES[kind] || (/\bweapon\b/.test(kind) ? "weapon" : /\barmor\b/.test(kind) ? "armor" : "wondrous");
+    item.magic = MAGIC_TYPES[kind2] || (/\bweapon\b/.test(kind2) ? "weapon" : /\barmor\b/.test(kind2) ? "armor" : "wondrous");
     if (base) item.base = cap2(base);
     if (attunement) item.attunement = attunement;
     item.consumable = item.magic === "potion" || item.magic === "scroll" || /ammunition/i.test(base || "");
   } else {
     if (rarity === "Artifact") warnings.push("Artifacts are priceless and never drop as loot: saved as an ordinary item. Change it in Items if you like.");
-    item.category = /weapon/.test(kind) ? "weapon" : /armor/.test(kind) ? "armor" : /shield/.test(kind) ? "shield" : /ammunition/.test(kind) ? "ammo" : /tool|instrument|gaming/.test(kind) ? "tool" : /focus|holy symbol/.test(kind) ? "focus" : "gear";
+    item.category = /weapon/.test(kind2) ? "weapon" : /armor/.test(kind2) ? "armor" : /shield/.test(kind2) ? "shield" : /ammunition/.test(kind2) ? "ammo" : /tool|instrument|gaming/.test(kind2) ? "tool" : /focus|holy symbol/.test(kind2) ? "focus" : "gear";
     if (item.category === "weapon") item.weapon = { simple: !/martial/.test(typeLine2.toLowerCase()), ranged: /ranged/i.test(typeLine2) || /ammunition|range \d/i.test(stats.properties || "") };
     if (item.category === "armor") item.armor = (typeLine2.match(/\b(light|medium|heavy)\b/i)?.[1] || "light").toLowerCase();
   }
@@ -62041,1756 +66551,32 @@ function parseCondition(text, { isWord = null } = {}) {
   return { name, keywords: name ? [{ text: name, caps: true }] : [], text: body2, warnings };
 }
 
+// src/maker/detect.js
+var has = (text, ...res) => res.reduce((n, re2) => n + (re2.test(text) ? 1 : 0), 0);
+function detectKind(text) {
+  const t = String(text || "");
+  if (!t.trim()) return null;
+  const top = t.split("\n").filter((l) => l.trim()).slice(0, 12).join("\n");
+  const spell = has(top, /\bcasting\s*time\b/i, /^\s*components?\b/im, /^\s*duration\b/im, /\b(?:level\s*[1-9]\s+|[1-9I](?:st|nd|rd|th)[- ]level\s+)(?:abjuration|conjuration|divination|enchantment|evocation|illusion|necromancy|transmutation)\b/i, /\b(?:abjuration|conjuration|divination|enchantment|evocation|illusion|necromancy|transmutation)\s+cantrip\b/i);
+  const monster = has(t, /\b(?:armor class|AC)\b\s*:?\s*\d/i, /\b(?:hit points|HP)\b\s*:?\s*\d/i, /\bspeed\b\s*:?\s*\d+\s*ft/i, /\bSTR\b[\s\S]{0,80}\bDEX\b[\s\S]{0,80}\bCON\b/, /\b(?:challenge|CR)\b\s*:?\s*\d/i);
+  if (spell >= 2 && spell >= monster) return "spell";
+  if (monster >= 3) return "monster";
+  const item = has(t, /^.*\b(?:wondrous item|weapon\s*\(|armor\s*\(|potion|ring|rod|scroll|staff|wand)\b.*\b(?:common|uncommon|rare|legendary|artifact)\b/im, /\brequires attunement\b/i, /^\s*(?:cost|price)\b\s*:?\s*[\d,.]+\s*(?:pp|gp|sp|cp)\b/im, /^\s*weight\b\s*:?\s*[\d./]+\s*lb/im, /^\s*(?:properties|mastery)\b\s*:/im, /^\s*(?:simple|martial)\s+(?:melee|ranged)\s+weapon\b/im, /^\s*(?:light|medium|heavy)\s+armor\b/im, /^\s*adventuring gear\b/im);
+  const condition = has(t, /^\s*(?:(?:new|optional|variant)\s+)?condition\s*[:–—-]/im, /\bwhile you have the [\w' -]+ condition\b/i, /\bending the condition\b/i, /\b[\w-]+\s*[[(]condition[\])]/i);
+  if (item >= 1 && item >= condition) return "item";
+  if (condition >= 1) return "condition";
+  return null;
+}
+
 // src/items.js
 init_ui();
 init_conditions();
-
-// src/glossary.js
-init_ui();
-init_store();
-init_conditions();
-init_tooltip();
-var SKIP = /* @__PURE__ */ new Set([
-  "Ability Check",
-  "Ability Score and Modifier",
-  "Action",
-  "Adventure",
-  "Alignment",
-  "Ally",
-  "Armor Class",
-  "Armor Training",
-  "Attack",
-  "Attack Roll",
-  "Attitude",
-  "Bonus Action",
-  "Campaign",
-  "Cantrip",
-  "Carrying Capacity",
-  "Challenge Rating",
-  "Character Sheet",
-  "Condition",
-  "Creature",
-  "Creature Type",
-  "Curses",
-  "D20 Test",
-  "Damage",
-  "Damage Roll",
-  "Damage Types",
-  "Dead",
-  "Encounter",
-  "Enemy",
-  "Experience Points",
-  "Expertise",
-  "Hazard",
-  "Healing",
-  "Heroic Inspiration",
-  "Hit Point Dice",
-  "Hit Points",
-  "Illusions",
-  "Initiative",
-  "Magic",
-  "Magical Effect",
-  "Monster",
-  "Nonplayer Character",
-  "Object",
-  "Per Day",
-  "Player Character",
-  "Proficiency",
-  "Reaction",
-  "Round Down",
-  "Save",
-  "Saving Throw",
-  "Simultaneous Effects",
-  "Size",
-  "Skill",
-  "Speed",
-  "Spell",
-  "Spell Attack",
-  "Spellcasting Focus",
-  "Stable",
-  "Stat Block",
-  "Target",
-  "Weapon",
-  "Weapon Attack",
-  "Passive Perception",
-  "Difficulty Class",
-  "Ritual",
-  "Reach",
-  "Possession",
-  "Hostile",
-  "Friendly",
-  "Indifferent"
-]);
-var EXTRA = {
-  "Opportunity Attacks": ["Opportunity Attack"],
-  Cover: ["Half Cover", "Three-Quarters Cover", "Total Cover"],
-  Jumping: ["Jump"],
-  "Grappling": ["Grapple"],
-  "Teleportation": ["Teleport", "Teleports", "Teleported"],
-  "Hover": ["Hovers"],
-  "Shape-Shifting": ["Shape-Shift", "Shape-Shifts"],
-  "Unarmed Strike": ["Unarmed Strikes"],
-  "Temporary Hit Points": ["Temporary Hit Point"],
-  "Resistance": ["Resistances"],
-  "Immunity": ["Immunities"],
-  "Vulnerability": ["Vulnerabilities"]
-};
-var byTerm = /* @__PURE__ */ new Map();
-var re = null;
-function rebuild2() {
-  byTerm = /* @__PURE__ */ new Map();
-  for (const r of store.rules || []) {
-    if (SKIP.has(r.name)) continue;
-    for (const t of [r.name, ...EXTRA[r.name] || []]) byTerm.set(t, r);
-  }
-  const terms = [...byTerm.keys()].sort((a2, b2) => b2.length - a2.length);
-  re = terms.length ? new RegExp(`(?<![\\w\u2019'-])(${terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(?![\\w\u2019'-])`, "g") : null;
-}
-onChange((kind) => {
-  if (kind === "all") rebuild2();
-});
-var findRule = (name) => {
-  if (!re) rebuild2();
-  return byTerm.get(name) || (store.rules || []).find((r) => r.name === name);
-};
-function glossify(html) {
-  if (!re) rebuild2();
-  if (!re) return html;
-  let depth = 0;
-  return html.replace(/(<[^>]+>)|([^<]+)/g, (all, tag, text) => {
-    if (tag) {
-      if (/^<span\b[^>]*class="cond-link/.test(tag)) depth++;
-      else if (depth && /^<span\b/.test(tag)) depth++;
-      else if (depth && tag === "</span>") depth--;
-      return tag;
-    }
-    if (depth) return text;
-    return text.replace(re, (term, _, at2) => {
-      if (/(?:^|[^.!?:;]\s)[A-Z][\w’'-]*\s$/.test(text.slice(Math.max(0, at2 - 30), at2)) && !/\s/.test(term)) return term;
-      if (/^\s+[A-Z][a-z]/.test(text.slice(at2 + term.length, at2 + term.length + 4)) && !/\s/.test(term)) return term;
-      const r = byTerm.get(term);
-      return `<span class="cond-link rule-link" data-rule="${esc(r.name)}" tabindex="0">${term}</span>`;
-    });
-  });
-}
-var ruleHtml = (r) => `<div class="cond-name">${esc(r.name)}</div>${r.tag ? `<div class="spell-meta">${esc(r.tag)}</div>` : ""}${markupHtml(r.text)}`;
-registerTip("rule", (name) => {
-  const r = findRule(name);
-  return r ? ruleHtml(r) : "";
-});
-
-// src/items.js
+init_glossary();
 init_spells();
 init_store();
 init_tooltip();
-
-// src/loot.js
-init_rules();
-init_dice();
-
-// src/generator.js
-init_rules();
-var STYLES = { melee: "Melee", ranged: "Ranged", mixed: "Mixed", caster: "Spellcaster" };
-var plain = (s) => String(s || "").replace(/<[^>]+>/g, "");
-var ATTACK = /(Melee or Ranged|Melee|Ranged) (?:Weapon |Spell )?Attack(?: Roll)?:/i;
-var entriesOf = (m, keys) => keys.flatMap((k) => m[k] || []);
-var ACTION_KEYS = ["actions", "bonusActions", "legendaryActions"];
-function attackInfo(e2) {
-  const t = plain(e2.text);
-  const a2 = t.match(ATTACK);
-  if (!a2) return null;
-  const kind = /or Ranged/i.test(a2[1]) ? "both" : /^Melee/i.test(a2[1]) ? "melee" : "ranged";
-  const hit = t.slice(Math.max(0, t.search(/Hit:/i)));
-  const dmg = [...hit.matchAll(/(\d+)\s*\(\s*\d+d\d+/g)].reduce((n, x) => n + Number(x[1]), 0) || 1;
-  const type = hit.match(/\b(bludgeoning|piercing|slashing|acid|cold|fire|force|lightning|necrotic|poison|psychic|radiant|thunder)\b/i)?.[1].toLowerCase();
-  const magic = /Spell Attack/i.test(a2[0]) || type && !["bludgeoning", "piercing", "slashing", "poison", "acid"].includes(type);
-  return { name: String(e2.name || "").replace(/\s*\(.*\)$/, "").trim().toLowerCase(), kind, dmg, magic };
-}
-var SPELL_ACTION = /\b(?:Level \d|\d(?:st|nd|rd|th) Level) Spell\b|\bCantrip\b/i;
-var spellcasting = (m) => entriesOf(m, ["traits", ...ACTION_KEYS]).find((e2) => /spellcasting/i.test(e2.name || "") || /casts one of the following spells/i.test(plain(e2.text)));
-function spellCount(e2) {
-  const t = String(e2.text || "");
-  const marked = (t.match(/<(em|spell)>/g) || []).length;
-  if (marked) return marked;
-  return plain(t).split("\n").filter((l) => /:/.test(l)).reduce((n, l) => n + l.split(":").pop().split(",").filter((x) => x.trim()).length, 0);
-}
-function guessStyle(m) {
-  const acts = entriesOf(m, ACTION_KEYS);
-  const attacks = acts.map(attackInfo).filter(Boolean);
-  const multi = plain(acts.find((e2) => /^multiattack/i.test(e2.name || ""))?.text).toLowerCase();
-  let melee = 0, ranged = 0, magic = 0;
-  for (const a2 of attacks) {
-    const w = a2.dmg * (multi && a2.name && multi.includes(a2.name) ? 2 : 1);
-    if (a2.kind === "melee") melee += w;
-    else if (a2.kind === "ranged") ranged += w;
-    else {
-      melee += w * 0.6;
-      ranged += w * 0.4;
-    }
-    if (a2.magic) magic += w;
-  }
-  const spellActions = acts.filter((e2) => SPELL_ACTION.test(e2.name || ""));
-  for (const e2 of spellActions) {
-    if (attackInfo(e2)) {
-      magic += attackInfo(e2).dmg;
-      continue;
-    }
-    const w = [...plain(e2.text).matchAll(/(\d+)\s*\(\s*\d+d\d+/g)].reduce((n, x) => n + Number(x[1]), 0) || 1;
-    ranged += w;
-    magic += w;
-  }
-  const sc = spellcasting(m);
-  const spells = (sc ? spellCount(sc) : 0) + spellActions.length;
-  if (spells >= 2 && (!attacks.length || magic >= (melee + ranged) / 2)) return "caster";
-  if (!melee && !ranged) return "mixed";
-  const r = ranged / (melee + ranged);
-  return r >= 0.6 ? "ranged" : r <= 0.4 ? "melee" : "mixed";
-}
-var styleOf = (m) => STYLES[m.fightingStyle] ? m.fightingStyle : guessStyle(m);
-function extraTags(m) {
-  const tags = [];
-  const all = entriesOf(m, ["traits", ...ACTION_KEYS, "reactions"]).map((e2) => plain(e2.text)).join("\n");
-  if (/saving throw/i.test(all) && /\b(Cone|Line|Sphere|Emanation|Cube|Cylinder|radius|each creature)\b/i.test(all)) tags.push("Area");
-  if (m.legendaryActions?.length) tags.push("Legendary");
-  return tags;
-}
-var SHAPES = { random: "Random", solo: "Solo", boss: "Boss + minions", elite: "Elite pair", squad: "Squad", horde: "Horde" };
-var SHAPE_COUNT = { solo: [1, 1], elite: [2, 2], boss: [3, 9], squad: [3, 5], horde: [6, 12] };
-var STYLE_GOALS = {
-  any: "Any",
-  mixed: "Mixed",
-  mostlyMelee: "Mostly melee",
-  mostlyRanged: "Mostly ranged",
-  meleeOnly: "Melee only",
-  rangedOnly: "Ranged only",
-  someCasters: "Includes spellcasters",
-  mostlyCasters: "Mostly spellcasters"
-};
-var THEMES2 = { none: "Off", race: "Same race", type: "Same creature type", either: "Same race or type" };
-var difficultyNames = (rules) => (rules === "2024" ? DIFFICULTIES_2024 : DIFFICULTIES).slice(1);
-var defaultParams = () => ({
-  rules: "2014",
-  characterIds: [],
-  extraPlayers: { count: 0, level: 1 },
-  difficulty: "Medium",
-  countMode: "any",
-  count: 4,
-  countMin: 3,
-  countMax: 6,
-  maxCount: 12,
-  source: "",
-  size: "",
-  crMin: "0",
-  crMax: "30",
-  types: [],
-  races: [],
-  skipCr0: true,
-  style: "any",
-  shape: "random",
-  variety: 0,
-  theme: "none",
-  include: [],
-  exclude: []
-});
-var lc2 = (s) => String(s || "").trim().toLowerCase();
-var isHomebrew2 = (m) => !m.source || m.source === "Homebrew";
-function poolFilters(p) {
-  return [
-    ["Never use list", (m) => !p.exclude.includes(m.id)],
-    ["CR 0 creatures are skipped", (m) => !p.skipCr0 || crValue(m.challengeRating) > 0],
-    ["Source", (m) => !p.source || p.source === "homebrew" === isHomebrew2(m)],
-    ["Creature types", (m) => !p.types.length || p.types.includes(m.monsterType)],
-    ["Races", (m) => !p.races.length || (m.subtypes || []).some((s) => p.races.includes(lc2(s)))],
-    ["Size", (m) => !p.size || m.size === p.size],
-    ["CR range", (m) => crValue(m.challengeRating) >= crValue(p.crMin) && crValue(m.challengeRating) <= crValue(p.crMax)]
-  ];
-}
-function buildPool(monsters, p) {
-  let pool = monsters.filter((m) => xpFor(m.challengeRating) > 0 || !p.skipCr0);
-  for (const [name, ok] of poolFilters(p)) {
-    const next2 = pool.filter(ok);
-    if (!next2.length) return { pool: [], emptiedBy: name };
-    pool = next2;
-  }
-  return { pool: pool.map((m) => ({ m, id: m.id, xp: monsterXp(m), style: styleOf(m), tags: extraTags(m) })), emptiedBy: null };
-}
-var newSeed = () => Math.floor(Math.random() * 36 ** 6).toString(36).padStart(6, "0");
-function rng(seed) {
-  let a2 = 0;
-  for (const c2 of String(seed)) a2 = Math.imul(a2 ^ c2.charCodeAt(0), 2654435761) + 2654435769 | 0;
-  return () => {
-    a2 = a2 + 1831565813 | 0;
-    let t = Math.imul(a2 ^ a2 >>> 15, 1 | a2);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
-}
-var int = (r, lo, hi) => lo + Math.floor(r() * (hi - lo + 1));
-function pick2(r, list, weight) {
-  const ws = list.map(weight);
-  const sum = ws.reduce((a2, b2) => a2 + b2, 0);
-  if (!(sum > 0)) return null;
-  let x = r() * sum;
-  for (let i = 0; i < list.length; i++) if ((x -= ws[i]) <= 0) return list[i];
-  return list[list.length - 1];
-}
-var rangedShare = (style) => style === "ranged" || style === "caster" ? 1 : style === "mixed" ? 0.5 : 0;
-var meleeShare = (style) => style === "melee" ? 1 : style === "mixed" ? 0.5 : 0;
-function styleWeight(goal, style) {
-  switch (goal) {
-    case "mostlyMelee":
-      return style === "melee" ? 4 : style === "mixed" ? 1.5 : 0.4;
-    case "mostlyRanged":
-      return style === "ranged" || style === "caster" ? 4 : style === "mixed" ? 1.5 : 0.4;
-    case "mostlyCasters":
-      return style === "caster" ? 5 : 0.4;
-    case "someCasters":
-      return style === "caster" ? 2 : 1;
-    case "meleeOnly":
-      return style === "melee" ? 1 : 0;
-    case "rangedOnly":
-      return style === "ranged" || style === "caster" ? 1 : 0;
-    default:
-      return 1;
-  }
-}
-function styleMiss(goal, creatures) {
-  const n = creatures.length;
-  if (!n) return 0;
-  const share = (f) => creatures.reduce((a2, c2) => a2 + f(c2.style), 0) / n;
-  const casters = creatures.filter((c2) => c2.style === "caster").length;
-  switch (goal) {
-    case "mostlyMelee":
-      return Math.max(0, 0.7 - share(meleeShare));
-    case "mostlyRanged":
-      return Math.max(0, 0.7 - share(rangedShare));
-    case "mostlyCasters":
-      return Math.max(0, 0.7 - casters / n);
-    case "someCasters":
-      return casters ? 0 : 1;
-    case "mixed": {
-      if (n < 2) return 0;
-      const s = share(meleeShare);
-      return s < 0.25 ? 0.25 - s : s > 0.75 ? s - 0.75 : 0;
-    }
-    case "meleeOnly":
-      return creatures.every((c2) => c2.style === "melee") ? 0 : 1;
-    case "rangedOnly":
-      return creatures.every((c2) => c2.style === "ranged" || c2.style === "caster") ? 0 : 1;
-    default:
-      return 0;
-  }
-}
-var racesOf = (m) => (m.subtypes || []).map(lc2).filter((s) => s && !/^any/.test(s));
-function sharesTheme(theme, a2, b2) {
-  const race = racesOf(a2).some((r) => racesOf(b2).includes(r));
-  const type = a2.monsterType && a2.monsterType === b2.monsterType;
-  return theme === "race" ? race : theme === "type" ? type : theme === "either" ? race || type : true;
-}
-function themeName(theme, ms) {
-  if (theme === "none" || ms.length < 2) return "";
-  const races = racesOf(ms[0]).filter((r) => ms.every((m) => racesOf(m).includes(r)));
-  if (races.length && theme !== "type") return races[0].replace(/\b\w/g, (c2) => c2.toUpperCase());
-  if (ms.every((m) => m.monsterType === ms[0].monsterType) && theme !== "race") return ms[0].monsterType;
-  return "";
-}
-function generate({ params: p0, monsters, party, seed = newSeed(), seen: seen2 = /* @__PURE__ */ new Set(), locked = [] }) {
-  const p = { ...defaultParams(), ...p0 };
-  const r = rng(seed);
-  const base = { ok: false, groups: [], notes: [], seed };
-  if (!party.length) return { ...base, error: "Add characters first (Manage characters), so the generator knows who it is for." };
-  const names = difficultyNames(p.rules);
-  const di = Math.max(0, names.indexOf(p.difficulty));
-  const steps = evaluate([], party, p.rules).steps;
-  const target = { name: names[di], lower: steps[di].xp, upper: steps[di + 1] ? steps[di + 1].xp - 1 : Math.round(steps[di].xp * 1.25) };
-  const byId2 = new Map(monsters.map((m) => [m.id, m]));
-  const entry = (m) => ({ m, id: m.id, xp: monsterXp(m), style: styleOf(m), tags: extraTags(m) });
-  const fixed = [];
-  for (const g of locked) {
-    const m = byId2.get(g.monsterId);
-    if (m) fixed.push({ ...entry(m), count: g.count, locked: true });
-  }
-  for (const id of p.include) {
-    const m = byId2.get(id);
-    if (m && !fixed.some((f) => f.id === id)) fixed.push({ ...entry(m), count: 1, include: true });
-  }
-  const { pool: fullPool, emptiedBy } = buildPool(monsters, p);
-  const pool = fullPool.filter((c2) => styleWeight(p.style, c2.style) > 0);
-  if (!pool.length && !fixed.length) {
-    return { ...base, error: emptiedBy ? `No monsters left after the "${emptiedBy}" filter. Loosen it and try again.` : `No monsters match "${STYLE_GOALS[p.style]}" with these filters.` };
-  }
-  const fixedCount = fixed.reduce((n, f) => n + f.count, 0);
-  const user = p.countMode === "exact" ? [p.count, p.count] : p.countMode === "range" ? [Math.min(p.countMin, p.countMax), Math.max(p.countMin, p.countMax)] : [1, p.maxCount];
-  user[0] = Math.max(user[0], fixedCount, 1);
-  user[1] = Math.max(user[0], user[1]);
-  const fits = (s) => SHAPE_COUNT[s][0] <= user[1] && SHAPE_COUNT[s][1] >= user[0];
-  const shapes = Object.keys(SHAPE_COUNT).filter(fits);
-  if (p.shape !== "random" && !fits(p.shape)) base.notes.push(`${SHAPES[p.shape]} doesn't fit ${user[0] === user[1] ? user[0] : `${user[0]}\u2013${user[1]}`} creatures, so another shape was used.`);
-  let attempts = tryShapes(p.shape !== "random" && fits(p.shape) ? [p.shape] : shapes);
-  if (p.shape !== "random" && fits(p.shape) && !(attempts[0]?.score < 1e3)) {
-    const other = tryShapes(shapes);
-    if (other[0]?.score < 1e3) {
-      attempts = other;
-      base.notes.push(`A ${SHAPES[p.shape].toLowerCase()} couldn't reach ${target.name} with these creatures, so another shape was used.`);
-    }
-  }
-  if (!attempts.length) return { ...base, error: "Could not put an encounter together with these settings." };
-  const best = attempts[0];
-  const evaluation = evaluate(best.groups.flatMap((g) => Array(g.count).fill(xpItem(g.m))), party, p.rules);
-  const inBand = evaluation.adjusted >= target.lower && evaluation.adjusted <= target.upper;
-  const notes = [...base.notes];
-  if (!inBand) notes.push(diagnose(evaluation.adjusted < target.lower));
-  if (best.styleMiss > 0 && p.style !== "any") notes.push(`Couldn't fully meet "${STYLE_GOALS[p.style]}" with these creatures.`);
-  if (p.theme !== "none" && !best.themed) notes.push(`Couldn't keep it to one ${p.theme === "type" ? "creature type" : "race"} with these creatures.`);
-  const creatures = best.groups.flatMap((g) => Array(g.count).fill(g));
-  const why = [
-    SHAPES[best.shape],
-    `${creatures.length} creature${creatures.length === 1 ? "" : "s"}`,
-    themeName(p.theme, best.groups.map((g) => g.m)) && `themed: ${themeName(p.theme, best.groups.map((g) => g.m))}`,
-    styleSummary(creatures)
-  ].filter(Boolean).join(" \xB7 ");
-  return {
-    ok: true,
-    seed,
-    shape: best.shape,
-    target,
-    inBand,
-    evaluation,
-    why,
-    notes,
-    signature: best.signature,
-    groups: best.groups.map((g) => ({ monsterId: g.id, count: g.count, ...g.locked ? { locked: true } : {} }))
-  };
-  function tryShapes(list) {
-    const out = [];
-    for (let t = 0; t < 90; t++) {
-      const shape = list.length ? list[int(r, 0, list.length - 1)] : "squad";
-      const lo = Math.max(user[0], SHAPE_COUNT[shape][0]), hi = Math.min(user[1], SHAPE_COUNT[shape][1]);
-      const mix = build3(shape, lo <= hi ? int(r, lo, hi) : user[0], list.length === 1);
-      if (mix) out.push(mix);
-    }
-    return out.sort((a2, b2) => a2.score - b2.score);
-  }
-  function build3(shape, n, keepShape) {
-    const freeCount = Math.max(0, n - fixedCount);
-    let kinds2 = { solo: 1, elite: int(r, 1, 2), boss: freeCount >= 5 ? int(r, 2, 3) : 2, squad: int(r, 2, 3), horde: int(r, 1, 2) }[shape];
-    if (p.variety > 0) kinds2 = Math.min(kinds2, p.variety);
-    kinds2 = Math.max(0, Math.min(kinds2 - fixed.length, freeCount));
-    if (p.variety > 0 && fixed.length >= p.variety) kinds2 = 0;
-    const aim = target.lower + (target.upper - target.lower) * (0.25 + r() * 0.5);
-    const mult = evaluate(Array(n).fill("1"), party, p.rules).multiplier;
-    const budget = Math.max(1, aim / mult - fixed.reduce((s, f) => s + f.xp * f.count, 0));
-    const plan = [];
-    if (freeCount && kinds2) {
-      if (shape === "boss" && !fixed.length && kinds2 >= 2) {
-        const share = 0.45 + r() * 0.25;
-        plan.push({ count: 1, xp: budget * share, boss: true });
-        splitEven(freeCount - 1, Math.max(1, kinds2 - 1), budget * (1 - share));
-      } else if (shape === "solo" || shape === "elite" && kinds2 === 1) plan.push({ count: freeCount, xp: budget / freeCount, boss: true });
-      else splitEven(freeCount, kinds2, budget);
-    }
-    function splitEven(count, k, xp) {
-      if (count <= 0) return;
-      k = Math.min(k, count);
-      const counts = Array(k).fill(Math.floor(count / k));
-      for (let i = 0; i < count % k; i++) counts[i]++;
-      const weights = counts.map((c2) => c2 * (0.7 + r() * 0.6));
-      const total = weights.reduce((a2, b2) => a2 + b2, 0);
-      counts.forEach((c2, i) => plan.push({ count: c2, xp: xp * weights[i] / total / c2 }));
-    }
-    const groups = fixed.map((f) => ({ ...f }));
-    let anchor = groups[0]?.m || null;
-    const needCaster = p.style === "someCasters" && !groups.some((g) => g.style === "caster");
-    for (const [i, slot] of plan.entries()) {
-      const used = new Set(groups.map((g) => g.id));
-      const c2 = pick2(r, pool.filter((x) => !used.has(x.id)), (x) => {
-        const d = Math.log(x.xp / slot.xp);
-        let w = 1 / (1 + d * d * 4);
-        w *= styleWeight(p.style, x.style) * (needCaster && i === 0 && x.style === "caster" ? 4 : 1);
-        if (anchor && p.theme !== "none") w *= sharesTheme(p.theme, anchor, x.m) ? 6 : 0.15;
-        if (slot.boss && x.tags.includes("Legendary")) w *= 2;
-        return w;
-      });
-      if (!c2) break;
-      groups.push({ ...c2, count: slot.count });
-      anchor ??= c2.m;
-    }
-    if (!groups.length) return null;
-    const bounds = keepShape ? [Math.max(user[0], SHAPE_COUNT[shape][0]), Math.min(user[1], SHAPE_COUNT[shape][1])] : user;
-    adjust(groups, bounds[0] <= bounds[1] ? bounds : user);
-    return score(groups, keepShape ? shape : shapeOf(groups));
-  }
-  function adjust(groups, [minN, maxN0]) {
-    const maxN = Math.max(maxN0, fixedCount);
-    for (let k = 0; k < 10; k++) {
-      const ev = evaluate(groups.flatMap((g) => Array(g.count).fill(xpItem(g.m))), party, p.rules);
-      const low = ev.adjusted < target.lower, high = ev.adjusted > target.upper;
-      if (!low && !high) return;
-      const total = groups.reduce((a2, g) => a2 + g.count, 0);
-      const free = groups.map((g, i) => [g, i]).filter(([g]) => !g.locked);
-      const moves = [];
-      for (const [g, i] of free) {
-        if (!g.include) {
-          const used = new Set(groups.map((x) => x.id));
-          const options = pool.filter((x) => !used.has(x.id) && (low ? x.xp > g.xp : x.xp < g.xp) && styleWeight(p.style, x.style) > 0.5 && (p.theme === "none" || groups.length < 2 || sharesTheme(p.theme, groups.find((x2) => x2 !== g).m, x.m)));
-          if (options.length) {
-            const next2 = options.reduce((a2, b2) => Math.abs(b2.xp - g.xp) < Math.abs(a2.xp - g.xp) ? b2 : a2);
-            moves.push(() => {
-              groups[i] = { ...next2, count: g.count };
-            });
-          }
-        }
-        if (low && total < maxN && (p.countMode === "any" || total < user[1])) moves.push(() => {
-          g.count++;
-        });
-        if (high && g.count > 1 && total > minN) moves.push(() => {
-          g.count--;
-        });
-      }
-      if (!moves.length) return;
-      moves[int(r, 0, moves.length - 1)]();
-    }
-  }
-  function score(groups, shape) {
-    const crs = groups.flatMap((g) => Array(g.count).fill(xpItem(g.m)));
-    const ev = evaluate(crs, party, p.rules);
-    const mid = (target.lower + target.upper) / 2;
-    const out = ev.adjusted < target.lower ? (target.lower - ev.adjusted) / target.lower : ev.adjusted > target.upper ? (ev.adjusted - target.upper) / target.upper : 0;
-    const creatures2 = groups.flatMap((g) => Array(g.count).fill(g));
-    const miss = styleMiss(p.style, creatures2);
-    const themed = p.theme === "none" || groups.every((g) => sharesTheme(p.theme, groups[0].m, g.m));
-    const signature = groups.map((g) => `${g.id}x${g.count}`).sort().join("|");
-    const s = (out ? 1e3 + out * 100 : 0) + miss * 60 + (themed ? 0 : 25) + Math.abs(ev.adjusted - mid) / mid * 10 + (seen2.has(signature) ? 40 : 0) + r() * 4;
-    return { groups, shape, score: s, styleMiss: miss, themed, signature };
-  }
-  function diagnose(tooWeak) {
-    const xs = pool.map((c2) => c2.xp);
-    const strongest = Math.max(0, ...xs), weakest = Math.min(...xs);
-    if (tooWeak) return `Closest found is below ${target.name}. The strongest allowed creature is worth ${strongest.toLocaleString()} XP: allow higher CRs${p.countMode !== "any" ? " or more creatures" : ""}, or pick an easier difficulty.`;
-    return `Closest found is above ${target.name}. The weakest allowed creature is worth ${weakest.toLocaleString()} XP: allow lower CRs${p.countMode !== "any" ? " or fewer creatures" : ""}, or pick a harder difficulty.`;
-  }
-}
-function shapeOf(groups) {
-  const all = groups.flatMap((g) => Array(g.count).fill(g.xp));
-  const total = all.reduce((a2, b2) => a2 + b2, 0);
-  if (all.length === 1) return "solo";
-  if (all.length === 2) return "elite";
-  if (Math.max(...all) >= total * 0.45 && groups.some((g) => g.count === 1)) return "boss";
-  return all.length >= 6 ? "horde" : "squad";
-}
-function styleSummary(creatures) {
-  const n = creatures.length;
-  const melee = creatures.reduce((a2, c2) => a2 + meleeShare(c2.style), 0) / n;
-  const casters = creatures.filter((c2) => c2.style === "caster").length;
-  const parts = [`${Math.round(melee * 100)}% melee`];
-  if (casters) parts.push(`${casters} caster${casters === 1 ? "" : "s"}`);
-  return parts.join(", ");
-}
-
-// src/loot-data.js
-var LOOT_LEVELS = {
-  full: { label: "Full loot", share: 1 },
-  most: { label: "Most loot", share: 0.75 },
-  some: { label: "Some loot", share: 0.4 },
-  little: { label: "A little loot", share: 0.15 },
-  none: { label: "No loot (harvest only)", share: 0 }
-};
-var e = (name, value, weight = 1, qty = "") => ({ name, value, weight, qty });
-var THEMES3 = [
-  // ---------------- people ----------------
-  {
-    id: "humanoid",
-    name: "Humanoid (general)",
-    loot: "full",
-    keywords: ["commoner", "villager", "peasant", "farmer"],
-    items: [
-      e("Tarnished silver ring", 5),
-      e("Carved wooden charm", 0.1, 2),
-      e("Pouch of pipe tobacco", 0.2, 2),
-      e("Clay pipe", 0.1),
-      e("Whetstone", 0.01),
-      e("Tin flask of cheap brandy", 0.2, 2),
-      e("Lucky copper coin with a hole punched through", 0.01),
-      e("Bone-handled knife", 0.5),
-      e("Brass buttons", 0.05, 1, "1d4"),
-      e("String of glass beads", 1),
-      e("Horn comb", 0.3),
-      e("Wool scarf", 0.2),
-      e("Wedge of hard cheese wrapped in cloth", 0.1, 2),
-      e("Small hand mirror", 2, 0.5)
-    ],
-    harvest: []
-  },
-  {
-    id: "bandit",
-    name: "Bandit",
-    loot: "full",
-    keywords: ["bandit", "thug", "brigand", "highwayman", "outlaw", "tough", "thief", "cutpurse", "spy", "assassin", "smuggler"],
-    items: [
-      e("Loaded dice", 0.1, 2),
-      e("Stolen silver locket", 15),
-      e("Mismatched earrings", 3),
-      e("Gold tooth", 2),
-      e("Stolen wedding band", 10, 0.7),
-      e("Merchant\u2019s signet ring", 25, 0.4),
-      e("Pouch of pepper", 2),
-      e("Bolt of fine lace", 5, 0.7),
-      e("Brass knuckles", 0.5),
-      e("Wineskin of sour wine", 0.2, 2),
-      e("Faded bandana", 0.05, 2),
-      e("Set of crude lockpicks", 1),
-      e("Silver spoons", 1, 1, "1d4"),
-      e("Cheap tin brooch", 0.2, 2)
-    ],
-    harvest: []
-  },
-  {
-    id: "soldier",
-    name: "Soldier",
-    loot: "full",
-    keywords: ["guard", "soldier", "warrior", "veteran", "infantry", "knight", "gladiator", "scout", "sergeant", "mercenary", "militia", "sentry", "champion"],
-    items: [
-      e("Regimental badge", 1, 2),
-      e("Bone dice", 0.1, 2),
-      e("Tin cup", 0.02, 2),
-      e("Polished brass gorget", 5),
-      e("Oilskin cloak", 1),
-      e("Spare bowstring", 0.1, 2),
-      e("Deck of worn playing cards", 0.5, 2),
-      e("Hip flask of rum", 0.5),
-      e("Silver campaign medal", 10, 0.6),
-      e("Lock of a sweetheart\u2019s hair in a twist of paper", 0, 1),
-      e("Pipe and tobacco", 0.3),
-      e("Field rations", 0.5, 2, "1d3"),
-      e("Whetstone and oil cloth", 0.1)
-    ],
-    harvest: []
-  },
-  {
-    id: "priest",
-    name: "Priest",
-    loot: "full",
-    keywords: ["priest", "acolyte", "cleric", "monk", "nun", "friar", "templar", "paladin", "pilgrim"],
-    items: [
-      e("Wooden prayer beads", 1, 2),
-      e("Small book of hymns", 5),
-      e("Beeswax candles", 0.01, 2, "1d4"),
-      e("Silver offering plate", 15, 0.5),
-      e("Pilgrim\u2019s token", 0.1, 2),
-      e("Pouch of alms", 0.5, 1.5),
-      e("Embroidered stole", 3),
-      e("Sprig of dried sage", 0.01, 2),
-      e("Reliquary with a saint\u2019s finger bone", 25, 0.4)
-    ],
-    harvest: []
-  },
-  {
-    id: "cultist",
-    name: "Cultist",
-    loot: "full",
-    keywords: ["cultist", "cult", "fanatic", "zealot", "heretic"],
-    items: [
-      e("Ritual candle stubs", 0.01, 2, "1d6"),
-      e("Carved obsidian idol", 10, 0.7),
-      e("Stick of black incense", 0.5, 2, "1d4"),
-      e("Prayer book in an unknown script", 5),
-      e("Black wax seal ring", 2),
-      e("Necklace of finger bones", 0.1),
-      e("Silver offering bowl", 15, 0.5),
-      e("Hooded robe stitched with sigils", 1),
-      e("Pouch of grave dirt", 0),
-      e("Amethyst shard", 10, 0.6),
-      e("Stub of red chalk", 0.01),
-      e("Vial of animal blood", 0)
-    ],
-    harvest: []
-  },
-  {
-    id: "noble",
-    name: "Noble",
-    loot: "full",
-    keywords: ["noble", "aristocrat", "merchant", "baron", "baroness", "duke", "duchess", "courtier", "envoy"],
-    items: [
-      e("Gold signet ring", 50, 0.7),
-      e("Jeweled hairpin", 25),
-      e("Perfumed silk handkerchief", 1, 2),
-      e("Silver snuffbox", 20),
-      e("Pearl earring", 15),
-      e("Painted lace fan", 5),
-      e("Silver hip flask", 15),
-      e("Portrait locket", 30, 0.7),
-      e("Kidskin gloves", 3, 2),
-      e("Ivory comb", 10),
-      e("Gold-chained monocle", 40, 0.5),
-      e("Bottle of fine wine", 10, 0.7)
-    ],
-    harvest: []
-  },
-  {
-    id: "caster",
-    name: "Spellcaster",
-    loot: "full",
-    keywords: ["mage", "archmage", "wizard", "sorcerer", "warlock", "druid", "apprentice", "necromancer", "witch", "conjurer", "evoker", "illusionist", "diviner", "enchanter", "magus"],
-    items: [
-      e("Bundle of dried herbs", 0.5, 2),
-      e("Small quartz crystal", 5),
-      e("Pouch of bat guano", 0.1),
-      e("Vial of quicksilver", 5, 0.7),
-      e("Bag of coloured chalk", 0.2, 2),
-      e("Notebook of arcane scribbles", 3),
-      e("Ink-stained quill", 0.02, 2),
-      e("Feather of a rare bird", 2),
-      e("Tiny brass astrolabe", 25, 0.4),
-      e("Pinch of powdered pearl", 10, 0.6),
-      e("Sealed jar of sulfur", 1),
-      e("Spectacles with a cracked lens", 2)
-    ],
-    harvest: []
-  },
-  {
-    id: "raider",
-    name: "Raider",
-    loot: "full",
-    keywords: ["raider", "goblin", "hobgoblin", "bugbear", "gnoll", "kobold", "orc", "lizardfolk", "sahuagin", "berserker", "centaur", "merfolk", "troglodyte", "barbarian", "tribal", "marauder", "reaver"],
-    items: [
-      e("Necklace of teeth", 0.5, 2),
-      e("Scrap of stolen silk", 2),
-      e("Crude iron armband", 0.2, 2),
-      e("Bone dice", 0.1),
-      e("Sack of mismatched cutlery", 0.5),
-      e("Shiny bit of broken glass", 0, 2),
-      e("Pot of war paint", 0.1),
-      e("Strips of dried meat", 0.01, 2, "1d4"),
-      e("Carved bone fetish", 0.2, 2),
-      e("Tarnished silver spoon", 1),
-      e("Copper bracelets", 1, 1, "1d3"),
-      e("Stolen hand mirror", 2, 0.5)
-    ],
-    harvest: []
-  },
-  {
-    id: "pirate",
-    name: "Pirate",
-    loot: "full",
-    keywords: ["pirate", "buccaneer", "corsair", "sailor", "deckhand", "privateer"],
-    items: [
-      e("Gold earring", 5),
-      e("Cracked spyglass lens", 2),
-      e("Bottle of rum", 1, 2),
-      e("Pouch of foreign coins", 3),
-      e("Bosun\u2019s whistle", 0.5),
-      e("Scrimshaw whale tooth", 5),
-      e("String of pearls", 25, 0.4),
-      e("Tarred rope bracelet", 0.01, 2),
-      e("Parrot feather", 0, 1),
-      e("Sailor\u2019s knife", 0.5),
-      e("Tin of ship\u2019s biscuits", 0.1, 2),
-      e("Brass compass", 25, 0.4)
-    ],
-    harvest: []
-  },
-  // ---------------- by creature type ----------------
-  {
-    id: "giant",
-    name: "Giant",
-    loot: "most",
-    keywords: [],
-    items: [
-      e("Giant-sized copper bracelet", 15),
-      e("Sack of sheep bones", 0),
-      e("Hide pouch of small gems", 10, 0.6, "1d3"),
-      e("Huge iron ring", 5),
-      e("Dented helmet used as a cup", 2),
-      e("Club studded with stolen coins", 8),
-      e("String of trophy shields", 10, 0.5),
-      e("Cask of strong ale", 5, 0.5)
-    ],
-    harvest: [e("Giant\u2019s tooth", 5), e("Braid of coarse hair", 1), e("Thick hide", 8, 0.6)]
-  },
-  {
-    id: "undead",
-    name: "Undead",
-    loot: "little",
-    keywords: [],
-    items: [
-      e("Tarnished locket", 5),
-      e("Corroded ring", 2),
-      e("Ancient copper coins", 0.05, 2, "2d6"),
-      e("Grave-goods bracelet", 10, 0.6),
-      e("Funerary coin", 1),
-      e("Scrap of burial shroud", 0, 2),
-      e("Rusted belt buckle", 0.1),
-      e("Rotted leather purse", 0.1)
-    ],
-    harvest: []
-  },
-  {
-    id: "construct",
-    name: "Construct",
-    loot: "none",
-    keywords: [],
-    items: [],
-    harvest: [
-      e("Frame plating", 10, 2),
-      e("Power core", 50, 0.6),
-      e("Servo", 5, 2, "1d4"),
-      e("Logic core", 30, 0.7),
-      e("Optics", 15),
-      e("Gears and springs", 2, 1.5, "2d4")
-    ]
-  },
-  {
-    id: "beast",
-    name: "Beast",
-    loot: "none",
-    keywords: [],
-    items: [],
-    harvest: [
-      e("Pelt", 2, 2),
-      e("Teeth", 0.5, 1.5, "1d6"),
-      e("Claws", 0.5, 1, "1d4"),
-      e("Meat", 0.1, 1.5, "1d4"),
-      e("Bones", 0.1),
-      e("Sinew", 0.2),
-      e("Horns or antlers", 2, 0.6)
-    ]
-  },
-  {
-    id: "bird",
-    name: "Bird",
-    loot: "none",
-    keywords: ["hawk", "eagle", "owl", "raven", "vulture", "crow", "falcon", "bird", "roc", "pteranodon"],
-    onlyTypes: ["Beast", "Monstrosity", "Celestial"],
-    items: [],
-    harvest: [
-      e("Feathers", 0.2, 2, "2d6"),
-      e("Talons", 1, 1.5, "1d4"),
-      e("Beak", 1),
-      e("Meat", 0.1, 1, "1d2")
-    ]
-  },
-  {
-    id: "reptile",
-    name: "Reptile",
-    loot: "none",
-    keywords: ["snake", "lizard", "crocodile", "serpent", "viper", "cobra", "toad", "frog", "tortoise", "turtle", "dinosaur", "allosaurus", "ankylosaurus", "triceratops", "tyrannosaurus", "plesiosaurus"],
-    onlyTypes: ["Beast"],
-    items: [],
-    harvest: [
-      e("Scaled hide", 3, 2),
-      e("Fangs", 1, 1.5, "1d4"),
-      e("Venom sac", 8, 0.7),
-      e("Meat", 0.1, 1, "1d4"),
-      e("Shed skin", 0.5)
-    ]
-  },
-  {
-    id: "sea-creature",
-    name: "Sea creature",
-    loot: "none",
-    keywords: ["shark", "whale", "octopus", "piranha", "seahorse", "crab", "eel", "squid", "fish", "archelon"],
-    onlyTypes: ["Beast", "Monstrosity"],
-    items: [],
-    harvest: [
-      e("Teeth", 0.5, 2, "1d6"),
-      e("Tough hide", 3),
-      e("Ink sac", 5, 0.6),
-      e("Shell fragments", 1, 1, "1d4"),
-      e("Fish oil", 0.5, 1.5)
-    ]
-  },
-  {
-    id: "bug",
-    name: "Bug",
-    loot: "none",
-    keywords: ["spider", "wasp", "centipede", "scorpion", "beetle", "insect", "insects", "ant", "ankheg", "mantis", "tick", "fly", "stirge", "ettercap"],
-    onlyTypes: ["Beast", "Monstrosity"],
-    items: [],
-    harvest: [
-      e("Chitin plates", 2, 2, "1d4"),
-      e("Venom gland", 10, 0.8),
-      e("Mandibles", 1),
-      e("Spool of silk", 5, 0.6),
-      e("Wing membranes", 1, 0.7),
-      e("Compound eye", 3, 0.7)
-    ]
-  },
-  {
-    id: "plant",
-    name: "Plant",
-    loot: "none",
-    keywords: [],
-    items: [],
-    harvest: [
-      e("Sap", 1, 2),
-      e("Bark strips", 0.5, 1.5, "1d4"),
-      e("Spores", 2),
-      e("Seeds", 1, 1, "1d6"),
-      e("Fibre", 0.2),
-      e("Heartwood", 10, 0.5),
-      e("Fungal cap", 2, 0.8)
-    ]
-  },
-  {
-    id: "elemental",
-    name: "Elemental",
-    loot: "none",
-    keywords: [],
-    items: [],
-    harvest: [
-      e("Elemental essence", 25, 1),
-      e("Mote of raw element", 5, 2, "1d4"),
-      e("Planar residue", 2, 1.5)
-    ]
-  },
-  {
-    id: "fire-elemental",
-    name: "Elemental: fire",
-    loot: "none",
-    keywords: ["fire", "flame", "magma", "magmin", "salamander", "efreeti", "azer", "ember", "lava"],
-    onlyTypes: ["Elemental"],
-    items: [],
-    harvest: [
-      e("Cinders", 1, 2, "1d6"),
-      e("Ember core", 25, 0.7),
-      e("Volcanic glass", 3, 1.5, "1d3"),
-      e("Smouldering ash", 0.5)
-    ]
-  },
-  {
-    id: "water-elemental",
-    name: "Elemental: water and ice",
-    loot: "none",
-    keywords: ["water", "ice", "steam", "frost", "mist", "tide"],
-    onlyTypes: ["Elemental"],
-    items: [],
-    harvest: [
-      e("Vial of living water", 10, 1.5, "1d3"),
-      e("Coral fragments", 2, 1.5, "1d4"),
-      e("Ever-cold shard", 15, 0.7),
-      e("Brine crystals", 1)
-    ]
-  },
-  {
-    id: "air-elemental",
-    name: "Elemental: air",
-    loot: "none",
-    keywords: ["air", "djinni", "stalker", "wind", "storm", "cloud"],
-    onlyTypes: ["Elemental"],
-    items: [],
-    harvest: [
-      e("Bottled breeze", 10, 1.5),
-      e("Storm-charged crystal", 25, 0.6),
-      e("Wisps of cloud in a jar", 5, 1.5),
-      e("Static-charged dust", 1)
-    ]
-  },
-  {
-    id: "earth-elemental",
-    name: "Elemental: earth",
-    loot: "none",
-    keywords: ["earth", "gargoyle", "xorn", "dust", "mud", "stone", "galeb"],
-    onlyTypes: ["Elemental"],
-    items: [],
-    harvest: [
-      e("Raw gemstone", 10, 1, "1d3"),
-      e("Ore chunks", 2, 2, "1d4"),
-      e("Crystal geode", 25, 0.5),
-      e("Living clay", 3)
-    ]
-  },
-  {
-    id: "dragon",
-    name: "Dragon",
-    loot: "little",
-    keywords: ["dragon", "wyrmling", "wyvern", "drake", "wyrm"],
-    items: [
-      e("Gemstone wedged between scales", 25),
-      e("Coin of a long-fallen kingdom", 1, 2, "1d6"),
-      e("Crushed golden goblet", 15),
-      e("Broken jeweled scabbard", 20, 0.6)
-    ],
-    harvest: [
-      // scales, teeth and blood are creature parts in data/components.json (always one of them per dragon)
-      e("Dragon claws", 5, 1.5, "1d4"),
-      e("Dragon horn", 25, 0.8),
-      e("Breath gland ({breath})", 50, 1),
-      e("Wing membrane", 10, 0.8)
-    ]
-  },
-  {
-    id: "fiend",
-    name: "Fiend",
-    loot: "little",
-    keywords: [],
-    items: [
-      e("Blackened iron token", 1, 2),
-      e("Brimstone-scented coins", 0.1, 1, "2d6"),
-      e("Bloodstone", 10, 0.6),
-      e("Jagged obsidian ring", 5)
-    ],
-    harvest: [
-      e("Fiend horn", 10, 1.5),
-      e("Vial of ichor", 5, 2, "1d3"),
-      e("Infernal hide", 10),
-      e("Fiend claws", 5, 1, "1d4"),
-      e("Brimstone ash", 1)
-    ]
-  },
-  {
-    id: "fey",
-    name: "Fey",
-    loot: "little",
-    keywords: [],
-    items: [
-      e("Acorn carved with a tiny face", 0, 2),
-      e("Silver thimble", 2),
-      e("Bell that makes no sound", 5),
-      e("Ribbon that never tangles", 1)
-    ],
-    harvest: [
-      e("Glimmering dust", 5, 2),
-      e("Lock of fey hair", 2),
-      e("Iridescent wing scales", 5),
-      e("Vial of moonlit dew", 10, 0.7)
-    ]
-  },
-  {
-    id: "monstrosity",
-    name: "Monstrosity",
-    loot: "little",
-    keywords: [],
-    items: [
-      e("Half-digested coin purse", 2),
-      e("Bones of an earlier victim, with a ring", 5, 0.7),
-      e("Torn satchel", 0.5)
-    ],
-    harvest: [
-      e("Monstrous hide", 5, 2),
-      e("Fangs", 2, 1.5, "1d4"),
-      e("Venom sac", 10, 0.6),
-      e("Eye", 5, 0.7),
-      e("Quills or spines", 1, 1, "2d6"),
-      e("Claws", 2, 1, "1d4"),
-      e("Beak", 3, 0.5)
-    ]
-  },
-  {
-    id: "aberration",
-    name: "Aberration",
-    loot: "little",
-    keywords: [],
-    items: [
-      e("Strange metal disc", 5),
-      e("Polished stone that hums", 10, 0.6),
-      e("Bones of an earlier victim, with a ring", 5, 0.7)
-    ],
-    harvest: [
-      e("Vial of ichor", 5, 2, "1d3"),
-      e("Tentacle segment", 2, 1.5),
-      e("Eye stalk", 10, 0.8),
-      e("Chitinous plate", 3),
-      e("Jar of brain matter", 15, 0.5)
-    ]
-  },
-  {
-    id: "celestial",
-    name: "Celestial",
-    loot: "little",
-    keywords: [],
-    items: [
-      e("Gold prayer bead", 5),
-      e("Feather-shaped silver pin", 10),
-      e("Small vial of holy oil", 10, 0.7)
-    ],
-    harvest: [
-      e("Radiant feather", 10, 2, "1d4"),
-      e("Vial of luminous blood", 25, 0.7),
-      e("Horn shard", 15, 0.7),
-      e("Strands of shining hair", 5)
-    ]
-  },
-  {
-    id: "ooze",
-    name: "Ooze",
-    loot: "none",
-    keywords: ["ooze", "pudding", "jelly", "cube", "slime"],
-    items: [],
-    harvest: [
-      e("Jar of acidic residue", 5, 2),
-      e("Gelatinous membrane", 2, 1.5),
-      e("Undissolved trinkets", 3),
-      e("Congealed slime", 1)
-    ]
-  }
-];
-var DEFAULT_TYPE_THEMES = {
-  Aberration: "aberration",
-  Beast: "beast",
-  Celestial: "celestial",
-  Construct: "construct",
-  Dragon: "dragon",
-  Elemental: "elemental",
-  Fey: "fey",
-  Fiend: "fiend",
-  Giant: "giant",
-  Humanoid: "humanoid",
-  Monstrosity: "monstrosity",
-  Ooze: "ooze",
-  Plant: "plant",
-  Undead: "undead"
-};
-var TYPE_MAP_ID = "loot-type-defaults";
-var MONSTER_LOOT_ID = "loot-monster-settings";
-function defaultLootThemes() {
-  return THEMES3.map((t) => ({ onlyTypes: [], ...structuredClone(t), builtin: true }));
-}
-
-// src/loot-flavor.js
-var POCKET = {
-  // ---------------- people ----------------
-  "Tarnished silver ring": "Worn thin on one side from years on the same finger. Somebody polished it for a wedding, once.",
-  "Carved wooden charm": "A little whittled bird, rubbed smooth by a thumb that worried at it every night.",
-  "Pouch of pipe tobacco": "Cheap leaf cut with something that smells faintly of cherries, and faintly of feet.",
-  "Clay pipe": "The stem has been snapped and glued twice. The bowl is black with a lifetime of evenings.",
-  "Whetstone": "A palm-sized grey stone with a dip worn into the middle from a thousand sharpenings.",
-  "Tin flask of cheap brandy": "The label promises \u201CFinest Valley Brandy.\u201D The smell makes no such promises.",
-  "Lucky copper coin with a hole punched through": "Strung on a bit of twine. Clearly it was not lucky enough.",
-  "Bone-handled knife": "A plain working blade, good for bread, rope and arguments.",
-  "Brass buttons": "Cut from a coat that was far finer than whatever its last owner was wearing.",
-  "String of glass beads": "Blue and green beads that look like sea glass from a distance and like glass up close.",
-  "Horn comb": "Missing three teeth. Still has a few hairs in it.",
-  "Wool scarf": "Hand-knitted and lumpy, by someone who loved its owner more than they loved knitting.",
-  "Wedge of hard cheese wrapped in cloth": "Sharp, crumbly and only slightly squashed. Still perfectly edible, which is more than can be said for its owner.",
-  "Small hand mirror": "A disc of polished steel in a wooden frame. It shows you, a bit blurry and a bit judgemental.",
-  "Loaded dice": "A pair of bone dice that roll sixes a little too often. Rattle them and one sounds heavier.",
-  "Stolen silver locket": "Inside: a tiny painting of a stern grandmother who would be very disappointed in all of this.",
-  "Mismatched earrings": "One gold hoop, one silver stud. Each came from a different unlucky traveller.",
-  "Gold tooth": "Knocked loose from someone\u2019s smile. Best not to ask whose.",
-  "Stolen wedding band": "Engraved inside: \u201CForever, M.\u201D Forever turned out to be shorter than planned.",
-  "Merchant\u2019s signet ring": "Bears the seal of a trading house. Somewhere, a merchant is very upset about the letters they can\u2019t sign.",
-  "Pouch of pepper": "Black peppercorns, worth their weight in silver to the right cook.",
-  "Bolt of fine lace": "Folded carefully into a waxed bag. Whoever stole it knew exactly what it was worth.",
-  "Brass knuckles": "Dented in the shape of several jaws.",
-  "Wineskin of sour wine": "Half full of something that was wine a few weeks ago and is working hard at becoming vinegar.",
-  "Faded bandana": "Once red, now the pink of a hundred washings in a hundred streams.",
-  "Set of crude lockpicks": "Bent nails and a hairpin, rolled up in a strip of leather. They work about half the time.",
-  "Silver spoons": "Engraved with someone else\u2019s family crest.",
-  "Cheap tin brooch": "Shaped like a rose. Painted red, mostly.",
-  "Regimental badge": "A stamped tin emblem of a company that may or may not still exist.",
-  "Bone dice": "Hand-carved and slightly lopsided. The pips are burned in.",
-  "Tin cup": "Dented, scorched on the bottom and scratched with initials.",
-  "Polished brass gorget": "A crescent of throat armor, polished for parades rather than battles.",
-  "Oilskin cloak": "Waxed against the rain and smelling powerfully of it.",
-  "Spare bowstring": "Coiled and waxed and kept somewhere dry, the way every archer is told to and few do.",
-  "Deck of worn playing cards": "Soft as cloth from use. The queen of cups is missing and has been replaced with a scrap of paper that says \u201Cqueen.\u201D",
-  "Hip flask of rum": "Dark ship\u2019s rum, sweet and strong enough to make a sergeant smile.",
-  "Silver campaign medal": "Awarded for a battle in a war that history has mostly forgotten.",
-  "Lock of a sweetheart\u2019s hair in a twist of paper": "The paper says \u201Ccome home safe.\u201D It\u2019s worth nothing, and it was worth everything.",
-  "Pipe and tobacco": "A short briar pipe and a pouch of dark leaf, kept together in an oilcloth wrap.",
-  "Field rations": "Hardtack, dried beef and a twist of salt. Calories, technically.",
-  "Whetstone and oil cloth": "Everything a soldier needs to keep a blade keen and a sergeant off their back.",
-  "Wooden prayer beads": "Smooth beads on a waxed cord, each one worn by a prayer.",
-  "Small book of hymns": "Pocket-sized, the spine cracked open at a favourite song.",
-  "Beeswax candles": "They smell of honey and burn clean. Much nicer than tallow.",
-  "Silver offering plate": "Shallow and engraved with a sunburst. Usually it comes back from the congregation fuller than this.",
-  "Pilgrim\u2019s token": "A lead badge from a distant shrine, proof that someone walked a very long way.",
-  "Pouch of alms": "A handful of copper and silver meant for the poor. Taking it may weigh on a conscience.",
-  "Embroidered stole": "A long strip of cloth stitched with holy symbols in gold thread, slightly frayed at the ends.",
-  "Sprig of dried sage": "Burned to cleanse a room of bad spirits, or at least of bad smells.",
-  "Reliquary with a saint\u2019s finger bone": "A little silver box with a glass window. The finger inside points accusingly at whoever holds it.",
-  "Ritual candle stubs": "Black and red, melted down to nubs. The wax has dripped into shapes nobody wants to look at too long.",
-  "Carved obsidian idol": "A squat, many-eyed figure. It is cold to the touch and somehow always facing you.",
-  "Stick of black incense": "Smells of myrrh and something underneath, like a cellar after rain.",
-  "Prayer book in an unknown script": "The pages are covered in looping letters that seem to rearrange when you aren\u2019t looking at them. They don\u2019t, but it seems that way.",
-  "Black wax seal ring": "The seal is a closed eye. It has been pressed into a great many secret letters.",
-  "Necklace of finger bones": "Threaded on sinew. Some are small, and nobody wants to think about that.",
-  "Silver offering bowl": "Stained dark at the bottom. It was not used for wine.",
-  "Hooded robe stitched with sigils": "Heavy black wool with symbols sewn around the hem. It smells of smoke and fear-sweat.",
-  "Pouch of grave dirt": "Dirt from a specific grave, apparently. It looks like dirt.",
-  "Amethyst shard": "A violet crystal, roughly chipped from a larger stone. Cultists swear it helps with the voices.",
-  "Stub of red chalk": "For drawing circles on floors. The other end is still dusted with the last one.",
-  "Vial of animal blood": "A stoppered glass vial of blood. Probably a goat. Hopefully a goat.",
-  "Gold signet ring": "A heavy band bearing a noble crest. Selling it openly might attract questions, and relatives.",
-  "Jeweled hairpin": "A long silver pin topped with a cluster of small garnets. Elegant and, in a pinch, stabby.",
-  "Perfumed silk handkerchief": "Smells of lavender and money.",
-  "Silver snuffbox": "Engraved with hunting hounds. A pinch of snuff still clings to the hinge.",
-  "Pearl earring": "A single creamy pearl. Its partner is somewhere on a ballroom floor.",
-  "Painted lace fan": "Opens to show a pastoral scene of shepherds who have clearly never met a sheep.",
-  "Silver hip flask": "Monogrammed and filled with something amber and expensive.",
-  "Portrait locket": "Holds a miniature of a handsome young person. It is not the owner\u2019s spouse.",
-  "Kidskin gloves": "Butter-soft and dyed a fashionable shade of \u201Cnot for work.\u201D",
-  "Ivory comb": "Carved with a delicate scene of swans. Far too nice for anyone in this party\u2019s hair.",
-  "Gold-chained monocle": "For looking down on people with greater precision.",
-  "Bottle of fine wine": "A dusty bottle from a famous vineyard. The cork is sealed with wax and good intentions.",
-  "Bundle of dried herbs": "Rosemary, mugwort and something grey and fuzzy, tied with string. A hedge-witch\u2019s pantry.",
-  "Small quartz crystal": "Clear as water, with a flaw inside like a frozen feather.",
-  "Pouch of bat guano": "Exactly what it sounds like. Fireball enthusiasts never leave home without it.",
-  "Vial of quicksilver": "Liquid metal that rolls around the glass like it\u2019s trying to escape.",
-  "Bag of coloured chalk": "Stubs in six colours, for magic circles, diagrams and the occasional hopscotch grid.",
-  "Notebook of arcane scribbles": "Half spell theory, half shopping list. A margin note reads \u201CDON\u2019T try the fire one indoors again.\u201D",
-  "Ink-stained quill": "A goose quill chewed at the end. The stains reach halfway up.",
-  "Feather of a rare bird": "Iridescent green-gold. A collector or a wizard would pay to know where it came from.",
-  "Tiny brass astrolabe": "A pocket instrument for reading the stars. Its little gears still turn smoothly.",
-  "Pinch of powdered pearl": "Folded in waxed paper: pearl dust, glittering and costly.",
-  "Sealed jar of sulfur": "Yellow powder in a corked jar. Opening it will make the whole room regret it.",
-  "Spectacles with a cracked lens": "Wire frames bent to fit a very particular nose. The world through them is sharp, and split in two.",
-  "Necklace of teeth": "Wolf, boar and a few that are worryingly human-shaped, strung on gut.",
-  "Scrap of stolen silk": "A torn length of bright silk, probably from a merchant\u2019s caravan. Worn as a sash with great pride.",
-  "Crude iron armband": "Hammered from a single iron bar. Fits anyone with forearms like hams.",
-  "Sack of mismatched cutlery": "Forks, spoons, a ladle and one fish knife. A raider\u2019s idea of treasure.",
-  "Shiny bit of broken glass": "Catches the light beautifully. Its owner clearly thought it was a gem.",
-  "Pot of war paint": "Ochre and soot mixed in fat. It smells awful and looks terrifying.",
-  "Strips of dried meat": "Tough, salty and of uncertain origin.",
-  "Carved bone fetish": "A little figure scratched into a knuckle bone, meant to keep spirits away. It didn\u2019t.",
-  "Tarnished silver spoon": "Black with tarnish. Polish it and it might be worth something, or at least eat soup.",
-  "Copper bracelets": "Green-stained bangles that leave a ring on the wrist.",
-  "Stolen hand mirror": "Its frame is gilded; its glass is cracked from a fall. Seven years\u2019 bad luck for someone.",
-  "Gold earring": "A heavy gold hoop. Sailors say it pays for your funeral if the sea gives your body back.",
-  "Cracked spyglass lens": "Salvaged from a broken telescope. Good for starting fires on sunny days.",
-  "Bottle of rum": "Dark, sweet and strong. Ask nicely and a pirate might fight you for it.",
-  "Pouch of foreign coins": "Square, triangular and holed coins from ports half a world away.",
-  "Bosun\u2019s whistle": "A curved silver pipe that makes a shrill trill heard over any storm.",
-  "Scrimshaw whale tooth": "Etched with a whaling ship and a very large, very angry whale.",
-  "String of pearls": "Lustrous and perfectly matched. Pried from more than one oyster, and possibly one duchess.",
-  "Tarred rope bracelet": "A twist of ship\u2019s rope knotted round the wrist, black and sticky with tar.",
-  "Parrot feather": "Bright red. The parrot is not included and is presumably very angry.",
-  "Sailor\u2019s knife": "Blunt-tipped so it can\u2019t stab a shipmate in a rolling sea. It can still cut rope beautifully.",
-  "Tin of ship\u2019s biscuits": "Hard enough to break teeth. Something small lives in one of them.",
-  "Brass compass": "The needle swings true. On the lid, someone scratched a heart and a woman\u2019s name.",
-  // ---------------- creatures ----------------
-  "Giant-sized copper bracelet": "A ring of hammered copper big enough to wear as a belt.",
-  "Sack of sheep bones": "A giant\u2019s lunch leftovers, picked clean and saved for\u2026 something.",
-  "Hide pouch of small gems": "To a giant, these are pretty pebbles. To anyone else, they\u2019re a small fortune.",
-  "Huge iron ring": "A wagon-wheel rim the giant wore on one finger.",
-  "Dented helmet used as a cup": "A knight\u2019s helm, crumpled and sticky with ale. The knight is not mentioned.",
-  "Club studded with stolen coins": "A tree trunk with silver and copper coins hammered into it. Prying them out is half a day\u2019s work.",
-  "String of trophy shields": "Shields of defeated adventurers, threaded on a rope. Some of the heraldry is still legible.",
-  "Cask of strong ale": "A giant\u2019s pint: about twenty of yours.",
-  "Giant\u2019s tooth": "A molar the size of a fist. Carvers love them.",
-  "Braid of coarse hair": "Thick as a rope and almost as strong.",
-  "Thick hide": "Tough enough to stop a dagger. Turning it into leather will take a tanner and a lot of patience.",
-  "Tarnished locket": "The hinge is rusted shut. Something rattles inside.",
-  "Corroded ring": "Green with age. Whatever stone it held is long gone.",
-  "Ancient copper coins": "Stamped with the faces of kings nobody remembers.",
-  "Grave-goods bracelet": "Buried with its owner as a gift for the afterlife. Its owner did not stay put.",
-  "Funerary coin": "Placed on a dead person\u2019s eye to pay the ferryman. The ferryman was not paid.",
-  "Scrap of burial shroud": "Yellowed linen that smells of dust and old spices.",
-  "Rusted belt buckle": "All that\u2019s left of a fine leather belt.",
-  "Rotted leather purse": "Falls apart in your hands. A few coins tumble out of the mould.",
-  "Frame plating": "Riveted metal panels, still warm from whatever power moved them.",
-  "Power core": "A humming crystal set in brass. It hums louder when held, as if it remembers.",
-  "Servo": "A small motor of gears and wire that twitches when tapped.",
-  "Logic core": "A cube of etched metal plates. Artificers can coax a little of its old programming back out.",
-  "Optics": "Polished glass lenses in a metal socket. Something behind them still seems to look at you.",
-  "Gears and springs": "A jingling handful of clockwork. Tinkerers will want all of it.",
-  "Pelt": "Skinned carefully, it makes a warm cloak, or a decent rug.",
-  "Teeth": "Sharp and good for necklaces, arrowheads or impressing people in taverns.",
-  "Claws": "Curved, hard and sharp enough to scratch steel.",
-  "Meat": "Fresh, if cooked tonight. Worth more to a hungry party than to any merchant.",
-  "Bones": "Good for tools, glue or a hedge-witch\u2019s collection.",
-  "Sinew": "Dried and twisted, it makes bowstrings and stitching thread.",
-  "Horns or antlers": "Carvers turn them into handles, buttons and drinking horns.",
-  "Feathers": "Fletchers pay well for good, straight flight feathers.",
-  "Talons": "Curved, needle-tipped and prized by charm makers.",
-  "Beak": "Hard as horn and wickedly hooked.",
-  "Scaled hide": "Supple and patterned. A cobbler would turn it into the finest boots in town.",
-  "Fangs": "Hollow and sharp. Handle with care; there might still be something in them.",
-  "Venom sac": "A fragile pouch of poison. Squeeze gently, and only into a vial.",
-  "Shed skin": "A paper-thin ghost of the creature, perfect down to the eye scales.",
-  "Tough hide": "Rough as sandpaper when stroked one way, smooth the other.",
-  "Ink sac": "Rich black ink for scribes, if it can be got out without spraying everyone.",
-  "Shell fragments": "Iridescent shards of shell. Jewellers set them in silver.",
-  "Fish oil": "Rendered from the creature\u2019s fat. Burns in a lamp and smells like a harbour.",
-  "Chitin plates": "Light, hard plates of shell, like lacquered armor.",
-  "Venom gland": "A bulb of venom potent enough to interest a poisoner.",
-  "Mandibles": "A pair of pincers that still snap shut when you poke them.",
-  "Spool of silk": "Strong, sticky thread wound around a stick. Ropemakers and tailors will both want it.",
-  "Wing membranes": "Translucent and veined like leaves. Delicate, and lovely for lampshades.",
-  "Compound eye": "Hundreds of tiny lenses in one dome. It shows the world in a mosaic.",
-  "Sap": "Thick, sweet-smelling resin, good for glues, varnish and some potions.",
-  "Bark strips": "Peeled from a living creature, which is an odd thing to say about bark.",
-  "Spores": "A puff of powder collected in a pouch. Don\u2019t breathe in.",
-  "Seeds": "Plant them and something might grow. Something, at least.",
-  "Fibre": "Long tough strands, good for rope, baskets and cloth.",
-  "Heartwood": "The dense core of the creature, dark and fine-grained. A carver\u2019s dream.",
-  "Fungal cap": "A spongy mushroom cap. Alchemists say it\u2019s useful. Cooks say it\u2019s risky.",
-  "Elemental essence": "A swirl of pure element held in a stoppered flask. It pushes against the glass.",
-  "Mote of raw element": "A speck of elemental matter that refuses to behave like ordinary matter.",
-  "Planar residue": "A glittering film left behind where the creature was. It fades in a few days.",
-  "Cinders": "Glowing coals that never quite go out.",
-  "Ember core": "A lump of fire held together by will. Wrap it in iron tongs, not cloth.",
-  "Volcanic glass": "Black, glassy and sharp enough to shave with.",
-  "Smouldering ash": "Warm grey ash that stays warm for days.",
-  "Vial of living water": "Water that swirls on its own, even when the vial sits still.",
-  "Coral fragments": "Pink and white branches of coral, brittle and pretty.",
-  "Ever-cold shard": "A splinter of ice that never melts. Excellent for drinks.",
-  "Brine crystals": "Salt crystals as big as dice, tasting of the deep sea.",
-  "Bottled breeze": "Uncork it and a gentle wind ruffles your hair, once.",
-  "Storm-charged crystal": "Crackles and sparks when touched. Your hair stands on end just holding it.",
-  "Wisps of cloud in a jar": "Soft white vapour that drifts lazily around the jar.",
-  "Static-charged dust": "Fine grey dust that clings to everything and snaps when touched.",
-  "Raw gemstone": "Rough and uncut, but a jeweller can see what it could become.",
-  "Ore chunks": "Heavy lumps of iron, copper and something shinier.",
-  "Crystal geode": "Crack it open and it\u2019s full of sparkling purple crystals.",
-  "Living clay": "A lump of clay that slowly reshapes itself when nobody is looking.",
-  "Gemstone wedged between scales": "Pressed in so tightly that the dragon probably forgot it was there.",
-  "Coin of a long-fallen kingdom": "Pure gold, stamped with a crown that hasn\u2019t ruled anything for a thousand years.",
-  "Crushed golden goblet": "Flattened by a sleeping dragon. Still gold, though.",
-  "Broken jeweled scabbard": "The sword is gone. The gems are still there.",
-  "Dragon claws": "Each as long as a dagger and twice as sharp.",
-  "Dragon horn": "Polished, ridged and heavy. Ground horn is said to cure everything from fevers to cowardice.",
-  "Breath gland ({breath})": "The organ where the dragon\u2019s breath is made. It is still warm, and still dangerous.",
-  "Wing membrane": "Huge and leathery. Sailmakers have dreamed about this.",
-  "Blackened iron token": "A coin-shaped bit of iron stamped with a fiendish rune. In the right hells, it buys favours.",
-  "Brimstone-scented coins": "Ordinary coins, if you ignore the smell of rotten eggs.",
-  "Bloodstone": "Dark green flecked with red, like drops of blood on moss.",
-  "Jagged obsidian ring": "Sharp enough to cut the finger that wears it, which might be the point.",
-  "Fiend horn": "Black, ridged and faintly warm.",
-  "Vial of ichor": "Thick, dark blood that doesn\u2019t behave like blood should.",
-  "Infernal hide": "Leathery skin that smells of sulfur and resists flames.",
-  "Fiend claws": "Hooked and black, with a faint red sheen in sunlight.",
-  "Brimstone ash": "Yellow-grey ash that stinks of the lower planes.",
-  "Acorn carved with a tiny face": "The face winks when nobody is looking. Probably.",
-  "Silver thimble": "Perfectly sized for a pixie, or the very tip of a human finger.",
-  "Bell that makes no sound": "Shake it all you like. Somewhere, perhaps, someone hears it.",
-  "Ribbon that never tangles": "A shimmering green ribbon that slides free of every knot.",
-  "Glimmering dust": "Sparkles in the dark and makes everyone who touches it sneeze.",
-  "Lock of fey hair": "Changes colour with the seasons, even after it\u2019s cut.",
-  "Iridescent wing scales": "Tiny scales like a butterfly\u2019s, shining every colour at once.",
-  "Vial of moonlit dew": "Collected under a full moon. It glows faintly in the dark.",
-  "Half-digested coin purse": "Slimy, but the coins are fine.",
-  "Bones of an earlier victim, with a ring": "The ring is the only part of them worth keeping, alas.",
-  "Torn satchel": "An adventurer\u2019s bag, with a few soggy papers still inside.",
-  "Monstrous hide": "Scarred, tough and strange. A good leatherworker will know what to do with it.",
-  "Eye": "Big, glassy and still unsettling. Alchemists keep these in jars.",
-  "Quills or spines": "Barbed spikes that make excellent arrowheads, or very painful pillows.",
-  "Strange metal disc": "Smooth, warm metal stamped with symbols that hurt the eyes a little.",
-  "Polished stone that hums": "A low hum, like a far-off choir. It stops when put down.",
-  "Tentacle segment": "It twitches occasionally. That\u2019s normal. Probably.",
-  "Eye stalk": "A long stalk with a glassy eye at the end. It follows you around the room.",
-  "Chitinous plate": "A plate of alien shell, oily and iridescent.",
-  "Jar of brain matter": "Grey, wrinkled and pulsing faintly. Sages pay well and ask few questions.",
-  "Gold prayer bead": "A single bead from a heavenly rosary. Warm and comforting to hold.",
-  "Feather-shaped silver pin": "So finely made it seems to float a little when dropped.",
-  "Small vial of holy oil": "Smells of frankincense and summer mornings.",
-  "Radiant feather": "Glows with soft golden light, enough to read by.",
-  "Vial of luminous blood": "Shines silver-white. Holding it, you feel briefly forgiven.",
-  "Horn shard": "A fragment of horn, pearly and faintly singing.",
-  "Strands of shining hair": "Gleaming like spun gold, and light as nothing.",
-  "Jar of acidic residue": "Corrodes cork, wood and patience. Keep it in glass.",
-  "Gelatinous membrane": "A wobbling sheet of clear jelly. Alchemists love it; everyone else does not.",
-  "Undissolved trinkets": "Buttons, buckles, a spoon and a ring the ooze never quite managed to digest.",
-  "Congealed slime": "Sticky, cold and faintly green. Useful to someone, surely."
-};
-var GEAR = {
-  // simple melee
-  "Club": "A heavy stick with ambitions. The oldest weapon there is, and still effective.",
-  "Dagger": "Every adventurer carries one. Most carry three.",
-  "Greatclub": "A log with a handle. Subtle it is not.",
-  "Handaxe": "Chops kindling by day and goblins by night.",
-  "Javelin": "A light throwing spear, balanced for a long arc.",
-  "Light Hammer": "A small hammer that fits nicely in the hand, and nicely at a target\u2019s head.",
-  "Mace": "A flanged iron head on a stout haft. Popular with priests who prefer not to draw blood.",
-  "Quarterstaff": "A long staff of hardwood, good for walking, wading and whacking.",
-  "Sickle": "A farmer\u2019s blade for wheat. It works on other things too.",
-  "Spear": "A point on a stick, and humanity\u2019s longest-running good idea.",
-  // simple ranged
-  "Dart": "Small, weighted and thrown with a flick of the wrist.",
-  "Light Crossbow": "Easy to learn, easy to aim, slow to reload.",
-  "Shortbow": "A compact bow, handy from horseback and in tight forests.",
-  "Sling": "A strip of leather and a stone. Ask the giants how that works out.",
-  // martial melee
-  "Battleaxe": "A broad, bearded blade on a stout haft. Chops through shields and patience alike.",
-  "Flail": "A spiked ball on a chain, as dangerous to a clumsy wielder as to their foe.",
-  "Glaive": "A curved blade on a long pole, for keeping enemies a polite distance away.",
-  "Greataxe": "Enormous, heavy and loud. There is no quiet way to use it.",
-  "Greatsword": "Taller than a halfling and twice as heavy as it looks.",
-  "Halberd": "An axe, a spike and a hook on one pole. Soldiers call it \u201Cthe can opener.\u201D",
-  "Lance": "A long spear for charging on horseback. Awkward on foot, devastating on a horse.",
-  "Longsword": "The knight\u2019s blade: straight, balanced and good for every job.",
-  "Maul": "A two-handed hammer that settles arguments permanently.",
-  "Morningstar": "A spiked ball on a stick, named by somebody with a grim sense of humour.",
-  "Pike": "A very long spear. Lines of them make cavalry very sad.",
-  "Rapier": "A slender, elegant blade for those who duel with style and footwork.",
-  "Scimitar": "A curved blade that slices beautifully from horseback.",
-  "Shortsword": "A quick, sturdy blade for close quarters and second hands.",
-  "Trident": "A three-pronged spear, good for fish and anything that thinks it\u2019s a fish.",
-  "Warhammer": "A hammer built for denting armor, and the people inside it.",
-  "War Pick": "A sharp spike on a hammer\u2019s haft, made to punch through plate.",
-  "Whip": "A coiled length of braided leather that cracks like thunder.",
-  // martial ranged
-  "Blowgun": "A hollow tube for darts, quiet and precise.",
-  "Hand Crossbow": "A small crossbow for one hand, popular with spies and the stylish.",
-  "Heavy Crossbow": "A big crossbow with a crank and a kick, strong enough to punch through a door.",
-  "Longbow": "Taller than its archer, with the reach to match.",
-  "Musket": "Loud, smoky and devastating, when it doesn\u2019t misfire.",
-  "Pistol": "A small firearm for one hand. The bang is half the point.",
-  // armor
-  "Padded Armor": "Quilted layers of cloth. Better than nothing, and hot.",
-  "Leather Armor": "Boiled and hardened leather, shaped to the wearer.",
-  "Studded Leather Armor": "Leather reinforced with rivets and studs. Tough, flexible and a bit flashy.",
-  "Hide Armor": "Thick furs and pelts, warm and rough-and-ready.",
-  "Chain Shirt": "Interlocking metal rings worn under clothing, for a little extra safety on the road.",
-  "Scale Mail": "Overlapping metal scales sewn onto leather, like a dragon on a budget.",
-  "Breastplate": "A fitted steel cuirass that guards the vitals and leaves the legs free.",
-  "Half Plate Armor": "Plates over the torso and limbs. Everything important is covered.",
-  "Ring Mail": "Heavy rings sewn onto leather, an early attempt at chain mail.",
-  "Chain Mail": "Thousands of steel rings, heavy and jingly but dependable.",
-  "Splint Armor": "Vertical strips of metal riveted onto leather.",
-  "Plate Armor": "Full steel from head to toe, made by a smith who knew what they were doing.",
-  "Shield": "Wood, metal or both. Something to put between you and the pointy end.",
-  // ammunition
-  "Arrows": "Feathered shafts with steel heads, bundled in a quiver.",
-  "Bolts": "Short, heavy crossbow quarrels.",
-  "Firearm Bullets": "Small lead balls and a horn of powder to send them on their way.",
-  "Sling Bullets": "Smooth lead pellets, much better than rocks.",
-  "Blowgun Needles": "Fine, sharp needles, sometimes with something nasty on the tip.",
-  // foci
-  "Arcane Focus (Crystal)": "A clear crystal that catches the light and focuses the will.",
-  "Arcane Focus (Orb)": "A glass or stone sphere to channel arcane power through.",
-  "Arcane Focus (Rod)": "A short metal rod, etched with arcane runes.",
-  "Arcane Focus (Wand)": "A slender wooden wand. Not magic on its own; the wizard is.",
-  "Druidic Focus (Sprig of Mistletoe)": "A sprig gathered under the moon, for druids to call on nature\u2019s power.",
-  "Druidic Focus (Yew Wand)": "A length of yew, smooth and dark, carved with leaves.",
-  "Holy Symbol (Amulet)": "A sacred emblem on a chain, worn close to the heart.",
-  "Holy Symbol (Emblem)": "A god\u2019s symbol painted or engraved on a shield or tabard.",
-  "Holy Symbol (Reliquary)": "A small box holding a holy relic: a scrap of cloth, a bone or a lock of hair.",
-  // games
-  "Dice Set": "Bone, wood or ivory dice in a little pouch. There are always more dice.",
-  "Dragonchess Set": "A three-level board game of dragons, kings and endless debates about the rules.",
-  "Playing Cards": "A deck of painted cards, good for gambling and solitaire.",
-  "Three-Dragon Ante Set": "A card game of dragons and bets, loved by soldiers and sore losers.",
-  // instruments
-  "Bagpipes": "Loved by some, feared by most. Audible from three valleys away.",
-  "Drum": "A skin stretched over a hollow frame. Keeps the beat for marching and dancing.",
-  "Dulcimer": "A stringed box played with little hammers, bright and sweet.",
-  "Flute": "A simple wooden flute with a clear, light voice.",
-  "Horn": "A curved horn for calling hunts, rallies and retreats.",
-  "Lute": "The bard\u2019s favourite: pear-shaped, gently curved and always slightly out of tune.",
-  "Lyre": "A small harp with an old, gentle sound.",
-  "Pan Flute": "Pipes of different lengths bound together, played by blowing across the tops.",
-  "Shawm": "A double-reed horn that sounds like a goose with something to say.",
-  "Viol": "A bowed stringed instrument with a low, mournful voice."
-};
-var key2 = (s) => String(s || "").trim().toLowerCase();
-var POCKET_BY = new Map(Object.entries(POCKET).map(([k, v]) => [key2(k), v]));
-var GEAR_BY = new Map(Object.entries(GEAR).map(([k, v]) => [key2(k), v]));
-var flavorOf = (entry) => entry?.desc?.trim() ? entry.desc.trim() : POCKET_BY.get(key2(entry?.name)) || "";
-var gearFlavor = (name) => GEAR_BY.get(key2(name)) || "";
-
-// src/loot.js
-var LOOT_CONFIG = {
-  gold: { base: 10, perXp: 200, power: 0.75 },
-  // gold = base × (xp / perXp)^power × level step × generosity × spread
-  spread: [0.5, 1.5],
-  levelSteps: [[4, 1], [10, 0.85], [16, 0.7], [20, 0.55]],
-  // [up to party level, gold factor]: fight loot shrinks as the party grows
-  minion: 0.25,
-  extra: 2,
-  // a creature set to "Extra": ×2 coins and ×2 gear chance
-  gearChance: 0.2,
-  gearCeiling: 0.9,
-  carriedShare: 0.7,
-  gearCaps: [[4, 75], [10, 400], [20, Infinity]],
-  // [up to party level, gp]: × generosity
-  gearWeights: { gear: 40, weapon: 30, ammo: 15, tool: 10, focus: 5 },
-  damagedShare: 0.1,
-  itemChance: 0.5,
-  itemCeiling: 0.9,
-  // pocket items from the theme
-  harvestPicks: 2,
-  // different harvestables per body at Standard
-  // "Magic items found" starts at Uncommon: Common magic is minor magic, found in regular loot instead
-  rarityWeights: { Uncommon: 30, Rare: 8, "Very Rare": 2, Legendary: 1 },
-  consumableWeight: 3,
-  linkedWeight: 10,
-  // an item that comes from a creature in the fight (item.creatures)
-  minorChance: 0.04,
-  minorCeiling: 0.15,
-  // now and then a minor magic item (a trinket, or a Common magic item) in regular loot
-  minorLinkedWeight: 4
-  // which one: an item that comes from this creature (item.creatures) is 4x as likely
-};
-var RARITIES = ["Common", "Uncommon", "Rare", "Very Rare", "Legendary"];
-var RARITY_VALUE = { Common: 100, Uncommon: 400, Rare: 4e3, "Very Rare": 4e4, Legendary: 2e5 };
-var PARTY_CAP = [[4, "Uncommon"], [10, "Rare"], [16, "Very Rare"], [20, "Legendary"]];
-var CR_CAP = [[2, "Uncommon"], [7, "Rare"], [14, "Very Rare"], [Infinity, "Legendary"]];
-var SCROLL_LEVELS = { Common: [0, 1], Uncommon: [2, 3], Rare: [4, 5], "Very Rare": [6, 7, 8], Legendary: [9] };
-var SCROLL_VALUE = [30, 50, 200, 300, 2e3, 3e3, 2e4, 25e3, 3e4, 1e5];
-var GENEROSITY = { min: 0.25, max: 3, stops: [[0.5, "Stingy"], [1, "Standard"], [1.5, "Generous"], [2, "Lavish"]] };
-var generosityName = (g) => GENEROSITY.stops.reduce((best, s) => Math.abs(s[0] - g) < Math.abs(best[0] - g) ? s : best)[1];
-var LOOT_SETTINGS = { auto: "Auto", none: "None", normal: "Normal", extra: "Extra (\xD72 coins and gear chance)" };
-var band = (table, x) => table.find(([upTo]) => x <= upTo)?.[1] ?? table[table.length - 1][1];
-var lowerRarity = (a2, b2) => RARITIES[Math.min(RARITIES.indexOf(a2), RARITIES.indexOf(b2))];
-var rarityCap = (partyLevel, maxCr) => lowerRarity(band(PARTY_CAP, partyLevel), band(CR_CAP, crValue(maxCr)));
-var gearCap = (partyLevel, generosity) => band(LOOT_CONFIG.gearCaps, partyLevel) * generosity;
-function lootTables(defaults3, records = []) {
-  const mine3 = new Map(records.filter((r) => r.id !== TYPE_MAP_ID && r.id !== MONSTER_LOOT_ID).map((r) => [r.id, r]));
-  const themes = [];
-  for (const d of defaults3) {
-    const r = mine3.get(d.id);
-    if (r?.deleted) continue;
-    themes.push(r ? { ...d, ...r, builtin: true } : d);
-  }
-  for (const r of mine3.values()) if (!r.deleted && !defaults3.some((d) => d.id === r.id)) themes.push({ ...r, builtin: false });
-  const typeMap = { ...DEFAULT_TYPE_THEMES, ...records.find((r) => r.id === TYPE_MAP_ID)?.types || {} };
-  return { themes, typeMap };
-}
-var words = (s) => String(s || "").toLowerCase().replace(/[’']/g, "").split(/[^a-z0-9]+/).filter(Boolean);
-function nameHas(name, phrase) {
-  const n = words(name), k = words(phrase);
-  if (!k.length) return false;
-  for (let i = 0; i + k.length <= n.length; i++) if (k.every((w, j) => n[i + j] === w || j === k.length - 1 && n[i + j] === `${w}s`)) return true;
-  return false;
-}
-function comesFrom(item, monsters, tables = null) {
-  return (item.creatures || []).some((c2) => monsters.some((m) => {
-    const name = typeof m === "string" ? m : m?.name, type = typeof m === "string" ? null : m?.monsterType;
-    const [, kind, value] = String(c2).match(/^\s*(type|theme)\s*:\s*(.+?)\s*$/i) || [];
-    if (kind?.toLowerCase() === "type") return !!type && type.toLowerCase() === value.toLowerCase();
-    if (kind) {
-      if (!tables || typeof m === "string") return false;
-      const t = themeFor(m, tables).theme;
-      return !!t && [t.name, t.id].some((x) => String(x).toLowerCase() === value.toLowerCase());
-    }
-    return nameHas(name, c2) && (!item.onlyTypes?.length || !type || item.onlyTypes.includes(type));
-  }));
-}
-var isPart = (x) => x.category !== "magic" && (x.component || x.creatures?.length && x.category !== "trinket");
-var isTrueMagic = (x) => x.category === "magic" && x.loot !== false && !!String(x.text || "").trim();
-var isToggleMagic = (x) => isTrueMagic(x) && x.rarity !== "Common";
-var isMinorMagic = (x) => x.loot !== false && !isPart(x) && (x.category === "trinket" || isTrueMagic(x) && x.rarity === "Common");
-function themeFor(m, { themes, typeMap }) {
-  if (m.lootTheme) {
-    const t2 = themes.find((x) => x.id === m.lootTheme);
-    if (t2) return { theme: t2, why: "set on the monster" };
-  }
-  const name = words(m.name);
-  let best = null;
-  for (const t2 of themes) {
-    if (t2.onlyTypes?.length && !t2.onlyTypes.includes(m.monsterType)) continue;
-    for (const k of t2.keywords || []) {
-      const kw = words(k);
-      if (!kw.length) continue;
-      for (let i = 0; i + kw.length <= name.length; i++) {
-        const hit = kw.every((w, j) => name[i + j] === w || j === kw.length - 1 && name[i + j] === `${w}s`);
-        if (hit && (!best || i < best.at || i === best.at && kw.length > best.len)) best = { theme: t2, at: i, len: kw.length, word: k };
-      }
-    }
-  }
-  if (best) return { theme: best.theme, why: `\u201C${best.word}\u201D in its name` };
-  const t = themes.find((x) => x.id === typeMap[m.monsterType]);
-  return t ? { theme: t, why: `its type (${m.monsterType || "none"})` } : { theme: null, why: "no theme" };
-}
-var lc3 = (s) => String(s || "").toLowerCase();
-function carriedGear(m, items) {
-  const found = /* @__PURE__ */ new Set();
-  const named = (text) => items.find((x) => x.category !== "magic" && (lc3(x.name) === text || `${lc3(x.name)}s` === text)) || items.find((x) => x.category !== "magic" && (lc3(x.name).startsWith(`${text} (`) || lc3(x.name).endsWith(`(${text})`)));
-  const gear = (m.notes || []).filter((n) => /^gear$/i.test(n.name || "")).flatMap((n) => String(n.text || "").split(","));
-  for (const g of gear) {
-    const it = named(lc3(g).replace(/\s*\(.*$/, "").trim());
-    if (it) found.add(it);
-  }
-  const attacks = ["actions", "bonusActions", "reactions"].flatMap((k) => (m[k] || []).map((e2) => lc3(e2.name).replace(/\s*\(.*$/, "").trim()));
-  for (const a2 of attacks) {
-    const it = named(a2);
-    if (it?.category === "weapon") found.add(it);
-  }
-  const ac = lc3(m.armorClassType);
-  const armor = items.filter((x) => (x.category === "armor" || x.category === "shield") && ac.includes(lc3(x.name).replace(/ armor$/, "")));
-  for (const a2 of armor) if (!armor.some((b2) => b2 !== a2 && lc3(b2.name).includes(lc3(a2.name).replace(/ armor$/, "")))) found.add(a2);
-  return [...found];
-}
-var isCaster = (m) => ["traits", "actions"].some((k) => (m[k] || []).some((e2) => /spellcasting/i.test(e2.name || "")));
-function breathType(m) {
-  const b2 = [...m.actions || [], ...m.bonusActions || []].find((e2) => /breath/i.test(e2.name || ""));
-  const t = b2 && String(b2.text || "").match(/\b(Acid|Cold|Fire|Lightning|Poison|Necrotic|Radiant|Thunder|Force|Psychic)\b/);
-  return t ? t[1].toLowerCase() : "";
-}
-var qtyOf = (q, r) => {
-  if (q === "" || q == null) return 1;
-  const n = Number(q);
-  return Number.isFinite(n) ? Math.max(1, Math.round(n)) : Math.max(1, roll(String(q), "normal", r)?.total ?? 1);
-};
-function pick3(r, list, weight = (x) => x.weight ?? 1) {
-  const ws = list.map((x2) => Math.max(0, Number(weight(x2)) || 0));
-  const sum = ws.reduce((a2, b2) => a2 + b2, 0);
-  if (!(sum > 0)) return null;
-  let x = r() * sum;
-  for (let i = 0; i < list.length; i++) if ((x -= ws[i]) <= 0) return list[i];
-  return list[list.length - 1];
-}
-var round2 = (n) => Math.round(n * 100) / 100;
-var roughly = (gp) => gp >= 100 ? Math.round(gp / 10) * 10 : gp >= 1 ? Math.round(gp) : round2(gp);
-function goldFor(xp, partyLevel, generosity) {
-  const { base, perXp, power } = LOOT_CONFIG.gold;
-  return base * (xp / perXp) ** power * band(LOOT_CONFIG.levelSteps, partyLevel) * generosity;
-}
-function generateLoot({ enemies, partyLevel, items, spells = [], tables, settings: settings3 = {}, seed = newSeed() }) {
-  const r = rng(seed);
-  const gen = Math.min(GENEROSITY.max, Math.max(GENEROSITY.min, Number(settings3.generosity) || 1));
-  const level = Math.min(20, Math.max(1, Math.round(Number(partyLevel) || 1)));
-  const cap3 = gearCap(level, gen);
-  const C2 = LOOT_CONFIG;
-  let coins = 0;
-  const lines = [], harvest = [], notes = [];
-  const add2 = (list, x) => {
-    const same = list.find((y) => y.kind === x.kind && y.name === x.name && !!y.damaged === !!x.damaged && y.value === x.value);
-    if (same) same.qty += x.qty;
-    else list.push({ ...x });
-  };
-  const pool = items.filter((x) => x.category !== "magic" && x.carried && x.loot !== false && !isPart(x) && C2.gearWeights[x.category] && x.price != null);
-  const minorPool = items.filter(isMinorMagic);
-  const parts = items.filter(isPart);
-  for (const { monster: m, count } of enemies) {
-    if (!m || !(count > 0)) continue;
-    const setting = m.loot || "auto";
-    if (setting === "none") {
-      notes.push(`${m.name}: set to carry no loot`);
-      continue;
-    }
-    const { theme } = themeFor(m, tables);
-    const share = LOOT_LEVELS[theme?.loot]?.share ?? 1;
-    const extra = setting === "extra" ? C2.extra : 1;
-    const xp = xpFor(m.challengeRating), minion = isMinion(m) ? C2.minion : 1;
-    const carried = carriedGear(m, items);
-    const caster = isCaster(m);
-    for (let n = 0; n < count; n++) {
-      if (share > 0) {
-        const [lo, hi] = C2.spread;
-        const gp = goldFor(xp, level, gen) * minion * share * extra * (lo + r() * (hi - lo));
-        coins += gp >= 1 ? Math.round(gp) * 100 : Math.round(gp * 100);
-        if (r() < Math.min(C2.gearCeiling, C2.gearChance * gen * share * extra)) {
-          let it = null;
-          if (carried.length && r() < C2.carriedShare) it = carried[Math.floor(r() * carried.length)];
-          if (it) {
-            if (it.price > cap3) add2(lines, { kind: "gear", name: `${it.name} (damaged)`, qty: 1, value: round2(it.price * C2.damagedShare), damaged: true, scrap: true, id: it.id });
-            else add2(lines, { kind: "gear", name: it.name, qty: 1, value: it.price, id: it.id });
-          } else {
-            const ok = pool.filter((x) => x.price <= cap3 && (x.category !== "focus" || caster));
-            const cat = pick3(r, Object.keys(C2.gearWeights).filter((c2) => ok.some((x) => x.category === c2)), (c2) => C2.gearWeights[c2]);
-            const list = ok.filter((x) => x.category === cat);
-            const got = list[Math.floor(r() * list.length)];
-            if (got) {
-              const qty = got.bundle ? Math.min(got.bundle, roll("2d10", "normal", r).total) : 1;
-              add2(lines, { kind: "gear", name: got.name, qty, value: got.price, id: got.id });
-            }
-          }
-        }
-        const chance = Math.min(C2.itemCeiling, C2.itemChance * gen * share);
-        for (let k = 0; k < 2 && theme?.items?.length && r() < (k ? chance / 2 : chance); k++) {
-          const it = pick3(r, theme.items);
-          if (it) add2(lines, { kind: "item", name: it.name, qty: qtyOf(it.qty, r), value: Number(it.value) || 0, desc: flavorOf(it) });
-        }
-        if (minorPool.length && r() < Math.min(C2.minorCeiling, C2.minorChance * gen * share * extra)) {
-          const it = pick3(r, minorPool, (x) => x.creatures?.length && comesFrom(x, [m], tables) ? C2.minorLinkedWeight : 1);
-          add2(lines, { kind: "minor", id: it.id, name: it.name, qty: 1, value: Number(it.price) > 0 ? Number(it.price) : RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1) || 0 });
-        }
-      }
-      const own = parts.filter((x) => comesFrom(x, [m], tables));
-      const harvested = (name, qty, value, id, desc) => {
-        const same = harvest.find((y) => y.name === name);
-        if (same) {
-          same.total += qty * value;
-          same.qty += qty;
-          if (!same.from.includes(m.name)) same.from.push(m.name);
-        } else harvest.push({ kind: "harvest", name, qty, total: qty * value, from: [m.name], ...id ? { id } : desc ? { desc } : {} });
-      };
-      if (own.length) {
-        const it = own[Math.floor(r() * own.length)];
-        harvested(it.name, qtyOf(it.qty, r), Number(it.price) || 0, it.id);
-      }
-      if (theme?.harvest?.length) {
-        const picks2 = Math.max(1, Math.round(C2.harvestPicks * Math.sqrt(gen)) - (own.length ? 1 : 0));
-        const left = [...theme.harvest];
-        const scale = Math.min(30, Math.max(0.5, Math.sqrt(xpFor(m.challengeRating) / 200)));
-        for (let k = 0; k < picks2 && left.length; k++) {
-          const it = pick3(r, left);
-          if (!it) break;
-          left.splice(left.indexOf(it), 1);
-          const name = it.name.replace(/\s*\(\{breath\}\)/, breathType(m) ? ` (${breathType(m)})` : "").replace("{breath}", breathType(m));
-          harvested(name, qtyOf(it.qty, r), (Number(it.value) || 0) * scale, null, flavorOf(it));
-        }
-      }
-    }
-  }
-  const magicCount = Math.max(0, Math.round(Number(settings3.magic) || 0));
-  if (magicCount) {
-    const crs = enemies.filter((x) => x.monster && x.monster.loot !== "none").map((x) => x.monster.challengeRating);
-    const maxCr = crs.reduce((a2, b2) => crValue(b2) > crValue(a2) ? b2 : a2, "0");
-    const top = rarityCap(level, maxCr);
-    const allowed = RARITIES.slice(1, RARITIES.indexOf(top) + 1);
-    const magic = items.filter((x) => isToggleMagic(x) && allowed.includes(x.rarity));
-    const foes = enemies.filter((x) => x.monster).map((x) => x.monster);
-    for (let n = 0; n < magicCount; n++) {
-      const rarity = pick3(r, allowed, (x) => C2.rarityWeights[x] * (gen > 1 ? gen ** RARITIES.indexOf(x) : 1));
-      const choices = [...magic.filter((x) => x.rarity === rarity), ...spells.length ? [{ scroll: true, rarity, consumable: true }] : []];
-      const it = pick3(r, choices, (x) => (x.consumable ? C2.consumableWeight : 1) * (comesFrom(x, foes, tables) ? C2.linkedWeight : 1));
-      if (!it) continue;
-      add2(lines, it.scroll ? spellScroll(r, rarity, spells) : magicLine(r, it, items));
-    }
-    notes.push(`Magic items up to ${top} (party level ${level}, strongest enemy CR ${maxCr}).`);
-  }
-  for (const x of harvest) {
-    x.value = roughly(x.total / x.qty);
-    delete x.total;
-  }
-  const worth = (kind) => round2(lines.filter((x) => kind === "magic" === (x.kind === "magic")).reduce((n, x) => n + x.qty * x.value, 0));
-  return { seed, coins, lines, harvest, totalGp: round2(coins / 100 + worth("other")), magicGp: worth("magic"), notes, partyLevel: level, generosity: gen };
-}
-function spellScroll(r, rarity, spells) {
-  const levels2 = SCROLL_LEVELS[rarity].filter((l) => spells.some((s2) => s2.level === l));
-  const lvl = levels2[Math.floor(r() * levels2.length)] ?? 1;
-  const list = spells.filter((s2) => s2.level === lvl);
-  const s = list[Math.floor(r() * list.length)];
-  return { kind: "magic", name: `Spell Scroll: ${s?.name || "unknown spell"} (${lvl ? `level ${lvl}` : "cantrip"})`, qty: 1, value: SCROLL_VALUE[lvl], rarity, ...s ? { spell: s.name } : {} };
-}
-function magicLine(r, it, items) {
-  let value = Number(it.price) > 0 ? Number(it.price) : RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1);
-  let name = it.name;
-  const options = it.base ? baseOptions(it.base, items) : [];
-  if (options.length) {
-    const b2 = options[Math.floor(r() * options.length)];
-    if (b2.category === "ammo") {
-      value = RARITY_VALUE[it.rarity] / 2;
-      name = `${/^\+\d Ammunition$/.test(name) ? `${name.split(" ")[0]} ${b2.name}` : `${name} (${b2.name})`}, 10 pieces`;
-    } else {
-      value += b2.price;
-      if (/^\+\d (Armor|Weapon)$/.test(name)) name = `${name.split(" ")[0]} ${b2.name}`;
-      else if (options.length > 1) name = `${name} (${b2.name})`;
-    }
-  }
-  return { kind: "magic", name, qty: 1, value: round2(value), rarity: it.rarity, id: it.id };
-}
-function baseOptions(text, items) {
-  const t = lc3(text);
-  const [want, except = ""] = t.split(/,?\s*except\s+/);
-  let list;
-  if (/ammunition/.test(want)) list = items.filter((x) => x.category === "ammo");
-  else if (/^shield$/.test(want.trim())) list = items.filter((x) => x.category === "shield");
-  else if (/\bany\b/.test(want)) {
-    const armorKinds = ["light", "medium", "heavy"].filter((k) => new RegExp(`\\b${k}\\b`).test(want));
-    const weaponKinds = ["simple", "martial"].filter((k) => want.includes(k));
-    if (armorKinds.length) list = items.filter((x) => x.category === "armor" && armorKinds.includes(x.armor));
-    else list = items.filter((x) => x.category === "weapon" && (!weaponKinds.length || weaponKinds.includes(x.weapon?.simple ? "simple" : "martial")) && (!/melee/.test(want) || !x.weapon?.ranged) && (!/ranged/.test(want) || x.weapon?.ranged));
-  } else {
-    const named = items.filter((x) => ["weapon", "armor", "shield"].includes(x.category) && new RegExp(`\\b${lc3(x.name)}\\b`).test(want));
-    list = named.filter((x) => !named.some((y) => y !== x && lc3(y.name).includes(lc3(x.name))));
-  }
-  return list.filter((x) => !except || !except.includes(lc3(x.name)));
-}
-function coinText(cp) {
-  const gp = Math.floor(cp / 100), sp = Math.floor(cp % 100 / 10), c2 = cp % 10;
-  return [gp ? `${gp.toLocaleString()} gp` : "", sp ? `${sp} sp` : "", c2 ? `${c2} cp` : ""].filter(Boolean).join(", ") || "none";
-}
-function priceText(gp) {
-  if (!gp) return "worthless";
-  if (gp >= 1) return `${Number(gp.toFixed(2)).toLocaleString()} gp`;
-  return coinText(Math.max(1, Math.round(gp * 100)));
-}
-
-// src/items.js
+init_loot();
+init_loot_flavor();
 var CATEGORY_LABELS = { weapon: "Weapon", armor: "Armor", shield: "Shield", ammo: "Ammunition", gear: "Adventuring gear", tool: "Tool", focus: "Spellcasting focus", trinket: "Magic trinket", magic: "Magic item" };
 var MAGIC_KINDS = { armor: "Armor", potion: "Potion", ring: "Ring", rod: "Rod", scroll: "Scroll", staff: "Staff", wand: "Wand", weapon: "Weapon", wondrous: "Wondrous Item" };
 var esc2 = (s) => String(s ?? "").replace(/[&<>"]/g, (c2) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c2]);
@@ -63948,620 +66734,18 @@ init_spells();
 init_conditions();
 init_constants();
 init_ui();
-
-// src/statblock.js
-init_ui();
-init_conditions();
-init_spells();
-
-// src/groups.js
-var isGroup = (c2) => Array.isArray(c2?.members);
-var standing = (c2) => c2.members.filter((m) => m.hp > 0);
-var groupOut = (c2) => !c2.members.some((m) => m.hp > 0);
-var hurtFirst = (c2) => standing(c2).sort((a2, b2) => a2.hp - b2.hp);
-function makeGroup(base, count, minion) {
-  return { ...base, group: minion ? "minion" : "pack", members: Array.from({ length: count }, () => ({ hp: base.maxHp ?? 1, conditions: [] })), conditions: [] };
-}
-function down(member2) {
-  member2.hp = 0;
-  member2.conditions = [];
-}
-function killMinions(c2, n) {
-  const list = standing(c2).slice(0, Math.max(0, n));
-  list.forEach(down);
-  return list.length;
-}
-function minionOtherDamage(c2, damage, n) {
-  return damage >= (c2.maxHp ?? 1) ? killMinions(c2, n) : 0;
-}
-function damagePack(c2, damage) {
-  let left = Math.max(0, Math.round(damage));
-  const absorbed = Math.min(c2.tempHp || 0, left);
-  c2.tempHp = (c2.tempHp || 0) - absorbed;
-  if (!c2.tempHp) delete c2.tempHp;
-  left -= absorbed;
-  let killed = 0;
-  for (const m of hurtFirst(c2)) {
-    if (left <= 0) break;
-    const take = Math.min(m.hp, left);
-    m.hp -= take;
-    left -= take;
-    if (m.hp <= 0) {
-      down(m);
-      killed++;
-    }
-  }
-  return { killed, absorbed };
-}
-function damageEach(c2, damage, n) {
-  let killed = 0;
-  for (const m of hurtFirst(c2).slice(0, Math.max(0, n))) {
-    m.hp = Math.max(0, m.hp - Math.max(0, Math.round(damage)));
-    if (m.hp <= 0) {
-      down(m);
-      killed++;
-    }
-  }
-  return killed;
-}
-function healPack(c2, amount) {
-  let left = Math.max(0, Math.round(amount));
-  for (const m of hurtFirst(c2)) {
-    if (left <= 0) break;
-    const take = Math.min((c2.maxHp ?? m.hp) - m.hp, left);
-    m.hp += take;
-    left -= take;
-  }
-}
-function revive(c2, hp) {
-  const m = c2.members.find((x) => x.hp <= 0);
-  if (!m) return false;
-  m.hp = c2.group === "minion" ? c2.maxHp ?? 1 : Math.max(1, Math.min(c2.maxHp ?? 1, hp ?? 1));
-  return true;
-}
-var totalHp = (c2) => c2.members.reduce((n, m) => n + Math.max(0, m.hp), 0);
-function splitOff(c2, n, key3, name) {
-  const moving = standing(c2).slice(-Math.max(1, Math.min(n, standing(c2).length - 1)));
-  c2.members = c2.members.filter((m) => !moving.includes(m));
-  return { ...structuredClone({ ...c2, members: [] }), key: key3, name, members: moving };
-}
-function mergeInto(c2, others) {
-  for (const o of others) {
-    if (isGroup(o)) c2.members.push(...o.members);
-    else {
-      const m = { hp: c2.group === "minion" ? (o.hp ?? 1) > 0 ? c2.maxHp ?? 1 : 0 : Math.max(0, o.hp ?? c2.maxHp ?? 1), conditions: [...o.conditions || []] };
-      if (o.tokens?.[0]) m.token = o.tokens[0];
-      c2.members.push(m);
-    }
-  }
-}
-function groupAttackOf(text) {
-  const t = String(text || "").replace(/<[^>]+>/g, "").replace(/[−–]/g, "-");
-  const bonus = t.match(/Attack Roll:\s*([+-]\s?\d+)/i)?.[1] || t.match(/([+-]\s?\d+)\s+to hit/i)?.[1] || null;
-  const hit = t.match(/Hit:\s*(\d+)\s*(?:\(([^)]*)\))?\s*([a-z]+)?\s*damage/i);
-  return { bonus: bonus && bonus.replace(/\s/g, ""), damage: hit ? Number(hit[1]) : null, dice: hit?.[2] || null, type: hit?.[3] || "" };
-}
-var isGroupAttack = (name) => /\(\s*Group Attack\s*\)/i.test(String(name || ""));
-
-// src/combat.js
-init_format();
-init_rules();
-var LEGENDARY_KEY = "legendaryActions:uses";
-function rechargeOf(name) {
-  const n = String(name || "");
-  const x = n.match(/\(\s*Recharge\s*(\d)(?:\s*[–-]\s*6)?/i) || n.match(/\(\s*R\s*(\d)\s*[–-]\s*6/);
-  if (x) return { min: Number(x[1]) };
-  return /\(\s*Recharges?\s+(?:after|when|on)/i.test(n) ? { min: 0 } : null;
-}
-function partyCombatant(ch) {
-  const live2 = ch.live || {};
-  const c2 = {
-    key: `pc-${ch.id}`,
-    kind: "pc",
-    refId: ch.id,
-    name: ch.name,
-    ac: ch.armorClass ?? null,
-    hp: live2.hp ?? (ch.maxHp || null),
-    maxHp: ch.maxHp || null,
-    initBonus: Number(ch.initiativeBonus) || 0,
-    init: null,
-    conditions: [...live2.conditions || []]
-  };
-  if (live2.tempHp) c2.tempHp = live2.tempHp;
-  if (live2.tokens?.length) c2.tokens = [...live2.tokens];
-  if (live2.form) {
-    c2.form = { ...live2.form };
-    c2.ac = live2.form.ac ?? c2.ac;
-    if (live2.form.pool) c2.maxHp = live2.form.maxHp;
-  }
-  return c2;
-}
-function liveOf(c2) {
-  const live2 = { hp: c2.hp ?? null, conditions: [...c2.conditions || []] };
-  if (c2.tempHp) live2.tempHp = c2.tempHp;
-  if (c2.tokens?.length) live2.tokens = [...c2.tokens];
-  if (c2.form) live2.form = { ...c2.form };
-  return live2;
-}
-var sameLive = (a2 = {}, b2 = {}) => (a2.hp ?? null) === (b2.hp ?? null) && (a2.tempHp || 0) === (b2.tempHp || 0) && JSON.stringify(a2.conditions || []) === JSON.stringify(b2.conditions || []) && JSON.stringify(a2.tokens || []) === JSON.stringify(b2.tokens || []) && JSON.stringify(a2.form || null) === JSON.stringify(b2.form || null);
-var LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-function setupCombat(e2, { character, monster, asGroup }) {
-  const list = [];
-  for (const c2 of (e2.characterIds || []).map(character).filter(Boolean)) {
-    list.push(partyCombatant(c2));
-    for (const comp of c2.companions || []) if (comp.on && monster(comp.monsterId)) list.push(companionCombatant(c2, comp, monster(comp.monsterId), e2.rules));
-  }
-  for (let i = 0; i < (e2.extraPlayers?.count || 0); i++) {
-    list.push({ key: `player-${i}`, kind: "pc", name: `Player ${i + 1}`, ac: null, hp: null, maxHp: null, initBonus: 0, init: null, conditions: [] });
-  }
-  const entries = (e2.groups || []).map((g, gi) => ({ g, gi, m: monster(g.monsterId) }));
-  for (const x of entries) x.group = !!x.m && asGroup(x.g);
-  const groupsOf = (id) => entries.filter((x) => x.group && x.g.monsterId === id);
-  const singlesOf = (id) => entries.filter((x) => !x.group && x.g.monsterId === id).reduce((n, x) => n + x.g.count, 0);
-  const lettered = /* @__PURE__ */ new Map();
-  for (const { g, gi, m, group } of entries) {
-    if (group) {
-      const mine3 = groupsOf(g.monsterId);
-      list.push(makeGroup({
-        key: `g-${g.monsterId}-${gi}`,
-        kind: "monster",
-        refId: g.monsterId,
-        name: mine3.length > 1 ? `${m.name} (${mine3.findIndex((x) => x.gi === gi) + 1})` : m.name,
-        ac: m.armorClass ?? null,
-        maxHp: m.averageHitPoints ?? 1,
-        initBonus: initBonus(m),
-        init: null
-      }, g.count, isMinion(m)));
-      continue;
-    }
-    const total = singlesOf(g.monsterId);
-    for (let k = 0; k < g.count; k++) {
-      const i = lettered.get(g.monsterId) || 0;
-      lettered.set(g.monsterId, i + 1);
-      list.push({
-        key: `m-${g.monsterId}-${i}`,
-        kind: "monster",
-        refId: g.monsterId,
-        name: total > 1 ? `${m?.name || g.name} (${LETTERS[i % 26]}${i >= 26 ? Math.floor(i / 26) + 1 : ""})` : m?.name || g.name,
-        ac: m?.armorClass ?? null,
-        hp: m?.averageHitPoints ?? null,
-        maxHp: m?.averageHitPoints ?? null,
-        initBonus: m ? initBonus(m) : 0,
-        init: null,
-        conditions: []
-      });
-    }
-  }
-  return { phase: "setup", round: 1, turnKey: null, selectedKey: list.find((c2) => c2.kind === "monster")?.key || null, combatants: list };
-}
-function splitEntry(groups, i, n) {
-  const g = groups[i];
-  n = Math.round(Number(n));
-  if (!g || !(n >= 1 && n < g.count)) return false;
-  g.count -= n;
-  groups.splice(i + 1, 0, { ...structuredClone(g), count: n });
-  return true;
-}
-function mergeEntries(groups, i) {
-  const g = groups[i];
-  if (!g) return false;
-  const others = groups.filter((x) => x !== g && x.monsterId === g.monsterId);
-  if (!others.length) return false;
-  g.count += others.reduce((n, x) => n + x.count, 0);
-  for (const x of others) groups.splice(groups.indexOf(x), 1);
-  return true;
-}
-function ordered(s) {
-  const here = new Set(s.combatants.map((c2) => c2.key));
-  const leads = s.combatants.filter((c2) => !c2.owner || !here.has(c2.owner)).sort((a2, b2) => (b2.init ?? -99) - (a2.init ?? -99) || (b2.initBonus || 0) - (a2.initBonus || 0) || (a2.kind === "pc" ? -1 : 0) - (b2.kind === "pc" ? -1 : 0) || a2.name.localeCompare(b2.name, void 0, { numeric: true }));
-  const out = [], seen2 = /* @__PURE__ */ new Set();
-  const add2 = (c2) => {
-    if (seen2.has(c2.key)) return;
-    seen2.add(c2.key);
-    out.push(c2);
-    for (const f of s.combatants) if (f.owner === c2.key) add2(f);
-  };
-  leads.forEach(add2);
-  for (const c2 of s.combatants) add2(c2);
-  return out;
-}
-var isOut = (c2) => c2.kind === "monster" && (isGroup(c2) ? groupOut(c2) : c2.hp != null && c2.hp <= 0);
-var ownTurn = (s, c2) => !(c2.during && s.combatants.some((o) => o.key === c2.owner));
-function startCombat(s, rollInit2) {
-  for (const c2 of s.combatants) if (c2.init == null && !c2.owner) c2.init = rollInit2(c2);
-  for (const c2 of s.combatants) if (c2.owner) c2.init = ownerInit(s, c2) ?? c2.init ?? rollInit2(c2);
-  s.phase = "active";
-  s.round = 1;
-  const first = ordered(s).find((c2) => ownTurn(s, c2));
-  s.turnKey = first?.key || null;
-  if (first?.kind === "monster") s.selectedKey = first.key;
-}
-var ownerInit = (s, c2) => s.combatants.find((o) => o.key === c2.owner)?.init ?? null;
-function nextTurn(s) {
-  const o = ordered(s);
-  if (!o.length) return null;
-  let i = o.findIndex((c2) => c2.key === s.turnKey);
-  for (let step = 0; step < o.length; step++) {
-    i++;
-    if (i >= o.length) {
-      i = 0;
-      s.round++;
-    }
-    if (!isOut(o[i]) && ownTurn(s, o[i])) break;
-  }
-  s.turnKey = o[i].key;
-  if (o[i].kind === "monster") s.selectedKey = o[i].key;
-  return s.combatants.find((c2) => c2.key === s.turnKey);
-}
-function companionCombatant(ch, comp, m, rules = "2014") {
-  const base = {
-    key: `cp-${ch.id}-${comp.id}`,
-    kind: "monster",
-    refId: comp.monsterId,
-    name: comp.name || m?.name || "Companion",
-    ac: m?.armorClass ?? null,
-    maxHp: m?.averageHitPoints ?? null,
-    initBonus: m ? initBonus(m) : 0,
-    init: null,
-    owner: `pc-${ch.id}`,
-    ally: true,
-    companion: { char: ch.id, id: comp.id, ...comp.type === "summon" ? { summon: true } : {} }
-  };
-  if (rules === "2024") base.during = true;
-  const live2 = comp.live || {};
-  let c2;
-  if ((comp.count || 1) > 1) {
-    c2 = makeGroup({ ...base, maxHp: base.maxHp ?? 1 }, comp.count, false);
-    if (live2.members?.length === comp.count) c2.members = structuredClone(live2.members);
-    if (live2.conditions) c2.conditions = [...live2.conditions];
-  } else {
-    c2 = { ...base, hp: live2.hp ?? base.maxHp, conditions: [...live2.conditions || []] };
-    if (live2.tokens?.length) c2.tokens = [...live2.tokens];
-    if (live2.form) {
-      c2.form = { ...live2.form };
-      c2.ac = live2.form.ac ?? c2.ac;
-      if (live2.form.pool) c2.maxHp = live2.form.maxHp;
-    }
-  }
-  if (live2.tempHp) c2.tempHp = live2.tempHp;
-  return c2;
-}
-function companionLiveOf(c2) {
-  if (!isGroup(c2)) return liveOf(c2);
-  const live2 = { members: structuredClone(c2.members), conditions: [...c2.conditions || []] };
-  if (c2.tempHp) live2.tempHp = c2.tempHp;
-  return live2;
-}
-function summon(s, ownerKey, m, n = 1, rules = "2014") {
-  const owner = s.combatants.find((c3) => c3.key === ownerKey);
-  if (!owner || !m) return null;
-  const taken = new Set(s.combatants.map((c3) => c3.name));
-  let name = m.name;
-  for (let k = 2; taken.has(name); k++) name = `${m.name} (${k})`;
-  const base = {
-    key: `sm-${m.id}-${Date.now().toString(36)}-${s.combatants.length}`,
-    kind: "monster",
-    refId: m.id,
-    name,
-    ac: m.armorClass ?? null,
-    maxHp: m.averageHitPoints ?? 1,
-    initBonus: initBonus(m),
-    init: owner.init ?? null,
-    owner: owner.key,
-    summoned: true
-  };
-  if (owner.kind === "pc" || owner.ally) base.ally = true;
-  if (rules === "2024") base.during = true;
-  const c2 = n > 1 ? makeGroup(base, n, isMinion(m)) : { ...base, hp: base.maxHp, conditions: [] };
-  s.combatants.push(c2);
-  return c2;
-}
-function removeCombatant(s, key3) {
-  if (s.turnKey === key3) {
-    const o = ordered(s).filter((c2) => c2.key !== key3);
-    const at2 = ordered(s).findIndex((c2) => c2.key === key3);
-    s.turnKey = o.length ? o[at2 % o.length].key : null;
-  }
-  if (s.selectedKey === key3) s.selectedKey = null;
-  s.combatants = s.combatants.filter((c2) => c2.key !== key3);
-}
-function startOfTurn(c2, m, roll3) {
-  if (c2?.kind !== "monster" || !m) return;
-  if (c2.used?.[`${LEGENDARY_KEY}:0`]) c2.used[`${LEGENDARY_KEY}:0`] = 0;
-  for (const [k, used] of Object.entries(c2.recharge || {})) {
-    if (!used) continue;
-    const [section, i] = k.split(":");
-    const e2 = (m[section] || [])[Number(i)], rc = e2 && rechargeOf(e2.name);
-    if (!rc?.min) continue;
-    const r = roll3("1d6", `Recharge: ${e2.name.replace(/\s*\(.*$/, "")}`);
-    if (r && r.total >= rc.min) c2.recharge[k] = false;
-  }
-}
-function applyHp(y, mode3, n) {
-  const cur = y.hp ?? y.maxHp ?? 0;
-  if (mode3 === "damage") {
-    const absorbed = Math.min(y.tempHp || 0, Math.max(0, n));
-    y.tempHp = (y.tempHp || 0) - absorbed;
-    y.hp = Math.max(0, cur - (n - absorbed));
-    if (y.form?.pool && y.hp <= 0) revertShape(y, n - absorbed - cur);
-  } else if (mode3 === "heal") y.hp = y.maxHp != null ? Math.min(y.maxHp, cur + n) : cur + n;
-  else if (mode3 === "set") y.hp = Math.max(0, n);
-  else if (mode3 === "max") {
-    y.maxHp = Math.max(1, n);
-    y.hp ??= y.maxHp;
-  } else if (mode3 === "temp") y.tempHp = Math.max(0, Math.round(n));
-  if (!y.tempHp) delete y.tempHp;
-}
-var formsOf = (x) => x?.shifter ? (x.forms || []).filter((f) => f.monsterId) : [];
-var statRef = (c2) => c2?.form?.monsterId || c2?.refId;
-function shiftInto(c2, f, m) {
-  if (!c2 || !f || !m || isGroup(c2)) return false;
-  if (c2.form) revertShape(c2);
-  const form = { id: f.id, monsterId: f.monsterId, name: f.name || m.name, ac: m.armorClass ?? c2.ac ?? null, ac0: c2.ac ?? null };
-  c2.ac = form.ac;
-  if (f.hp === "form") {
-    Object.assign(form, { pool: true, maxHp: m.averageHitPoints ?? 1, hp0: c2.hp ?? c2.maxHp ?? null, maxHp0: c2.maxHp ?? null, temp0: c2.tempHp || 0 });
-    c2.hp = c2.maxHp = form.maxHp;
-    delete c2.tempHp;
-  }
-  c2.form = form;
-  return true;
-}
-function revertShape(c2, overflow = 0) {
-  const f = c2?.form;
-  if (!f) return false;
-  delete c2.form;
-  c2.ac = f.ac0;
-  if (f.pool) {
-    c2.maxHp = f.maxHp0;
-    c2.hp = f.hp0;
-    if (f.temp0) c2.tempHp = f.temp0;
-    else delete c2.tempHp;
-    if (overflow > 0) applyHp(c2, "damage", overflow);
-  }
-  return true;
-}
-var DEAD = "Dead";
-var UNCONSCIOUS = "Unconscious";
-var down2 = (hp) => hp != null && hp <= 0;
-function settleDown(c2) {
-  if (c2.kind !== "monster") return;
-  if (isGroup(c2)) {
-    for (const m of c2.members) if (m.hp <= 0 && m.conditions.length) m.conditions = [];
-    if (groupOut(c2) && c2.conditions?.length) c2.conditions = [];
-  } else if (down2(c2.hp) && c2.conditions?.length) c2.conditions = [];
-}
-function rowMarks(c2) {
-  const conds = c2.conditions || [];
-  if (c2.kind === "monster") return (isGroup(c2) ? groupOut(c2) : down2(c2.hp)) ? [DEAD] : [...conds];
-  return down2(c2.hp) && !conds.includes(UNCONSCIOUS) ? [...conds, UNCONSCIOUS] : [...conds];
-}
-function tokenMarks(c2) {
-  if (!isGroup(c2)) {
-    const marks = rowMarks(c2);
-    return tokensOf(c2).map((token) => ({ token, marks }));
-  }
-  return c2.members.filter((m) => m.token).map((m) => ({
-    token: m.token,
-    marks: m.hp <= 0 ? [DEAD] : [.../* @__PURE__ */ new Set([...c2.conditions || [], ...m.conditions])]
-  }));
-}
-var tokensOf = (c2) => isGroup(c2) ? c2.members.map((m) => m.token).filter(Boolean) : (c2.tokens || []).filter(Boolean);
-var tokenName = (c2, i = -1) => i >= 0 ? `${c2.name} ${i + 1}` : c2.name;
-function linkPlan(c2) {
-  if (!isGroup(c2)) return [{ member: -1, name: tokenName(c2) }];
-  const open2 = c2.members.map((m, i) => i).filter((i) => !c2.members[i].token);
-  return (open2.length ? open2 : c2.members.map((m, i) => i)).map((i) => ({ member: i, name: tokenName(c2, i) }));
-}
-function linkToken(s, key3, member2, id) {
-  for (const x of s.combatants) {
-    if (isGroup(x)) {
-      for (const m of x.members) if (m.token === id) delete m.token;
-    } else if (x.tokens?.includes(id)) x.tokens = x.tokens.filter((t) => t !== id);
-  }
-  const c2 = s.combatants.find((x) => x.key === key3);
-  if (!c2) return false;
-  if (isGroup(c2)) {
-    if (!c2.members[member2]) return false;
-    c2.members[member2].token = id;
-  } else c2.tokens = [id];
-  return true;
-}
-function unlinkTokens(s, key3) {
-  const c2 = s.combatants.find((x) => x.key === key3);
-  if (!c2) return [];
-  const ids = tokensOf(c2);
-  if (isGroup(c2)) for (const m of c2.members) delete m.token;
-  else delete c2.tokens;
-  return ids;
-}
-var tokenRenames = (c2) => isGroup(c2) ? c2.members.map((m, i) => m.token ? { id: m.token, name: tokenName(c2, i) } : null).filter(Boolean) : tokensOf(c2).map((id) => ({ id, name: c2.name }));
-function matchPartyTokens(party, tokens) {
-  const links = /* @__PURE__ */ new Map(), twice = [];
-  for (const ch of party) {
-    const hits = tokensNamed(tokens, ch.name);
-    if (hits.length === 1) links.set(ch.id, hits[0].id);
-    else if (hits.length > 1) twice.push(ch.name);
-  }
-  return { links, twice };
-}
-var normName = (x) => String(x ?? "").trim().replace(/\s+/g, " ").toLowerCase();
-var tokensNamed = (tokens, name) => {
-  const n = normName(name);
-  return n ? tokens.filter((t) => normName(t.name) === n || normName(t.label) === n) : [];
-};
-function matchFightTokens(s, tokens) {
-  const links = [], twice = [];
-  for (const c2 of s.combatants) {
-    const slots = isGroup(c2) ? c2.members.map((m, i) => ({ member: i, name: tokenName(c2, i), now: m.token ? [m.token] : [] })) : [{ member: -1, name: tokenName(c2), now: tokensOf(c2) }];
-    for (const { member: member2, name, now } of slots) {
-      const hits = tokensNamed(tokens, name);
-      if (hits.length > 1) twice.push(name);
-      else if (hits.length === 1 && !(now.length === 1 && now[0] === hits[0].id)) links.push({ key: c2.key, member: member2, token: hits[0].id });
-    }
-  }
-  return { links, twice };
-}
-var concentrationDc = (damage) => Math.min(30, Math.max(10, Math.floor(damage / 2)));
-function conSave(c2, m, pc) {
-  if (c2.kind === "monster") {
-    if (!m) return null;
-    return m.savingThrows?.find((s) => s.ability === "CON")?.bonus ?? Math.floor(((m.abilities?.constitution ?? 10) - 10) / 2);
-  }
-  return pc?.sheet?.saves?.find((s) => s.ability === "CON")?.bonus ?? null;
-}
-
-// src/statblock.js
-init_dice();
-init_constants();
-init_format();
-var ROLLABLE = /([+\-−–]\s?\d+)(?=\s+to hit)|\b(\d+d\d+(?:\s*[+\-−–]\s*\d+)?)/g;
-function rollify(html, label, who) {
-  html = html.replace(/(Attack Roll:\s*(?:<\/em>)?\s*)([+\-−–]\s?\d+)/g, (m, lead, bonus) => {
-    const b2 = bonus.replace(/\s/g, "").replace(/[−–]/, "-");
-    return lead + rollButton(b2, `1d20${b2}`, `${label}: to hit`, who);
-  });
-  return html.replace(/(^|>)([^<]+)/g, (all, gt, text) => gt + text.replace(ROLLABLE, (m, hit, dice2) => {
-    if (hit) return rollButton(hit.replace(/\s/g, ""), `1d20${hit.replace(/[\s−–]/g, (c2) => c2.trim() ? "-" : "")}`, `${label}: to hit`, who);
-    return rollButton(dice2, dice2.replace(/[−–]/g, "-"), `${label}: damage`, who);
-  }));
-}
-var WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5 };
-function legendaryUses(m) {
-  const text = (m.legendaryActions || []).map((e2) => e2.text).join(" ").replace(/<[^>]+>/g, "");
-  const x = text.match(/Legendary Action Uses:\s*(\d+)/i) || text.match(/can take (\w+) legendary actions?/i);
-  return x ? Number(x[1]) || WORDS[x[1].toLowerCase()] || 0 : 0;
-}
-function slotsOf(e2) {
-  if (e2.slots?.length) return e2.slots;
-  const d = String(e2.name || "").match(/\b(\d{1,2})\s*\/\s*Day\b/i);
-  return d ? [{ label: "", count: Math.min(10, Number(d[1])) }] : [];
-}
-function entryList(entries, who, section, tracker, recharge, group) {
-  return (entries || []).map((e2, i) => {
-    const key3 = `${section}:${i}`;
-    const rc = recharge && rechargeOf(e2.name);
-    const chip = (rc ? rechargeChip(key3, recharge.get(key3), rc) : "") + (group && isGroupAttack(e2.name) ? `<button class="sb-group-atk" data-gk="${key3}" title="One attack roll for the group; the damage is multiplied by how many join in">Group attack</button>` : "");
-    const name = e2.name ? `<strong><em>${esc(e2.name)}.</em></strong> ${chip}` : "";
-    return `<p>${name}${glossify(condify(spellify(rollify(richText(e2.text), e2.name || "Roll", who))))}</p>${boxRows({ ...e2, slots: slotsOf(e2) }, key3, tracker)}`;
-  }).join("");
-}
-var rechargeChip = (key3, used, rc) => `<button class="sb-recharge${used ? " used" : ""}" data-rk="${key3}" title="${used ? `Used. ${rc.min ? `It recharges on a ${rc.min === 6 ? "6" : `${rc.min}\u20136`}, rolled at the start of its turn. ` : ""}Click when it's available again.` : "Available. Click when it is used."}">${used ? "Used" : "Ready"}</button>`;
-function boxRows(e2, key3, tracker) {
-  if (!e2.slots?.length) return "";
-  const rows = e2.slots.map((row2, r) => {
-    const k = `${key3}:${r}`, used = tracker.get(k);
-    const boxes = Array.from({ length: Math.min(60, row2.count | 0) }, (_, b2) => `<button class="sb-box${b2 < used ? " on" : ""}" data-k="${k}" data-i="${b2}" title="${b2 < used ? "Used: click to get it back" : "Click when used"}" aria-pressed="${b2 < used}"></button>`).join("");
-    return `<div class="sb-box-row">${row2.label ? `<span class="sb-box-label">${esc(row2.label)}.</span>` : ""}<span class="sb-boxes">${boxes}</span></div>`;
-  }).join("");
-  const any = e2.slots.some((_, r) => tracker.get(`${key3}:${r}`) > 0);
-  return `<div class="sb-tracker" data-key="${key3}">${rows}${any ? `<button class="link sb-box-reset" data-reset="${key3}" data-rows="${e2.slots.length}">Reset</button>` : ""}</div>`;
-}
-var sessionTicks = /* @__PURE__ */ new Map();
-var sessionTracker = (id) => ({
-  get: (k) => sessionTicks.get(`${id}|${k}`) || 0,
-  set: (k, n) => sessionTicks.set(`${id}|${k}`, n)
-});
-function statBlock(m, opts2 = {}) {
-  const who = opts2.who || m.name;
-  const tracker = opts2.tracker || sessionTracker(m.id || m.name);
-  const recharge = opts2.recharge || null;
-  const group = opts2.group || null;
-  const legUses = legendaryUses(m);
-  const legEntry = { slots: [{ label: "Uses", count: legUses }] };
-  const entryFor = (k) => k === LEGENDARY_KEY ? legEntry : (() => {
-    const [s, i] = k.split(":");
-    const e2 = (m[s] || [])[Number(i)];
-    return e2 && { ...e2, slots: slotsOf(e2) };
-  })();
-  const prop = (label, value) => value ? `<div class="sb-prop"><span class="sb-label">${label}</span> ${value}</div>` : "";
-  const linkedList = (text, rx) => esc(text).replace(rx, (x, name, bonus) => `${name} ${rollButton(bonus, `1d20${bonus}`, `${name.trim()} ${rx === SAVE_RX ? "save" : "check"}`, who)}`);
-  const abil = ABILITIES.map((a2, i) => {
-    const s = m.abilities?.[a2] ?? 10;
-    return `<div class="sb-abil"><div class="sb-abil-name">${ABBR[i]}</div><div>${s}</div>${rollButton(`(${signed(mod(s))})`, `1d20${signed(mod(s))}`, `${ABBR[i]} check`, who)}</div>`;
-  }).join("");
-  const sections = [
-    ["Actions", m.actions, "actions"],
-    ["Bonus Actions", m.bonusActions, "bonusActions"],
-    ["Reactions", m.reactions, "reactions"],
-    ["Legendary Actions", m.legendaryActions, "legendaryActions"],
-    ["Mythic Actions", m.mythicActions, "mythicActions"],
-    ["Lair Actions", m.lairActions, "lairActions"]
-  ].filter(([, list]) => list?.length);
-  const html = `
-    <div class="sb-name">${esc(m.name)}</div>
-    <div class="sb-meta">${esc(typeLine(m))}</div>
-    <div class="sb-bar"></div>
-    ${prop("Armor Class", `${m.armorClass}${m.armorClassType ? ` (${esc(m.armorClassType)})` : ""}`)}
-    ${m.initiativeBonus !== "" && m.initiativeBonus != null ? prop("Initiative", rollButton(signed(initBonus(m)), `1d20${signed(initBonus(m))}`, "Initiative", who)) : ""}
-    ${prop("Hit Points", m.hpText ? esc(m.hpText) : `${m.averageHitPoints} ${rollButton(`(${hpFormula(m)})`, hpDice(m), "Hit points", who)}`)}
-    ${prop("Speed", esc(speedText(m)))}
-    <div class="sb-bar"></div>
-    <div class="sb-abils">${abil}</div>
-    <div class="sb-bar"></div>
-    ${prop("Saving Throws", linkedList(savesText(m), SAVE_RX))}
-    ${prop("Skills", linkedList(skillsTextOf(m), SKILL_RX))}
-    ${prop("Damage Vulnerabilities", esc(listText(m.damageVulnerabilities)))}
-    ${prop("Damage Resistances", esc(listText(m.damageResistances)))}
-    ${prop("Damage Immunities", esc(listText(m.damageImmunities)))}
-    ${prop("Condition Immunities", condify(esc(listText(m.conditionImmunities))))}
-    ${prop("Senses", esc([sensesText(m), `passive Perception ${m.passivePerception ?? 10}`].filter(Boolean).join(", ")))}
-    ${prop("Languages", esc(languagesText(m)))}
-    ${(m.notes || []).map((n) => prop(esc(n.name), esc(n.text))).join("")}
-    ${m.crText ? prop("Challenge", esc(m.crText)) : `<div class="sb-row">${prop("Challenge", esc(crXpText(m)))}${prop("Proficiency Bonus", pbText(m))}</div>`}
-    ${m.traits?.length ? `<div class="sb-bar"></div><div class="sb-entries">${entryList(m.traits, who, "traits", tracker, recharge, group)}</div>` : ""}
-    ${sections.map(([title2, list, key3]) => `<div class="sb-section">${title2}</div>${key3 === "legendaryActions" && legUses ? boxRows(legEntry, LEGENDARY_KEY, tracker) : ""}<div class="sb-entries">${entryList(list, who, key3, tracker, recharge, group)}</div>`).join("")}
-    ${m.description?.length && opts2.description !== false ? `<div class="sb-section">Description</div><div class="sb-entries sb-desc">${entryList(m.description, who, "description", tracker)}</div>` : ""}
-    ${m.source && m.source !== "Homebrew" ? `<div class="sb-source">Source: ${esc(m.source)}</div>` : ""}`;
-  const el11 = h("div.statblock", { html });
-  el11.addEventListener("click", (e2) => {
-    const atk = e2.target.closest(".sb-group-atk");
-    if (atk && group) {
-      e2.preventDefault();
-      group.attack(entryFor(atk.dataset.gk));
-      return;
-    }
-    const chip = e2.target.closest(".sb-recharge");
-    if (chip && recharge) {
-      e2.preventDefault();
-      const k2 = chip.dataset.rk, used = !recharge.get(k2);
-      recharge.set(k2, used);
-      chip.outerHTML = rechargeChip(k2, used, rechargeOf(entryFor(k2)?.name));
-      return;
-    }
-    const box = e2.target.closest(".sb-box"), reset2 = e2.target.closest(".sb-box-reset");
-    if (!box && !reset2) return;
-    e2.preventDefault();
-    if (reset2) {
-      for (let r = 0; r < Number(reset2.dataset.rows); r++) tracker.set(`${reset2.dataset.reset}:${r}`, 0);
-    } else {
-      const i = Number(box.dataset.i), used = tracker.get(box.dataset.k);
-      tracker.set(box.dataset.k, i < used ? i : i + 1);
-    }
-    const k = (box || reset2).closest(".sb-tracker").dataset.key;
-    (box || reset2).closest(".sb-tracker").outerHTML = boxRows(entryFor(k), k, tracker);
-  });
-  return el11;
-}
-var SAVE_RX = /(\b(?:Str|Dex|Con|Int|Wis|Cha)\w*)\s([+\-]\d+)/g;
-var SKILL_RX = /([A-Z][A-Za-z' ]+?)\s([+\-]\d+)/g;
-var skillsTextOf = (m) => (m.skills || []).map((s) => `${s.skill} ${signed(s.bonus)}`).join(", ");
-
-// src/tabs/maker.js
+init_statblock();
 init_store();
+init_generator();
 var MAX_SIDE = 3e3;
 var state = { images: [], avatar: null, monster: null, unsure: /* @__PURE__ */ new Set(), card: null };
-var mode2 = "monster";
+var mode2 = "auto";
+var kind = null;
 var CARDS = {
   item: { kind: "items", tab: "items", place: "Items", blank: "New Item", parse: parseItem, editor: itemEditor, html: itemHtml, source: "Homebrew", more: ", and it can drop as loot" },
   spell: { kind: "spells", tab: "spells", place: "Spells", blank: "New Spell", parse: parseSpell, editor: spellEditor, html: spellHtml, source: "Homebrew", more: ", and stat blocks link to it" },
   condition: { kind: "conditions", tab: "conditions", place: "Conditions", blank: "New Condition", parse: parseCondition, editor: conditionEditor, html: conditionHtml, more: ", and stat blocks link to it", settle: settleCondition }
 };
-try {
-  const saved = localStorage.getItem("makerMode");
-  if (CARDS[saved]) mode2 = saved;
-} catch {
-}
 var el;
 var go;
 var readAsDataUrl = (blob) => new Promise((res, rej) => {
@@ -64592,7 +66776,7 @@ function mountMaker(root, navigate) {
     h(
       "div.page-head.view-head",
       h("div", h("h1", "Maker"), h("div.page-sub#mk-sub")),
-      h("div.view-switch", ["monster", ...Object.keys(CARDS)].map((m) => h(`button#mk-mode-${m}`, { onclick: () => setMode(m) }, m[0].toUpperCase() + m.slice(1))))
+      h("div.view-switch", Object.keys(MODES).map((m) => h(`button#mk-mode-${m}`, { onclick: () => setMode(m) }, MODES[m].button)))
     ),
     h(
       "div.maker-grid",
@@ -64622,7 +66806,7 @@ function mountMaker(root, navigate) {
         h("div.review-head", h("h2", h("span.step", "2"), " Review"), h(
           "div.review-actions",
           h("button#mk-edit", "Edit in Creatures"),
-          h("button#mk-new", "New monster")
+          h("button#mk-new", "New creature")
         )),
         h("div.status.ok#mk-saved", { hidden: true }),
         h(
@@ -64639,7 +66823,7 @@ function mountMaker(root, navigate) {
         { hidden: true },
         h("div.review-head", h("h2", h("span.step", "2"), " Review"), h(
           "div.review-actions",
-          h("button#mk-card-open", { onclick: () => state.card && go(CARDS[mode2].tab, state.card.id) }),
+          h("button#mk-card-open", { onclick: () => state.card && go(CARDS[kind].tab, state.card.id) }),
           h("button#mk-card-new", { onclick: reset })
         )),
         h("div.status.ok#mk-card-saved", { hidden: true }),
@@ -64677,7 +66861,7 @@ function mountMaker(root, navigate) {
     }
   });
   $("#mk-ocr").onclick = readScreenshots;
-  $("#mk-parse").onclick = () => CARDS[mode2] ? readCard() : readText(/* @__PURE__ */ new Set());
+  $("#mk-parse").onclick = () => readAny(/* @__PURE__ */ new Set());
   $("#mk-new").onclick = reset;
   $("#mk-edit").onclick = () => state.monster && go("library", state.monster.id);
   $("#mk-name").oninput = () => {
@@ -64688,17 +66872,27 @@ function mountMaker(root, navigate) {
   setMode(mode2);
 }
 function showMaker(arg) {
-  if (arg === "monster" || CARDS[arg]) setMode(arg);
+  if (MODES[arg]) setMode(arg);
 }
 var MODES = {
+  auto: {
+    button: "Auto",
+    sub: "Paste a screenshot or text of a stat block, item, spell or condition. It works out which, reads it and saves it to your library. Pick a type on the right to choose it yourself.",
+    step: " Screenshot or text",
+    label: "Text",
+    hint: "Bigger screenshots read better. A long card can be several screenshots, in order.",
+    placeholder: "\u2026or paste the text here (copied from a PDF or web page). Text read from a screenshot also appears here, so you can fix mistakes before reading it."
+  },
   monster: {
-    sub: "Paste a stat block screenshot or its text. The monster is saved to your library and keeps saving as you edit.",
+    button: "Creature",
+    sub: "Paste a stat block screenshot or its text. The creature is saved to your library and keeps saving as you edit.",
     step: " Stat block",
     label: "Stat block text",
     hint: "Bigger screenshots read better. A long stat block can be several screenshots, in order.",
     placeholder: "\u2026or paste the text here (copied from a PDF or web page). Text read from a screenshot also appears here, so you can fix mistakes before reading it."
   },
   item: {
+    button: "Item",
     sub: "Paste a screenshot of a magic item, weapon or other item, or its text. The item is saved to Items, keeps saving as you edit, and can drop as loot.",
     step: " Item card",
     label: "Item text",
@@ -64706,6 +66900,7 @@ var MODES = {
     placeholder: "\u2026or paste the item text here. Text read from a screenshot also appears here, so you can fix mistakes before reading it.\n\nFrostbite Blade\nWeapon (Longsword), Rare (Requires Attunement)\nThis blade is rimed with frost\u2026"
   },
   spell: {
+    button: "Spell",
     sub: "Paste a screenshot of a spell, or its text. The spell is saved to Spells, keeps saving as you edit, and stat blocks link to it by name.",
     step: " Spell",
     label: "Spell text",
@@ -64713,6 +66908,7 @@ var MODES = {
     placeholder: "\u2026or paste the spell text here. Text read from a screenshot also appears here, so you can fix mistakes before reading it.\n\nEmber Lance\nLevel 2 Evocation (Sorcerer, Wizard)\nCasting Time: Action\nRange: 60 feet\nComponents: V, S\nDuration: Instantaneous\nA lance of embers streaks from your hand\u2026"
   },
   condition: {
+    button: "Condition",
     sub: "Paste a screenshot of a condition, or its text. The condition is saved to Conditions, keeps saving as you edit, and stat blocks link to it by its keywords.",
     step: " Condition",
     label: "Condition text",
@@ -64725,17 +66921,13 @@ function setMode(m) {
     mode2 = m;
     reset();
   }
-  try {
-    localStorage.setItem("makerMode", m);
-  } catch {
-  }
   const t = MODES[m];
   $("#mk-sub").textContent = t.sub;
   $("#mk-step1").textContent = t.step;
   $("#mk-text-label").firstChild.textContent = t.label;
   $("#mk-drop-hint").textContent = t.hint;
   $("#mk-text").placeholder = t.placeholder;
-  $("#mk-art").hidden = m !== "monster";
+  $("#mk-art").hidden = m !== "monster" && m !== "auto";
   for (const k of Object.keys(MODES)) $(`#mk-mode-${k}`).classList.toggle("on", m === k);
 }
 function wireDrop(zone, onFiles) {
@@ -64791,6 +66983,7 @@ function renderAvatar() {
 }
 function reset() {
   Object.assign(state, { images: [], avatar: null, monster: null, unsure: /* @__PURE__ */ new Set(), card: null });
+  kind = mode2 === "auto" ? null : mode2;
   $("#mk-card-review").hidden = true;
   $("#mk-text").value = "";
   renderThumbs();
@@ -64808,34 +67001,54 @@ async function readScreenshots() {
   $("#mk-ocr").disabled = $("#mk-parse").disabled = true;
   const started = Date.now();
   try {
-    const texts = [];
     const abilities = [null, null, null, null, null, null], unsure = [true, true, true, true, true, true];
-    for (const [n, img] of state.images.entries()) {
-      const prefix = state.images.length > 1 ? `Image ${n + 1} of ${state.images.length}: ` : "";
-      const r = await ocrImage(img, (msg) => status2("#mk-ocr-status", `${prefix}${msg} ${Math.round((Date.now() - started) / 1e3)}s`), { abilities: mode2 === "monster" });
-      texts.push(r.text.trim());
-      (r.abilities || []).forEach((s, i) => {
-        if (s != null && (abilities[i] == null || unsure[i] && !r.abilityUncertain[i])) {
-          abilities[i] = s;
-          unsure[i] = r.abilityUncertain[i];
-        }
-      });
-    }
+    const pass = async (wantAbilities) => {
+      const texts2 = [];
+      for (const [n, img] of state.images.entries()) {
+        const prefix = state.images.length > 1 ? `Image ${n + 1} of ${state.images.length}: ` : "";
+        const r = await ocrImage(img, (msg) => status2("#mk-ocr-status", `${prefix}${msg} ${Math.round((Date.now() - started) / 1e3)}s`), { abilities: wantAbilities });
+        texts2.push(r.text.trim());
+        (r.abilities || []).forEach((s, i) => {
+          if (s != null && (abilities[i] == null || unsure[i] && !r.abilityUncertain[i])) {
+            abilities[i] = s;
+            unsure[i] = r.abilityUncertain[i];
+          }
+        });
+      }
+      return texts2;
+    };
+    let texts = await pass(mode2 === "monster");
+    if (mode2 === "auto" && detectKind(texts.join("\n\n")) === "monster") texts = await pass(true);
     await loadChecker();
     $("#mk-text").value = texts.join("\n\n");
     status2("#mk-ocr-status", `Text read in ${Math.round((Date.now() - started) / 1e3)}s. Check it below, then the review.`, "ok");
-    if (CARDS[mode2]) readCard();
-    else readText(new Set(unsure.flatMap((u, i) => u ? [i] : [])));
+    readAny(new Set(unsure.flatMap((u, i) => u ? [i] : [])));
   } catch (e2) {
     status2("#mk-ocr-status", `Could not read the screenshot: ${e2.message || e2}`, "error");
   } finally {
     $("#mk-ocr").disabled = $("#mk-parse").disabled = false;
   }
 }
+function readAny(unsure) {
+  const text = $("#mk-text").value.trim();
+  if (mode2 === "auto" && text) {
+    const found = detectKind(text);
+    if (!found) return status2("#mk-parse-status", "Couldn\u2019t tell what this is. Pick Creature, Item, Spell or Condition at the top right, and it reads it as that.", "error");
+    if (found !== kind) {
+      Object.assign(state, { monster: null, card: null });
+      $("#mk-review").hidden = true;
+      $("#mk-card-review").hidden = true;
+    }
+    kind = found;
+  } else if (mode2 !== "auto") kind = mode2;
+  else return status2("#mk-parse-status", "Paste a screenshot or some text first.", "error");
+  if (CARDS[kind]) readCard();
+  else readText(unsure);
+}
 function readText(unsure) {
   const text = $("#mk-text").value.trim();
   if (!text) return status2("#mk-parse-status", "Paste a screenshot or the stat block text first.", "error");
-  if (!store.libraryPath) return status2("#mk-parse-status", "Choose a library folder first (top right), so the monster has somewhere to be saved.", "error");
+  if (!store.libraryPath) return status2("#mk-parse-status", "Choose a library folder first (top right), so the creature has somewhere to be saved.", "error");
   try {
     if (!checker) loadChecker();
     const data = parseStatBlock(text, { isWord: checker ? (w) => checker.correct(w) : null });
@@ -64843,6 +67056,7 @@ function readText(unsure) {
       if (data.abilities[a2] == null) unsure.add(i);
     });
     const prev = state.monster;
+    $("#mk-card-review").hidden = true;
     const monster = { ...data, id: prev?.id || newId(data.name), source: "Homebrew", created: prev?.created };
     monster.fightingStyle = guessStyle(monster);
     if (state.avatar) monster.avatar = state.avatar;
@@ -64886,21 +67100,21 @@ function renderPreview() {
   fill($("#mk-preview"), statBlock(safe));
 }
 function readCard() {
-  const c2 = CARDS[mode2], text = $("#mk-text").value.trim();
-  if (!text) return status2("#mk-parse-status", `Paste a screenshot or the ${mode2} text first.`, "error");
-  if (!store.libraryPath) return status2("#mk-parse-status", `Choose a library folder first (top right), so the ${mode2} has somewhere to be saved.`, "error");
+  const c2 = CARDS[kind], text = $("#mk-text").value.trim();
+  if (!text) return status2("#mk-parse-status", `Paste a screenshot or the ${kind} text first.`, "error");
+  if (!store.libraryPath) return status2("#mk-parse-status", `Choose a library folder first (top right), so the ${kind} has somewhere to be saved.`, "error");
   try {
     if (!checker) loadChecker();
     const data = c2.parse(text, { isWord: checker ? (w) => checker.correct(w) : null });
     const prev = state.card;
-    state.card = { ...data, name: data.name || c2.blank, id: prev?.id || newId(data.name || mode2), created: prev?.created };
+    state.card = { ...data, name: data.name || c2.blank, id: prev?.id || newId(data.name || kind), created: prev?.created };
     if (c2.source) state.card.source = c2.source;
     c2.settle?.(state.card);
     status2("#mk-parse-status", "");
     $("#mk-review").hidden = true;
     $("#mk-card-review").hidden = false;
     $("#mk-card-open").textContent = `Open in ${c2.place}`;
-    $("#mk-card-new").textContent = `New ${mode2}`;
+    $("#mk-card-new").textContent = `New ${kind}`;
     renderCard();
     cardChanged(`${prev ? "Updated" : "Saved"} to ${c2.place}.`);
   } catch (e2) {
@@ -64915,29 +67129,133 @@ function settleCondition(c2) {
   c2.keywords = [];
 }
 function drawCard() {
-  fill($("#mk-card-view"), h("div.cond-ref-body.spell-card", { html: CARDS[mode2].html(state.card) }));
+  fill($("#mk-card-view"), h("div.cond-ref-body.spell-card", { html: CARDS[kind].html(state.card) }));
 }
 function cardChanged(message) {
-  const c2 = CARDS[mode2];
+  const c2 = CARDS[kind];
   save(c2.kind, state.card);
   if (message) status2("#mk-card-saved", `${message} Changes save automatically${c2.more}.`, "ok");
   drawCard();
 }
 function renderCard() {
-  const card = state.card;
-  fill($("#mk-card-warnings"), ...(card.warnings || []).map((w) => h("li", w)));
-  fill($("#mk-card-form"), CARDS[mode2].editor(card, { changed: () => cardChanged(), redraw: renderCard }));
+  const card2 = state.card;
+  fill($("#mk-card-warnings"), ...(card2.warnings || []).map((w) => h("li", w)));
+  fill($("#mk-card-form"), CARDS[kind].editor(card2, { changed: () => cardChanged(), redraw: renderCard }));
   drawCard();
 }
 
 // src/tabs/items.js
 init_ui();
 init_store();
+
+// src/spell-dialog.js
+init_ui();
+init_store();
+var skipped = /* @__PURE__ */ new Set();
+var vocabulary = () => srdVocabulary(store.srd, allSpells(), store.conditions);
+async function spellingDialog(monsters, { title: title2 = "Spelling", kind: kind2 = "monsters", onOpen, onChanged } = {}) {
+  const noun = { monsters: "creature", items: "item", spells: "spell", conditions: "condition" }[kind2];
+  const body2 = h("div.spell-review", h("div.empty", "Loading the dictionary\u2026"));
+  const close2 = modal(title2, body2, [["Done", () => {
+  }, "primary"]]);
+  body2.closest(".modal")?.classList.add("wide");
+  const checker2 = await getChecker(vocabulary);
+  const open3 = /* @__PURE__ */ new Set();
+  let shown4 = 40;
+  function draw2() {
+    const words2 = /* @__PURE__ */ new Map();
+    for (const m of monsters) for (const issue of findIssues(m, checker2, [...skipped])) {
+      if (!words2.has(issue.word)) words2.set(issue.word, { word: issue.word, count: 0, monsters: [] });
+      const w = words2.get(issue.word);
+      w.count += issue.count;
+      w.monsters.push({ m, places: issue.places });
+    }
+    const list = [...words2.values()].sort((a2, b2) => b2.monsters.length - a2.monsters.length || b2.count - a2.count || a2.word.localeCompare(b2.word));
+    const fix = (w, to) => {
+      if (!to.trim()) return;
+      let n = 0;
+      for (const { m } of w.monsters) {
+        const k = replaceWord(m, w.word, to.trim());
+        if (k) {
+          n += k;
+          save(kind2, m, { delay: 0 });
+        }
+      }
+      onChanged?.();
+      draw2();
+      return n;
+    };
+    const many = monsters.length > 1;
+    fill(
+      body2,
+      h("p.muted", list.length ? `${list.length} word${list.length === 1 ? "" : "s"} the dictionary doesn't know${many ? ` in ${new Set(list.flatMap((w) => w.monsters.map((x) => x.m.id))).size} of your ${monsters.length} ${noun}s` : ""}. Words used in the SRD (game terms, monster and spell names) already count as correct. Fixing a word changes it everywhere it's listed.` : `No spelling problems found${many ? ` in your ${monsters.length} ${noun}s` : ""}.`),
+      list.slice(0, shown4).map((w) => {
+        const own = h("input.spell-own", { type: "text", placeholder: "Your spelling", onkeydown: (e2) => {
+          if (e2.key === "Enter") fix(w, e2.target.value);
+        } });
+        const isOpen = open3.has(w.word);
+        return h(
+          "div.spell-row",
+          h(
+            "div.spell-top",
+            h("button.icon-btn.chev", { title: isOpen ? "Hide where it is" : "Show where it is", onclick: () => {
+              if (isOpen) open3.delete(w.word);
+              else open3.add(w.word);
+              draw2();
+            } }, isOpen ? "\u25BE" : "\u25B8"),
+            h("span.spell-word", w.word),
+            h("span.muted", `\xD7${w.count}${many ? ` in ${w.monsters.length} ${noun}${w.monsters.length === 1 ? "" : "s"}` : ""}`),
+            h("div.spell-sugg", checker2.suggest(w.word).map((s) => h("button.sugg", { title: `Change "${w.word}" to "${s}" everywhere listed`, onclick: () => fix(w, s) }, s))),
+            h(
+              "div.spell-actions",
+              own,
+              h("button", { onclick: () => fix(w, own.value) }, "Replace"),
+              h("button", { title: "Known from now on, everywhere", onclick: async () => {
+                await addUserWord(w.word);
+                draw2();
+              } }, "Add to dictionary"),
+              h("button.link", { title: "Hide it until the app is closed", onclick: () => {
+                skipped.add(w.word.toLowerCase());
+                draw2();
+              } }, "Skip")
+            )
+          ),
+          isOpen ? h("div.spell-places", w.monsters.flatMap(({ m, places }) => places.map((p) => h(
+            "div.spell-place",
+            many || onOpen ? h("button.link", { onclick: () => {
+              close2();
+              onOpen?.(m);
+            } }, m.name) : null,
+            h("span.muted", ` ${p.field}: `),
+            h("span", { html: `\u2026${esc(p.before)}<mark>${esc(w.word)}</mark>${esc(p.after)}\u2026` })
+          )))) : null
+        );
+      }),
+      list.length > shown4 ? h("button.load-more", { onclick: () => {
+        shown4 += 40;
+        draw2();
+      } }, `Show more (${list.length - shown4} left)`) : null
+    );
+  }
+  draw2();
+}
+
+// src/reader-notes.js
+var MINOR = /^Added the missing period\b/;
+var needsReview = (x) => (x.warnings || []).some((w) => !MINOR.test(w));
+var REVIEW_OPTIONS = [["check", "Needs review"], ["any", "Any reader notes"]];
+var reviewMatches = (x, choice) => !choice || (choice === "check" ? needsReview(x) : !!x.warnings?.length);
+var REVIEW_TIP = "The reader was unsure of something here. Open it to see its notes.";
+
+// src/tabs/items.js
+init_loot();
 var el2;
 var go2;
 var selectedId = null;
 var shown = 200;
-var filter = { q: "", category: "", rarity: "", source: "" };
+var filtersOpen = false;
+var noFilter = () => ({ q: "", category: "", rarity: "", source: "", review: "" });
+var filter = noFilter();
 var mine = (x) => store.items.includes(x);
 function mountItems(root, navigate) {
   el2 = root;
@@ -64955,10 +67273,18 @@ function mountItems(root, navigate) {
             shown = 200;
             renderList();
           } }),
+          h("button#it-filter-btn", { onclick: () => {
+            filtersOpen = !filtersOpen;
+            renderFilters();
+          } }, "Filters"),
+          h("button", { title: "Check the spelling of all your items", onclick: () => spellingDialog(store.items, { title: "Spelling in your items", kind: "items", onOpen: (x) => showItems(x.id), onChanged: () => {
+            renderList();
+            renderEdit();
+          } }) }, "Spelling"),
           h("button", { title: "Make an item from a screenshot or pasted text", onclick: () => go2("maker", "item") }, "From screenshot"),
           h("button.primary", { onclick: newItem }, "New")
         ),
-        h("div.lib-filters#it-filters"),
+        h("div.lib-filters#it-filters", { hidden: true }),
         h("div.list-count#it-count"),
         h("div.list#it-list")
       ),
@@ -64966,14 +67292,14 @@ function mountItems(root, navigate) {
       h("div.card.preview-pane#it-card")
     )
   );
-  onChange((kind) => {
-    if (!el2.hidden && (kind === "all" || kind === "items")) renderList();
+  onChange((kind2) => {
+    if (!el2.hidden && (kind2 === "all" || kind2 === "items")) renderList();
   });
 }
 function showItems(id) {
   if (id) {
     selectedId = id;
-    Object.assign(filter, { q: "", category: "", rarity: "", source: "" });
+    Object.assign(filter, noFilter());
     el2.querySelector("#it-q").value = "";
   }
   renderFilters();
@@ -64982,6 +67308,12 @@ function showItems(id) {
   if (id) el2.querySelector("#it-list .active")?.scrollIntoView({ block: "center" });
 }
 function renderFilters() {
+  const box = el2.querySelector("#it-filters");
+  const n = [filter.category, filter.rarity, filter.source, filter.review].filter(Boolean).length;
+  el2.querySelector("#it-filter-btn").textContent = n ? `Filters (${n})` : "Filters";
+  el2.querySelector("#it-filter-btn").classList.toggle("on", filtersOpen || n > 0);
+  box.hidden = !filtersOpen;
+  if (!filtersOpen) return;
   const changed3 = () => {
     shown = 200;
     renderFilters();
@@ -64997,12 +67329,13 @@ function renderFilters() {
     options.map(([v, t]) => h("option", { value: v, selected: filter[key3] === v }, t))
   ));
   fill(
-    el2.querySelector("#it-filters"),
+    box,
     sel("Category", "category", Object.entries(CATEGORY_LABELS)),
     sel("Rarity", "rarity", RARITIES.map((r) => [r, r])),
     sel("Source", "source", [["mine", "My items"], ["srd", "SRD 5.2.1 and built-in"]]),
-    filter.category || filter.rarity || filter.source ? h("button.link.wide", { onclick: () => {
-      Object.assign(filter, { category: "", rarity: "", source: "" });
+    sel("Reader notes", "review", REVIEW_OPTIONS),
+    n ? h("button.link.wide", { onclick: () => {
+      Object.assign(filter, noFilter(), { q: filter.q });
       changed3();
     } }, "Clear filters") : null
   );
@@ -65013,7 +67346,7 @@ function matches(x) {
   if (filter.category && x.category !== filter.category) return false;
   if (filter.rarity && x.rarity !== filter.rarity) return false;
   if (filter.source && filter.source === "mine" !== mine(x)) return false;
-  return true;
+  return reviewMatches(x, filter.review);
 }
 function renderList() {
   const list = allItems().filter(matches).sort((a2, b2) => a2.name.localeCompare(b2.name));
@@ -65027,7 +67360,7 @@ function renderList() {
     } },
     h(
       "div.list-main",
-      h("div.list-name", x.name, mine(x) ? null : h("span.tag", x.source === "Built-in" ? "BUILT-IN" : "SRD"), x.loot === false ? h("span.tag", { title: "Never drops as loot" }, "NO LOOT") : null),
+      h("div.list-name", x.name, mine(x) ? null : h("span.tag", x.source === "Built-in" ? "BUILT-IN" : "SRD"), x.loot === false ? h("span.tag", { title: "Never drops as loot" }, "NO LOOT") : null, needsReview(x) ? h("span.tag.check", { title: REVIEW_TIP }, "CHECK") : null),
       h("div.list-sub", itemTypeLine(x))
     )
   ));
@@ -65056,14 +67389,14 @@ function duplicate(x) {
 var relist = debounce(() => renderList(), 300);
 var refreshCard = debounce((x) => fill(el2.querySelector("#it-card"), h("div.cond-ref-body.spell-card", { html: itemHtml(x) })), 150);
 function renderEdit() {
-  const pane = el2.querySelector("#it-edit"), card = el2.querySelector("#it-card");
+  const pane = el2.querySelector("#it-edit"), card2 = el2.querySelector("#it-card");
   const x = findItem(selectedId);
   if (!x) {
     fill(pane, h("div.empty", `Pick an item, click New, or make one from a screenshot. ${store.srdItems.length} SRD items, ${store.items.length} of yours.`));
-    card.replaceChildren();
+    card2.replaceChildren();
     return;
   }
-  fill(card, h("div.cond-ref-body.spell-card", { html: itemHtml(x) }));
+  fill(card2, h("div.cond-ref-body.spell-card", { html: itemHtml(x) }));
   if (!mine(x)) {
     fill(
       pane,
@@ -65106,58 +67439,12 @@ function renderEdit() {
 // src/tabs/party.js
 init_ui();
 init_store();
-
-// src/monster-picker.js
-init_ui();
-init_store();
-function pickMonster({ title: title2, okText = "Add", count = null, hint = "", onPick }) {
-  let chosen = null, query3 = "";
-  const search = h("input.search", { type: "search", placeholder: "Search creatures by name" });
-  const list = h("div.pick-list");
-  const many = count != null ? h("input", { type: "number", min: 1, max: 30, value: count }) : null;
-  const draw2 = () => {
-    const q = query3.trim().toLowerCase();
-    const found = allMonsters().filter((m) => !q || m.name.toLowerCase().includes(q)).sort((a2, b2) => (q ? (a2.name.toLowerCase().startsWith(q) ? 0 : 1) - (b2.name.toLowerCase().startsWith(q) ? 0 : 1) : 0) || (isHomebrew(a2) ? 0 : 1) - (isHomebrew(b2) ? 0 : 1) || a2.name.localeCompare(b2.name)).slice(0, 60);
-    fill(list, found.length ? found.map((m) => h(
-      "button.pick-row" + (chosen === m ? ".active" : ""),
-      {
-        onclick: () => {
-          chosen = m;
-          draw2();
-        },
-        ondblclick: () => {
-          chosen = m;
-          if (ok() !== false) close();
-        }
-      },
-      avatar(m.avatar, m.name, "xs"),
-      h("span.pick-name", m.name),
-      h("span.muted", [m.challengeRating != null && `CR ${m.challengeRating}`, m.typeText || m.monsterType, isHomebrew(m) ? "yours" : "SRD"].filter(Boolean).join(" \xB7 "))
-    )) : h("div.empty", "No creature by that name. Make one in the Maker or the Creatures tab first."));
-  };
-  search.addEventListener("input", () => {
-    query3 = search.value;
-    draw2();
-  });
-  const ok = () => {
-    if (!chosen) return false;
-    onPick(chosen, many ? Math.max(1, Math.min(30, Math.round(Number(many.value)) || 1)) : 1);
-  };
-  const close = modal(title2, h(
-    "div.pick",
-    search,
-    list,
-    many ? h("label.mg-row", "How many", many) : null,
-    hint ? h("div.hint", hint) : null
-  ), [["Cancel", () => {
-  }], [okText, ok, "primary"]]);
-  draw2();
-  search.focus();
-}
+init_monster_picker();
 
 // src/forms-editor.js
 init_ui();
 init_store();
+init_monster_picker();
 function formsEditor(x, changed3) {
   const box = h("div.shifter");
   const list = () => x.forms || (x.forms = []);
@@ -65374,61 +67661,8 @@ function parseDdbSheet(fields2) {
   return { basics, sheet };
 }
 
-// src/sheet.js
-init_ui();
-init_conditions();
-init_spells();
-var sign = (n) => n >= 0 ? `+${n}` : `${n}`;
-var mod3 = (s) => Math.floor(((s ?? 10) - 10) / 2);
-var ABBR2 = { strength: "STR", dexterity: "DEX", constitution: "CON", intelligence: "INT", wisdom: "WIS", charisma: "CHA" };
-var bonusExpr = (b2) => {
-  const n = parseInt(String(b2).replace(/[−–]/, "-"), 10);
-  return Number.isFinite(n) ? `1d20${sign(n)}` : null;
-};
-var roll2 = (text, expr, label, who) => expr ? rollButton(text, expr, label, who) : esc(text);
-var block = (title2, text, open2 = false) => text ? `<details class="sh-text"${open2 ? " open" : ""}><summary>${title2}</summary><div>${condify(spellify(esc(text.replace(/[ \t]+\n/g, "\n").trim()))).replace(/\n/g, "<br>")}</div></details>` : "";
-function characterSheet(c2, opts2 = {}) {
-  const s = c2.sheet, who = c2.name;
-  if (!s) return h("div.empty", "No character sheet yet. Import this character's D&D Beyond PDF on the Party tab to see the full sheet here.");
-  const imported = new Date(s.importedAt).toLocaleDateString(void 0, { month: "short", day: "numeric", year: "numeric" });
-  const abil = Object.entries(s.abilities).map(([k, v]) => `<div class="sh-abil"><div class="sh-k">${ABBR2[k]}</div><div class="sh-score">${v ?? "\u2014"}</div>${roll2(sign(mod3(v)), `1d20${sign(mod3(v))}`, `${ABBR2[k]} check`, who)}</div>`).join("");
-  const saves = s.saves.map((x) => `<span class="sh-chip${x.proficient ? " prof" : ""}" title="${x.proficient ? "Proficient" : ""}">${x.ability} ${roll2(sign(x.bonus), `1d20${sign(x.bonus)}`, `${x.ability} save`, who)}</span>`).join("");
-  const skills = s.skills.map((k) => `<div class="sh-skill${k.proficiency ? ` ${k.proficiency}` : ""}"><span class="sh-mark" title="${k.proficiency}">${k.proficiency === "expertise" ? "E" : k.proficiency === "proficient" ? "P" : k.proficiency === "half" ? "\xBD" : ""}</span><span>${esc(k.name)} <small>${k.ability}</small></span>${roll2(sign(k.bonus), `1d20${sign(k.bonus)}`, k.name, who)}</div>`).join("");
-  const attacks = s.attacks.length ? `<table class="sh-table"><thead><tr><th>Attack</th><th>Hit</th><th>Damage</th><th>Notes</th></tr></thead><tbody>${s.attacks.map((a2) => `<tr><td>${esc(a2.name)}</td><td>${roll2(a2.hit, bonusExpr(a2.hit), `${a2.name}: to hit`, who)}</td><td>${a2.damageDice && /d/.test(a2.damageDice) ? rollButton(a2.damageDice, a2.damageDice, `${a2.name}: damage`, who) : esc(a2.damageDice)} ${esc(a2.damageType)}</td><td class="sh-notes">${esc(a2.notes)}</td></tr>`).join("")}</tbody></table>` : "";
-  const levels2 = [...new Set(s.spells.map((x) => x.level))];
-  const spells = levels2.map((lv, i) => {
-    const list = s.spells.filter((x) => x.level === lv);
-    return `<details class="sh-spells"${i < 2 ? " open" : ""}><summary>${esc(lv)} <span class="muted">${esc(s.slots[lv] || "")} \xB7 ${list.length}</span></summary><table class="sh-table"><tbody>${list.map((x) => `<tr><td>${spellLink(x.name)}${x.prepared ? ' <span class="tag">ALWAYS</span>' : ""}</td><td>${/^[+\-]\d/.test(x.saveHit) ? roll2(x.saveHit, bonusExpr(x.saveHit), `${x.name}: spell attack`, who) : esc(x.saveHit)}</td><td>${esc(x.time)}</td><td>${esc(x.range)}</td><td class="sh-notes">${esc(x.duration)}</td></tr>`).join("")}</tbody></table></details>`;
-  }).join("");
-  const casting = s.casting.map((k) => `<span class="sh-chip">${esc(k.className || "Spellcasting")} \xB7 ${esc(k.ability)} \xB7 DC ${k.saveDC ?? "\u2014"} \xB7 ${roll2(k.attack, bonusExpr(k.attack), "Spell attack", who)}</span>`).join("");
-  const look = Object.entries(s.appearance || {}).map(([k, v]) => `${k[0].toUpperCase()}${k.slice(1)}: ${v}`).join(" \xB7 ");
-  const person = Object.entries(s.personality || {}).map(([k, v]) => `${k[0].toUpperCase()}${k.slice(1)}:
-${v}`).join("\n\n");
-  const html = `
-    <div class="sh-head">${esc([s.classText, s.species, s.background, s.appearance?.alignment].filter(Boolean).join(" \xB7 "))}<span class="sh-imported">Imported ${imported}</span></div>
-    <div class="sh-combat">
-      <div><div class="sh-k">AC</div><div class="sh-v">${c2.armorClass ?? "\u2014"}</div></div>
-      <div><div class="sh-k">HP</div><div class="sh-v">${opts2.hp != null ? `${opts2.hp}/` : ""}${c2.maxHp ?? "\u2014"}</div><div class="sh-sub">${esc(s.hitDice)}</div></div>
-      <div><div class="sh-k">Speed</div><div class="sh-v">${c2.speed ?? "\u2014"}</div><div class="sh-sub">ft.</div></div>
-      <div><div class="sh-k">Init</div><div class="sh-v">${rollButton(sign(c2.initiativeBonus || 0), `1d20${sign(c2.initiativeBonus || 0)}`, "Initiative", who)}</div></div>
-      <div><div class="sh-k">Prof.</div><div class="sh-v">${esc(s.proficiencyBonus)}</div></div>
-    </div>
-    <div class="sh-abils">${abil}</div>
-    <div class="sh-row"><span class="sh-label">Saves</span> ${saves}</div>
-    <div class="sh-row sh-small"><span class="sh-label">Passive</span> Perception ${s.passives.perception ?? "\u2014"} \xB7 Insight ${s.passives.insight ?? "\u2014"} \xB7 Investigation ${s.passives.investigation ?? "\u2014"}${s.senses ? ` \xB7 ${esc(s.senses)}` : ""}</div>
-    ${s.defenses ? `<div class="sh-row sh-small"><span class="sh-label">Defenses</span> ${condify(esc(s.defenses))}</div>` : ""}
-    ${attacks ? `<div class="sh-section">Attacks</div>${attacks}` : ""}
-    ${s.spells.length || s.casting.length ? `<div class="sh-section">Spells</div><div class="sh-row">${casting}</div>${spells}` : ""}
-    <details class="sh-text"${opts2.compact ? "" : " open"}><summary>Skills</summary><div class="sh-skills">${skills}</div></details>
-    ${block("Actions", s.actions)}
-    ${block("Features & traits", s.features)}
-    ${opts2.compact ? "" : block("Proficiencies & languages", s.proficiencies)}
-    ${opts2.compact ? "" : s.equipment?.length ? block("Equipment", s.equipment.map((e2) => `${e2.name}${e2.qty > 1 ? ` \xD7${e2.qty}` : ""}`).join(", ")) : ""}
-    ${opts2.compact ? "" : block("Appearance & personality", [look, person].filter(Boolean).join("\n\n"))}`;
-  return h("div.sheet", { html });
-}
-
 // src/tabs/party.js
+init_sheet();
 var el3;
 var selectedId2 = null;
 function blankCharacter() {
@@ -65476,13 +67710,14 @@ function mountParty(root) {
     e2.preventDefault();
     importPdfs(pdfs);
   });
-  onChange((kind) => {
-    if (kind === "all" || kind === "party") renderList2();
+  onChange((kind2) => {
+    if (kind2 === "all" || kind2 === "party") renderList2();
   });
   pasteToPicture(el3);
   render2();
 }
-function showParty() {
+function showParty(id) {
+  if (id) selectedId2 = id;
   render2();
 }
 function render2() {
@@ -65529,8 +67764,6 @@ function renderEdit2() {
       selectedId2 = null;
       render2();
     }) }, "Delete")),
-    pic,
-    formsEditor(c2, () => save("party", c2)),
     h(
       "div.form-grid",
       field("Name", "name"),
@@ -65553,6 +67786,8 @@ function renderEdit2() {
     ),
     h("div.hint", `Initiative rolls as 1d20${signed(c2.initiativeBonus || 0)}.`),
     h("div.hint", "Power multiplier: 1 = what their level suggests. Raise it (e.g. 1.1\u20131.25) for a character whose magic items make them stronger than their level, or lower it for one who is weaker. It scales their share of the encounter difficulty thresholds, so the same monsters rate a little easier."),
+    pic,
+    formsEditor(c2, () => save("party", c2)),
     companionsEditor(c2),
     h(
       "div.sheet-head",
@@ -65733,106 +67968,14 @@ function applyImport(results) {
 // src/tabs/library.js
 init_ui();
 init_store();
-
-// src/spell-dialog.js
-init_ui();
-init_store();
-var skipped = /* @__PURE__ */ new Set();
-var vocabulary = () => srdVocabulary(store.srd, allSpells(), store.conditions);
-async function spellingDialog(monsters, { title: title2 = "Spelling", onOpen, onChanged } = {}) {
-  const body2 = h("div.spell-review", h("div.empty", "Loading the dictionary\u2026"));
-  const close = modal(title2, body2, [["Done", () => {
-  }, "primary"]]);
-  body2.closest(".modal")?.classList.add("wide");
-  const checker2 = await getChecker(vocabulary);
-  const open2 = /* @__PURE__ */ new Set();
-  let shown4 = 40;
-  function draw2() {
-    const words2 = /* @__PURE__ */ new Map();
-    for (const m of monsters) for (const issue of findIssues(m, checker2, [...skipped])) {
-      if (!words2.has(issue.word)) words2.set(issue.word, { word: issue.word, count: 0, monsters: [] });
-      const w = words2.get(issue.word);
-      w.count += issue.count;
-      w.monsters.push({ m, places: issue.places });
-    }
-    const list = [...words2.values()].sort((a2, b2) => b2.monsters.length - a2.monsters.length || b2.count - a2.count || a2.word.localeCompare(b2.word));
-    const fix = (w, to) => {
-      if (!to.trim()) return;
-      let n = 0;
-      for (const { m } of w.monsters) {
-        const k = replaceWord(m, w.word, to.trim());
-        if (k) {
-          n += k;
-          save("monsters", m, { delay: 0 });
-        }
-      }
-      onChanged?.();
-      draw2();
-      return n;
-    };
-    const many = monsters.length > 1;
-    fill(
-      body2,
-      h("p.muted", list.length ? `${list.length} word${list.length === 1 ? "" : "s"} the dictionary doesn't know${many ? ` in ${new Set(list.flatMap((w) => w.monsters.map((x) => x.m.id))).size} of your ${monsters.length} monsters` : ""}. Words used in the SRD (game terms, monster and spell names) already count as correct. Fixing a word changes it everywhere it's listed.` : `No spelling problems found${many ? ` in your ${monsters.length} monsters` : ""}.`),
-      list.slice(0, shown4).map((w) => {
-        const own = h("input.spell-own", { type: "text", placeholder: "Your spelling", onkeydown: (e2) => {
-          if (e2.key === "Enter") fix(w, e2.target.value);
-        } });
-        const isOpen = open2.has(w.word);
-        return h(
-          "div.spell-row",
-          h(
-            "div.spell-top",
-            h("button.icon-btn.chev", { title: isOpen ? "Hide where it is" : "Show where it is", onclick: () => {
-              if (isOpen) open2.delete(w.word);
-              else open2.add(w.word);
-              draw2();
-            } }, isOpen ? "\u25BE" : "\u25B8"),
-            h("span.spell-word", w.word),
-            h("span.muted", `\xD7${w.count}${many ? ` in ${w.monsters.length} monster${w.monsters.length === 1 ? "" : "s"}` : ""}`),
-            h("div.spell-sugg", checker2.suggest(w.word).map((s) => h("button.sugg", { title: `Change "${w.word}" to "${s}" everywhere listed`, onclick: () => fix(w, s) }, s))),
-            h(
-              "div.spell-actions",
-              own,
-              h("button", { onclick: () => fix(w, own.value) }, "Replace"),
-              h("button", { title: "Known from now on, in every monster", onclick: async () => {
-                await addUserWord(w.word);
-                draw2();
-              } }, "Add to dictionary"),
-              h("button.link", { title: "Hide it until the app is closed", onclick: () => {
-                skipped.add(w.word.toLowerCase());
-                draw2();
-              } }, "Skip")
-            )
-          ),
-          isOpen ? h("div.spell-places", w.monsters.flatMap(({ m, places }) => places.map((p) => h(
-            "div.spell-place",
-            many || onOpen ? h("button.link", { onclick: () => {
-              close();
-              onOpen?.(m);
-            } }, m.name) : null,
-            h("span.muted", ` ${p.field}: `),
-            h("span", { html: `\u2026${esc(p.before)}<mark>${esc(w.word)}</mark>${esc(p.after)}\u2026` })
-          )))) : null
-        );
-      }),
-      list.length > shown4 ? h("button.load-more", { onclick: () => {
-        shown4 += 40;
-        draw2();
-      } }, `Show more (${list.length - shown4} left)`) : null
-    );
-  }
-  draw2();
-}
-
-// src/tabs/library.js
+init_statblock();
 init_constants();
 
 // src/monster-filter.js
 init_store();
 init_rules();
-var emptyFilter = () => ({ q: "", type: "", race: "", size: "", source: "", crMin: "0", crMax: "30" });
-var activeFilters = (f) => ["type", "race", "size", "source"].filter((k) => f[k]).length + (f.crMin !== "0" || f.crMax !== "30" ? 1 : 0);
+var emptyFilter = () => ({ q: "", type: "", race: "", size: "", source: "", review: "", crMin: "0", crMax: "30" });
+var activeFilters = (f) => ["type", "race", "size", "source", "review"].filter((k) => f[k]).length + (f.crMin !== "0" || f.crMax !== "30" ? 1 : 0);
 var titleCase2 = (s) => s.replace(/\b\w/g, (c2) => c2.toUpperCase());
 function raceOptions() {
   const seen2 = /* @__PURE__ */ new Map();
@@ -65849,343 +67992,24 @@ function matches2(m, f) {
   if (f.race && !(m.subtypes || []).some((s) => String(s).trim().toLowerCase() === f.race)) return false;
   if (f.size && m.size !== f.size) return false;
   if (f.source && f.source === "homebrew" !== isHomebrew(m)) return false;
+  if (!reviewMatches(m, f.review)) return false;
   const c2 = crValue(m.challengeRating);
   return c2 >= crValue(f.crMin) && c2 <= crValue(f.crMax);
 }
 
 // src/tabs/library.js
 init_rules();
+init_generator();
 
 // src/tabs/loot-tables.js
 init_ui();
 init_store();
 init_constants();
-
-// src/loot-dialog.js
-init_ui();
-init_store();
-
-// src/encounters.js
-init_ui();
-init_store();
-init_rules();
-var DIFF_HELP = {
-  Trivial: "Below the lowest threshold: barely a speed bump.",
-  Easy: "Easy (2014): the party should win without real risk.",
-  Medium: "Medium (2014): a scare or two, but no one should die.",
-  Hard: "Hard (2014): could go badly; a character might drop.",
-  Deadly: "Deadly (2014): could kill one or more characters.",
-  Low: "Low (2024): a scary moment or two; the party should win with no casualties, maybe using some healing.",
-  Moderate: "Moderate (2024): without healing and other resources it could go badly; a character might go down.",
-  High: "High (2024): could be lethal for one or more characters; needs smart tactics and some luck."
-};
-function newEncounter() {
-  let rules = "2014";
-  try {
-    rules = localStorage.getItem("rules") || "2014";
-  } catch {
-  }
-  return { id: newId("encounter"), name: "New Encounter", rules, characterIds: store.party.map((c2) => c2.id), extraPlayers: { count: 0, level: 1 }, groups: [], summary: "", combat: null };
-}
-function encounterParty(enc2) {
-  const chars = (enc2.characterIds || []).map(findCharacter).filter(Boolean);
-  const extra = enc2.extraPlayers?.count > 0 ? Array(enc2.extraPlayers.count).fill({ level: Number(enc2.extraPlayers.level) || 1, power: 1 }) : [];
-  return [...chars.map((c2) => ({ level: Number(c2.level) || 1, power: clampPower(c2.power ?? 1) })), ...extra];
-}
-var encounterLevels = (enc2) => encounterParty(enc2).map((p) => p.level);
-function partyPower(enc2) {
-  const p = encounterParty(enc2);
-  return p.length ? p.reduce((n, x) => n + x.power, 0) / p.length : 1;
-}
-var groupCr = (g) => findMonster(g.monsterId)?.challengeRating ?? g.cr ?? "0";
-var encounterCrs = (enc2) => (enc2.groups || []).flatMap((g) => {
-  const m = findMonster(g.monsterId);
-  return Array(g.count).fill(m ? xpItem(m) : g.cr ?? "0");
-});
-var runsAsGroup = (g) => g.count > 1 && (g.runAsGroup ?? isMinion(findMonster(g.monsterId)));
-var evaluateEncounter = (enc2) => evaluate(encounterCrs(enc2), encounterParty(enc2), enc2.rules);
-function difficultyClass(name) {
-  return `diff-${String(name).toLowerCase()}`;
-}
-function dots(rank, max) {
-  return h(`span.dots.r${rank}`, { title: "" }, Array.from({ length: max }, (_, i) => h("span.dot" + (i < rank ? ".on" : ""))));
-}
-var fmtDate = (t) => t ? new Date(t).toLocaleDateString(void 0, { month: "short", day: "numeric", year: "numeric" }) : "";
-var fmtTime = (t) => t ? new Date(t).toLocaleTimeString(void 0, { hour: "numeric", minute: "2-digit" }) : "";
-function encounterTable(opts2) {
-  const q = (opts2.query || "").toLowerCase();
-  const list = store.encounters.filter((e2) => !q || e2.name.toLowerCase().includes(q)).sort((a2, b2) => a2.name.localeCompare(b2.name, void 0, { numeric: true }));
-  if (!list.length) return h("div.empty", store.encounters.length ? "No encounters match." : "No encounters yet. Click Create New to build one.");
-  return h(
-    "div.enc-table",
-    h("div.enc-row.enc-headrow", h("div", "Name"), h("div", "Created"), h("div", "Rules"), h("div", "Difficulty"), h("div", "Party"), h("div", "Last saved"), h("div")),
-    list.map((e2) => {
-      const r = evaluateEncounter(e2);
-      return h(
-        "div.enc-row",
-        h("button.enc-name", { onclick: () => opts2.onOpen(e2) }, e2.name || "Untitled"),
-        h("div", fmtDate(e2.created)),
-        h("div.muted", e2.rules === "2024" ? "2024" : "2014"),
-        h(`div.${difficultyClass(r.difficulty)}`, r.difficulty),
-        h("div", partyLabel(encounterLevels(e2))),
-        h("div.when", fmtTime(e2.updated), h("br"), fmtDate(e2.updated)),
-        h(
-          "div.enc-actions",
-          h("button.outline", { onclick: () => opts2.onRun(e2) }, e2.combat ? "Resume" : "Run"),
-          opts2.menu ? h("button.icon-btn.kebab", { title: "More", onclick: (ev) => popMenu(ev.currentTarget, opts2.menu(e2)) }, "\u22EE") : null
-        )
-      );
-    })
-  );
-}
-var powerText = (p) => `\xD7${Number(Number(p).toFixed(2))}`;
-function manageCharactersDialog(target, onSave) {
-  const picked = new Set(target.characterIds || []);
-  const extra = { ...target.extraPlayers || { count: 0, level: 1 } };
-  const body2 = h(
-    "div.manage",
-    store.party.length ? h("div.check-list", [...store.party].sort((a2, b2) => a2.name.localeCompare(b2.name)).map((c2) => h(
-      "label.check-row",
-      h("input", { type: "checkbox", checked: picked.has(c2.id), onchange: (ev) => ev.target.checked ? picked.add(c2.id) : picked.delete(c2.id) }),
-      avatar(c2.avatar, c2.name, "xs"),
-      h("span", c2.name),
-      h("span.muted", `Level ${c2.level}${c2.className ? ` \xB7 ${c2.className}` : ""}${(c2.power ?? 1) !== 1 ? ` \xB7 ${powerText(c2.power)}` : ""}`)
-    ))) : h("p.muted", "No characters in your party yet. Add them in the Party tab, or use generic players below."),
-    h("h4", "Generic players"),
-    h(
-      "div.row-gap",
-      h("label.inline", "Count", h("input", { type: "number", min: 0, max: 20, value: extra.count, oninput: (ev) => {
-        extra.count = Math.max(0, Number(ev.target.value) || 0);
-      } })),
-      h("label.inline", "Level", h("input", { type: "number", min: 1, max: 20, value: extra.level, oninput: (ev) => {
-        extra.level = Math.min(20, Math.max(1, Number(ev.target.value) || 1));
-      } }))
-    ),
-    h("p.hint", `Party: ${partyLabel(encounterLevels(target))} now.`)
-  );
-  modal("Manage characters", body2, [
-    ["Cancel", () => {
-    }],
-    ["Save", () => {
-      target.characterIds = [...picked];
-      target.extraPlayers = extra;
-      onSave();
-    }, "primary"]
-  ]);
-}
-function popMenu(anchor, items) {
-  document.querySelector(".pop-menu")?.remove();
-  const r = anchor.getBoundingClientRect();
-  const menu = h(
-    "div.pop-menu",
-    { style: `top:${r.bottom + 4}px;left:${Math.max(8, r.right - 180)}px` },
-    items.map(([label, fn, cls = "", attrs = {}]) => h(`button${cls ? "." + cls : ""}`, { ...attrs, onclick: () => {
-      menu.remove();
-      fn();
-    } }, label))
-  );
-  document.body.append(menu);
-  setTimeout(() => document.addEventListener("mousedown", function off(e2) {
-    if (!menu.contains(e2.target)) {
-      menu.remove();
-      document.removeEventListener("mousedown", off);
-    }
-  }), 0);
-}
-
-// src/loot-dialog.js
-init_tooltip();
-var pockets = /* @__PURE__ */ new Map();
-var esc3 = (s) => String(s ?? "").replace(/[&<>"]/g, (c2) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c2]);
-registerTip("pocket", (n) => {
-  const x = pockets.get(Number(n));
-  return x ? `<div class="cond-name">${esc3(x.name)}</div><div class="spell-meta">${x.kind === "harvest" ? "Harvestable" : "Pocket item"}</div><div class="item-stat"><strong>${x.kind === "harvest" ? "Worth about" : "Worth"}</strong> ${esc3(priceText(x.value))}${x.qty > 1 ? " each" : ""}</div><div class="item-text"><p><em>${esc3(x.desc)}</em></p></div>` : "";
-});
-var currentTables = () => lootTables(defaultLootThemes(), store.loot);
-function lootOf(m) {
-  const o = !m || isHomebrew(m) ? null : store.loot.find((r) => r.id === MONSTER_LOOT_ID)?.monsters?.[m.id];
-  return o ? { ...m, ...o } : m;
-}
-function setSrdLoot(m, key3, value) {
-  const rec = store.loot.find((r) => r.id === MONSTER_LOOT_ID) || { id: MONSTER_LOOT_ID, monsters: {} };
-  const entry = rec.monsters[m.id] || {};
-  if (!value || value === "auto") delete entry[key3];
-  else entry[key3] = value;
-  if (Object.keys(entry).length) rec.monsters[m.id] = entry;
-  else delete rec.monsters[m.id];
-  save("loot", rec);
-}
-var LOOT_DEFAULTS = { generosity: 1 };
-function lootSettings() {
-  try {
-    return { ...LOOT_DEFAULTS, ...JSON.parse(localStorage.getItem("lootSettings") || "{}") };
-  } catch {
-    return { ...LOOT_DEFAULTS };
-  }
-}
-function setLootSettings(s) {
-  try {
-    localStorage.setItem("lootSettings", JSON.stringify(s));
-  } catch {
-  }
-}
-function encounterEnemies(enc2) {
-  const by = /* @__PURE__ */ new Map();
-  const add2 = (id, n) => {
-    const m = lootOf(findMonster(id));
-    if (m) by.set(id, { monster: m, count: (by.get(id)?.count || 0) + n });
-  };
-  if (enc2.combat?.combatants?.length) {
-    for (const c2 of enc2.combat.combatants) if (c2.kind === "monster" && c2.refId && !c2.ally && !c2.summoned) add2(c2.refId, isGroup(c2) ? c2.members.length : 1);
-  } else for (const g of enc2.groups || []) add2(g.monsterId, g.count);
-  return [...by.values()];
-}
-function encounterLevel(enc2) {
-  const p = encounterParty(enc2);
-  return p.length ? Math.round(p.reduce((n, x) => n + x.level, 0) / p.length) : null;
-}
-function lootDialog(enc2) {
-  const enemies = encounterEnemies(enc2).map((x) => ({ ...x, on: true }));
-  const tables = currentTables();
-  const st = { generosity: lootSettings().generosity, magic: false, magicCount: 1, level: encounterLevel(enc2) ?? 1, seed: newSeed() };
-  const out = h("div.loot-out");
-  const draw2 = () => {
-    const res = generateLoot({
-      enemies: enemies.filter((x) => x.on),
-      partyLevel: st.level,
-      items: allItems(),
-      spells: allSpells().filter((s) => s.loot !== false),
-      tables,
-      settings: { generosity: st.generosity, magic: st.magic ? st.magicCount : 0 },
-      seed: st.seed
-    });
-    pockets.clear();
-    const pocket = (x) => {
-      pockets.set(pockets.size, x);
-      return h("span.cond-link", { tabindex: 0, dataset: { pocket: pockets.size - 1 } }, x.name);
-    };
-    const nameOf = (x) => x.desc && !x.id ? pocket(x) : x.id ? h("span.cond-link", { tabindex: 0, dataset: { item: x.id } }, x.name) : x.spell ? h("span.cond-link", { tabindex: 0, dataset: { spell: x.spell } }, x.name) : x.name;
-    const line = (x) => h(
-      "li",
-      x.qty > 1 ? h("span.loot-qty", `${x.qty} \xD7`) : null,
-      " ",
-      nameOf(x),
-      " ",
-      h("span.muted", x.scrap ? `scrap ${priceText(x.value)}` : x.qty > 1 ? `${priceText(x.value)} each` : priceText(x.value)),
-      x.rarity ? h("span.tag", x.rarity.toUpperCase()) : x.kind === "minor" ? h("span.tag", "MINOR MAGIC") : null
-    );
-    const gear = res.lines.filter((x) => x.kind !== "magic"), magic = res.lines.filter((x) => x.kind === "magic");
-    fill(
-      out,
-      h("div.loot-coins", h("span.loot-label", "Coins"), coinText(res.coins)),
-      h("h4", "Items"),
-      gear.length ? h("ul.loot-list", gear.map(line)) : h("p.muted", "Nothing worth taking."),
-      st.magic ? [h("h4", "Magic items"), magic.length ? h("ul.loot-list", magic.map(line)) : h("p.muted", "No magic item could be chosen.")] : null,
-      res.harvest.length ? [
-        h("h4", "Harvestable"),
-        h("p.hint", "Not picked up with the rest: the party has to take the time to harvest these."),
-        h("ul.loot-list", res.harvest.map((x) => h(
-          "li",
-          x.qty > 1 ? h("span.loot-qty", `${x.qty} \xD7`) : null,
-          " ",
-          nameOf(x),
-          " ",
-          h("span.muted", `~${priceText(x.value)}${x.qty > 1 ? " each" : ""} \xB7 ${x.from.join(", ")}`)
-        )))
-      ] : null,
-      h("p.hint", "Hover an underlined name to read it; click to pin it, then Copy as image."),
-      h("p.loot-total", res.totalGp ? `Worth about ${priceText(Math.round(res.totalGp) || res.totalGp)} in coins and items` : "No coins or items", res.magicGp ? `, plus ${priceText(res.magicGp)} in magic items` : "", "."),
-      res.notes.map((n) => h("p.hint", n))
-    );
-  };
-  const again = () => {
-    st.seed = newSeed();
-    draw2();
-  };
-  const gLabel = h("strong.loot-gen-label");
-  const showGen = () => {
-    gLabel.textContent = `${generosityName(st.generosity)} (${Number(st.generosity.toFixed(2))}\xD7)`;
-  };
-  const slider = h("input.loot-slider", {
-    type: "range",
-    min: GENEROSITY.min,
-    max: GENEROSITY.max,
-    step: 0.05,
-    value: st.generosity,
-    oninput: (e2) => {
-      st.generosity = Number(e2.target.value);
-      showGen();
-      draw2();
-    }
-  });
-  const stops = h("div.loot-stops", GENEROSITY.stops.map(([g, name]) => h("button.link", { onclick: () => {
-    st.generosity = g;
-    slider.value = g;
-    showGen();
-    draw2();
-  } }, name)));
-  showGen();
-  const count = h("input.loot-count", {
-    type: "number",
-    min: 1,
-    max: 10,
-    value: st.magicCount,
-    disabled: !st.magic,
-    oninput: (e2) => {
-      st.magicCount = Math.min(10, Math.max(1, Number(e2.target.value) || 1));
-      draw2();
-    }
-  });
-  const who = h("div.loot-enemies", enemies.length ? enemies.map((x) => {
-    const t = themeFor(x.monster, tables).theme;
-    const none = x.monster.loot === "none";
-    return h(
-      "label.check-row",
-      { title: none ? "Set to carry no loot in Creatures" : `Loot theme: ${t?.name || "none"} (${LOOT_LEVELS[t?.loot]?.label || "no loot"})` },
-      h("input", { type: "checkbox", checked: x.on, disabled: none, onchange: (e2) => {
-        x.on = e2.target.checked;
-        draw2();
-      } }),
-      `${x.count} \xD7 ${x.monster.name}`,
-      h("span.muted", none ? " (no loot)" : ` \xB7 ${t?.name || "no theme"}`)
-    );
-  }) : h("p.muted", "This encounter has no monsters from Creatures."));
-  const body2 = h(
-    "div.loot-dialog",
-    h(
-      "div.loot-controls",
-      h("div", h("div.loot-row", h("span", "Generosity"), gLabel), slider, stops),
-      h(
-        "div.form-grid",
-        h("label", "Party level", h("input", { type: "number", min: 1, max: 20, value: st.level, oninput: (e2) => {
-          st.level = Math.min(20, Math.max(1, Number(e2.target.value) || 1));
-          draw2();
-        } })),
-        h(
-          "div",
-          h("label.check-row", h("input", { type: "checkbox", checked: st.magic, onchange: (e2) => {
-            st.magic = e2.target.checked;
-            count.disabled = !st.magic;
-            draw2();
-          } }), "Magic items found"),
-          h("div.loot-row", h("span.muted", "How many"), count)
-        )
-      ),
-      h("details", h("summary", `From ${enemies.reduce((n, x) => n + x.count, 0)} enemies`), who)
-    ),
-    out
-  );
-  draw2();
-  modal(`Loot: ${enc2.name}`, body2, [["Close", () => {
-  }], ["Regenerate", () => {
-    again();
-    return false;
-  }, "primary"]]);
-  body2.closest(".modal")?.classList.add("wide");
-}
-
-// src/tabs/loot-tables.js
+init_loot_data();
+init_loot();
+init_loot_dialog();
 init_format();
+init_loot_flavor();
 var el4;
 var openMonster;
 var selectedId3 = null;
@@ -66216,8 +68040,8 @@ function mountLootTables(root, onOpenMonster) {
       h("div.card.preview-pane#lt-side")
     )
   );
-  onChange((kind) => {
-    if (!el4.hidden && (kind === "all" || kind === "loot")) renderList3();
+  onChange((kind2) => {
+    if (!el4.hidden && (kind2 === "all" || kind2 === "loot")) renderList3();
   });
 }
 function showLootTables() {
@@ -66497,11 +68321,14 @@ function renderSide() {
 }
 
 // src/tabs/library.js
+init_loot_dialog();
+init_loot();
 init_format();
 var el5;
+var go3;
 var selectedId4 = null;
 var shown2 = 150;
-var filtersOpen = false;
+var filtersOpen2 = false;
 var view = "monsters";
 try {
   if (localStorage.getItem("creaturesView") === "loot") view = "loot";
@@ -66516,14 +68343,15 @@ var SORTS = {
   size: ["Size", (a2, b2) => SIZES.indexOf(a2.size) - SIZES.indexOf(b2.size) || a2.name.localeCompare(b2.name)]
 };
 var sortKey = "name";
-function mountLibrary(root) {
+function mountLibrary(root, navigate) {
   el5 = root;
+  go3 = navigate;
   const lootBox = h("div#lb-loot");
   el5.append(
     h(
       "div.page-head.view-head",
       h("div", h("h1", "Creatures"), h("div.page-sub#lb-sub")),
-      h("div.view-switch", h("button#lb-view-monsters", { onclick: () => setView("monsters") }, "Monsters"), h("button#lb-view-loot", { onclick: () => setView("loot") }, "Loot tables"))
+      h("div.view-switch", h("button#lb-view-monsters", { onclick: () => setView("monsters") }, "Creatures"), h("button#lb-view-loot", { onclick: () => setView("loot") }, "Loot tables"))
     ),
     lootBox,
     h(
@@ -66538,13 +68366,14 @@ function mountLibrary(root) {
             renderList4();
           } }),
           h("button#lb-filter-btn", { onclick: () => {
-            filtersOpen = !filtersOpen;
+            filtersOpen2 = !filtersOpen2;
             renderFilters2();
           } }, "Filters"),
-          h("button", { title: "Check the spelling of all your monsters", onclick: () => spellingDialog(store.monsters, { title: "Spelling in your monsters", onOpen: (m) => showLibrary(m.id), onChanged: () => {
+          h("button", { title: "Check the spelling of all your creatures", onclick: () => spellingDialog(store.monsters, { title: "Spelling in your creatures", onOpen: (m) => showLibrary(m.id), onChanged: () => {
             renderList4();
             renderEdit4();
           } }) }, "Spelling"),
+          h("button", { title: "Make a creature from a screenshot or pasted text", onclick: () => go3("maker", "monster") }, "From screenshot"),
           h("button.primary", { onclick: newMonster }, "New")
         ),
         h("div.lib-filters#lb-filters", { hidden: true }),
@@ -66556,13 +68385,13 @@ function mountLibrary(root) {
     )
   );
   mountLootTables(lootBox, (id) => showLibrary(id));
-  onChange((kind) => {
-    if (kind === "all" || kind === "monsters") renderList4();
+  onChange((kind2) => {
+    if (kind2 === "all" || kind2 === "monsters") renderList4();
   });
   pasteToPicture(el5);
 }
 var SUBS = {
-  monsters: "Your monsters and the SRD 5.2.1 monsters. Click a monster to view it; your own monsters can be edited here and save automatically.",
+  monsters: "The SRD 5.2.1 creatures and your own (make them here or from a screenshot in the Maker). Click one to view it; your own can be edited and save automatically.",
   loot: "What enemies carry and what can be harvested from them, for the loot generator (Run Encounter > Loot). Change a theme, add your own, or choose which theme each creature type uses."
 };
 function setView(v) {
@@ -66607,9 +68436,9 @@ function renderFilters2() {
   const box = el5.querySelector("#lb-filters");
   const n = activeFilters(filter2);
   el5.querySelector("#lb-filter-btn").textContent = n ? `Filters (${n})` : "Filters";
-  el5.querySelector("#lb-filter-btn").classList.toggle("on", filtersOpen || n > 0);
-  box.hidden = !filtersOpen;
-  if (!filtersOpen) return;
+  el5.querySelector("#lb-filter-btn").classList.toggle("on", filtersOpen2 || n > 0);
+  box.hidden = !filtersOpen2;
+  if (!filtersOpen2) return;
   const changed3 = () => {
     shown2 = 150;
     renderFilters2();
@@ -66633,7 +68462,8 @@ function renderFilters2() {
     sel("Type", "type", TYPES),
     sel("Race", "race", raceOptions()),
     sel("Size", "size", SIZES.slice(0, 6)),
-    sel("Source", "source", [{ value: "homebrew", label: "My monsters" }, { value: "srd", label: "SRD 5.2.1" }]),
+    sel("Source", "source", [{ value: "homebrew", label: "My creatures" }, { value: "srd", label: "SRD 5.2.1" }]),
+    sel("Reader notes", "review", REVIEW_OPTIONS.map(([value, label]) => ({ value, label }))),
     h("label.wide", "Challenge rating", h("div.cr-range", cr("crMin"), h("span", "to"), cr("crMax"))),
     h("label.wide", "Sort by", h("select", { onchange: (e2) => {
       sortKey = e2.target.value;
@@ -66647,7 +68477,7 @@ function renderFilters2() {
 }
 function renderList4() {
   const list = allMonsters().filter((m) => matches2(m, filter2)).sort(SORTS[sortKey][1]);
-  el5.querySelector("#lb-count").textContent = `${list.length} monster${list.length === 1 ? "" : "s"}${activeFilters(filter2) || filter2.q ? " match" : ""}`;
+  el5.querySelector("#lb-count").textContent = `${list.length} creature${list.length === 1 ? "" : "s"}${activeFilters(filter2) || filter2.q ? " match" : ""}`;
   const rows = list.slice(0, shown2).map((m) => h(
     "button.list-row" + (m.id === selectedId4 ? ".active" : ""),
     { onclick: () => {
@@ -66656,20 +68486,20 @@ function renderList4() {
       renderEdit4();
     } },
     avatar(m.avatar, m.name, "sm"),
-    h("div.list-main", h("div.list-name", m.name, isHomebrew(m) ? null : h("span.tag", "SRD")), h("div.list-sub", `CR ${m.challengeRating} \xB7 ${m.size} ${(m.monsterType || "").toLowerCase()}`))
+    h("div.list-main", h("div.list-name", m.name, isHomebrew(m) ? null : h("span.tag", "SRD"), needsReview(m) ? h("span.tag.check", { title: REVIEW_TIP }, "CHECK") : null), h("div.list-sub", `CR ${m.challengeRating} \xB7 ${m.size} ${(m.monsterType || "").toLowerCase()}`))
   ));
   if (list.length > shown2) rows.push(h("button.load-more", { onclick: () => {
     shown2 += 150;
     renderList4();
   } }, `Show more (${list.length - shown2})`));
-  fill(el5.querySelector("#lb-list"), ...rows.length ? rows : [h("div.empty", "No monsters match.")]);
+  fill(el5.querySelector("#lb-list"), ...rows.length ? rows : [h("div.empty", "No creatures match.")]);
 }
 var refreshPreview = debounce((m) => fill(el5.querySelector("#lb-preview"), statBlock(m)), 150);
 function renderEdit4() {
   const pane = el5.querySelector("#lb-edit"), preview = el5.querySelector("#lb-preview");
   const m = findMonster(selectedId4);
   if (!m) {
-    fill(pane, h("div.empty", "Select a monster, or click New. Monsters you make in the Monster Maker land here too."));
+    fill(pane, h("div.empty", `Pick a creature, click New, or make one from a screenshot. ${store.srd.length} SRD creatures, ${store.monsters.length} of yours.`));
     preview.replaceChildren();
     return;
   }
@@ -66677,15 +68507,15 @@ function renderEdit4() {
   if (!isHomebrew(m)) {
     fill(
       pane,
-      h("div.edit-head", h("h2", m.name), h("button.primary", { onclick: () => duplicate2(m) }, "Copy to my monsters")),
-      h("p.muted", "SRD monsters are read-only. Copy one to your monsters to change it (for example to reskin or retune it)."),
+      h("div.edit-head", h("h2", m.name), h("button.primary", { onclick: () => duplicate2(m) }, "Copy to my creatures")),
+      h("p.muted", "SRD creatures are read-only. Copy one to your creatures to change it (for example to reskin or retune it)."),
       h("p.muted", `Fighting preference (guessed from the stat block): ${STYLES[guessStyle(m)]}. The encounter generator uses it.`),
       h("div.form-grid", lootFields(lootOf(m), (key3, value) => {
         setSrdLoot(m, key3, value);
         renderEdit4();
       })),
-      h("p.hint", "Loot settings work on SRD monsters too: they are kept in your library, not in the monster."),
-      h("p.hint", "To make it a shapeshifter (a vampire\u2019s bat form, a werewolf\u2019s wolf form), copy it to your monsters first."),
+      h("p.hint", "Loot settings work on SRD creatures too: they are kept in your library, not in the creature."),
+      h("p.hint", "To make it a shapeshifter (a vampire\u2019s bat form, a werewolf\u2019s wolf form), copy it to your creatures first."),
       h("div.pic", avatar(m.avatar, m.name, "lg"))
     );
     return;
@@ -66778,7 +68608,7 @@ function editor(m) {
     "div.editor",
     h("div.edit-head", h("h2", m.name), h(
       "div.row-gap",
-      h("button", { title: "List the words in this monster the dictionary doesn\u2019t know", onclick: () => spellingDialog([m], { title: `Spelling: ${m.name}`, onChanged: () => {
+      h("button", { title: "List the words in this creature the dictionary doesn\u2019t know", onclick: () => spellingDialog([m], { title: `Spelling: ${m.name}`, onChanged: () => {
         renderList4();
         renderEdit4();
       } }) }, "Check spelling"),
@@ -66794,24 +68624,6 @@ function editor(m) {
       changed3();
       e2.target.parentElement.remove();
     } }, "Dismiss reader notes")) : null,
-    pictureDrop({
-      src: m.avatar,
-      name: m.name,
-      chooseText: "Choose token art",
-      onImage: (url) => {
-        m.avatar = url;
-        changed3();
-        renderEdit4();
-        renderList4();
-      },
-      onRemove: () => {
-        delete m.avatar;
-        changed3();
-        renderEdit4();
-        renderList4();
-      }
-    }),
-    formsEditor(m, changed3),
     h(
       "div.form-grid",
       text("Name", () => m.name, (v) => {
@@ -66867,6 +68679,23 @@ function editor(m) {
         } })
       ) : null
     ),
+    pictureDrop({
+      src: m.avatar,
+      name: m.name,
+      chooseText: "Choose token art",
+      onImage: (url) => {
+        m.avatar = url;
+        changed3();
+        renderEdit4();
+        renderList4();
+      },
+      onRemove: () => {
+        delete m.avatar;
+        changed3();
+        renderEdit4();
+        renderList4();
+      }
+    }),
     h("div.abil.abil-edit", ABILITIES.map((a2, i) => h("label", ABBR[i], h("input", { type: "number", value: m.abilities[a2] ?? 10, oninput: (e2) => {
       m.abilities[a2] = Number(e2.target.value) || 0;
       changed3();
@@ -66900,6 +68729,7 @@ function editor(m) {
         m.languages = [];
       })
     ),
+    formsEditor(m, changed3),
     section("Traits", "traits"),
     section("Actions", "actions"),
     section("Bonus Actions", "bonusActions"),
@@ -66967,28 +68797,40 @@ init_store();
 init_conditions_data();
 init_conditions();
 var el6;
-var go3;
+var go4;
 var selectedId5 = null;
 var usage2 = /* @__PURE__ */ new Map();
-var query2 = "";
+var filtersOpen3 = false;
+var noFilter2 = () => ({ q: "", source: "", review: "" });
+var filter3 = noFilter2();
 function mountConditions(root, navigate) {
   el6 = root;
-  go3 = navigate;
+  go4 = navigate;
   el6.append(
-    h("div.page-head", h("h1", "Conditions"), h("div.page-sub", "The conditions stat blocks link to: the SRD 5.2.1 conditions, plus any you add (marked CUSTOM). Change a description, or the keywords a condition is found by; every monster picks up the change right away. Make new ones here or from a screenshot in the Maker.")),
+    h("div.page-head", h("h1", "Conditions"), h("div.page-sub", "The conditions stat blocks link to: the SRD 5.2.1 conditions and your own. Change a description, or the keywords a condition is found by; every monster picks up the change right away. Make new ones here or from a screenshot in the Maker.")),
     h(
       "div.lib-grid.cond-grid",
       h(
         "div.card.list-pane",
         h(
           "div.list-tools",
-          h("input.search", { type: "search", placeholder: "Search conditions", oninput: (e2) => {
-            query2 = e2.target.value;
+          h("input.search#cd-q", { type: "search", placeholder: "Search conditions", oninput: (e2) => {
+            filter3.q = e2.target.value;
             renderList5();
           } }),
-          h("button", { title: "Make a condition from a screenshot or pasted text", onclick: () => go3("maker", "condition") }, "From screenshot"),
+          h("button#cd-filter-btn", { onclick: () => {
+            filtersOpen3 = !filtersOpen3;
+            renderFilters3();
+          } }, "Filters"),
+          h("button", { title: "Check the spelling of all your conditions", onclick: () => spellingDialog(store.conditions, { title: "Spelling in your conditions", kind: "conditions", onOpen: (c2) => showConditions(c2.id), onChanged: () => {
+            renderList5();
+            renderEdit5();
+          } }) }, "Spelling"),
+          h("button", { title: "Make a condition from a screenshot or pasted text", onclick: () => go4("maker", "condition") }, "From screenshot"),
           h("button.primary", { onclick: addCondition }, "New")
         ),
+        h("div.lib-filters#cd-filters", { hidden: true }),
+        h("div.list-count#cd-count"),
         h("div.list#cd-list"),
         h("div#cd-restore")
       ),
@@ -66996,18 +68838,53 @@ function mountConditions(root, navigate) {
       h("div.card.preview-pane#cd-side")
     )
   );
-  onChange((kind) => {
-    if (!el6.hidden && (kind === "all" || kind === "monsters")) {
+  onChange((kind2) => {
+    if (!el6.hidden && (kind2 === "all" || kind2 === "monsters")) {
       countUsage();
       renderList5();
     }
   });
 }
 function showConditions(id) {
-  if (id) selectedId5 = id;
+  if (id) {
+    selectedId5 = id;
+    Object.assign(filter3, noFilter2());
+    el6.querySelector("#cd-q").value = "";
+  }
   countUsage();
+  renderFilters3();
   renderList5();
   renderEdit5();
+}
+function renderFilters3() {
+  const box = el6.querySelector("#cd-filters");
+  const n = [filter3.source, filter3.review].filter(Boolean).length;
+  el6.querySelector("#cd-filter-btn").textContent = n ? `Filters (${n})` : "Filters";
+  el6.querySelector("#cd-filter-btn").classList.toggle("on", filtersOpen3 || n > 0);
+  box.hidden = !filtersOpen3;
+  if (!filtersOpen3) return;
+  const changed3 = () => {
+    renderFilters3();
+    renderList5();
+  };
+  const sel = (label, key3, options) => h("label", label, h(
+    "select",
+    { onchange: (e2) => {
+      filter3[key3] = e2.target.value;
+      changed3();
+    } },
+    h("option", { value: "" }, "Any"),
+    options.map(([v, t]) => h("option", { value: v, selected: filter3[key3] === v }, t))
+  ));
+  fill(
+    box,
+    sel("Source", "source", [["mine", "My conditions"], ["srd", "SRD 5.2.1"]]),
+    sel("Reader notes", "review", REVIEW_OPTIONS),
+    n ? h("button.link.wide", { onclick: () => {
+      Object.assign(filter3, noFilter2(), { q: filter3.q });
+      changed3();
+    } }, "Clear filters") : null
+  );
 }
 var plain2 = (s) => String(s || "").replace(/<[^>]+>/g, "");
 function monsterTexts(m) {
@@ -67035,8 +68912,9 @@ var edited2 = (c2) => {
   return d && (d.name !== c2.name || d.text !== c2.text || JSON.stringify(d.keywords) !== JSON.stringify(c2.keywords));
 };
 function renderList5() {
-  const q = query2.trim().toLowerCase();
-  const list = [...store.conditions].filter((c2) => !q || c2.name.toLowerCase().includes(q) || c2.keywords.some((k) => k.text.toLowerCase().includes(q))).sort((a2, b2) => a2.name.localeCompare(b2.name));
+  const q = filter3.q.trim().toLowerCase();
+  const list = [...store.conditions].filter((c2) => (!q || c2.name.toLowerCase().includes(q) || c2.keywords.some((k) => k.text.toLowerCase().includes(q))) && (!filter3.source || filter3.source === "srd" === !!c2.builtin) && reviewMatches(c2, filter3.review)).sort((a2, b2) => a2.name.localeCompare(b2.name));
+  el6.querySelector("#cd-count").textContent = `${list.length} condition${list.length === 1 ? "" : "s"}`;
   fill(
     el6.querySelector("#cd-list"),
     h("button.list-row" + (selectedId5 === null ? ".active" : ""), { onclick: () => {
@@ -67055,7 +68933,7 @@ function renderList5() {
         } },
         h(
           "div.list-main",
-          h("div.list-name", c2.name, edited2(c2) ? h("span.tag", "EDITED") : null, !c2.builtin ? h("span.tag", "CUSTOM") : null),
+          h("div.list-name", c2.name, c2.builtin ? h("span.tag", "SRD") : null, edited2(c2) ? h("span.tag", "EDITED") : null, needsReview(c2) ? h("span.tag.check", { title: REVIEW_TIP }, "CHECK") : null),
           h("div.list-sub", c2.keywords.length ? `${n ? `In ${n} monster${n === 1 ? "" : "s"}` : "Not found in any monster"} \xB7 ${c2.keywords.map((k) => k.text).join(", ")}` : "Reference only (no keywords)")
         )
       );
@@ -67160,7 +69038,7 @@ function renderSide2() {
       "div.uses",
       uses.slice(0, 60).map((u) => h(
         "button.use-row",
-        { onclick: () => go3("library", u.monster.id), title: "Open in Creatures" },
+        { onclick: () => go4("library", u.monster.id), title: "Open in Creatures" },
         h("strong", u.monster.name),
         h("div.use-snip", { html: esc(u.snippet).replace(/\[\[(.+?)\]\]/, "<mark>$1</mark>") })
       )),
@@ -67172,18 +69050,21 @@ function renderSide2() {
 // src/tabs/spells.js
 init_ui();
 init_store();
+init_statblock();
 init_conditions();
 init_spells();
+init_glossary();
 var el7;
-var go4;
+var go5;
 var selectedId6 = null;
-var noFilter = () => ({ q: "", level: "", school: "", cls: "", source: "", concentration: false, ritual: false });
-var filter3 = noFilter();
+var filtersOpen4 = false;
+var noFilter3 = () => ({ q: "", level: "", school: "", cls: "", source: "", review: "", concentration: false, ritual: false });
+var filter4 = noFilter3();
 var LEVELS = [["0", "Cantrip"], ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => [String(n), `Level ${n}`])];
 var mine2 = (s) => store.spells.includes(s);
 function mountSpells(root, navigate) {
   el7 = root;
-  go4 = navigate;
+  go5 = navigate;
   el7.append(
     h("div.page-head", h("h1", "Spells"), h("div.page-sub", "The SRD 5.2.1 spells and your own (make them here or from a screenshot in the Maker). Spell names in stat blocks link here: hover one to read it, click to pin it open. A spell of yours wins over an SRD spell of the same name.")),
     h(
@@ -67193,13 +69074,21 @@ function mountSpells(root, navigate) {
         h(
           "div.list-tools",
           h("input.search#sp-q", { type: "search", placeholder: "Search spells", oninput: (e2) => {
-            filter3.q = e2.target.value;
+            filter4.q = e2.target.value;
             renderList6();
           } }),
-          h("button", { title: "Make a spell from a screenshot or pasted text", onclick: () => go4("maker", "spell") }, "From screenshot"),
+          h("button#sp-filter-btn", { onclick: () => {
+            filtersOpen4 = !filtersOpen4;
+            renderFilters4();
+          } }, "Filters"),
+          h("button", { title: "Check the spelling of all your spells", onclick: () => spellingDialog(store.spells, { title: "Spelling in your spells", kind: "spells", onOpen: (x) => showSpells(x.id), onChanged: () => {
+            renderList6();
+            renderEdit6();
+          } }) }, "Spelling"),
+          h("button", { title: "Make a spell from a screenshot or pasted text", onclick: () => go5("maker", "spell") }, "From screenshot"),
           h("button.primary", { onclick: newSpell }, "New")
         ),
-        h("div.lib-filters#sp-filters"),
+        h("div.lib-filters#sp-filters", { hidden: true }),
         h("div.list-count#sp-count"),
         h("div.list#sp-list")
       ),
@@ -67207,64 +69096,70 @@ function mountSpells(root, navigate) {
       h("div.card.preview-pane#sp-view")
     )
   );
-  onChange((kind) => {
-    if (!el7.hidden && (kind === "all" || kind === "spells")) renderList6();
+  onChange((kind2) => {
+    if (!el7.hidden && (kind2 === "all" || kind2 === "spells")) renderList6();
   });
 }
 function showSpells(id) {
   if (id) {
     selectedId6 = id;
-    Object.assign(filter3, noFilter());
+    Object.assign(filter4, noFilter3());
     el7.querySelector("#sp-q").value = "";
   }
-  renderFilters3();
+  renderFilters4();
   renderList6();
   renderEdit6();
   if (id) el7.querySelector("#sp-list .active")?.scrollIntoView({ block: "center" });
 }
 var uniq = (xs) => [...new Set(xs)].sort((a2, b2) => a2.localeCompare(b2));
-function renderFilters3() {
+function renderFilters4() {
+  const box = el7.querySelector("#sp-filters");
+  const n = [filter4.level, filter4.school, filter4.cls, filter4.source, filter4.review, filter4.concentration, filter4.ritual].filter(Boolean).length;
+  el7.querySelector("#sp-filter-btn").textContent = n ? `Filters (${n})` : "Filters";
+  el7.querySelector("#sp-filter-btn").classList.toggle("on", filtersOpen4 || n > 0);
+  box.hidden = !filtersOpen4;
+  if (!filtersOpen4) return;
   const changed3 = () => {
-    renderFilters3();
+    renderFilters4();
     renderList6();
   };
   const sel = (label, key3, options) => h("label", label, h(
     "select",
     { onchange: (e2) => {
-      filter3[key3] = e2.target.value;
+      filter4[key3] = e2.target.value;
       changed3();
     } },
     h("option", { value: "" }, "Any"),
-    options.map(([value, text]) => h("option", { value, selected: filter3[key3] === value }, text))
+    options.map(([value, text]) => h("option", { value, selected: filter4[key3] === value }, text))
   ));
-  const check = (label, key3) => h("label.check-row", h("input", { type: "checkbox", checked: filter3[key3], onchange: (e2) => {
-    filter3[key3] = e2.target.checked;
+  const check = (label, key3) => h("label.check-row", h("input", { type: "checkbox", checked: filter4[key3], onchange: (e2) => {
+    filter4[key3] = e2.target.checked;
     changed3();
   } }), label);
-  const any = filter3.level || filter3.school || filter3.cls || filter3.source || filter3.concentration || filter3.ritual;
   fill(
-    el7.querySelector("#sp-filters"),
+    box,
     sel("Level", "level", LEVELS),
     sel("School", "school", uniq(allSpells().map((s) => s.school)).map((s) => [s, s])),
     sel("Class", "cls", uniq(allSpells().flatMap((s) => s.classes)).map((c2) => [c2, c2])),
     sel("Source", "source", [["mine", "My spells"], ["srd", "SRD 5.2.1"]]),
+    sel("Reader notes", "review", REVIEW_OPTIONS),
     h("div.spell-checks", check("Concentration", "concentration"), check("Ritual", "ritual")),
-    any ? h("button.link.wide", { onclick: () => {
-      Object.assign(filter3, noFilter(), { q: filter3.q });
+    n ? h("button.link.wide", { onclick: () => {
+      Object.assign(filter4, noFilter3(), { q: filter4.q });
       changed3();
     } }, "Clear filters") : null
   );
 }
 function matches3(s) {
-  const q = filter3.q.trim().toLowerCase();
+  const q = filter4.q.trim().toLowerCase();
   if (q && !s.name.toLowerCase().includes(q)) return false;
-  if (filter3.level && String(s.level) !== filter3.level) return false;
-  if (filter3.school && s.school !== filter3.school) return false;
-  if (filter3.cls && !s.classes.includes(filter3.cls)) return false;
-  if (filter3.source && filter3.source === "mine" !== mine2(s)) return false;
-  if (filter3.concentration && !s.concentration) return false;
-  if (filter3.ritual && !s.ritual) return false;
-  return true;
+  if (filter4.level && String(s.level) !== filter4.level) return false;
+  if (filter4.school && s.school !== filter4.school) return false;
+  if (filter4.cls && !s.classes.includes(filter4.cls)) return false;
+  if (filter4.source && filter4.source === "mine" !== mine2(s)) return false;
+  if (filter4.concentration && !s.concentration) return false;
+  if (filter4.ritual && !s.ritual) return false;
+  return reviewMatches(s, filter4.review);
 }
 function renderList6() {
   const list = allSpells().filter(matches3).sort((a2, b2) => a2.name.localeCompare(b2.name));
@@ -67278,7 +69173,7 @@ function renderList6() {
     } },
     h(
       "div.list-main",
-      h("div.list-name", s.name, spellTags(s).map((t) => h("span.tag", { title: t }, t === "Concentration" ? "C" : "R")), mine2(s) ? h("span.tag", { title: "Your own spell" }, "H") : null),
+      h("div.list-name", s.name, mine2(s) ? null : h("span.tag", "SRD"), spellTags(s).map((t) => h("span.tag", { title: t }, t === "Concentration" ? "C" : "R")), needsReview(s) ? h("span.tag.check", { title: REVIEW_TIP }, "CHECK") : null),
       h("div.list-sub", spellLevelText(s).replace(/ \(.*\)$/, ""))
     )
   )) : [h("div.empty", "No spells match.")]);
@@ -67307,11 +69202,11 @@ var renderCard2 = (s) => fill(
 );
 var refreshCard2 = debounce(renderCard2, 150);
 function renderEdit6() {
-  const pane = el7.querySelector("#sp-edit"), card = el7.querySelector("#sp-view");
+  const pane = el7.querySelector("#sp-edit"), card2 = el7.querySelector("#sp-view");
   const s = spellById(selectedId6);
   if (!s) {
     fill(pane, h("div.empty", `Pick a spell, click New, or make one from a screenshot. ${store.srdSpells.length} SRD spells, ${store.spells.length} of yours.`));
-    card.replaceChildren();
+    card2.replaceChildren();
     return;
   }
   renderCard2(s);
@@ -67358,14 +69253,18 @@ init_spells();
 // src/tabs/builder.js
 init_ui();
 init_store();
+init_statblock();
 init_rules();
 init_constants();
 
 // src/tabs/generator.js
 init_ui();
 init_store();
+init_statblock();
 init_rules();
 init_constants();
+init_encounters();
+init_generator();
 var el8;
 var opts;
 var params = null;
@@ -67382,12 +69281,7 @@ function loadParams() {
   }
   const p = { ...defaultParams(), ...saved };
   if (!saved.characterIds) p.characterIds = store.party.map((c2) => c2.id);
-  if (!saved.rules) {
-    try {
-      p.rules = localStorage.getItem("rules") || "2014";
-    } catch {
-    }
-  }
+  p.rules = rulesDefault();
   if (!difficultyNames(p.rules).includes(p.difficulty)) p.difficulty = difficultyNames(p.rules)[1];
   return p;
 }
@@ -67468,6 +69362,7 @@ function renderParams() {
         sel("Rules", "rules", Object.keys(RULES).map((k) => [k, `${k} rules`]), (v) => {
           const i = difficultyNames(p.rules).indexOf(p.difficulty);
           p.difficulty = difficultyNames(v)[Math.min(i, difficultyNames(v).length - 1)];
+          setRulesDefault(v);
           return v;
         }),
         sel("Difficulty", "difficulty", difficultyNames(p.rules).map((d) => [d, d]))
@@ -67593,10 +69488,10 @@ function row(res, g) {
   const m = findMonster(g.monsterId);
   if (!m) return h("div.gen-row", h("div.muted", "A monster that is no longer in your library."));
   const style = styleOf(m);
-  const open2 = expanded === g.monsterId;
+  const open3 = expanded === g.monsterId;
   const redraw = () => renderResult();
   return h(
-    "div.gen-item" + (open2 ? ".open" : ""),
+    "div.gen-item" + (open3 ? ".open" : ""),
     h(
       "div.gen-row",
       h("button.icon-btn.lock" + (g.locked ? ".on" : ""), { title: g.locked ? "Locked: kept when you regenerate. Click to unlock." : "Lock: keep this when you regenerate", onclick: () => {
@@ -67635,12 +69530,12 @@ function row(res, g) {
           redraw();
         }]
       ]) }, "\u22EE"),
-      h("button.icon-btn.chev", { title: open2 ? "Hide stat block" : "Show stat block", onclick: () => {
-        expanded = open2 ? null : g.monsterId;
+      h("button.icon-btn.chev", { title: open3 ? "Hide stat block" : "Show stat block", onclick: () => {
+        expanded = open3 ? null : g.monsterId;
         redraw();
-      } }, open2 ? "\u25B4" : "\u25BE")
+      } }, open3 ? "\u25B4" : "\u25BE")
     ),
-    open2 ? h("div.mon-detail", statBlock(m, { description: false })) : null
+    open3 ? h("div.mon-detail", statBlock(m, { description: false })) : null
   );
 }
 function suggestedName(res) {
@@ -67685,8 +69580,10 @@ function saveAs(openAfter) {
 }
 
 // src/tabs/builder.js
+init_combat();
+init_encounters();
 var el9;
-var go5;
+var go6;
 var current2 = null;
 var view2 = "list";
 var tab = "monsters";
@@ -67697,11 +69594,11 @@ var filters = emptyFilter();
 var sort = { key: "name", dir: 1 };
 function mountBuilder(root, navigate) {
   el9 = root;
-  go5 = navigate;
-  onChange((kind) => {
+  go6 = navigate;
+  onChange((kind2) => {
     if (el9.hidden) return;
     if (view2 === "list") renderList7();
-    else if (kind === "all") {
+    else if (kind2 === "all") {
       current2 = store.encounters.find((e2) => e2.id === current2?.id) || null;
       render3();
     }
@@ -67739,7 +69636,7 @@ function renderList7() {
       view2 = "edit";
       render3();
     },
-    onRun: (e2) => go5("runner", e2.id),
+    onRun: (e2) => go6("runner", e2.id),
     menu: (e2) => [
       ["Edit", () => {
         current2 = e2;
@@ -67811,10 +69708,7 @@ function renderEditor() {
             "select",
             { onchange: (ev) => {
               e2.rules = ev.target.value;
-              try {
-                localStorage.setItem("rules", e2.rules);
-              } catch {
-              }
+              setRulesDefault(e2.rules);
               changed2();
               renderMonsters();
             } },
@@ -67914,9 +69808,9 @@ function renderMonsters() {
   } }, label, sort.key === key3 ? sort.dir > 0 ? " \u25B2" : " \u25BC" : " \u21C5");
   const rows = list.slice(0, shown3).map((m) => {
     const r = evaluate([xpItem(m)], party, current2.rules);
-    const open2 = expanded2 === m.id;
+    const open3 = expanded2 === m.id;
     return h(
-      "div.mon-item" + (open2 ? ".open" : ""),
+      "div.mon-item" + (open3 ? ".open" : ""),
       h(
         "div.mon-row",
         avatar(m.avatar, m.name, "sm"),
@@ -67926,12 +69820,12 @@ function renderMonsters() {
         h("div", m.challengeRating),
         h("div", { title: levels2.length ? `${r.difficulty} on its own for this party` : "Add characters to see difficulty" }, dots(r.rank, r.maxRank)),
         h("button.add", { onclick: () => addMonster(m) }, "+ Add"),
-        h("button.icon-btn.chev", { title: open2 ? "Hide stat block" : "Show stat block", onclick: () => {
-          expanded2 = open2 ? null : m.id;
+        h("button.icon-btn.chev", { title: open3 ? "Hide stat block" : "Show stat block", onclick: () => {
+          expanded2 = open3 ? null : m.id;
           renderMonsters();
-        } }, open2 ? "\u25B4" : "\u25BE")
+        } }, open3 ? "\u25B4" : "\u25BE")
       ),
-      open2 ? h("div.mon-detail", statBlock(m, { description: false })) : null
+      open3 ? h("div.mon-detail", statBlock(m, { description: false })) : null
     );
   });
   fill(
@@ -68064,1226 +69958,112 @@ function manageCharacters() {
   });
 }
 
-// src/tabs/runner.js
+// src/app.js
+init_runner();
+init_encounters();
+
+// src/search.js
 init_ui();
 init_store();
-init_dice();
+init_statblock();
+init_spells();
 init_conditions();
-
-// src/condition-icons.js
-var CONDITION_ICONS = /* @__PURE__ */ new Set(["asleep", "attached", "banished", "bleeding", "blinded", "burning", "charmed", "choking", "concentrating", "confused", "cursed", "dazed", "dead", "deafened", "diseased", "dominated", "exhaustion", "flanked", "frightened", "grappled", "hidden", "incapacitated", "invisible", "levitating", "limb-damage", "paralyzed", "petrified", "poisoned", "possessed", "prone", "reduced-statistics", "restrained", "save-ends", "stunned", "suffocating", "swallowed", "temporary-hit-points", "turned", "unconscious"]);
-
-// src/condition-icon.js
-var slug = (name) => String(name).split("/")[0].toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-var conditionId2 = (name, conditions = []) => conditions.find((c2) => c2.name === name)?.id || slug(name);
-function iconOf(name, conditions = []) {
-  const id = conditionId2(name, conditions);
-  return CONDITION_ICONS.has(id) ? id : CONDITION_ICONS.has(slug(name)) ? slug(name) : null;
-}
-function iconLetters(name) {
-  const words2 = String(name).split("/")[0].trim().split(/\s+/).filter(Boolean);
-  if (!words2.length) return "?";
-  return words2.length > 1 ? (words2[0][0] + words2[1][0]).toUpperCase() : words2[0][0].toUpperCase() + (words2[0][1] || "").toLowerCase();
-}
-var iconPath = (id, size = 64) => `conditions%20symbols/png-${size}/${id}.png`;
-
-// src/tabs/runner.js
-init_format();
 init_rules();
-var el10;
-var go6;
-var enc = null;
-var sameInit = true;
-var UNDO_LIMIT = 100;
-var undoStacks = /* @__PURE__ */ new Map();
-var undoStack = () => {
-  if (!undoStacks.has(enc.id)) undoStacks.set(enc.id, []);
-  return undoStacks.get(enc.id);
-};
-function mountRunner(root, navigate) {
-  el10 = root;
-  go6 = navigate;
-  onRoll(() => {
-    if (!el10.hidden && enc) renderLog();
+init_encounters();
+var card = (html) => h("div.cond-ref-body.spell-card", { html });
+var SOURCES = [
+  { label: "Creature", tab: "library", list: allMonsters, sub: (m) => `CR ${m.challengeRating} \xB7 ${m.size} ${(m.monsterType || "").toLowerCase()}`, view: (m) => statBlock(m) },
+  { label: "Spell", tab: "spells", list: allSpells, sub: (s) => spellLevelText(s).replace(/ \(.*\)$/, ""), view: (s) => card(spellHtml(s)) },
+  { label: "Item", tab: "items", list: allItems, sub: itemTypeLine, view: (x) => card(itemHtml(x)) },
+  { label: "Condition", tab: "conditions", list: () => store.conditions, sub: (c2) => c2.builtin ? "SRD 5.2.1" : "Yours", view: (c2) => card(conditionHtml(c2)) },
+  { label: "Rule", list: () => store.rules, sub: (r) => r.tag || "Rules Glossary", view: (r) => card(`<div class="cond-name">${r.name}</div>${markupHtml(r.text)}`) },
+  { label: "Character", tab: "party", list: () => store.party, sub: (c2) => [`Level ${c2.level}`, c2.className].filter(Boolean).join(" \xB7 ") },
+  { label: "Encounter", tab: "builder", list: () => store.encounters, sub: (e2) => partyLabel(encounterLevels(e2)) }
+];
+var PER_KIND = 8;
+function searchAll(query2) {
+  const q = query2.trim().toLowerCase();
+  if (!q) return [];
+  const rank = (name) => {
+    const n = String(name || "").toLowerCase(), at2 = n.indexOf(q);
+    return at2 < 0 ? -1 : at2 === 0 ? 0 : /[\s(/-]/.test(n[at2 - 1]) ? 1 : 2;
+  };
+  return SOURCES.flatMap((source) => source.list().map((x) => ({ x, source, r: rank(x.name) })).filter((m) => m.r >= 0).sort((a2, b2) => a2.r - b2.r || a2.x.name.localeCompare(b2.x.name)).slice(0, PER_KIND)).sort((a2, b2) => a2.r - b2.r);
+}
+var backdrop = null;
+function close() {
+  backdrop?.remove();
+  backdrop = null;
+}
+function open(go9) {
+  if (backdrop) return backdrop.querySelector("input").select();
+  let results = [], at2 = 0;
+  const input = h("input.search-box", { type: "search", placeholder: "Search creatures, spells, items, conditions, rules, characters, encounters", oninput: () => {
+    at2 = 0;
+    draw2();
+  } });
+  const list = h("div.search-list"), view3 = h("div.search-view");
+  const chosen = (r) => {
+    if (!r?.source.tab) return;
+    close();
+    go9(r.source.tab, r.x.id);
+  };
+  const show2 = () => {
+    list.querySelectorAll(".search-row").forEach((row2, i) => row2.classList.toggle("active", i === at2));
+    list.querySelector(".active")?.scrollIntoView({ block: "nearest" });
+    const r = results[at2], node = r?.source.view?.(r.x);
+    if (node) fill(view3, node);
+    else view3.replaceChildren();
+    view3.scrollTop = 0;
+  };
+  const draw2 = () => {
+    results = searchAll(input.value);
+    fill(list, ...results.length ? results.map((r, i) => h(
+      "button.search-row",
+      { onmouseenter: () => {
+        at2 = i;
+        show2();
+      }, onclick: () => chosen(r) },
+      h("span.search-name", r.x.name, h("span.tag", r.source.label)),
+      h("span.search-sub", r.source.sub(r.x))
+    )) : [h("div.empty", input.value.trim() ? "Nothing matches." : "Type to search. Up and Down move, Enter opens it in its tab, Esc closes.")]);
+    show2();
+  };
+  input.addEventListener("keydown", (e2) => {
+    if (e2.key === "ArrowDown" || e2.key === "ArrowUp") {
+      e2.preventDefault();
+      if (results.length) at2 = (at2 + (e2.key === "ArrowDown" ? 1 : results.length - 1)) % results.length;
+      show2();
+    } else if (e2.key === "Enter") {
+      e2.preventDefault();
+      chosen(results[at2]);
+    }
   });
-  onChange((kind) => {
-    if (el10.hidden) return;
-    if (kind === "all") enc = enc && store.encounters.find((e2) => e2.id === enc.id);
-    if (!enc) render4();
-  });
-}
-function showRunner(id) {
-  if (id) {
-    enc = store.encounters.find((e2) => e2.id === id) || null;
-    if (enc && !enc.combat) enc.combat = setupCombat2(enc);
-    if (enc) setLive(enc.id);
-  }
-  render4();
-}
-var live = null;
-try {
-  live = localStorage.getItem("liveEncounter");
-} catch {
-}
-function setLive(id) {
-  live = id;
-  try {
-    localStorage.setItem("liveEncounter", id);
-  } catch {
-  }
-}
-var liveEncounter = () => store.encounters.find((e2) => e2.id === live) || null;
-function runnerCommand(cmd) {
-  const e2 = liveEncounter();
-  if (e2?.combat?.phase !== "active") return false;
-  enc = e2;
-  if (cmd === "next") next();
-  else if (cmd === "undo") undo();
-  else return false;
-  return true;
-}
-function render4() {
-  if (!enc) return renderPicker();
-  if (enc.combat.phase === "setup") renderSetup();
-  else renderTracker();
-}
-function renderPicker() {
-  const table = h("div.enc-table-wrap");
-  let query3 = "";
-  const draw2 = () => fill(table, encounterTable({ query: query3, onOpen: (e2) => go6("builder", e2.id), onRun: (e2) => showRunner(e2.id) }));
-  const party = activeParty();
-  fill(
-    el10,
-    h("div.page-head", h("h1", "Run Encounter"), h("div.page-sub", "Your active party, and the encounters to run. A fight in progress shows Resume.")),
-    h(
-      "div.run-home",
-      h(
-        "div.card.party-panel",
-        h(
-          "div.tracker-head",
-          h("h2", "Active party"),
-          h(
-            "div.row-gap",
-            h("button.dark", { onclick: partyUndoLast, disabled: !partyUndo.length, title: "Undo the last change to the party" }, "Undo"),
-            h("button.outline", { onclick: chooseParty }, "Choose characters")
-          )
-        ),
-        party.length ? h("div.party-list", party.flatMap((ch) => [partyCard(ch), ...(ch.companions || []).map((comp) => companionCard(ch, comp))])) : h("div.empty", store.party.length ? "No one is in the active party yet. Choose characters to track their HP and conditions between fights." : "Add your characters in the Party tab first."),
-        party.length ? h("div.hint", `Their HP, conditions and linked token carry into every encounter you run, and back out again. Companions and summons (added in the Party tab) join them when In play.${linker ? " Right-click a character to link its token in Owlbear." : ""}`) : null
-      ),
-      h(
-        "div.run-encounters",
-        h("h2", "Encounters"),
-        h("div.list-tools", h("input.search", { type: "search", placeholder: "Search", oninput: (e2) => {
-          query3 = e2.target.value;
-          draw2();
-        } })),
-        table
-      )
-    )
-  );
+  backdrop = h("div.search-back", { onmousedown: (e2) => {
+    if (e2.target === backdrop) close();
+  } }, h("div.search-pop", input, h("div.search-body", list, view3)));
+  document.body.append(backdrop);
+  input.focus();
   draw2();
 }
-var condIcon = (name) => {
-  const i = iconOf(name, store.conditions);
-  return i ? h("img.cond-icon", { src: iconPath(i, 64), alt: "" }) : h("span.cond-badge", iconLetters(name));
-};
-function condChips(c2, { add: add2, remove: remove2 }) {
-  return h(
-    "div.conds",
-    c2.conditions.map((cond) => h("button.cond", { title: "Click to remove", dataset: { cond }, onclick: (e2) => {
-      e2.stopPropagation();
-      remove2(cond);
-    } }, condIcon(cond), cond, " \xD7")),
-    // shown by HP, not set by hand: the skull for a monster at 0 HP, Unconscious for a player at 0 HP
-    rowMarks(c2).filter((q) => !c2.conditions.includes(q)).map((q) => h("span.cond.auto", { title: q === "Dead" ? "At 0 HP. Healing it above 0 removes this." : "At 0 HP: unconscious until healed.", dataset: { cond: q } }, condIcon(q), q)),
-    isOut(c2) ? null : h("button.cond.add", { title: "Add a condition", onclick: (e2) => {
-      e2.stopPropagation();
-      popMenu(e2.currentTarget, [...conditionNames(), "Concentrating", "Dodging"].filter((q) => !c2.conditions.includes(q)).map((q) => [[condIcon(q), q], () => add2(q), "", { dataset: { cond: q } }]));
-    } }, "+ Condition")
-  );
-}
-var setupCombat2 = (e2) => setupCombat(e2, { character: findCharacter, monster: findMonster, asGroup: runsAsGroup });
-var C = () => enc.combat;
-var ordered2 = () => ordered(C());
-function act(fn, { redraw = true } = {}) {
-  const c2 = C();
-  const stack = undoStack();
-  stack.push(JSON.stringify(c2));
-  if (stack.length > UNDO_LIMIT) stack.shift();
-  fn(c2);
-  c2.combatants.forEach(settleDown);
-  syncParty(c2);
-  save("encounters", enc);
-  if (redraw) render4();
-}
-function undo() {
-  const last = undoStack().pop();
-  if (!last) return;
-  enc.combat = JSON.parse(last);
-  syncParty(enc.combat);
-  save("encounters", enc);
-  render4();
-}
-function syncParty(s) {
-  for (const c2 of s.combatants) {
-    if (c2.companion) {
-      const ch2 = findCharacter(c2.companion.char), comp = ch2?.companions?.find((x) => x.id === c2.companion.id);
-      const live2 = companionLiveOf(c2);
-      if (!comp || JSON.stringify(comp.live || {}) === JSON.stringify(live2)) continue;
-      comp.live = live2;
-      save("party", ch2);
-      continue;
-    }
-    const ch = c2.kind === "pc" && c2.refId && findCharacter(c2.refId);
-    if (!ch || sameLive(ch.live, liveOf(c2))) continue;
-    ch.live = liveOf(c2);
-    save("party", ch);
-  }
-}
-function rollInit(c2, quiet = true) {
-  return doRoll(`1d20${signed(c2.initBonus)}`, { who: c2.name, label: "Initiative", quiet })?.total ?? 10;
-}
-function rollFor(which) {
-  act((s) => {
-    const shared = /* @__PURE__ */ new Map();
-    for (const c2 of s.combatants) {
-      if (c2.owner || which === "monsters" && c2.kind !== "monster") continue;
-      if (sameInit && c2.kind === "monster" && c2.refId) {
-        if (!shared.has(c2.refId)) shared.set(c2.refId, rollInit(c2));
-        c2.init = shared.get(c2.refId);
-      } else c2.init = rollInit(c2);
-    }
-  });
-}
-function renderSetup() {
-  const s = C();
-  fill(
-    el10,
-    header(),
-    h(
-      "div.run-grid",
-      h(
-        "div.card.tracker",
-        h("div.tracker-head", h("h2", "Roll initiative"), h("button.outline", { onclick: addCombatant }, "Manual entry")),
-        h("p.muted", "Type each initiative, or roll. Players usually roll their own; monsters can be rolled here."),
-        h("label.check-row", h("input", { type: "checkbox", checked: sameInit, onchange: (e2) => {
-          sameInit = e2.target.checked;
-        } }), "Identical monsters share one initiative roll"),
-        h("div.setup-list", underOwners(s.combatants).map((c2) => h(
-          "div.setup-row" + (c2.owner ? ".follow" : ""),
-          { oncontextmenu: (e2) => tokenMenu(e2, c2) },
-          avatarFor(c2, "sm"),
-          h("div.setup-name", c2.name, linkTag(c2), h("div.muted", `${c2.owner ? followText(c2) : c2.kind === "pc" ? "Character" : isGroup(c2) ? `Group of ${c2.members.length} ${c2.group === "minion" ? "minions" : "(pack)"}` : "Monster"}${c2.owner ? "" : ` \xB7 init ${signed(c2.initBonus)}`}`)),
-          c2.owner ? h("span.muted.follow-init", "\u21B3") : h("input.init-input", { type: "number", value: c2.init ?? "", placeholder: "\u2014", oninput: (e2) => {
-            c2.init = e2.target.value === "" ? null : Number(e2.target.value);
-            save("encounters", enc);
-            updateStart();
-          } }),
-          c2.owner ? h("span") : h("button.icon-btn", { title: "Roll", onclick: () => act((x) => {
-            x.combatants.find((y) => y.key === c2.key).init = rollInit(c2, false);
-          }) }, "\u{1F3B2}"),
-          h("button.icon-btn", { title: "Remove from this fight", onclick: () => act((x) => {
-            x.combatants = x.combatants.filter((y) => y.key !== c2.key);
-          }) }, "\xD7")
-        ))),
-        h(
-          "div.setup-actions",
-          h("button.outline", { onclick: () => rollFor("monsters") }, "Roll for monsters"),
-          h("button.outline", { onclick: () => rollFor("all") }, "Roll for everyone"),
-          h("div.spacer"),
-          h("button.primary#run-start", { onclick: start }, "Start combat")
-        ),
-        h("div.hint#run-missing")
-      )
-    )
-  );
-  updateStart();
-  function updateStart() {
-    const n = s.combatants.filter((c2) => c2.init == null && !c2.owner).length;
-    el10.querySelector("#run-missing").textContent = n ? `${n} without initiative: they will roll automatically when you start.` : "";
-  }
-}
-function underOwners(list) {
-  const keys = new Set(list.map((c2) => c2.key)), out = [];
-  const add2 = (c2) => {
-    if (out.includes(c2)) return;
-    out.push(c2);
-    list.filter((f) => f.owner === c2.key).forEach(add2);
-  };
-  list.filter((c2) => !c2.owner || !keys.has(c2.owner)).forEach(add2);
-  return out;
-}
-function followText(c2) {
-  const o = C().combatants.find((x) => x.key === c2.owner);
-  return `${o ? `${o.name}'s` : "A"} ${c2.summoned || c2.companion?.summon ? "summon" : "companion"}: ${c2.during ? "acts during their turn" : "right after their turn"}`;
-}
-function start() {
-  act((s) => startCombat(s, rollInit));
-}
-function header() {
-  const r = evaluateEncounter(enc);
-  return h(
-    "div.run-header",
-    h(
-      "div",
-      h("div.crumbs", h("button.link", { onclick: () => {
-        enc = null;
-        render4();
-      } }, "Run Encounter"), h("span", "\u203A"), h("span", enc.name)),
-      h("h1", enc.name),
-      h("div.page-sub", h(`span.${difficultyClass(r.difficulty)}`, r.difficulty), ` \xB7 ${r.total.toLocaleString()} XP total \xB7 ${r.perPlayer.toLocaleString()} XP per player`)
-    ),
-    h(
-      "div.row-gap",
-      h("button.outline", { onclick: () => go6("builder", enc.id) }, "Edit encounter"),
-      h("button.outline", { title: "Roll the loot for every enemy in this fight", onclick: () => lootDialog(enc) }, "Loot"),
-      h("button.dark", { onclick: endCombat }, "End combat")
-    )
-  );
-}
-function endCombat() {
-  const end = () => {
-    enc.combat = null;
-    undoStacks.delete(enc.id);
-    save("encounters", enc, { delay: 0 });
-    enc = null;
-    render4();
-  };
-  modal("Are you sure?", h("p", "End this combat? HP, initiative and turns are cleared (the encounter itself stays)."), [
-    ["Cancel", () => {
-    }],
-    ["End and roll loot", () => {
-      const e2 = enc;
-      lootDialog(structuredClone(e2));
-      end();
-    }],
-    ["End combat", end, "danger"]
-  ]);
-}
-function renderTracker() {
-  const s = C();
-  const order = ordered2();
-  const turnIndex = Math.max(0, order.findIndex((c2) => c2.key === s.turnKey));
-  fill(
-    el10,
-    header(),
-    h(
-      "div.run-grid",
-      h(
-        "div.card.tracker",
-        h("div.tracker-head", h("h2", "Combat Tracker"), h("button.outline", { onclick: addCombatant }, "Manual entry")),
-        h("div.init-title", `Initiative (${order.length})`),
-        h("div.turn-list", order.map((c2) => combatantRow(c2, c2.key === s.turnKey))),
-        h(
-          "div.turn-bar",
-          h("button.dark", { onclick: undo, disabled: !undoStack().length, title: "Undo the last change" }, "Undo"),
-          h("div.counter-box", h("div", "Round"), h("strong", s.round)),
-          h("div.counter-box", h("div", "Turn"), h("strong", turnIndex + 1)),
-          h("button.primary", { onclick: next }, "Next")
-        )
-      ),
-      h("div.run-side", h("div.card.side-block#run-block"), h("div.card.log#run-log"))
-    )
-  );
-  renderBlock();
-  renderLog();
-  el10.querySelector(".turn-row.current")?.scrollIntoView({ block: "nearest" });
-}
-function avatarFor(c2, size) {
-  const src = c2.form ? findMonster(c2.form.monsterId)?.avatar : c2.kind === "pc" ? findCharacter(c2.refId)?.avatar : findMonster(c2.refId)?.avatar;
-  return avatar(src, c2.name.replace(/\s\([A-Z]\d*\)$/, ""), size);
-}
-function combatantRow(c2, current3) {
-  const s = C();
-  const m = c2.kind === "monster" || c2.form ? findMonster(statRef(c2)) : null;
-  const pc = c2.kind === "pc" ? findCharacter(c2.refId) : null;
-  const grp = isGroup(c2);
-  const stats = c2.kind === "monster" || c2.form && m ? [h("span", h("b", "CR "), m?.challengeRating ?? "?"), h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "HP "), grp ? `${c2.maxHp} each` : m ? `${m.averageHitPoints} (${hpFormula(m)})` : "\u2014"), h("span", h("b", "Init. Bonus "), signed(c2.initBonus))] : [h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "Speed "), `${pc?.speed ?? 30} ft`), h("span", h("b", "Pass. Perception "), pc?.passivePerception ?? "\u2014")];
-  const hpBox = grp ? h(
-    "button.hp-box.tracked.group",
-    { title: c2.group === "minion" ? "Minions left: click when some are hit or caught" : `Pack HP: click to damage or heal (damage rolls over)${c2.tempHp ? `; ${c2.tempHp} temporary hit points` : ""}`, onclick: () => c2.group === "minion" ? minionDialog(c2) : packDialog(c2) },
-    c2.group === "minion" ? [h("span.hp-cur", standing(c2).length), h("span.hp-sep", "/"), h("span.hp-max", c2.members.length), h("span.hp-lbl", "left")] : [h("span.hp-cur", totalHp(c2)), h("span.hp-sep", "/"), h("span.hp-max", c2.maxHp * c2.members.length), c2.tempHp ? h("span.hp-temp", `+${c2.tempHp}`) : null]
-  ) : h(
-    "button.hp-box" + (c2.kind === "monster" ? ".tracked" : ""),
-    { title: c2.tempHp ? `Change HP (${c2.tempHp} temporary hit points)` : "Change HP", onclick: () => editHp(c2) },
-    h("span.hp-cur", c2.hp ?? "\u2014"),
-    h("span.hp-sep", "/"),
-    h("span.hp-max", c2.maxHp ?? "\u2014"),
-    c2.tempHp ? h("span.hp-temp", `+${c2.tempHp}`) : null
-  );
-  const same = s.combatants.filter((x) => x.key !== c2.key && x.kind === "monster" && x.refId && x.refId === c2.refId);
-  const groupItems = [
-    grp && standing(c2).length > 1 ? ["Split off\u2026", () => splitDialog2(c2)] : null,
-    same.length ? [grp ? `Merge the other ${m?.name || c2.name} rows into this group` : `Merge identical creatures into a group (${same.length + 1})`, () => mergeRows(c2)] : null
-  ].filter(Boolean);
-  const withTurn = c2.during && c2.owner === s.turnKey;
-  return h(
-    "div.turn-row" + (current3 ? ".current" : "") + (withTurn ? ".with-turn" : "") + (c2.owner ? ".follow" : "") + (c2.key === s.selectedKey ? ".selected" : "") + (isOut(c2) ? ".out" : "") + (c2.kind === "pc" ? ".pc" : "") + (c2.ally ? ".ally" : ""),
-    { oncontextmenu: (e2) => tokenMenu(e2, c2) },
-    c2.owner ? h("div.init-box.follow-box", { title: followText(c2) }, h("div.lbl", c2.during ? "On their turn" : "After them"), h("div.follow-init", "\u21B3")) : h("div.init-box", h("div.lbl", "Initiative"), h("input", { type: "number", value: c2.init ?? "", onchange: (e2) => act((x) => {
-      x.combatants.find((y) => y.key === c2.key).init = Number(e2.target.value) || 0;
-    }) })),
-    h(
-      "div.turn-main",
-      { onclick: () => {
-        s.selectedKey = c2.key;
-        save("encounters", enc);
-        renderTracker();
-      } },
-      avatarFor(c2, "md"),
-      h(
-        "div.turn-info",
-        h("div.turn-name", c2.name, grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null, isOut(c2) ? h("span.tag.dead", "Down") : null, shapeTag(c2), c2.owner ? h("span.tag.follow", { title: followText(c2) }, c2.summoned || c2.companion?.summon ? "Summon" : "Companion") : null, linkTag(c2)),
-        h("div.turn-stats", stats),
-        grp ? pips(c2) : null,
-        condChips(c2, {
-          add: (q) => act((x) => {
-            x.combatants.find((z) => z.key === c2.key).conditions.push(q);
-          }),
-          remove: (q) => act((x) => {
-            const y = x.combatants.find((z) => z.key === c2.key);
-            y.conditions = y.conditions.filter((z) => z !== q);
-          })
-        })
-      )
-    ),
-    hpBox,
-    h("button.icon-btn.kebab", { title: "More", onclick: (e2) => popMenu(e2.currentTarget, [
-      ["Make it their turn", () => act((x) => {
-        x.turnKey = c2.key;
-      })],
-      ...linker ? tokenItems(c2) : [],
-      ...shapeItems(c2, (fn) => act((x) => fn(find(x, c2.key)))),
-      ...summonItems(c2),
-      ["Rename", () => renameCombatant(c2)],
-      ...groupItems,
-      ["Duplicate", () => act((x) => {
-        const copy = { ...structuredClone(c2), key: `${c2.key}-copy-${Date.now().toString(36)}`, name: `${c2.name} copy` };
-        x.combatants.push(copy);
-      })],
-      ["Remove from combat", () => act((x) => removeCombatant(x, c2.key)), "danger"]
-    ]) }, "\u22EE")
-  );
-}
-function next() {
-  act((s) => startOfTurn2(nextTurn(s)));
-}
-function startOfTurn2(c2) {
-  if (c2?.kind !== "monster") return;
-  startOfTurn(c2, findMonster(statRef(c2)), (expr, label) => doRoll(expr, { who: c2.name, label }));
-}
-var conSave2 = (c2) => conSave(c2, c2.kind === "monster" ? findMonster(statRef(c2)) : null, c2.kind === "pc" ? findCharacter(c2.refId) : null);
-function concentrationCheck(key3, damage) {
-  const c2 = C().combatants.find((x) => x.key === key3);
-  concentrationPrompt(c2, damage, () => act((x) => {
-    const y = x.combatants.find((z) => z.key === key3);
-    y.conditions = y.conditions.filter((q) => q !== "Concentrating");
-  }));
-}
-function concentrationPrompt(c2, damage, end) {
-  if (!c2 || !c2.conditions.includes("Concentrating") || damage <= 0) return;
-  if ((c2.hp ?? 1) <= 0) {
-    end();
-    return modal(`${c2.name}: concentration`, h("p", `${c2.name} dropped to 0 Hit Points, so its concentration ends.`), [["OK", () => {
-    }, "primary"]]);
-  }
-  const dc = concentrationDc(damage);
-  const bonus = conSave2(c2);
-  const result = h("div.conc-result");
-  const body2 = h(
-    "div.conc",
-    h("p", `${c2.name} took ${damage} damage while concentrating.`),
-    h("div.conc-dc", "Constitution saving throw ", h("strong", `DC ${dc}`)),
-    bonus != null ? h("button.primary", { onclick: (e2) => {
-      const r = doRoll(`1d20${signed(bonus)}`, { who: c2.name, label: "Concentration save" });
-      if (!r) return;
-      e2.currentTarget.disabled = true;
-      const kept = r.total >= dc;
-      fill(result, h(`strong.${kept ? "ok-text" : "bad-text"}`, `${r.total}: ${kept ? "concentration holds" : "concentration is lost"}`));
-      body2.closest(".modal").querySelector(kept ? ".keep" : ".end")?.focus();
-    } }, `Roll the save (${signed(bonus)})`) : h("p.muted", "The player rolls this save."),
-    result
-  );
-  modal(`${c2.name}: concentration`, body2, [["Keep concentrating", () => {
-  }, "keep"], ["End concentration", end, "danger.end"]]);
-}
-function editHp(c2) {
-  hpDialog(c2, (mode3, n) => {
-    act((x) => applyHp(x.combatants.find((z) => z.key === c2.key), mode3, n));
-    if (mode3 === "damage") setTimeout(() => concentrationCheck(c2.key, n), 0);
-  });
-}
-function hpDialog(c2, onApply) {
-  const input = h("input.hp-input", { type: "number", min: 0, placeholder: "Amount" });
-  const apply = (mode3) => {
-    const n = Number(input.value);
-    if (!Number.isFinite(n) || input.value === "") return false;
-    onApply(mode3, n);
-  };
-  const close = modal(`${c2.name}: hit points`, h(
-    "div.hp-edit",
-    h("div.hp-now", `${c2.hp ?? "\u2014"} / ${c2.maxHp ?? "\u2014"}`, c2.tempHp ? h("span.hp-temp", `+${c2.tempHp} temp`) : null),
-    input,
-    h("div.hint", "Enter applies damage (temporary HP absorb it first). Shift+Enter heals. Ctrl+Enter sets temporary HP: they replace any the creature has, and 0 removes them.")
-  ), [
-    ["Temp HP", () => apply("temp"), "temp"],
-    ["Set max HP", () => apply("max")],
-    ["Set HP", () => apply("set")],
-    ["Heal", () => apply("heal"), "ok"],
-    ["Damage", () => apply("damage"), "danger"]
-  ]);
-  input.addEventListener("keydown", (e2) => {
-    if (e2.key === "Enter" && apply(e2.ctrlKey ? "temp" : e2.shiftKey ? "heal" : "damage") !== false) close();
-  });
-}
-var find = (s, key3) => s.combatants.find((z) => z.key === key3);
-var numberInput = (value, min, max) => h("input", { type: "number", min, max, value });
-function pips(c2) {
-  const minion = c2.group === "minion";
-  return h(
-    "div.pips",
-    { onclick: (e2) => e2.stopPropagation() },
-    c2.members.map((mem, i) => {
-      const dead = mem.hp <= 0;
-      const title2 = `${c2.name} ${i + 1}: ${dead ? "down" : minion ? "standing" : `${mem.hp}/${c2.maxHp} HP`}${mem.conditions.length ? ` \xB7 ${mem.conditions.join(", ")}` : ""}
-${minion ? "Click: down / back up" : "Click: change just its HP"}. Right-click: its own conditions.`;
-      return h("button.pip" + (dead ? ".dead" : "") + (minion ? "" : ".bar") + (mem.conditions.length ? ".marked" : ""), {
-        title: title2,
-        onclick: () => minion ? act((x) => {
-          const y = find(x, c2.key);
-          const m = y.members[i];
-          if (m.hp > 0) {
-            m.hp = 0;
-            m.conditions = [];
-          } else m.hp = y.maxHp ?? 1;
-        }) : memberHp(c2, i),
-        oncontextmenu: (e2) => {
-          e2.preventDefault();
-          e2.stopPropagation();
-          memberConditions(e2.currentTarget, c2, i);
-        }
-      }, minion ? null : h("span.pip-fill", { style: `width:${Math.max(0, Math.min(100, mem.hp / (c2.maxHp || 1) * 100))}%` }));
-    }),
-    minion && standing(c2).length ? h("button.minus-one", { title: "One minion is hit and dies", onclick: () => act((x) => {
-      killMinions(find(x, c2.key), 1);
-    }) }, "\u22121") : null
-  );
-}
-function memberConditions(anchor, c2, i) {
-  const has = c2.members[i].conditions;
-  popMenu(anchor, [...conditionNames(), "Concentrating"].map((q) => [[has.includes(q) ? "\u2713 " : "", condIcon(q), q], () => act((x) => {
-    const m = find(x, c2.key).members[i];
-    m.conditions = m.conditions.includes(q) ? m.conditions.filter((z) => z !== q) : [...m.conditions, q];
-  }), "", { dataset: { cond: q } }]));
-}
-function minionDialog(c2, change = (fn) => act((x) => fn(find(x, c2.key)))) {
-  const left = standing(c2).length;
-  const killN = h("input.hp-input", { type: "number", min: 0, max: left, value: Math.min(1, left) });
-  const dmg = h("input", { type: "number", min: 0, placeholder: "Damage" });
-  const caught = numberInput(left, 1, left);
-  const msg = h("div.hint");
-  const kill = () => {
-    const n = Number(killN.value);
-    if (!(n > 0)) return false;
-    change((y) => {
-      killMinions(y, n);
-    });
-  };
-  const other = () => {
-    const d = Number(dmg.value), n = Number(caught.value);
-    if (dmg.value === "" || !(n > 0)) return false;
-    if (d < (c2.maxHp ?? 1)) {
-      msg.textContent = `${d} is less than their maximum HP (${c2.maxHp}), so it does nothing to them.`;
-      return false;
-    }
-    change((y) => {
-      minionOtherDamage(y, d, n);
-    });
-  };
-  const close = modal(`${c2.name}: minions`, h(
-    "div.hp-edit.group-edit",
-    h("div.hp-now", `${left} / ${c2.members.length} left`),
-    h("label.mg-row", "Hit by an attack or failed the save:", killN),
-    h("div.hint", "Any damage from an attack or a failed saving throw kills a minion. Enter kills this many."),
-    h("div.mg-row", h("label", "Other damage", dmg), h("label", "Minions caught", caught), h("button.danger", { onclick: () => {
-      if (other() !== false) close();
-    } }, "Apply")),
-    h("div.hint", `Other damage (an aura, a fall, a hazard) kills only if it's at least their maximum HP (${c2.maxHp}).`),
-    msg
-  ), [
-    ...left < c2.members.length ? [["Revive one", () => change((y) => {
-      revive(y);
-    })]] : [],
-    ["Kill", kill, "danger"]
-  ]);
-  killN.addEventListener("keydown", (e2) => {
-    if (e2.key === "Enter" && kill() !== false) close();
-  });
-  killN.select();
-}
-function packDialog(c2, custom = null) {
-  const change = custom || ((fn) => act((x) => fn(find(x, c2.key))));
-  const left = standing(c2).length;
-  const input = h("input.hp-input", { type: "number", min: 0, placeholder: "Amount" });
-  const caught = numberInput(left, 1, left);
-  const apply = (mode3) => {
-    const n = Number(input.value);
-    if (!Number.isFinite(n) || input.value === "") return false;
-    change((y) => {
-      if (mode3 === "damage") damagePack(y, n);
-      else if (mode3 === "each") damageEach(y, n, Number(caught.value) || 1);
-      else if (mode3 === "heal") healPack(y, n);
-      else if (mode3 === "temp") {
-        y.tempHp = Math.max(0, Math.round(n));
-        if (!y.tempHp) delete y.tempHp;
-      }
-    });
-    if (!custom && (mode3 === "damage" || mode3 === "each")) setTimeout(() => concentrationCheck(c2.key, n), 0);
-  };
-  const close = modal(`${c2.name}: pack hit points`, h(
-    "div.hp-edit.group-edit",
-    h("div.hp-now", `${totalHp(c2)} / ${c2.maxHp * c2.members.length}`, c2.tempHp ? h("span.hp-temp", `+${c2.tempHp} temp`) : null),
-    h("div.muted", `${left} of ${c2.members.length} standing \xB7 ${c2.maxHp} HP each \xB7 `, c2.members.filter((m) => m.hp > 0).map((m) => m.hp).join(", ")),
-    input,
-    h("div.hint", "Enter: damage from one hit. The hurt creature takes it first and the rest rolls on to the next. Shift+Enter heals (the most hurt first). Ctrl+Enter sets temporary HP for the whole pack."),
-    h("div.mg-row", h("label", "Creatures caught", caught), h("button.outline", { onclick: () => {
-      if (apply("each") !== false) close();
-    } }, "Damage each")),
-    h("div.hint", "Damage each: an area effect. Each creature caught takes the full amount, the hurt ones first, with no rollover.")
-  ), [
-    ["Temp HP", () => apply("temp"), "temp"],
-    ...left < c2.members.length ? [["Revive one", () => change((y) => {
-      revive(y, Number(input.value) || 1);
-    })]] : [],
-    ["Heal", () => apply("heal"), "ok"],
-    ["Damage", () => apply("damage"), "danger"]
-  ]);
-  input.addEventListener("keydown", (e2) => {
-    if (e2.key === "Enter" && apply(e2.ctrlKey ? "temp" : e2.shiftKey ? "heal" : "damage") !== false) close();
-  });
-}
-function memberHp(c2, i) {
-  const mem = c2.members[i];
-  const input = h("input.hp-input", { type: "number", min: 0, placeholder: "Amount" });
-  const apply = (mode3) => {
-    const n = Number(input.value);
-    if (!Number.isFinite(n) || input.value === "") return false;
-    act((x) => {
-      const y = find(x, c2.key), m = y.members[i];
-      if (mode3 === "damage") m.hp = Math.max(0, m.hp - n);
-      else if (mode3 === "heal") {
-        if (m.hp > 0) m.hp = Math.min(y.maxHp, m.hp + n);
-      } else m.hp = Math.max(0, Math.min(y.maxHp, n));
-      if (m.hp <= 0) m.conditions = [];
-    });
-  };
-  const close = modal(`${c2.name} ${i + 1}: hit points`, h(
-    "div.hp-edit",
-    h("div.hp-now", `${mem.hp} / ${c2.maxHp}`),
-    input,
-    h("div.hint", "Only this creature: no rollover. Enter applies damage, Shift+Enter heals.")
-  ), [
-    ["Set HP", () => apply("set")],
-    ["Heal", () => apply("heal"), "ok"],
-    ["Damage", () => apply("damage"), "danger"]
-  ]);
-  input.addEventListener("keydown", (e2) => {
-    if (e2.key === "Enter" && apply(e2.shiftKey ? "heal" : "damage") !== false) close();
-  });
-}
-function splitDialog2(c2) {
-  const left = standing(c2).length;
-  const n = numberInput(Math.floor(left / 2), 1, left - 1);
-  modal(`Split off from ${c2.name}`, h(
-    "div.form-grid",
-    h("label", "How many move to the new group", n),
-    h("div.hint", "The new group gets its own row and turn, starting on the same initiative.")
-  ), [
-    ["Cancel", () => {
-    }],
-    ["Split", () => act((x) => {
-      const y = find(x, c2.key);
-      const k = Math.max(1, Math.min(left - 1, Math.round(Number(n.value)) || 1));
-      const rows = x.combatants.filter((z) => z.refId === c2.refId).length;
-      const nu = splitOff(y, k, `${c2.key}-s${Date.now().toString(36)}`, `${c2.name.replace(/\s\(\d+\)$/, "")} (${rows + 1})`);
-      delete nu.tempHp;
-      x.combatants.push(nu);
-    }), "primary"]
-  ]);
-}
-function mergeRows(c2) {
-  act((x) => {
-    const idx = x.combatants.findIndex((z) => z.key === c2.key);
-    let y = x.combatants[idx];
-    const others = x.combatants.filter((z) => z.key !== c2.key && z.kind === "monster" && z.refId === c2.refId);
-    if (!isGroup(y)) {
-      const m = findMonster(c2.refId);
-      const g = makeGroup({ ...y, name: m?.name || y.name.replace(/\s\([A-Z]\d*\)$/, ""), maxHp: y.maxHp ?? m?.averageHitPoints ?? 1 }, 0, isMinion(m));
-      delete g.hp;
-      delete g.tempHp;
-      mergeInto(g, [y]);
-      x.combatants[idx] = y = g;
-    }
-    mergeInto(y, others);
-    if (others.some((o) => o.key === x.turnKey)) x.turnKey = y.key;
-    if (others.some((o) => o.key === x.selectedKey)) x.selectedKey = y.key;
-    x.combatants = x.combatants.filter((z) => !others.includes(z));
-  });
-}
-function groupAttack(key3, entry) {
-  const c2 = find(C(), key3);
-  if (!c2 || !entry) return;
-  const a2 = groupAttackOf(entry.text);
-  const name = entry.name.replace(/\s*\(.*$/, "");
-  const left = standing(c2).length;
-  const n = h("input.hp-input", { type: "number", min: 1, max: left, value: left });
-  const result = h("div.conc-result");
-  const run3 = (mode3) => {
-    const k = Math.max(1, Math.min(left, Math.round(Number(n.value)) || left));
-    const r = a2.bonus ? rollFromClick(btn, `1d20${a2.bonus}`, { who: c2.name, label: `${name}: group attack (${k} joining)`, mode: mode3 }) : null;
-    if (a2.bonus && !r) return;
-    fill(
-      result,
-      r ? h("div", "Attack roll ", h("strong", r.total), r.natural20 ? " (natural 20)" : r.natural1 ? " (natural 1: a miss)" : "") : null,
-      a2.damage != null ? h("div", "On a hit: ", h("strong", `${a2.damage} \xD7 ${k} = ${a2.damage * k}`), ` ${a2.type} damage`) : h("div.muted", "This attack has no fixed damage: its hit effect is in the stat block.")
-    );
-  };
-  const btn = h("button.primary", { onclick: (e2) => run3(e2.shiftKey ? "advantage" : e2.ctrlKey ? "disadvantage" : "normal") }, a2.bonus ? `Roll the attack (${a2.bonus})` : "Work out the damage");
-  modal(`${c2.name}: ${name}`, h(
-    "div.hp-edit.group-edit",
-    h("label.mg-row", "How many join in:", n),
-    h("div.hint", `${left} standing. Enter rolls; Shift-click the button for advantage, Ctrl-click for disadvantage.`),
-    btn,
-    result
-  ), [["Done", () => {
-  }]]);
-  n.addEventListener("keydown", (e2) => {
-    if (e2.key === "Enter") {
+function mountSearch(go9) {
+  document.addEventListener("keydown", (e2) => {
+    if ((e2.ctrlKey || e2.metaKey) && !e2.shiftKey && e2.key.toLowerCase() === "k") {
       e2.preventDefault();
-      btn.click();
-    }
-  });
-  n.select();
-}
-function renameCombatant(c2) {
-  const input = h("input", { type: "text", value: c2.name });
-  modal("Rename", input, [["Cancel", () => {
-  }], ["Save", () => act((x) => {
-    const y = x.combatants.find((z) => z.key === c2.key);
-    y.name = input.value || c2.name;
-    if (linker?.available()) linker.rename(tokenRenames(y));
-  }), "primary"]]);
-}
-function addCombatant() {
-  const f = { name: h("input", { type: "text", placeholder: "Name" }), init: h("input", { type: "number", placeholder: "roll" }), hp: h("input", { type: "number" }), ac: h("input", { type: "number" }), bonus: h("input", { type: "number", value: 0 }) };
-  modal("Manual entry", h(
-    "div.form-grid",
-    h("label", "Name", f.name),
-    h("label", "Initiative", f.init),
-    h("label", "Initiative bonus", f.bonus),
-    h("label", "Max HP", f.hp),
-    h("label", "Armor Class", f.ac)
-  ), [
-    ["Cancel", () => {
-    }],
-    ["Add", () => {
-      if (!f.name.value.trim()) return false;
-      act((x) => {
-        const c2 = { key: `manual-${Date.now().toString(36)}`, kind: "monster", name: f.name.value.trim(), ac: f.ac.value ? Number(f.ac.value) : null, hp: f.hp.value ? Number(f.hp.value) : null, maxHp: f.hp.value ? Number(f.hp.value) : null, initBonus: Number(f.bonus.value) || 0, init: null, conditions: [] };
-        c2.init = f.init.value !== "" ? Number(f.init.value) : x.phase === "active" ? rollInit(c2, false) : null;
-        x.combatants.push(c2);
-      });
-    }, "primary"]
-  ]);
-}
-var linker = null;
-var messenger = null;
-function setMessenger(m) {
-  messenger = m;
-}
-function characterTokens(charId) {
-  const c2 = liveEncounter()?.combat?.combatants.find((x) => x.key === `pc-${charId}`);
-  return c2 ? tokensOf(c2) : findCharacter(charId)?.live?.tokens || [];
-}
-var messageItem = (charId, name) => messenger ? [["Send message\u2026", () => messenger.compose({ charId, character: name })]] : [];
-function setTokenLinker(l) {
-  linker = l;
-}
-var linkTag = (c2) => {
-  const n = tokensOf(c2).length;
-  return n ? h("span.tag.link", { title: `Linked to ${n === 1 ? "a token" : `${n} tokens`} in Owlbear` }, n > 1 ? `\u{1F517} ${n}` : "\u{1F517}") : null;
-};
-function tokenItems(c2) {
-  const n = tokensOf(c2).length, plan = linkPlan(c2);
-  const label = !n ? "Link to token\u2026" : isGroup(c2) ? n < c2.members.length ? `Link the other ${plan.length} token${plan.length === 1 ? "" : "s"}\u2026` : "Relink tokens\u2026" : "Link to a different token\u2026";
-  return [
-    [label, () => startLink(c2)],
-    ...n ? [[n === 1 ? "Unlink token" : `Unlink ${n} tokens`, () => unlinkCombatant(c2)]] : [],
-    ...c2.kind === "pc" && c2.refId ? messageItem(c2.refId, c2.name) : []
-  ];
-}
-function tokenMenu(e2, c2) {
-  e2.preventDefault();
-  popMenu(e2.currentTarget.querySelector(".turn-name, .setup-name") || e2.currentTarget, [...linker ? tokenItems(c2) : [], ...shapeItems(c2, (fn) => act((x) => fn(find(x, c2.key)))), ...summonItems(c2)]);
-}
-function shapeItems(c2, change) {
-  if (isGroup(c2)) return [];
-  const self2 = c2.kind === "pc" ? findCharacter(c2.refId) : findMonster(c2.refId);
-  const forms = formsOf(self2);
-  return [
-    ...forms.filter((f) => f.id !== c2.form?.id).map((f) => {
-      const m = findMonster(f.monsterId);
-      return m ? [`Shapeshift: ${f.name || m.name}`, () => change((y) => {
-        shiftInto(y, f, m);
-      })] : null;
-    }).filter(Boolean),
-    ...c2.form ? [[`Back to ${self2?.name || c2.name}'s own shape`, () => change((y) => {
-      revertShape(y);
-    })]] : []
-  ];
-}
-var shapeTag = (c2) => c2.form ? h("span.tag.shape", { title: c2.form.pool ? `In ${c2.form.name} form, with its hit points (its own: ${c2.form.hp0 ?? "\u2014"}/${c2.form.maxHp0 ?? "\u2014"})` : `In ${c2.form.name} form` }, c2.form.name) : null;
-function summonItems(c2) {
-  return [
-    [`Summon for ${c2.name}\u2026`, () => summonDialog(c2)],
-    ...c2.owner ? [[c2.companion ? "Dismiss (switch it off)" : "Dismiss", () => dismiss(c2), "danger"]] : []
-  ];
-}
-function summonDialog(c2) {
-  const rules = enc.rules === "2024" ? "acts during their turn (2024 rules)" : "takes its turn right after theirs (2014 rules)";
-  pickMonster({
-    title: `Summon for ${c2.name}`,
-    okText: "Summon",
-    count: 1,
-    hint: `It joins on ${c2.kind === "pc" || c2.ally ? "the players\u2019" : "the monsters\u2019"} side and ${rules}. Several make one group, "Skeleton 1", "Skeleton 2"\u2026: name their tokens like that in Owlbear and they link by themselves.`,
-    onPick: (m, n) => act((s) => {
-      const y = summon(s, c2.key, m, n, enc.rules);
-      if (y && s.phase === "active" && y.init == null) y.init = rollInit(y);
-    })
-  });
-}
-function dismiss(c2) {
-  act((s) => removeCombatant(s, c2.key));
-  if (c2.companion) setCompanionOn(c2.companion.char, c2.companion.id, false);
-}
-function actOn(encId, fn) {
-  if (enc?.id === encId) return act(fn);
-  const e2 = store.encounters.find((x) => x.id === encId);
-  if (!e2?.combat) return;
-  fn(e2.combat);
-  save("encounters", e2);
-}
-function startLink(c2) {
-  if (!linker.available()) return notice('Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".', "error");
-  const encId = enc.id, plan = linkPlan(c2);
-  linker.pick(
-    { names: plan.map((p) => p.name) },
-    (i, id) => {
-      unlinkedByHand.delete(id);
-      actOn(encId, (s) => {
-        linkToken(s, c2.key, plan[i].member, id);
-      });
-    },
-    (reason) => {
-      if (reason === "cancelled") notice("Linking stopped.");
-    }
-  );
-  notice(plan.length > 1 ? `In Owlbear, click the tokens for ${c2.name}, one after another (Esc stops).` : `In Owlbear, click the token for ${c2.name} (Esc cancels).`);
-}
-function unlinkCombatant(c2) {
-  let ids = [];
-  act((s) => {
-    ids = unlinkTokens(s, c2.key);
-  });
-  for (const id of ids) unlinkedByHand.add(id);
-  if (ids.length && linker.available()) linker.unlink(ids);
-}
-var activeParty = () => store.party.filter((c2) => c2.active);
-var partyUndo = [];
-function partyAct(id, fn) {
-  const ch = findCharacter(id);
-  if (!ch) return;
-  partyUndo.push({ id, live: structuredClone(ch.live || {}) });
-  if (partyUndo.length > UNDO_LIMIT) partyUndo.shift();
-  const pc = partyCombatant(ch);
-  fn(pc);
-  setPartyLive(ch, liveOf(pc));
-  render4();
-}
-function setPartyLive(ch, next2) {
-  ch.live = next2;
-  save("party", ch);
-  const e2 = liveEncounter();
-  const c2 = e2?.combat?.combatants.find((x) => x.key === `pc-${ch.id}`);
-  if (!c2 || sameLive(liveOf(c2), next2)) return;
-  c2.hp = next2.hp ?? c2.hp;
-  c2.conditions = [...next2.conditions || []];
-  if (next2.tempHp) c2.tempHp = next2.tempHp;
-  else delete c2.tempHp;
-  if (next2.tokens?.length) c2.tokens = [...next2.tokens];
-  else delete c2.tokens;
-  save("encounters", e2);
-}
-function partyUndoLast() {
-  const u = partyUndo.pop();
-  const ch = u && findCharacter(u.id);
-  if (ch && u.companions) {
-    ch.companions = u.companions;
-    save("party", ch);
-  } else if (ch) setPartyLive(ch, u.live);
-  render4();
-}
-var companionKey = (charId, compId) => `cp-${charId}-${compId}`;
-function companionCombatants(ch) {
-  return (ch.companions || []).filter((comp) => comp.on && findMonster(comp.monsterId)).map((comp) => companionCombatant(ch, comp, findMonster(comp.monsterId)));
-}
-function fightChange(e2, fn) {
-  if (enc === e2) return act(fn);
-  fn(e2.combat);
-  e2.combat.combatants.forEach(settleDown);
-  syncParty(e2.combat);
-  save("encounters", e2);
-}
-function companionAct(charId, compId, fn, { undo: undo2 = true } = {}) {
-  const ch = findCharacter(charId), comp = ch?.companions?.find((x) => x.id === compId);
-  if (!comp) return;
-  const key3 = companionKey(charId, compId), e2 = liveEncounter();
-  if (e2?.combat?.combatants.some((x) => x.key === key3)) {
-    fightChange(e2, (s) => fn(find(s, key3), s));
-    render4();
-    return;
-  }
-  if (undo2) {
-    partyUndo.push({ id: charId, companions: structuredClone(ch.companions) });
-    if (partyUndo.length > UNDO_LIMIT) partyUndo.shift();
-  }
-  const c2 = companionCombatant(ch, comp, findMonster(comp.monsterId));
-  fn(c2, { combatants: [c2] });
-  settleDown(c2);
-  comp.live = companionLiveOf(c2);
-  save("party", ch);
-  render4();
-}
-function setCompanionOn(charId, compId, on) {
-  const ch = findCharacter(charId), comp = ch?.companions?.find((x) => x.id === compId);
-  if (!comp || !!comp.on === on) return;
-  comp.on = on;
-  if (comp.type === "summon") delete comp.live;
-  save("party", ch);
-  const e2 = liveEncounter(), key3 = companionKey(charId, compId), m = findMonster(comp.monsterId);
-  const s = e2?.combat, here = s?.combatants.some((x) => x.key === key3);
-  if (s && on && !here && m && s.combatants.some((x) => x.key === `pc-${charId}`)) {
-    fightChange(e2, (x) => {
-      const y = companionCombatant(ch, comp, m, e2.rules);
-      y.init = x.combatants.find((o) => o.key === y.owner)?.init ?? null;
-      x.combatants.push(y);
-    });
-  } else if (s && !on && here) fightChange(e2, (x) => removeCombatant(x, key3));
-  render4();
-}
-function companionCard(ch, comp) {
-  const m = findMonster(comp.monsterId), e2 = liveEncounter();
-  const c2 = e2?.combat?.combatants.find((x) => x.key === companionKey(ch.id, comp.id)) || companionCombatant(ch, comp, m);
-  const grp = isGroup(c2), on = !!comp.on && !!m;
-  const change = (fn) => companionAct(ch.id, comp.id, (y) => fn(y));
-  const items = () => on ? [...linker ? companionTokenItems(ch, comp, c2) : [], ...shapeItems(c2, change)] : [];
-  const hp = !on ? h("span") : grp ? h(
-    "button.hp-box.group",
-    { title: "Hit points: click to damage or heal", onclick: () => c2.group === "minion" ? minionDialog(c2, change) : packDialog(c2, change) },
-    h("span.hp-cur", c2.group === "minion" ? standing(c2).length : totalHp(c2)),
-    h("span.hp-sep", "/"),
-    h("span.hp-max", c2.group === "minion" ? c2.members.length : c2.maxHp * c2.members.length)
-  ) : h(
-    "button.hp-box",
-    { title: "Change HP", onclick: () => hpDialog(c2, (mode3, n) => change((y) => applyHp(y, mode3, n))) },
-    h("span.hp-cur", c2.hp ?? "\u2014"),
-    h("span.hp-sep", "/"),
-    h("span.hp-max", c2.maxHp ?? "\u2014"),
-    c2.tempHp ? h("span.hp-temp", `+${c2.tempHp}`) : null
-  );
-  return h(
-    "div.party-card.comp-card" + (on ? "" : ".off") + (on && isOut(c2) ? ".down" : ""),
-    {
-      oncontextmenu: (ev) => {
-        if (!items().length) return;
-        ev.preventDefault();
-        popMenu(ev.currentTarget.querySelector(".party-name"), items());
-      }
-    },
-    avatar(m?.avatar, c2.name, "sm"),
-    h(
-      "div.party-main",
-      h(
-        "div.party-name",
-        c2.name,
-        grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null,
-        h("span.tag.follow", comp.type === "summon" ? "Summon" : "Companion"),
-        on ? linkTag(c2) : null,
-        m ? h("label.comp-on", { title: "In play: it joins fights and shows in Owlbear" }, h("input", { type: "checkbox", checked: !!comp.on, onchange: (ev) => setCompanionOn(ch.id, comp.id, ev.target.checked) }), "In play") : h("span.bad-text", " Its stat block is missing from the library")
-      ),
-      on ? h("div.turn-stats", h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "HP "), `${c2.maxHp ?? "\u2014"}${grp ? " each" : ""}`), h("span.muted", `${ch.name}'s ${comp.type === "summon" ? "summon" : "companion"}`)) : null,
-      on && !grp ? condChips(c2, {
-        add: (q) => change((y) => {
-          y.conditions.push(q);
-        }),
-        remove: (q) => change((y) => {
-          y.conditions = y.conditions.filter((z) => z !== q);
-        })
-      }) : null
-    ),
-    hp,
-    items().length ? h("button.icon-btn.kebab", { title: "More", onclick: (ev) => popMenu(ev.currentTarget, items()) }, "\u22EE") : h("span")
-  );
-}
-function companionTokenItems(ch, comp, c2) {
-  const n = tokensOf(c2).length, plan = linkPlan(c2);
-  return [
-    [!n ? "Link to token\u2026" : isGroup(c2) ? "Relink tokens\u2026" : "Link to a different token\u2026", () => {
-      if (!linker.available()) return notice('Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".', "error");
-      linker.pick(
-        { names: plan.map((p) => p.name) },
-        (i, id) => {
-          unlinkedByHand.delete(id);
-          companionAct(ch.id, comp.id, (y, s) => {
-            linkToken(s, y.key, plan[i].member, id);
-          });
-        },
-        (reason) => {
-          if (reason === "cancelled") notice("Linking stopped.");
-        }
-      );
-      notice(plan.length > 1 ? `In Owlbear, click the tokens for ${c2.name}, one after another (Esc stops).` : `In Owlbear, click the token for ${c2.name} (Esc cancels).`);
-    }],
-    ...n ? [[n === 1 ? "Unlink token" : `Unlink ${n} tokens`, () => {
-      let ids = [];
-      companionAct(ch.id, comp.id, (y, s) => {
-        ids = unlinkTokens(s, y.key);
-      });
-      for (const id of ids) unlinkedByHand.add(id);
-      if (ids.length && linker.available()) linker.unlink(ids);
-    }]] : []
-  ];
-}
-function partyCard(ch) {
-  const c2 = partyCombatant(ch);
-  const items = () => [...partyTokenItems(ch), ...shapeItems(c2, (fn) => partyAct(ch.id, fn))];
-  const menu = (anchor) => popMenu(anchor, items());
-  const shape = c2.form && findMonster(c2.form.monsterId);
-  return h(
-    "div.party-card" + (c2.hp != null && c2.hp <= 0 ? ".down" : ""),
-    { oncontextmenu: (e2) => {
-      if (!items().length) return;
+      e2.stopPropagation();
+      open(go9);
+    } else if (e2.key === "Escape" && backdrop) {
       e2.preventDefault();
-      menu(e2.currentTarget.querySelector(".party-name"));
-    } },
-    avatar(shape?.avatar || ch.avatar, ch.name, "md"),
-    h(
-      "div.party-main",
-      h("div.party-name", ch.name, shapeTag(c2), linkTag(c2)),
-      h("div.turn-stats", h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "Speed "), `${shape ? walkSpeed(shape) || "\u2014" : ch.speed ?? 30} ft`), h("span", h("b", "Pass. Perception "), ch.passivePerception ?? "\u2014")),
-      condChips(c2, {
-        add: (q) => partyAct(ch.id, (p) => {
-          p.conditions.push(q);
-        }),
-        remove: (q) => partyAct(ch.id, (p) => {
-          p.conditions = p.conditions.filter((z) => z !== q);
-        })
-      })
-    ),
-    h(
-      "button.hp-box",
-      { title: c2.tempHp ? `Change HP (${c2.tempHp} temporary hit points)` : "Change HP", onclick: () => partyHp(ch) },
-      h("span.hp-cur", c2.hp ?? "\u2014"),
-      h("span.hp-sep", "/"),
-      h("span.hp-max", c2.maxHp ?? "\u2014"),
-      c2.tempHp ? h("span.hp-temp", `+${c2.tempHp}`) : null
-    ),
-    items().length ? h("button.icon-btn.kebab", { title: "More", onclick: (e2) => menu(e2.currentTarget) }, "\u22EE") : null
-  );
-}
-function partyHp(ch) {
-  hpDialog(partyCombatant(ch), (mode3, n) => {
-    partyAct(ch.id, (p) => applyHp(p, mode3, n));
-    if (mode3 !== "damage") return;
-    setTimeout(() => concentrationPrompt(
-      partyCombatant(findCharacter(ch.id)),
-      n,
-      () => partyAct(ch.id, (p) => {
-        p.conditions = p.conditions.filter((q) => q !== "Concentrating");
-      })
-    ), 0);
-  });
-}
-function chooseParty() {
-  const rows = store.party.map((ch) => ({ ch, box: h("input", { type: "checkbox", checked: !!ch.active }) }));
-  modal("Active party", h(
-    "div.choose-party",
-    h("p.muted", "Tick the characters to track between fights. They come from the Party tab."),
-    rows.length ? rows.map(({ ch, box }) => h(
-      "label.check-row",
-      box,
-      avatar(ch.avatar, ch.name, "xs"),
-      ch.name,
-      h("span.muted", [ch.className, ch.level && `level ${ch.level}`].filter(Boolean).join(" "))
-    )) : h("p", "There are no characters yet: add them in the Party tab.")
-  ), [
-    ["Cancel", () => {
-    }],
-    ["Save", () => {
-      for (const { ch, box } of rows) if (!!ch.active !== box.checked) {
-        ch.active = box.checked;
-        save("party", ch);
-      }
-      render4();
-    }, "primary"]
-  ]);
-}
-function partyTokenItems(ch) {
-  const n = ch.live?.tokens?.length || 0;
-  if (!linker) return [];
-  return [[n ? "Link to a different token\u2026" : "Link to token\u2026", () => startPartyLink(ch)], ...n ? [["Unlink token", () => unlinkParty(ch)]] : [], ...messageItem(ch.id, ch.name)];
-}
-function startPartyLink(ch) {
-  if (!linker.available()) return notice('Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".', "error");
-  linker.pick({ names: [ch.name] }, (i, id) => {
-    unlinkedByHand.delete(id);
-    for (const o of store.party) if (o !== ch && o.live?.tokens?.includes(id)) setPartyLive(o, { ...o.live, tokens: o.live.tokens.filter((t) => t !== id) });
-    partyAct(ch.id, (p) => {
-      p.tokens = [id];
-    });
-  }, (reason) => {
-    if (reason === "cancelled") notice("Linking stopped.");
-  });
-  notice(`In Owlbear, click the token for ${ch.name} (Esc cancels).`);
-}
-function unlinkParty(ch) {
-  const ids = ch.live?.tokens || [];
-  for (const id of ids) unlinkedByHand.add(id);
-  partyAct(ch.id, (p) => {
-    delete p.tokens;
-  });
-  if (ids.length && linker.available()) linker.unlink(ids);
-}
-var warnedTwice = "";
-var linking = false;
-var unlinkedByHand = /* @__PURE__ */ new Set();
-function linkByName(all) {
-  if (linking) return;
-  const tokens = all.filter((t) => !unlinkedByHand.has(t.id));
-  const linked2 = [], twice = [];
-  linking = true;
-  try {
-    const party = matchPartyTokens(activeParty(), tokens);
-    twice.push(...party.twice);
-    for (const [id, token] of party.links) {
-      const ch = findCharacter(id), now = characterTokens(id);
-      if (now.length === 1 && now[0] === token) continue;
-      setPartyLive(ch, { ...liveOf(partyCombatant(ch)), tokens: [token] });
-      linked2.push(ch.name);
+      e2.stopPropagation();
+      close();
     }
-    const e2 = liveEncounter();
-    if (e2?.combat) {
-      const fight = matchFightTokens(e2.combat, tokens);
-      twice.push(...fight.twice.filter((n) => !twice.includes(n)));
-      for (const l of fight.links) {
-        linkToken(e2.combat, l.key, l.member, l.token);
-        const c2 = e2.combat.combatants.find((x) => x.key === l.key);
-        linked2.push(l.member >= 0 ? `${c2.name} ${l.member + 1}` : c2.name);
-      }
-      if (fight.links.length) {
-        syncParty(e2.combat);
-        save("encounters", e2);
-      }
-    }
-    const inFight = new Set(e2?.combat?.combatants.map((c2) => c2.key) || []);
-    const away = activeParty().flatMap(companionCombatants).filter((c2) => !inFight.has(c2.key));
-    const comps = matchFightTokens({ combatants: away }, tokens);
-    twice.push(...comps.twice.filter((n) => !twice.includes(n)));
-    for (const l of comps.links) {
-      const c2 = away.find((x) => x.key === l.key);
-      companionAct(c2.companion.char, c2.companion.id, (y, s) => {
-        linkToken(s, y.key, l.member, l.token);
-      }, { undo: false });
-      linked2.push(l.member >= 0 ? `${c2.name} ${l.member + 1}` : c2.name);
-    }
-  } finally {
-    linking = false;
-  }
-  if (linked2.length) {
-    render4();
-    notice(`Owlbear: linked ${linked2.length > 5 ? `${linked2.length} tokens` : linked2.join(", ")} on this scene.`);
-  }
-  const warn3 = twice.join(", ");
-  if (warn3 && warn3 !== warnedTwice) notice(`Owlbear: more than one token is named ${twice.join(" / ")}, so ${twice.length === 1 ? "it was" : "they were"} not linked. Link by hand, or rename the extras.`);
-  warnedTwice = warn3;
+  }, true);
+  return () => open(go9);
 }
-function renderBlock() {
-  const box = el10.querySelector("#run-block");
-  if (!box) return;
-  const c2 = C().combatants.find((x) => x.key === C().selectedKey);
-  if (!c2) return fill(box, h("div.empty", "Click a creature to see its stat block. Click any bonus or dice in it to roll."));
-  if (c2.kind === "monster" || c2.form) {
-    const m = findMonster(statRef(c2));
-    const tracker = {
-      get: (k) => C().combatants.find((x) => x.key === c2.key)?.used?.[k] || 0,
-      set: (k, n) => act((s) => {
-        const x = s.combatants.find((y) => y.key === c2.key);
-        if (x) {
-          x.used ??= {};
-          x.used[k] = n;
-        }
-      }, { redraw: false })
-    };
-    const recharge = {
-      get: (k) => !!C().combatants.find((x) => x.key === c2.key)?.recharge?.[k],
-      set: (k, used) => act((s) => {
-        const x = s.combatants.find((y) => y.key === c2.key);
-        if (x) {
-          x.recharge ??= {};
-          x.recharge[k] = used;
-        }
-      }, { redraw: false })
-    };
-    const group = isGroup(c2) ? { attack: (entry) => groupAttack(c2.key, entry) } : null;
-    const pc2 = c2.kind === "pc" ? findCharacter(c2.refId) : null;
-    fill(
-      box,
-      c2.form ? h(
-        "div.shape-banner",
-        h("span", `${c2.name} in ${c2.form.name} form${c2.form.pool ? ` \xB7 own HP ${c2.form.hp0 ?? "\u2014"}/${c2.form.maxHp0 ?? "\u2014"} waiting` : ""}`),
-        h("button.outline", { onclick: () => act((s) => {
-          revertShape(find(s, c2.key));
-        }) }, "Back to own shape")
-      ) : null,
-      m ? statBlock(m, { who: c2.name, description: false, tracker, recharge, group }) : h("div.empty", `${c2.name} has no stat block (manual entry or deleted from the library).`),
-      m ? h("button.outline", { onclick: () => go6("library", m.id) }, "View in Creatures") : null,
-      pc2?.sheet ? h("details.own-sheet", h("summary", `${pc2.name}'s own sheet`), characterSheet(pc2, { hp: c2.hp, compact: true })) : null
-    );
-    return;
-  }
-  const pc = findCharacter(c2.refId);
-  fill(
-    box,
-    h("div.pc-card", avatarFor(c2, "lg"), h(
-      "div",
-      h("div.sb-name", c2.name),
-      h("div.sb-meta", [pc?.className, pc && `Level ${pc.level}`, pc?.player && `played by ${pc.player}`].filter(Boolean).join(" \xB7 ")),
-      h("div.pc-stats", `AC ${c2.ac ?? "\u2014"} \xB7 HP ${c2.hp ?? "\u2014"}/${c2.maxHp ?? "\u2014"}${c2.tempHp ? ` (+${c2.tempHp} temp)` : ""} \xB7 Speed ${pc?.speed ?? 30} ft \xB7 Passive Perception ${pc?.passivePerception ?? "\u2014"}`)
-    )),
-    pc?.sheet ? characterSheet(pc, { hp: c2.hp, compact: true }) : null
-  );
-}
-function renderLog() {
-  const box = el10.querySelector("#run-log");
-  if (!box) return;
-  fill(box, h("h3", "Roll log"), rollLog.length ? h("div.log-list", rollLog.slice(0, 40).map((r) => h(
-    "div.log-row" + (r.natural20 ? ".crit" : r.natural1 ? ".fumble" : ""),
-    h("div.log-what", h("strong", r.who), ` ${r.label}`),
-    h("div.log-detail", `${r.expr}: ${r.detail}${r.mode !== "normal" ? ` (${r.mode})` : ""}`),
-    h("div.log-total", r.total)
-  ))) : h("div.empty", "Rolls show here. Click dice in a stat block; Shift-click rolls with advantage, Ctrl-click with disadvantage."));
-}
+
+// src/app.js
+init_loot_dialog();
+init_loot();
 
 // src/owlbear-settings.js
 var link2 = null;
@@ -69305,26 +70085,27 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.8.0";
+var version2 = "1.9.0";
 
 // src/app.js
 var TABS = [
-  { id: "maker", label: "Maker", mount: mountMaker, show: showMaker },
-  { id: "party", label: "Party", mount: mountParty, show: showParty },
-  { id: "library", label: "Creatures", mount: mountLibrary, show: showLibrary },
-  { id: "conditions", label: "Conditions", mount: mountConditions, show: showConditions },
-  { id: "spells", label: "Spells", mount: mountSpells, show: showSpells },
-  { id: "items", label: "Items", mount: mountItems, show: showItems },
-  { id: "builder", label: "Encounter Builder", mount: mountBuilder, show: showBuilder },
-  { id: "runner", label: "Run Encounter", mount: mountRunner, show: showRunner }
+  { id: "maker", group: "Prep", label: "Maker", mount: mountMaker, show: showMaker },
+  { id: "party", group: "Prep", label: "Party", mount: mountParty, show: showParty },
+  { id: "builder", group: "Prep", label: "Encounters", mount: mountBuilder, show: showBuilder },
+  { id: "library", group: "Library", label: "Creatures", mount: mountLibrary, show: showLibrary },
+  { id: "spells", group: "Library", label: "Spells", mount: mountSpells, show: showSpells },
+  { id: "items", group: "Library", label: "Items", mount: mountItems, show: showItems },
+  { id: "conditions", group: "Library", label: "Conditions", mount: mountConditions, show: showConditions },
+  { id: "runner", group: "Play", label: "Run", mount: mountRunner, show: showRunner }
 ];
 var nav = h("nav.tabs");
 var main = h("main");
 var saveStatus = h("span.save-status");
 var libButton = h("button.lib-btn", { onclick: (e2) => libraryMenu(e2.currentTarget) });
+var searchButton = h("button.search-btn", { title: "Search everything (Ctrl+K)" }, "\u2315 Search", h("kbd", "Ctrl+K"));
 var settingsButton = h("button.icon-btn.settings-btn", { title: "Settings", onclick: () => settings() }, "\u2699");
 var active = null;
-function go7(id, arg) {
+function go8(id, arg) {
   active = id;
   try {
     localStorage.setItem("tab", id);
@@ -69358,8 +70139,8 @@ function renderGhButton() {
 }
 var USER_KINDS = /* @__PURE__ */ new Set(["monsters", "party", "encounters", "conditions", "loot", "items", "spells"]);
 function watchGithub() {
-  onChange((kind) => {
-    if (!USER_KINDS.has(kind) || !ghReady()) return;
+  onChange((kind2) => {
+    if (!USER_KINDS.has(kind2) || !ghReady()) return;
     const s = ghSettings();
     if (!s.dirty) setGhSettings({ ...s, dirty: true });
     renderGhButton();
@@ -69456,7 +70237,7 @@ function githubDialog() {
       fill(result, h("span.bad-text", e2.message));
     }
   };
-  const close = modal("GitHub library", h(
+  const close2 = modal("GitHub library", h(
     "div.gh-dialog",
     h("p.muted", "Keep your library (your monsters, party, encounters and conditions) in your own private GitHub repository: a backup, and the same library on every computer. The access token stays in this browser and is only ever sent to GitHub."),
     h(
@@ -69468,12 +70249,12 @@ function githubDialog() {
     h("label.check-row", auto, "Save to GitHub automatically (a minute after each change)"),
     h("div.row-gap", h("button", { onclick: check }, "Check connection"), h("button", { onclick: () => {
       if (keep2()) {
-        close();
+        close2();
         githubLoad();
       }
     } }, "Load from GitHub"), h("button.primary", { onclick: () => {
       if (keep2()) {
-        close();
+        close2();
         githubSave();
       }
     } }, "Save to GitHub")),
@@ -69588,7 +70369,7 @@ async function importLibrary(text, fileName, { onDone } = {}) {
     for (const k of PACK_KINDS) for (const x of items[k]) save(k, x, { delay: 0, touch: false });
     await flushSaves();
     await loadLibrary();
-    go7(active || "maker");
+    go8(active || "maker");
     modal("Library imported", h("p", `Imported ${countText(items)}.`), [["OK", () => {
     }, "primary"]]);
     onDone?.({ mode: mode3, localNewer: localOnly || mode3 !== "all" && n(older) > 0 });
@@ -69613,7 +70394,7 @@ async function importLibrary(text, fileName, { onDone } = {}) {
 }
 async function pickLibrary() {
   const p = await chooseLibrary();
-  if (p) go7(active || "maker");
+  if (p) go8(active || "maker");
 }
 function renderLibButton() {
   const name = store.libraryPath ? store.libraryPath.split(/[\\/]/).filter(Boolean).pop() : "Choose library folder";
@@ -69639,7 +70420,7 @@ var SIZES2 = [[1, "Small (1\xD7)"], [1.5, "Medium (1.5\xD7)"], [2, "Large (2\xD7
 var SECONDS = [[3, "3 seconds"], [5, "5 seconds"], [8, "8 seconds"], [12, "12 seconds"]];
 function settings() {
   const s = toastSettings(), d = diceSettings();
-  const pick4 = (label, key3, options) => h("label", label, h(
+  const pick5 = (label, key3, options) => h("label", label, h(
     "select",
     { onchange: (e2) => {
       s[key3] = key3 === "position" ? e2.target.value : Number(e2.target.value);
@@ -69677,7 +70458,7 @@ function settings() {
     "div.settings",
     h("h4", "Roll pop-ups"),
     h("p.muted", "The result card that appears when you click a dice roll."),
-    h("div.form-grid", pick4("Position", "position", POSITIONS), pick4("Size", "size", SIZES2), pick4("Stays for", "seconds", SECONDS)),
+    h("div.form-grid", pick5("Position", "position", POSITIONS), pick5("Size", "size", SIZES2), pick5("Stays for", "seconds", SECONDS)),
     h("h4", "Dice"),
     h("p.muted", "3D dice roll across the window and land on the result. Rolls for a whole table at once (initiative) never show dice."),
     h("label.check-row", h("input", { type: "checkbox", checked: d.animate, onchange: (e2) => {
@@ -69701,7 +70482,7 @@ function settings() {
         setToastSettings({ ...TOAST_DEFAULTS });
         setDiceSettings({ ...DICE_DEFAULTS });
         setLootSettings({ ...LOOT_DEFAULTS });
-        close();
+        close2();
         settings();
       } }, "Reset to defaults")
     ),
@@ -69714,7 +70495,7 @@ function settings() {
     ))),
     owlbearSection()
   );
-  const close = modal("Settings", body2, [["Done", () => {
+  const close2 = modal("Settings", body2, [["Done", () => {
   }, "primary"]]);
 }
 function owlbearSection() {
@@ -69836,7 +70617,7 @@ async function init() {
     onmouseleave: (e2) => {
       e2.target.src = "logo/logo.png";
     }
-  }), h("span.brand-text", h("span.brand-top", "Kimble's \xB7 5/5.5e"), h("span.brand-main", "Encounter Manager"))), nav, h("div.top-right", saveStatus, ghButton, libButton, settingsButton)), main);
+  }), h("span.brand-text", h("span.brand-top", "Kimble's \xB7 5/5.5e"), h("span.brand-main", "Encounter Manager"))), nav, h("div.top-right", saveStatus, searchButton, ghButton, libButton, settingsButton)), main);
   const ribbon = document.querySelector("header.top");
   ribbon.addEventListener("wheel", (e2) => {
     if (ribbon.scrollWidth <= ribbon.clientWidth || Math.abs(e2.deltaX) > Math.abs(e2.deltaY)) return;
@@ -69845,9 +70626,11 @@ async function init() {
   }, { passive: false });
   for (const t of TABS) {
     t.el = h(`section.tab.tab-${t.id}`, { hidden: true });
-    t.button = h("button", { onclick: () => go7(t.id) }, t.label);
-    nav.append(t.button);
+    t.button = h("button", { onclick: () => go8(t.id) }, t.label);
     main.append(t.el);
+  }
+  for (const group of new Set(TABS.map((t) => t.group))) {
+    nav.append(h("div.tab-group", h("div.tab-group-name", group), h("div.tab-group-tabs", TABS.filter((t) => t.group === group).map((t) => t.button))));
   }
   onSaveStatus((s) => {
     saveStatus.textContent = s;
@@ -69855,14 +70638,15 @@ async function init() {
   });
   watchGithub();
   window.desktop.onBeforeClose(flushSaves);
-  onChange((kind) => {
-    if (kind === "all") renderLibButton();
+  onChange((kind2) => {
+    if (kind2 === "all") renderLibButton();
   });
   await loadLibrary();
-  for (const t of TABS) t.mount(t.el, go7);
-  setSpellOpener((id) => go7("spells", id));
-  setItemOpener((id) => go7("items", id));
+  for (const t of TABS) t.mount(t.el, go8);
+  setSpellOpener((id) => go8("spells", id));
+  setItemOpener((id) => go8("items", id));
   mountDiceTray();
+  searchButton.onclick = mountSearch(go8);
   renderLibButton();
   if (store.errors.length) modal("Some files could not be read", h("ul.warnings", store.errors.map((e2) => h("li", e2))));
   let start2 = "maker";
@@ -69870,12 +70654,12 @@ async function init() {
     start2 = localStorage.getItem("tab") || "maker";
   } catch {
   }
-  go7(TABS.some((t) => t.id === start2) ? start2 : "maker");
+  go8(TABS.some((t) => t.id === start2) ? start2 : "maker");
   if (!store.libraryPath) welcome();
 }
 if (location.search.includes("test")) {
-  Promise.all([Promise.resolve().then(() => (init_ocr(), ocr_exports)), Promise.resolve().then(() => (init_parse(), parse_exports)), Promise.resolve().then(() => (init_store(), store_exports)), Promise.resolve().then(() => (init_conditions(), conditions_exports)), Promise.resolve().then(() => (init_spells(), spells_exports)), Promise.resolve().then(() => (init_snapshot(), snapshot_exports))]).then(([ocr, parse, st, cond, sp, snap]) => {
-    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, condify: cond.condify, spellify: sp.spellify, go: go7, importLibrary, flushSaves: st.flushSaves, elementPng: snap.elementPng };
+  Promise.all([Promise.resolve().then(() => (init_ocr(), ocr_exports)), Promise.resolve().then(() => (init_parse(), parse_exports)), Promise.resolve().then(() => (init_store(), store_exports)), Promise.resolve().then(() => (init_conditions(), conditions_exports)), Promise.resolve().then(() => (init_spells(), spells_exports)), Promise.resolve().then(() => (init_snapshot(), snapshot_exports)), Promise.resolve().then(() => (init_chat(), chat_exports))]).then(([ocr, parse, st, cond, sp, snap, chat2]) => {
+    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, condify: cond.condify, spellify: sp.spellify, go: go8, importLibrary, flushSaves: st.flushSaves, elementPng: snap.elementPng, initChat: chat2.initChat };
   });
 }
 init();
@@ -69883,9 +70667,13 @@ init();
 // src/obr/link.js
 init_store();
 init_format();
+init_condition_icon();
 init_ui();
+init_runner();
 
 // src/obr/tracker-state.js
+init_combat();
+init_groups();
 var STATE_VERSION = 1;
 var MAX_BYTES = 12e3;
 function publicState(enc2, { showPartyHp = false, mark: mark2 = (n) => ({ n }), party = [], speed: speed2 = () => null, companions = () => [] } = {}) {
@@ -69942,182 +70730,8 @@ function fit(state2) {
   return state2;
 }
 
-// src/obr/chat.js
-init_ui();
-init_store();
-var STORE = "kemChats";
-var VOICE = "kemChatVoice";
-var KEEP = 200;
-var threads = load();
-var open = null;
-var send = () => false;
-var linked = () => false;
-function load() {
-  try {
-    return JSON.parse(localStorage.getItem(STORE) || "{}");
-  } catch {
-    return {};
-  }
-}
-function keep() {
-  try {
-    localStorage.setItem(STORE, JSON.stringify(threads));
-  } catch {
-  }
-}
-var lastVoice = () => {
-  try {
-    return localStorage.getItem(VOICE) || "GM";
-  } catch {
-    return "GM";
-  }
-};
-var thread = (key3, character, charId) => threads[key3] ??= { character, charId, messages: [], unread: 0 };
-var add = (key3, msg) => {
-  const t = threads[key3];
-  t.messages = [...t.messages, msg].slice(-KEEP);
-  keep();
-};
-var unread = () => Object.values(threads).reduce((n, t) => n + (t.unread || 0), 0);
-function sendMessage(charId, character, from, text) {
-  const key3 = `pc-${charId}`;
-  thread(key3, character, charId);
-  try {
-    localStorage.setItem(VOICE, from);
-  } catch {
-  }
-  const id = `m-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
-  add(key3, { id, dir: "out", from, text, at: Date.now(), status: "sending" });
-  const ok = linked() && send({ type: "whisper", id, thread: key3, character, from, text, tokens: characterTokens(charId) });
-  if (!ok) setStatus(id, "error", 'Not linked to Owlbear: press "Open / reconnect GM window" in Owlbear, then send again.');
-  draw();
-}
-function setStatus(id, status4, note) {
-  for (const t of Object.values(threads)) {
-    const m = t.messages.find((x) => x.id === id);
-    if (m) {
-      m.status = status4;
-      m.note = note;
-      keep();
-    }
-  }
-  draw();
-}
-function compose({ charId, character }) {
-  const from = h("input", { type: "text", value: lastVoice(), placeholder: "e.g. Elder Voss, A voice in your head" });
-  const text = h("textarea", { rows: 5, placeholder: `Message for ${character}'s player\u2026` });
-  const close = modal(`Message to ${character}`, h(
-    "div.chat-compose",
-    h("label", "From (the title they see)", from),
-    h("label", "Message", text),
-    h("div.hint", "Only the player who owns this character's linked token sees it. Their replies appear in Messages (top bar).")
-  ), [
-    ["Cancel", () => {
-    }],
-    ["Send", () => {
-      if (!text.value.trim()) return false;
-      sendMessage(charId, character, from.value.trim() || "GM", text.value.trim());
-      openPanel(`pc-${charId}`);
-    }, "primary"]
-  ]);
-  text.addEventListener("keydown", (e2) => {
-    if (e2.key === "Enter" && (e2.ctrlKey || e2.metaKey)) {
-      e2.preventDefault();
-      close();
-      sendMessage(charId, character, from.value.trim() || "GM", text.value.trim());
-      openPanel(`pc-${charId}`);
-    }
-  });
-  text.focus();
-}
-var button = h("button.chat-btn", { title: "Messages with players", onclick: () => open ? closePanel() : openPanel(latest()) });
-var panel2 = h("div.chat-panel", { hidden: true });
-var latest = () => Object.entries(threads).sort(([, a2], [, b2]) => (b2.messages.at(-1)?.at || 0) - (a2.messages.at(-1)?.at || 0))[0]?.[0] || null;
-function openPanel(key3) {
-  open = key3 || latest() || "";
-  if (threads[open]) threads[open].unread = 0;
-  keep();
-  draw();
-}
-function closePanel() {
-  open = null;
-  draw();
-}
-function draw() {
-  const n = unread();
-  button.replaceChildren("\u{1F4AC} Messages", n ? h("span.chat-count", n) : "");
-  button.classList.toggle("has-unread", !!n);
-  panel2.hidden = open === null;
-  if (open === null) return;
-  const keys = Object.keys(threads);
-  const t = threads[open];
-  const status4 = (m) => m.status === "sending" ? "Sending\u2026" : m.status === "error" ? m.note : m.note || "";
-  const list = h("div.chat-list", t ? t.messages.map((m) => h(
-    `div.chat-msg.${m.dir}${m.status === "error" ? ".error" : ""}`,
-    h("div.chat-who", m.dir === "out" ? `As ${m.from}` : m.from, h("span.chat-time", new Date(m.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }))),
-    h("div.chat-text", m.text),
-    m.dir === "out" && status4(m) ? h("div.chat-status", status4(m)) : null
-  )) : h("div.empty", "No messages yet. Right-click a character in Run Encounter > Send message\u2026"));
-  const from = h("input", { type: "text", value: lastVoice(), title: "Who it seems to come from (the title they see)" });
-  const text = h("textarea", { rows: 2, placeholder: t ? `Message for ${t.character}\u2026` : "Pick a character first", disabled: !t });
-  const go8 = () => {
-    if (!t || !text.value.trim()) return;
-    sendMessage(t.charId, t.character, from.value.trim() || "GM", text.value.trim());
-  };
-  text.addEventListener("keydown", (e2) => {
-    if (e2.key === "Enter" && !e2.shiftKey) {
-      e2.preventDefault();
-      go8();
-    }
-  });
-  fill(
-    panel2,
-    h("div.chat-head", h("strong", "Messages"), h("button.icon-btn", { title: "Close", onclick: closePanel }, "\xD7")),
-    keys.length ? h("div.chat-tabs", keys.map((k) => h(
-      "button" + (k === open ? ".active" : ""),
-      { onclick: () => openPanel(k) },
-      threads[k].character,
-      threads[k].unread ? h("span.chat-count", threads[k].unread) : ""
-    ))) : null,
-    list,
-    t ? h("div.chat-send", h("label", "From", from), h("div.chat-row", text, h("button.primary", { onclick: go8 }, "Send"))) : null
-  );
-  list.scrollTop = list.scrollHeight;
-}
-function initChat(bridge2) {
-  send = bridge2.send;
-  linked = bridge2.linked;
-  setMessenger({ available: linked, compose });
-  const mount2 = () => {
-    const bar = document.querySelector("header.top .top-right");
-    if (!bar) return setTimeout(mount2, 100);
-    bar.prepend(button);
-    document.body.append(panel2);
-    draw();
-  };
-  mount2();
-  return {
-    result({ id, error: error2, sentTo }) {
-      if (error2) {
-        setStatus(id, "error", error2);
-        notice(error2, "error");
-      } else setStatus(id, "sent", `Sent to ${sentTo.join(", ")}`);
-    },
-    ack({ id, name }) {
-      setStatus(id, "delivered", `Delivered to ${name}`);
-    },
-    reply({ thread: key3, character, name, text, at: at2 }) {
-      const charId = key3.replace(/^pc-/, "");
-      const t = thread(key3, character || store.party.find((c2) => c2.id === charId)?.name || "Player", charId);
-      add(key3, { id: `r-${at2}`, dir: "in", from: `${name}${t.character ? ` (${t.character})` : ""}`, text, at: at2 });
-      if (open !== key3) t.unread = (t.unread || 0) + 1;
-      keep();
-      openPanel(key3);
-    }
-  };
-}
-
 // src/obr/link.js
+init_chat();
 var obr = window.opener ? window.opener.top : null;
 var bridge = null;
 var lastPong = 0;
@@ -70262,8 +70876,8 @@ setInterval(() => {
   }
   hello();
 }, 3e3);
-onChange((kind) => {
-  if (kind !== "encounters" && kind !== "party" && kind !== "all") return;
+onChange((kind2) => {
+  if (kind2 !== "encounters" && kind2 !== "party" && kind2 !== "all") return;
   schedule();
   if (bridge) linkByName(sceneTokens);
 });
