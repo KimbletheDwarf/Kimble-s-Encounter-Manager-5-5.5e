@@ -94,11 +94,73 @@ var init_dice = __esm({
   }
 });
 
+// src/dice3d/themes.js
+function readPick(key3) {
+  const [style, colour] = String(key3).includes(":") ? String(key3).split(":") : ["plain", key3];
+  return STYLES[style] && THEMES[colour] ? { style, colour } : null;
+}
+function themeOf(key3) {
+  const { style, colour } = readPick(key3) || { style: "plain", colour: "ivory" };
+  const { font, italic, glow, glowSize } = STYLES[style];
+  return { ...THEMES[colour], ...style === "plain" ? {} : { style, font, italic, glow, glowSize } };
+}
+function pickLabel(key3) {
+  const { style, colour } = readPick(key3) || { style: "plain", colour: "ivory" };
+  return `${style === "plain" ? "" : `${STYLES[style].label} `}${THEMES[colour].label}`;
+}
+function themesOf(settings3 = {}) {
+  const list = [...new Set(settings3.themes || [settings3.theme])].filter(readPick).slice(0, MAX_THEMES);
+  return list.length ? list : ["ivory"];
+}
+function pickTheme(settings3, random = Math.random) {
+  const list = themesOf(settings3);
+  return list[Math.floor(random() * list.length)];
+}
+var THEMES, STYLES, MAX_THEMES, pickKey;
+var init_themes = __esm({
+  "src/dice3d/themes.js"() {
+    THEMES = {
+      ivory: { label: "Ivory", body: "#efe6d2", text: "#2a1f14" },
+      crimson: { label: "Crimson", body: "#8f1d1d", text: "#f6e7c8" },
+      obsidian: { label: "Obsidian", body: "#1c1c22", text: "#e3a21a" },
+      emerald: { label: "Emerald", body: "#14603f", text: "#f3f0e0" },
+      sapphire: { label: "Sapphire", body: "#1d3f8c", text: "#f2f2f2" },
+      amethyst: { label: "Amethyst", body: "#57287f", text: "#f4e8ff" },
+      amber: { label: "Amber", body: "#d98a1f", text: "#2a1604" },
+      rose: { label: "Rose", body: "#a82f62", text: "#fff0f6" },
+      teal: { label: "Teal", body: "#0e686c", text: "#e9fbf7" },
+      forest: { label: "Forest", body: "#2d4722", text: "#e9dcae" },
+      midnight: { label: "Midnight", body: "#101a3a", text: "#a9d6ff" },
+      ember: { label: "Ember", body: "#b93a0b", text: "#fff2d6" },
+      slate: { label: "Slate", body: "#46505e", text: "#f2f2f2" },
+      frost: { label: "Frost", body: "#c4e3f0", text: "#14344a" },
+      gold: { label: "Gold", body: "#d9ad3c", text: "#2b1c05", metal: 0.55, rough: 0.32 },
+      silver: { label: "Silver", body: "#c9ced6", text: "#191d23", metal: 0.55, rough: 0.3 },
+      copper: { label: "Copper", body: "#8f4f2c", text: "#fff1df", metal: 0.5, rough: 0.34 }
+    };
+    STYLES = {
+      plain: { label: "Plain" },
+      elven: { label: "Elven", font: '"Palatino Linotype", "Book Antiqua", Georgia, serif', italic: true },
+      dwarven: { label: "Dwarven", font: 'Impact, "Arial Black", "Segoe UI", sans-serif' },
+      gnome: { label: "Gnome", font: '"Trebuchet MS", Verdana, "Segoe UI", sans-serif' },
+      orcish: { label: "Orcish", font: '"Segoe Print", "Bradley Hand", "Arial Black", sans-serif' },
+      drow: { label: "Drow", font: 'Constantia, Georgia, "Times New Roman", serif', glow: "#c58bff", glowSize: 0.2 },
+      draconic: { label: "Draconic", font: 'Cambria, Georgia, "Times New Roman", serif', glow: "#ff9a3d", glowSize: 0.12 },
+      fey: { label: "Fey", font: '"Segoe Script", "Brush Script MT", "Palatino Linotype", cursive', glow: "#a4ffd0", glowSize: 0.2 },
+      arcane: { label: "Arcane", font: '"Palatino Linotype", "Book Antiqua", Georgia, serif', glow: "#7fd0ff", glowSize: 0.3 },
+      druidic: { label: "Druidic", font: 'Sylfaen, "Palatino Linotype", Georgia, serif', glow: "#bfe07a", glowSize: 0.14 },
+      necrotic: { label: "Necrotic", font: '"Times New Roman", Times, serif', glow: "#9dff6b", glowSize: 0.24 }
+    };
+    MAX_THEMES = 3;
+    pickKey = (style, colour) => style === "plain" ? colour : `${style}:${colour}`;
+  }
+});
+
 // node_modules/cannon-es/dist/cannon-es.js
 function distanceFromIntersection(from, direction, position) {
   position.vsub(from, v0);
-  const dot = v0.dot(direction);
-  direction.scale(dot, intersect);
+  const dot2 = v0.dot(direction);
+  direction.scale(dot2, intersect);
   intersect.vadd(from, intersect);
   const distance2 = position.distanceTo(intersect);
   return distance2;
@@ -3743,11 +3805,11 @@ var init_cannon_es = __esm({
           vector.vadd(x, vector);
           vector.vsub(from, vector);
           q.vmult(faceNormal, normal);
-          const dot = direction.dot(normal);
-          if (Math.abs(dot) < this.precision) {
+          const dot2 = direction.dot(normal);
+          if (Math.abs(dot2) < this.precision) {
             continue;
           }
-          const scalar = normal.dot(vector) / dot;
+          const scalar = normal.dot(vector) / dot2;
           if (scalar < 0) {
             continue;
           }
@@ -3810,8 +3872,8 @@ var init_cannon_es = __esm({
           mesh.getNormal(trianglesIndex, normal);
           mesh.getVertex(indices[trianglesIndex * 3], a);
           a.vsub(localFrom, vector);
-          const dot = localDirection.dot(normal);
-          const scalar = normal.dot(vector) / dot;
+          const dot2 = localDirection.dot(normal);
+          const scalar = normal.dot(vector) / dot2;
           if (scalar < 0) {
             continue;
           }
@@ -5097,8 +5159,8 @@ var init_cannon_es = __esm({
           ns.copy(sides[idx]);
           const h2 = ns.length();
           ns.normalize();
-          const dot = box_to_sphere.dot(ns);
-          if (dot < h2 + R && dot > 0) {
+          const dot2 = box_to_sphere.dot(ns);
+          if (dot2 < h2 + R && dot2 > 0) {
             const ns1 = sphereBox_ns1;
             const ns2 = sphereBox_ns2;
             ns1.copy(sides[(idx + 1) % 3]);
@@ -5108,13 +5170,13 @@ var init_cannon_es = __esm({
             ns1.normalize();
             ns2.normalize();
             const dot1 = box_to_sphere.dot(ns1);
-            const dot2 = box_to_sphere.dot(ns2);
-            if (dot1 < h1 && dot1 > -h1 && dot2 < h22 && dot2 > -h22) {
-              const dist2 = Math.abs(dot - h2 - R);
+            const dot22 = box_to_sphere.dot(ns2);
+            if (dot1 < h1 && dot1 > -h1 && dot22 < h22 && dot22 > -h22) {
+              const dist2 = Math.abs(dot2 - h2 - R);
               if (side_distance === null || dist2 < side_distance) {
                 side_distance = dist2;
                 side_dot1 = dot1;
-                side_dot2 = dot2;
+                side_dot2 = dot22;
                 side_h = h2;
                 side_ns.copy(ns);
                 side_ns1.copy(ns1);
@@ -5391,12 +5453,12 @@ var init_cannon_es = __esm({
                 const p = v3pool.get();
                 const v1_to_xi = v3pool.get();
                 xi.vsub(v12, v1_to_xi);
-                const dot = v1_to_xi.dot(edgeUnit);
-                edgeUnit.scale(dot, p);
+                const dot2 = v1_to_xi.dot(edgeUnit);
+                edgeUnit.scale(dot2, p);
                 p.vadd(v12, p);
                 const xi_to_p = v3pool.get();
                 p.vsub(xi, xi_to_p);
-                if (dot > 0 && dot * dot < edge.lengthSquared() && xi_to_p.lengthSquared() < R * R) {
+                if (dot2 > 0 && dot2 * dot2 < edge.lengthSquared() && xi_to_p.lengthSquared() < R * R) {
                   if (justTest) {
                     return true;
                   }
@@ -5446,8 +5508,8 @@ var init_cannon_es = __esm({
           convexQuat.vmult(worldVertex, worldVertex);
           convexPosition.vadd(worldVertex, worldVertex);
           worldVertex.vsub(planePosition, relpos2);
-          const dot = worldNormal.dot(relpos2);
-          if (dot <= 0) {
+          const dot2 = worldNormal.dot(relpos2);
+          if (dot2 <= 0) {
             if (justTest) {
               return true;
             }
@@ -5650,8 +5712,8 @@ var init_cannon_es = __esm({
         bj.quaternion.vmult(normal, normal);
         const relpos2 = particlePlane_relpos;
         xi.vsub(bj.position, relpos2);
-        const dot = normal.dot(relpos2);
-        if (dot <= 0) {
+        const dot2 = normal.dot(relpos2);
+        if (dot2 <= 0) {
           if (justTest) {
             return true;
           }
@@ -5854,8 +5916,8 @@ var init_cannon_es = __esm({
           Transform.pointToWorldFrame(trimeshPos, trimeshQuat, v22, v);
           const relpos2 = planeTrimesh_relpos;
           v.vsub(planePos, relpos2);
-          const dot = normal.dot(relpos2);
-          if (dot <= 0) {
+          const dot2 = normal.dot(relpos2);
+          if (dot2 <= 0) {
             if (justTest) {
               return true;
             }
@@ -8280,17 +8342,17 @@ var init_three_core = __esm({
         let x0 = src0[srcOffset0 + 0], y0 = src0[srcOffset0 + 1], z0 = src0[srcOffset0 + 2], w0 = src0[srcOffset0 + 3];
         let x1 = src1[srcOffset1 + 0], y1 = src1[srcOffset1 + 1], z1 = src1[srcOffset1 + 2], w1 = src1[srcOffset1 + 3];
         if (w0 !== w1 || x0 !== x1 || y0 !== y1 || z0 !== z1) {
-          let dot = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1;
-          if (dot < 0) {
+          let dot2 = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1;
+          if (dot2 < 0) {
             x1 = -x1;
             y1 = -y1;
             z1 = -z1;
             w1 = -w1;
-            dot = -dot;
+            dot2 = -dot2;
           }
           let s = 1 - t;
-          if (dot < 0.9995) {
-            const theta = Math.acos(dot);
+          if (dot2 < 0.9995) {
+            const theta = Math.acos(dot2);
             const sin = Math.sin(theta);
             s = Math.sin(s * theta) / sin;
             t = Math.sin(t * theta) / sin;
@@ -8518,9 +8580,9 @@ var init_three_core = __esm({
        * @return {Quaternion} A reference to this quaternion.
        */
       setFromRotationMatrix(m) {
-        const te = m.elements, m11 = te[0], m12 = te[4], m13 = te[8], m21 = te[1], m22 = te[5], m23 = te[9], m31 = te[2], m32 = te[6], m33 = te[10], trace = m11 + m22 + m33;
-        if (trace > 0) {
-          const s = 0.5 / Math.sqrt(trace + 1);
+        const te = m.elements, m11 = te[0], m12 = te[4], m13 = te[8], m21 = te[1], m22 = te[5], m23 = te[9], m31 = te[2], m32 = te[6], m33 = te[10], trace2 = m11 + m22 + m33;
+        if (trace2 > 0) {
+          const s = 0.5 / Math.sqrt(trace2 + 1);
           this._w = 0.25 / s;
           this._x = (m32 - m23) * s;
           this._y = (m13 - m31) * s;
@@ -8730,17 +8792,17 @@ var init_three_core = __esm({
        */
       slerp(qb, t) {
         let x = qb._x, y = qb._y, z = qb._z, w = qb._w;
-        let dot = this.dot(qb);
-        if (dot < 0) {
+        let dot2 = this.dot(qb);
+        if (dot2 < 0) {
           x = -x;
           y = -y;
           z = -z;
           w = -w;
-          dot = -dot;
+          dot2 = -dot2;
         }
         let s = 1 - t;
-        if (dot < 0.9995) {
-          const theta = Math.acos(dot);
+        if (dot2 < 0.9995) {
+          const theta = Math.acos(dot2);
           const sin = Math.sin(theta);
           s = Math.sin(s * theta) / sin;
           t = Math.sin(t * theta) / sin;
@@ -22778,9 +22840,9 @@ var init_three_core = __esm({
           return root;
         }
         if (root.skeleton) {
-          const bone = root.skeleton.getBoneByName(nodeName);
-          if (bone !== void 0) {
-            return bone;
+          const bone2 = root.skeleton.getBoneByName(nodeName);
+          if (bone2 !== void 0) {
+            return bone2;
           }
         }
         if (root.children) {
@@ -34837,6 +34899,7 @@ function throwOnce(sides, { w, h: h2 }, rng2) {
   wall(new Vec3(0, 0, -1), new Vec3(0, 0, h2 / 2));
   wall(new Vec3(0, -1, 0), new Vec3(0, 14, 0));
   const side = Math.floor(rng2() * 4);
+  const frames2 = [], hits = [];
   const bodies = sides.map((s, i) => {
     const b2 = body(s, diceMat);
     const cols = Math.ceil(Math.sqrt(sides.length));
@@ -34851,10 +34914,16 @@ function throwOnce(sides, { w, h: h2 }, rng2) {
     const speed2 = 10 + rng2() * 6;
     b2.velocity.set(toMid.x * speed2 + (rng2() - 0.5) * 6, -2 - rng2() * 4, toMid.z * speed2 + (rng2() - 0.5) * 6);
     b2.angularVelocity.set((rng2() - 0.5) * 30, (rng2() - 0.5) * 30, (rng2() - 0.5) * 30);
+    b2.addEventListener("collide", (e2) => {
+      if (e2.body.mass && e2.body.id < b2.id) return;
+      const force = Math.abs(e2.contact.getImpactVelocityAlongNormal());
+      if (force < HARD_HIT) return;
+      const at2 = e2.contact.bi.position.vadd(e2.contact.ri);
+      hits.push({ frame: frames2.length, x: at2.x, z: at2.z, force });
+    });
     world.addBody(b2);
     return b2;
   });
-  const frames2 = [];
   const snap = () => {
     const f = new Float32Array(bodies.length * 7);
     bodies.forEach((b2, i) => f.set([b2.position.x, b2.position.y, b2.position.z, b2.quaternion.x, b2.quaternion.y, b2.quaternion.z, b2.quaternion.w], i * 7));
@@ -34870,9 +34939,9 @@ function throwOnce(sides, { w, h: h2 }, rng2) {
     if (i > 20 && still >= 6) break;
   }
   const tops = bodies.map((b2, i) => topOf(dieShape(sides[i]), new Quaternion2(b2.quaternion.x, b2.quaternion.y, b2.quaternion.z, b2.quaternion.w)));
-  return { frames: frames2, tops };
+  return { frames: frames2, tops, hits };
 }
-var FPS, MAX_FRAMES, shapeCache, clamp2;
+var FPS, MAX_FRAMES, HARD_HIT, shapeCache, clamp2;
 var init_physics = __esm({
   "src/dice3d/physics.js"() {
     init_cannon_es();
@@ -34880,41 +34949,53 @@ var init_physics = __esm({
     init_shapes();
     FPS = 60;
     MAX_FRAMES = FPS * 5;
+    HARD_HIT = 3.2;
     shapeCache = /* @__PURE__ */ new Map();
     clamp2 = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
   }
 });
 
 // src/dice3d/view.js
-function faceTexture(theme, font, text, size, underline) {
-  const k = `${theme.body}|${theme.text}|${font}|${text}|${size}|${underline}`;
+function faceTexture(theme, font, text, size, underline, poly) {
+  const k = `${theme.body}|${theme.text}|${theme.style}|${theme.style ? poly : ""}|${font}|${text}|${size}|${underline}`;
   if (texCache.has(k)) return texCache.get(k);
   const c2 = document.createElement("canvas");
   c2.width = c2.height = TEX;
   const g = c2.getContext("2d");
   g.fillStyle = theme.body;
   g.fillRect(0, 0, TEX, TEX);
+  if (theme.style) faceArt(g, theme, poly, size);
   g.fillStyle = theme.text;
   g.textAlign = "center";
   g.textBaseline = "middle";
-  g.font = `bold ${size}px ${fontStack(font)}`;
+  g.font = fontOf(theme, font, size);
+  if (theme.glow) {
+    g.shadowColor = theme.glow;
+    g.shadowBlur = size * theme.glowSize;
+    g.fillText(text, TEX / 2, TEX / 2 + size * 0.04);
+  }
   g.fillText(text, TEX / 2, TEX / 2 + size * 0.04);
   if (underline) g.fillRect(TEX / 2 - size * 0.22, TEX / 2 + size * 0.45, size * 0.44, Math.max(3, size * 0.07));
   return remember(k, c2);
 }
 function d4Texture(theme, font, nums, uv) {
-  const k = `d4|${theme.body}|${theme.text}|${font}|${nums.join(",")}`;
+  const k = `d4|${theme.body}|${theme.text}|${theme.style}|${font}|${nums.join(",")}`;
   if (texCache.has(k)) return texCache.get(k);
   const c2 = document.createElement("canvas");
   c2.width = c2.height = TEX;
   const g = c2.getContext("2d");
   g.fillStyle = theme.body;
   g.fillRect(0, 0, TEX, TEX);
+  const px = uv.map(([u, v]) => [u * TEX, (1 - v) * TEX]);
+  if (theme.style) faceArt(g, theme, px, 0);
   g.fillStyle = theme.text;
   g.textAlign = "center";
   g.textBaseline = "middle";
-  g.font = `bold ${TEX * 0.2}px ${fontStack(font)}`;
-  const px = uv.map(([u, v]) => [u * TEX, (1 - v) * TEX]);
+  g.font = fontOf(theme, font, TEX * 0.2);
+  if (theme.glow) {
+    g.shadowColor = theme.glow;
+    g.shadowBlur = TEX * 0.05;
+  }
   const cx = (px[0][0] + px[1][0] + px[2][0]) / 3, cy = (px[0][1] + px[1][1] + px[2][1]) / 3;
   px.forEach(([x, y], i) => {
     g.save();
@@ -34931,6 +35012,176 @@ function remember(k, canvas) {
   t.anisotropy = 4;
   texCache.set(k, t);
   return t;
+}
+function faceArt(g, theme, poly, size) {
+  const c2 = [poly.reduce((s, p) => s + p[0], 0) / poly.length, poly.reduce((s, p) => s + p[1], 0) / poly.length];
+  const art = ART[theme.style];
+  const reach = poly.map((p) => Math.hypot(p[0] - c2[0], p[1] - c2[1]));
+  const f = { poly, c: c2, body: theme.body, d4: !size, tri: !!size && (poly.length === 3 || Math.max(...reach) > Math.min(...reach) * 1.15) };
+  g.save();
+  g.strokeStyle = g.fillStyle = theme.text;
+  g.lineCap = g.lineJoin = "round";
+  g.globalAlpha = 0.62;
+  if (theme.glow) {
+    g.shadowColor = theme.glow;
+    g.shadowBlur = 6;
+  }
+  art.frame(g, f);
+  if (size) {
+    g.shadowBlur = 0;
+    g.globalAlpha = 1;
+    g.fillStyle = theme.body;
+    g.beginPath();
+    g.arc(TEX / 2, TEX / 2, size * 0.66, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = theme.text;
+    g.globalAlpha = 0.62;
+    if (theme.glow) g.shadowBlur = 6;
+  }
+  if (!f.tri) art.motif(g, f, size ? size * 0.74 : 24);
+  g.restore();
+}
+function trace(g, poly, c2, k) {
+  g.beginPath();
+  poly.forEach((p, i) => {
+    const [x, y] = toward(p, c2, k);
+    if (i) g.lineTo(x, y);
+    else g.moveTo(x, y);
+  });
+  g.closePath();
+  g.stroke();
+}
+function leaf(g, x, y, angle, len, width) {
+  const tip = [x + Math.cos(angle) * len, y + Math.sin(angle) * len];
+  const side = (s) => [x + Math.cos(angle) * len * 0.45 + Math.cos(angle + Math.PI / 2) * width * s, y + Math.sin(angle) * len * 0.45 + Math.sin(angle + Math.PI / 2) * width * s];
+  g.beginPath();
+  g.moveTo(x, y);
+  g.quadraticCurveTo(...side(1), ...tip);
+  g.quadraticCurveTo(...side(-1), x, y);
+  g.fill();
+}
+function curl(g, x, y, angle, r, dir) {
+  g.beginPath();
+  g.moveTo(x, y);
+  for (let t = 0; t <= 1.001; t += 0.05) {
+    const a2 = angle + dir * t * Math.PI * 3, d = r * (1 - t) ** 0.8;
+    g.lineTo(x + Math.cos(angle) * r * t * 1.4 + Math.cos(a2 + dir * Math.PI / 2) * d - Math.cos(angle + dir * Math.PI / 2) * r, y + Math.sin(angle) * r * t * 1.4 + Math.sin(a2 + dir * Math.PI / 2) * d - Math.sin(angle + dir * Math.PI / 2) * r);
+  }
+  g.stroke();
+}
+function gear(g, x, y, r, teeth, body2) {
+  const pts = [];
+  for (let i = 0; i < teeth; i++) {
+    const a2 = i / teeth * Math.PI * 2, w = Math.PI / teeth * 0.55;
+    for (const [da, rr] of [[-w * 1.3, 0.8], [-w * 0.8, 1], [w * 0.8, 1], [w * 1.3, 0.8]]) pts.push([x + Math.cos(a2 + da) * r * rr, y + Math.sin(a2 + da) * r * rr]);
+  }
+  g.beginPath();
+  pts.forEach(([px, py], i) => {
+    if (i) g.lineTo(px, py);
+    else g.moveTo(px, py);
+  });
+  g.closePath();
+  if (!body2) return g.stroke();
+  g.fill();
+  const was = g.globalAlpha, ink = g.fillStyle;
+  g.globalAlpha = 1;
+  g.fillStyle = body2;
+  dot(g, x, y, r * 0.42);
+  g.fillStyle = ink;
+  g.globalAlpha = was;
+  dot(g, x, y, r * 0.16);
+}
+function rune(g, x, y, angle, k, n) {
+  const at2 = ([u, v]) => [x + (Math.cos(angle) * u - Math.sin(angle) * v) * k, y + (Math.sin(angle) * u + Math.cos(angle) * v) * k];
+  for (const line of RUNES[n % RUNES.length]) {
+    g.beginPath();
+    line.forEach((p, i) => {
+      if (i) g.lineTo(...at2(p));
+      else g.moveTo(...at2(p));
+    });
+    g.stroke();
+  }
+}
+function sparkle(g, x, y, r) {
+  g.beginPath();
+  for (let i = 0; i < 8; i++) {
+    const a2 = i / 8 * Math.PI * 2, rr = i % 2 ? r * 0.24 : r;
+    if (i) g.lineTo(x + Math.cos(a2) * rr, y + Math.sin(a2) * rr);
+    else g.moveTo(x + Math.cos(a2) * rr, y + Math.sin(a2) * rr);
+  }
+  g.closePath();
+  g.fill();
+}
+function antler(g, x, y, angle, len) {
+  const at2 = (t, off) => [x + Math.cos(angle) * len * t + Math.cos(angle + Math.PI / 2) * off, y + Math.sin(angle) * len * t + Math.sin(angle + Math.PI / 2) * off];
+  g.lineWidth = 4;
+  g.beginPath();
+  g.moveTo(x, y);
+  g.quadraticCurveTo(...at2(0.55, len * 0.24), ...at2(1, 0));
+  g.stroke();
+  g.lineWidth = 3;
+  for (const [t, off] of [[0.42, -1], [0.66, 1], [0.84, -1]]) {
+    const base = at2(t, len * 0.24 * 4 * t * (1 - t) * 0.5);
+    g.beginPath();
+    g.moveTo(...base);
+    g.lineTo(base[0] + Math.cos(angle + off * 0.85) * len * 0.3, base[1] + Math.sin(angle + off * 0.85) * len * 0.3);
+    g.stroke();
+  }
+}
+function skull(g, x, y, s, body2) {
+  dot(g, x, y - s * 0.12, s * 0.62);
+  g.fillRect(x - s * 0.34, y + s * 0.3, s * 0.68, s * 0.38);
+  const ink = g.fillStyle, was = g.globalAlpha, blur = g.shadowBlur;
+  g.fillStyle = body2;
+  g.globalAlpha = 1;
+  g.shadowBlur = 0;
+  dot(g, x - s * 0.25, y - s * 0.08, s * 0.16);
+  dot(g, x + s * 0.25, y - s * 0.08, s * 0.16);
+  for (const k of [-0.13, 0.13]) g.fillRect(x + s * k - s * 0.025, y + s * 0.42, s * 0.05, s * 0.26);
+  g.fillStyle = ink;
+  g.globalAlpha = was;
+  g.shadowBlur = blur;
+}
+function bone(g, x, y, angle, len) {
+  const dx = Math.cos(angle) * len, dy = Math.sin(angle) * len;
+  g.beginPath();
+  g.moveTo(x - dx, y - dy);
+  g.lineTo(x + dx, y + dy);
+  g.stroke();
+  for (const k of [-1, 1]) for (const side of [-1, 1]) dot(g, x + dx * k + Math.cos(angle + Math.PI / 2) * side * 3.2, y + dy * k + Math.sin(angle + Math.PI / 2) * side * 3.2, 3.6);
+}
+function toadstool(g, x, y, angle, s, body2) {
+  g.save();
+  g.translate(x, y);
+  g.rotate(angle + Math.PI / 2);
+  g.fillRect(-s * 0.17, -s * 0.05, s * 0.34, s * 0.75);
+  g.beginPath();
+  g.arc(0, 0, s * 0.72, Math.PI, 0);
+  g.closePath();
+  g.fill();
+  g.fillStyle = body2;
+  dot(g, -s * 0.3, -s * 0.26, s * 0.12);
+  dot(g, s * 0.26, -s * 0.34, s * 0.1);
+  g.restore();
+}
+function spider(g, x, y, s, angle) {
+  g.save();
+  g.translate(x, y);
+  g.rotate(angle + Math.PI / 2);
+  g.lineWidth = Math.max(1.5, s * 0.17);
+  for (const side of [-1, 1]) {
+    for (let i = 0; i < 4; i++) {
+      const a2 = -0.75 + i * 0.5;
+      g.beginPath();
+      g.moveTo(0, a2 * s * 0.5);
+      g.lineTo(side * s * 0.9, a2 * s - s * 0.45);
+      g.lineTo(side * s * 1.45, a2 * s * 1.3 + s * 0.2);
+      g.stroke();
+    }
+  }
+  dot(g, 0, -s * 0.55, s * 0.32);
+  dot(g, 0, s * 0.25, s * 0.62);
+  g.restore();
 }
 function dieMesh(sides, labels, theme, font, tens) {
   const shape = dieShape(sides);
@@ -34963,7 +35214,8 @@ function dieMesh(sides, labels, theme, font, tens) {
       const v = labels[fi];
       const text = sides === 10 ? tens ? v === 0 ? "00" : `${v}0` : String(v) : String(v);
       const size = Math.round(inner / ext * 0.49 * TEX * (text.length > 1 ? 0.95 : 1.25));
-      tex = faceTexture(theme, font, text, size, text === "6" || text === "9");
+      const poly = faceUV.map(([x, y]) => [Math.round(x * TEX), Math.round((1 - y) * TEX)]);
+      tex = faceTexture(theme, font, text, size, text === "6" || text === "9", poly);
     }
     const start2 = pos.length / 3;
     for (let t = 1; t < face.length - 1; t++) {
@@ -34973,7 +35225,7 @@ function dieMesh(sides, labels, theme, font, tens) {
       }
     }
     groups.push([start2, pos.length / 3 - start2, fi]);
-    materials.push(new MeshStandardMaterial({ map: tex, roughness: 0.45, metalness: 0.05, transparent: true, opacity: 1, flatShading: true }));
+    materials.push(new MeshStandardMaterial({ map: tex, roughness: theme.rough ?? 0.45, metalness: theme.metal ?? 0.05, transparent: true, opacity: 1, flatShading: true }));
   });
   const geo = new BufferGeometry();
   geo.setAttribute("position", new Float32BufferAttribute(pos, 3));
@@ -35117,23 +35369,711 @@ function createTray(container) {
     }
   };
 }
-var THEMES, TEX, texCache, fontStack, D4_UV, clamp3;
+var TEX, texCache, fontStack, fontOf, toward, midpoint, eachEdge, dot, RUNES, inwards, wob, ART, D4_UV, clamp3;
 var init_view = __esm({
   "src/dice3d/view.js"() {
     init_three_module();
     init_shapes();
-    THEMES = {
-      ivory: { label: "Ivory", body: "#efe6d2", text: "#2a1f14" },
-      crimson: { label: "Crimson", body: "#8f1d1d", text: "#f6e7c8" },
-      obsidian: { label: "Obsidian", body: "#1c1c22", text: "#e3a21a" },
-      emerald: { label: "Emerald", body: "#14603f", text: "#f3f0e0" },
-      sapphire: { label: "Sapphire", body: "#1d3f8c", text: "#f2f2f2" }
-    };
+    init_themes();
     TEX = 256;
     texCache = /* @__PURE__ */ new Map();
     fontStack = (font) => `${font ? `"${font.replace(/"/g, "")}", ` : ""}"Segoe UI", system-ui, sans-serif`;
+    fontOf = (theme, font, size) => `${theme.italic && !font ? "italic " : ""}bold ${size}px ${font || !theme.font ? fontStack(font) : theme.font}`;
+    toward = ([x, y], [cx, cy], k) => [cx + (x - cx) * k, cy + (y - cy) * k];
+    midpoint = (a2, b2) => [(a2[0] + b2[0]) / 2, (a2[1] + b2[1]) / 2];
+    eachEdge = (poly, fn) => poly.forEach((p, i) => fn(p, poly[(i + 1) % poly.length], i));
+    dot = (g, x, y, r) => {
+      g.beginPath();
+      g.arc(x, y, r, 0, Math.PI * 2);
+      g.fill();
+    };
+    RUNES = [
+      [[[0, -1], [0, 1]], [[0, -1], [0.7, -0.4]], [[0, -0.2], [0.7, -0.8]]],
+      [[[-0.6, 1], [-0.6, -1], [0.6, 0], [-0.6, 0.6]]],
+      [[[0, -1], [0, 1]], [[-0.7, -0.5], [0.7, 0.5]], [[0.7, -0.5], [-0.7, 0.5]]],
+      [[[-0.7, -1], [0.7, -1], [-0.7, 1], [0.7, 1]]],
+      [[[-0.6, 1], [-0.6, -1], [0.6, -0.3], [0.6, 1]]]
+    ];
+    inwards = (from, c2) => Math.atan2(c2[1] - from[1], c2[0] - from[0]);
+    wob = (i) => {
+      const x = Math.sin(i * 12.9898) * 43758.5453;
+      return x - Math.floor(x);
+    };
+    ART = {
+      elven: {
+        frame(g, { poly, c: c2, d4, tri }) {
+          g.lineWidth = 1.8;
+          trace(g, poly, c2, 0.95);
+          eachEdge(poly, (p, next2) => {
+            const a2 = toward(p, c2, tri ? 0.9 : 0.87), b2 = toward(next2, c2, tri ? 0.9 : 0.87), mid = toward(midpoint(p, next2), c2, tri ? 0.9 : 0.8);
+            g.lineWidth = 2.6;
+            g.beginPath();
+            g.moveTo(...a2);
+            g.quadraticCurveTo(...mid, ...b2);
+            g.stroke();
+            const along = Math.atan2(b2[1] - a2[1], b2[0] - a2[0]);
+            for (const [t, k] of [[0.26, 1], [0.5, -1], [0.74, 1]]) {
+              const u = 1 - t, x = u * u * a2[0] + 2 * u * t * mid[0] + t * t * b2[0], y = u * u * a2[1] + 2 * u * t * mid[1] + t * t * b2[1];
+              leaf(g, x, y, along + 0.55, 15, 4.5);
+              leaf(g, x, y, along + Math.PI - 0.55, 15, 4.5);
+              if (!tri && !d4) {
+                g.lineWidth = 2;
+                curl(g, x, y, inwards([x, y], c2), 7, k);
+              }
+            }
+          });
+          for (const p of poly) {
+            const s = toward(p, c2, d4 ? 0.72 : tri ? 0.56 : 0.64), at2 = inwards(c2, p), len = d4 ? 20 : tri ? 44 : 32;
+            leaf(g, s[0], s[1], at2, len, len * 0.27);
+            leaf(g, s[0], s[1], at2 + 0.62, len * 0.72, len * 0.2);
+            leaf(g, s[0], s[1], at2 - 0.62, len * 0.72, len * 0.2);
+            dot(g, s[0], s[1], 3.2);
+          }
+        },
+        motif(g, { c: c2 }, r) {
+          if (r === 24) {
+            for (let i = 0; i < 6; i++) leaf(g, c2[0], c2[1], i / 6 * Math.PI * 2, 24, 7);
+            return dot(g, c2[0], c2[1], 4);
+          }
+          g.lineWidth = 1.6;
+          g.beginPath();
+          g.arc(c2[0], c2[1], r, 0, Math.PI * 2);
+          g.stroke();
+          for (let i = 0; i < 16; i++) {
+            const a2 = i / 16 * Math.PI * 2, x = c2[0] + Math.cos(a2) * r, y = c2[1] + Math.sin(a2) * r;
+            leaf(g, x, y, a2 + Math.PI / 2 + 0.5 * (i % 2 ? 1 : -1), 11, 3.4);
+          }
+        }
+      },
+      dwarven: {
+        frame(g, { poly, c: c2, d4, tri }) {
+          g.lineWidth = 7;
+          trace(g, poly, c2, 0.93);
+          g.lineWidth = 2.2;
+          trace(g, poly, c2, 0.84);
+          if (!tri) trace(g, poly, c2, 0.79);
+          let n = 0;
+          eachEdge(poly, (p, next2) => {
+            const along = Math.atan2(next2[1] - p[1], next2[0] - p[0]);
+            g.lineWidth = 3.2;
+            if (!tri && !d4) {
+              const count = Math.hypot(next2[0] - p[0], next2[1] - p[1]) > 130 ? 3 : 2;
+              for (let i = 0; i < count; i++) {
+                const m = toward([p[0] + (next2[0] - p[0]) * ((i + 1) / (count + 1)), p[1] + (next2[1] - p[1]) * ((i + 1) / (count + 1))], c2, 0.67);
+                rune(g, m[0], m[1], along, 9, n++);
+              }
+            }
+          });
+          for (const p of poly) {
+            if (!d4) {
+              const q = toward(p, c2, 0.84);
+              const at2 = inwards(p, c2);
+              g.lineWidth = 4;
+              g.beginPath();
+              g.moveTo(q[0] + Math.cos(at2 + 0.75) * 26, q[1] + Math.sin(at2 + 0.75) * 26);
+              g.lineTo(...toward(p, c2, 0.76));
+              g.lineTo(q[0] + Math.cos(at2 - 0.75) * 26, q[1] + Math.sin(at2 - 0.75) * 26);
+              g.stroke();
+              if (tri) {
+                g.lineWidth = 3.2;
+                const m = toward(p, c2, 0.5);
+                rune(g, m[0], m[1], at2 + Math.PI / 2, 10, n++);
+              }
+            }
+            const [x, y] = toward(p, c2, d4 ? 0.74 : tri ? 0.7 : 0.66), r = 7;
+            g.beginPath();
+            g.moveTo(x, y - r);
+            g.lineTo(x + r, y);
+            g.lineTo(x, y + r);
+            g.lineTo(x - r, y);
+            g.closePath();
+            g.fill();
+          }
+        },
+        motif(g, { c: c2 }, r) {
+          if (r === 24) {
+            g.lineWidth = 3;
+            g.beginPath();
+            g.moveTo(c2[0], c2[1] - r);
+            g.lineTo(c2[0] + r, c2[1]);
+            g.lineTo(c2[0], c2[1] + r);
+            g.lineTo(c2[0] - r, c2[1]);
+            g.closePath();
+            g.stroke();
+            return rune(g, c2[0], c2[1], 0, 9, 2);
+          }
+          g.lineWidth = 2.6;
+          g.beginPath();
+          for (let i = 0; i < 8; i++) {
+            const a2 = (i + 0.5) / 8 * Math.PI * 2;
+            if (i) g.lineTo(c2[0] + Math.cos(a2) * r, c2[1] + Math.sin(a2) * r);
+            else g.moveTo(c2[0] + Math.cos(a2) * r, c2[1] + Math.sin(a2) * r);
+          }
+          g.closePath();
+          g.stroke();
+          for (let i = 0; i < 8; i++) {
+            const a2 = i / 8 * Math.PI * 2;
+            g.beginPath();
+            g.moveTo(c2[0] + Math.cos(a2) * r * 0.92, c2[1] + Math.sin(a2) * r * 0.92);
+            g.lineTo(c2[0] + Math.cos(a2) * (r + 8), c2[1] + Math.sin(a2) * (r + 8));
+            g.stroke();
+          }
+        }
+      },
+      gnome: {
+        frame(g, { poly, c: c2, body: body2, d4, tri }) {
+          g.lineWidth = 2.4;
+          trace(g, poly, c2, 0.94);
+          g.lineWidth = 2;
+          trace(g, poly, c2, tri ? 0.88 : 0.86);
+          eachEdge(poly, (p, next2) => {
+            const m = toward(midpoint(p, next2), c2, 0.9), along = Math.atan2(next2[1] - p[1], next2[0] - p[0]);
+            g.save();
+            g.translate(m[0], m[1]);
+            g.rotate(along);
+            g.fillRect(-11, -5, 22, 10);
+            g.restore();
+            if (!tri && !d4) {
+              const q = toward(midpoint(p, next2), c2, 0.7);
+              g.beginPath();
+              g.arc(q[0], q[1], 6, 0, Math.PI * 2);
+              g.stroke();
+              dot(g, q[0], q[1], 2.2);
+            }
+          });
+          poly.forEach((p, i) => {
+            const [x, y] = toward(p, c2, d4 ? 0.8 : tri ? 0.6 : 0.68);
+            if (d4 || i % 2 === 0 || tri) gear(g, x, y, d4 ? 12 : tri ? 21 : 18, 8, body2);
+            else {
+              gear(g, x, y, 12, 6, body2);
+            }
+          });
+        },
+        motif(g, { c: c2, body: body2 }, r) {
+          if (r === 24) return gear(g, c2[0], c2[1], 24, 9, body2);
+          g.lineWidth = 2.6;
+          gear(g, c2[0], c2[1], r + 6, 16);
+          g.lineWidth = 1.4;
+          g.beginPath();
+          g.arc(c2[0], c2[1], r - 3, 0, Math.PI * 2);
+          g.stroke();
+        }
+      },
+      orcish: {
+        frame(g, { poly, c: c2, d4, tri }) {
+          eachEdge(poly, (p, next2, i) => {
+            const n = Math.max(6, Math.round(Math.hypot(next2[0] - p[0], next2[1] - p[1]) / 16));
+            g.lineWidth = 4.5;
+            g.beginPath();
+            for (let j = 0; j <= n; j++) {
+              const [x, y] = toward([p[0] + (next2[0] - p[0]) * (j / n), p[1] + (next2[1] - p[1]) * (j / n)], c2, 0.93 - (j % 2 ? 0.05 + wob(i * 9 + j) * 0.05 : 0));
+              if (j) g.lineTo(x, y);
+              else g.moveTo(x, y);
+            }
+            g.stroke();
+            if (!tri && !d4) {
+              const m = toward(midpoint(p, next2), c2, 0.78), at2 = inwards(m, c2);
+              leaf(g, m[0] - Math.sin(at2) * 13, m[1] + Math.cos(at2) * 13, at2 + 0.28, 22, 5);
+              leaf(g, m[0] + Math.sin(at2) * 13, m[1] - Math.cos(at2) * 13, at2 - 0.28, 22, 5);
+            }
+          });
+          if (!d4) for (const p of poly) {
+            const s = toward(p, c2, tri ? 0.6 : 0.66), at2 = inwards(p, c2) + Math.PI / 2 + 0.45;
+            g.lineWidth = 4.5;
+            for (const k of [-1, 0, 1]) {
+              const x = s[0] + Math.cos(at2 + Math.PI / 2) * k * 10, y = s[1] + Math.sin(at2 + Math.PI / 2) * k * 10;
+              g.beginPath();
+              g.moveTo(x - Math.cos(at2) * 14, y - Math.sin(at2) * 14);
+              g.lineTo(x + Math.cos(at2) * 14, y + Math.sin(at2) * 14);
+              g.stroke();
+            }
+          }
+        },
+        motif(g, { c: c2 }, r) {
+          g.lineWidth = r === 24 ? 6 : 3;
+          if (r === 24) {
+            for (const k of [-1, 1]) {
+              g.beginPath();
+              g.moveTo(c2[0] - 20, c2[1] - 20 * k);
+              g.lineTo(c2[0] + 20, c2[1] + 20 * k);
+              g.stroke();
+            }
+            return;
+          }
+          g.beginPath();
+          for (let i = 0; i < 28; i++) {
+            const a2 = i / 28 * Math.PI * 2, rr = r + (i % 2 ? 4 + wob(i) * 9 : 0);
+            if (i) g.lineTo(c2[0] + Math.cos(a2) * rr, c2[1] + Math.sin(a2) * rr);
+            else g.moveTo(c2[0] + Math.cos(a2) * rr, c2[1] + Math.sin(a2) * rr);
+          }
+          g.closePath();
+          g.stroke();
+        }
+      },
+      drow: {
+        frame(g, { poly, c: c2, d4 }) {
+          if (d4) g.globalAlpha = 0.34;
+          const spokes = [];
+          eachEdge(poly, (p, next2) => spokes.push(p, midpoint(p, next2)));
+          g.lineWidth = 1.7;
+          for (const s of spokes) {
+            g.beginPath();
+            g.moveTo(...toward(s, c2, 0.95));
+            g.lineTo(...toward(s, c2, 0.15));
+            g.stroke();
+          }
+          for (const k of [0.92, 0.76, 0.6, 0.44, 0.28]) {
+            g.beginPath();
+            spokes.forEach((s, i) => {
+              const a2 = toward(s, c2, k), b2 = toward(spokes[(i + 1) % spokes.length], c2, k);
+              if (!i) g.moveTo(...a2);
+              g.quadraticCurveTo(...toward(midpoint(a2, b2), c2, 0.86), ...b2);
+            });
+            g.stroke();
+          }
+          g.globalAlpha = 0.62;
+          if (!d4) {
+            const [x, y] = toward(poly[0], c2, 0.72);
+            spider(g, x, y, 9, inwards(poly[0], c2));
+          }
+        },
+        motif(g, { c: c2 }, r) {
+          if (r === 24) return spider(g, c2[0], c2[1], 15, -Math.PI / 2);
+          g.lineWidth = 2;
+          g.beginPath();
+          g.arc(c2[0], c2[1], r, 0, Math.PI * 2);
+          g.stroke();
+          for (let i = 0; i < 12; i++) {
+            const a2 = i / 12 * Math.PI * 2;
+            leaf(g, c2[0] + Math.cos(a2) * r, c2[1] + Math.sin(a2) * r, a2, 11, 2.2);
+          }
+        }
+      },
+      draconic: {
+        frame(g, { poly, c: c2, d4 }) {
+          g.save();
+          g.beginPath();
+          poly.forEach((p, i) => {
+            const q = toward(p, c2, 0.96);
+            if (i) g.lineTo(...q);
+            else g.moveTo(...q);
+          });
+          g.closePath();
+          g.clip();
+          g.shadowBlur = 0;
+          g.globalAlpha = d4 ? 0.26 : 0.4;
+          g.lineWidth = 2.2;
+          for (let row2 = 0, y = 0; y < TEX + 20; row2++, y += 15) {
+            for (let x = row2 % 2 ? 13 : 0; x < TEX + 26; x += 26) {
+              g.beginPath();
+              g.arc(x, y, 13, 0, Math.PI);
+              g.stroke();
+            }
+          }
+          g.restore();
+          g.lineWidth = 5;
+          trace(g, poly, c2, 0.95);
+          if (!d4) for (const p of poly) {
+            const s = toward(p, c2, 0.84), at2 = inwards(p, c2);
+            for (const k of [-0.42, 0, 0.42]) leaf(g, s[0], s[1], at2 + k, k ? 30 : 38, 6.5);
+          }
+        },
+        motif(g, { c: c2 }, r) {
+          if (r === 24) {
+            g.lineWidth = 3;
+            g.beginPath();
+            g.ellipse(c2[0], c2[1], 27, 16, 0, 0, Math.PI * 2);
+            g.stroke();
+            g.beginPath();
+            g.ellipse(c2[0], c2[1], 4.5, 15, 0, 0, Math.PI * 2);
+            return g.fill();
+          }
+          g.lineWidth = 3;
+          g.beginPath();
+          g.arc(c2[0], c2[1], r, 0, Math.PI * 2);
+          g.stroke();
+          for (let i = 0; i < 14; i++) {
+            const a2 = i / 14 * Math.PI * 2;
+            leaf(g, c2[0] + Math.cos(a2) * r, c2[1] + Math.sin(a2) * r, a2, 10, 4);
+          }
+        }
+      },
+      fey: {
+        frame(g, { poly, c: c2, body: body2, d4, tri }) {
+          eachEdge(poly, (p, next2, i) => {
+            const n = Math.max(5, Math.round(Math.hypot(next2[0] - p[0], next2[1] - p[1]) / 15));
+            for (let j = 0; j < n; j++) {
+              const [x, y] = toward([p[0] + (next2[0] - p[0]) * (j / n), p[1] + (next2[1] - p[1]) * (j / n)], c2, 0.92);
+              dot(g, x, y, j % 3 ? 2 : 3.2);
+            }
+            if (!tri && !d4) {
+              const m = toward(midpoint(p, next2), c2, 0.72);
+              toadstool(g, m[0], m[1], inwards(c2, m), 13, body2);
+              for (const t of [0.26, 0.74]) {
+                const [x, y] = toward([p[0] + (next2[0] - p[0]) * t, p[1] + (next2[1] - p[1]) * t], c2, 0.74);
+                sparkle(g, x, y, 7 + wob(i + t) * 3);
+              }
+            }
+          });
+          poly.forEach((p, i) => {
+            if (d4) {
+              const [x2, y2] = toward(p, c2, 0.8);
+              return sparkle(g, x2, y2, 12);
+            }
+            const [x, y] = toward(p, c2, tri ? 0.56 : 0.68);
+            if (tri) toadstool(g, x, y, inwards(c2, p), 17, body2);
+            else {
+              g.lineWidth = 2.6;
+              curl(g, x, y, inwards(p, c2) + Math.PI / 2, 11, i % 2 ? 1 : -1);
+            }
+          });
+        },
+        motif(g, { c: c2, body: body2 }, r) {
+          if (r === 24) {
+            dot(g, c2[0], c2[1], 22);
+            const ink = g.fillStyle, was = g.globalAlpha;
+            g.fillStyle = body2;
+            g.globalAlpha = 1;
+            dot(g, c2[0] + 9, c2[1] - 4, 19);
+            g.fillStyle = ink;
+            g.globalAlpha = was;
+            return;
+          }
+          for (let i = 0; i < 26; i++) {
+            const a2 = i / 26 * Math.PI * 2;
+            dot(g, c2[0] + Math.cos(a2) * r, c2[1] + Math.sin(a2) * r, i % 2 ? 1.6 : 2.6);
+          }
+          for (let i = 0; i < 6; i++) {
+            const a2 = i / 6 * Math.PI * 2 + 0.26;
+            sparkle(g, c2[0] + Math.cos(a2) * (r + 10), c2[1] + Math.sin(a2) * (r + 10), 8);
+          }
+        }
+      },
+      arcane: {
+        frame(g, { poly, c: c2, d4, tri }) {
+          g.lineWidth = 2;
+          trace(g, poly, c2, 0.95);
+          const mids = [];
+          eachEdge(poly, (p, next2) => mids.push(toward(midpoint(p, next2), c2, 0.9)));
+          g.lineWidth = 1.8;
+          g.beginPath();
+          mids.forEach((m, i) => {
+            if (i) g.lineTo(...m);
+            else g.moveTo(...m);
+          });
+          g.closePath();
+          g.stroke();
+          let n = 0;
+          for (const p of poly) {
+            const [x, y] = toward(p, c2, d4 ? 0.8 : 0.82);
+            g.lineWidth = 1.8;
+            g.beginPath();
+            g.arc(x, y, 7, 0, Math.PI * 2);
+            g.stroke();
+            dot(g, x, y, 2.6);
+            if (tri) {
+              g.lineWidth = 2.4;
+              const m = toward(p, c2, 0.56);
+              rune(g, m[0], m[1], inwards(p, c2) + Math.PI / 2, 10, n++);
+            }
+          }
+          if (!tri && !d4) eachEdge(poly, (p, next2) => {
+            const m = toward(midpoint(p, next2), c2, 0.7);
+            g.lineWidth = 2.2;
+            rune(g, m[0], m[1], Math.atan2(next2[1] - p[1], next2[0] - p[0]), 7.5, n++);
+          });
+        },
+        motif(g, { c: c2 }, r) {
+          if (r === 24) {
+            sparkle(g, c2[0], c2[1], 25);
+            g.lineWidth = 2;
+            g.beginPath();
+            g.arc(c2[0], c2[1], 27, 0, Math.PI * 2);
+            return g.stroke();
+          }
+          g.lineWidth = 2.2;
+          g.beginPath();
+          g.arc(c2[0], c2[1], r, 0, Math.PI * 2);
+          g.stroke();
+          g.lineWidth = 1.3;
+          g.beginPath();
+          g.arc(c2[0], c2[1], r + 9, 0, Math.PI * 2);
+          g.stroke();
+          for (let i = 0; i < 24; i++) {
+            const a2 = i / 24 * Math.PI * 2, x = Math.cos(a2), y = Math.sin(a2);
+            if (i % 6 === 0) {
+              dot(g, c2[0] + x * (r + 4.5), c2[1] + y * (r + 4.5), 3.4);
+              continue;
+            }
+            g.lineWidth = 1.6;
+            g.beginPath();
+            g.moveTo(c2[0] + x * r, c2[1] + y * r);
+            g.lineTo(c2[0] + x * (r + 9), c2[1] + y * (r + 9));
+            g.stroke();
+          }
+        }
+      },
+      druidic: {
+        frame(g, { poly, c: c2, d4, tri }) {
+          g.save();
+          g.beginPath();
+          poly.forEach((p, i) => {
+            const q = toward(p, c2, 0.96);
+            if (i) g.lineTo(...q);
+            else g.moveTo(...q);
+          });
+          g.closePath();
+          g.clip();
+          g.shadowBlur = 0;
+          g.globalAlpha = d4 ? 0.24 : 0.4;
+          g.lineWidth = 2;
+          for (let r = 42; r < 190; r += 13) {
+            g.beginPath();
+            for (let i = 0; i <= 48; i++) {
+              const a2 = i / 48 * Math.PI * 2, rr = r + Math.sin(a2 * 3 + r) * 3 + Math.sin(a2 * 7 + r * 2) * 1.6;
+              if (i) g.lineTo(c2[0] + Math.cos(a2) * rr, c2[1] + Math.sin(a2) * rr);
+              else g.moveTo(c2[0] + Math.cos(a2) * rr, c2[1] + Math.sin(a2) * rr);
+            }
+            g.stroke();
+          }
+          g.restore();
+          g.lineWidth = 4;
+          trace(g, poly, c2, 0.95);
+          for (const p of poly) {
+            if (d4) {
+              const [x2, y2] = toward(p, c2, 0.8);
+              leaf(g, x2, y2, inwards(c2, p), 20, 6);
+              continue;
+            }
+            const [x, y] = toward(p, c2, 0.88);
+            antler(g, x, y, inwards(p, c2), tri ? 58 : 44);
+          }
+        },
+        motif(g, { c: c2 }, r) {
+          g.lineWidth = r === 24 ? 3.4 : 2.6;
+          if (r === 24) {
+            for (let i = 0; i < 3; i++) {
+              const a2 = i / 3 * Math.PI * 2 - Math.PI / 2;
+              g.beginPath();
+              g.arc(c2[0] + Math.cos(a2) * 12, c2[1] + Math.sin(a2) * 12, 15, 0, Math.PI * 2);
+              g.stroke();
+            }
+            return;
+          }
+          for (let i = 0; i < 10; i++) {
+            const a2 = i / 10 * Math.PI * 2;
+            g.beginPath();
+            g.arc(c2[0] + Math.cos(a2) * (r + 2), c2[1] + Math.sin(a2) * (r + 2), Math.max(7, r * 0.2), 0, Math.PI * 2);
+            g.stroke();
+          }
+        }
+      },
+      necrotic: {
+        frame(g, { poly, c: c2, body: body2, d4, tri }) {
+          g.lineWidth = 3.4;
+          g.setLineDash([26, 7, 11, 12]);
+          trace(g, poly, c2, 0.94);
+          g.setLineDash([]);
+          eachEdge(poly, (p, next2, i) => {
+            for (const [t, n] of [[0.3, 0], [0.72, 1]]) {
+              let [x, y] = toward([p[0] + (next2[0] - p[0]) * t, p[1] + (next2[1] - p[1]) * t], c2, 0.94);
+              const at2 = inwards([x, y], c2);
+              g.lineWidth = 3;
+              g.beginPath();
+              g.moveTo(x, y);
+              for (let j = 0; j < 4; j++) {
+                const turn = at2 + (j % 2 ? 0.75 : -0.75) * (0.6 + wob(i * 5 + j + n * 11)), step = 10 + wob(i + j * 3 + n) * 7;
+                x += Math.cos(turn) * step;
+                y += Math.sin(turn) * step;
+                g.lineTo(x, y);
+                if (j === 1) {
+                  g.moveTo(x, y);
+                  g.lineTo(x + Math.cos(at2 + 1.1) * 9, y + Math.sin(at2 + 1.1) * 9);
+                  g.moveTo(x, y);
+                }
+              }
+              g.stroke();
+            }
+          });
+          if (!d4) poly.forEach((p, i) => {
+            const [x, y] = toward(p, c2, tri ? 0.6 : 0.68);
+            if (tri || i % 2 === 0) skull(g, x, y, tri ? 19 : 15, body2);
+            else {
+              g.lineWidth = 4;
+              bone(g, x, y, inwards(p, c2) + Math.PI / 2, 14);
+            }
+          });
+        },
+        motif(g, { c: c2, body: body2 }, r) {
+          if (r === 24) return skull(g, c2[0], c2[1], 25, body2);
+          g.lineWidth = 2.4;
+          g.setLineDash([17, 6, 7, 9]);
+          g.beginPath();
+          g.arc(c2[0], c2[1], r, 0, Math.PI * 2);
+          g.stroke();
+          g.setLineDash([]);
+          for (let i = 0; i < 6; i++) {
+            const a2 = i / 6 * Math.PI * 2 + 0.5;
+            dot(g, c2[0] + Math.cos(a2) * (r + 7), c2[1] + Math.sin(a2) * (r + 7), 2.6);
+          }
+        }
+      }
+    };
     D4_UV = [[0.5, 0.95], [0.04, 0.16], [0.96, 0.16]];
     clamp3 = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  }
+});
+
+// src/dice3d/effects.js
+function speck() {
+  const c2 = document.createElement("canvas");
+  c2.width = c2.height = 64;
+  const g = c2.getContext("2d"), r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  r.addColorStop(0, "rgba(255,235,170,1)");
+  r.addColorStop(0.25, "rgba(255,150,50,.85)");
+  r.addColorStop(1, "rgba(255,70,10,0)");
+  g.fillStyle = r;
+  g.fillRect(0, 0, 64, 64);
+  return c2;
+}
+function createEffects(container) {
+  const canvas = document.createElement("canvas");
+  canvas.className = "dice-effects";
+  Object.assign(canvas.style, { position: "absolute", inset: "0", width: "100%", height: "100%", pointerEvents: "none", zIndex: "46" });
+  canvas.hidden = true;
+  container.append(canvas);
+  const g = canvas.getContext("2d"), glow = speck();
+  let W = 0, H = 0, S = 1, ppu = 64, run3 = null, parts = [], raf = 0, last = 0;
+  const add2 = (p) => {
+    if (parts.length < MAX_PARTICLES) parts.push({ age: 0, seed: Math.random() * 6.3, ...p });
+  };
+  const px = (x) => W / 2 + x * ppu, py = (z) => H / 2 + z * ppu;
+  function spark(x, y, force) {
+    const a2 = rand(0, Math.PI * 2), v = rand(110, 240 + force * 30) * S;
+    add2({ spark: true, x, y, vx: Math.cos(a2) * v, vy: Math.sin(a2) * v, life: rand(0.18, 0.5) });
+  }
+  function ember(x, y, push = 1) {
+    const a2 = rand(0, Math.PI * 2), v = rand(14, 95) * S * push;
+    add2({ x, y, vx: Math.cos(a2) * v, vy: Math.sin(a2) * v - rand(24, 60) * S, life: rand(0.9, 2.3), size: rand(3, 7.5) * S });
+  }
+  function hit(x, y, force, crowd) {
+    if (run3.sparks) for (let i = Math.min(26, 5 + force * 1.9) * crowd; i > 0; i--) spark(x, y, force);
+    if (run3.embers) for (let i = Math.min(14, force * 1.1) * crowd; i > 0; i--) ember(x, y);
+  }
+  function shower(x, y) {
+    if (run3.sparks) for (let i = 0; i < 70; i++) spark(x, y, 24);
+    if (run3.embers) for (let i = 0; i < 75; i++) ember(x + rand(-34, 34) * S, y + rand(-34, 34) * S, 2.5);
+  }
+  function follow(now) {
+    const { frames: frames2, speed: speed2, n, crowd } = run3;
+    const i = Math.max(0, Math.min(frames2.length - 1, Math.floor((now - run3.t0) / 1e3 * FPS2 * speed2)));
+    while (run3.next < run3.hits.length && run3.hits[run3.next].frame <= i) {
+      const h2 = run3.hits[run3.next++];
+      hit(px(h2.x), py(h2.z), h2.force, crowd);
+    }
+    const f = frames2[i], prev = frames2[Math.max(0, i - 2)], stopped = i >= frames2.length - 1;
+    for (let k = 0; k < n; k++) {
+      const x = f[k * 7], z = f[k * 7 + 2], moved = Math.hypot(x - prev[k * 7], z - prev[k * 7 + 2]) * 30 * speed2;
+      if (moved > 2.2) {
+        if (run3.embers && Math.random() < 0.7 * crowd) ember(px(x), py(z), 0.7);
+        if (run3.sparks && Math.random() < 0.3 * crowd) spark(px(x), py(z), 2);
+      } else if (stopped && run3.embers && Math.random() < 0.3 * crowd) ember(px(x) + rand(-24, 24) * S, py(z) + rand(-24, 24) * S, 0.55);
+    }
+    if (stopped && !run3.landed) {
+      run3.landed = now;
+      run3.natural.forEach((k) => shower(px(f[k * 7]), py(f[k * 7 + 2])));
+    }
+    if (run3.landed && now - run3.landed > LINGER) run3 = null;
+  }
+  function step(dt) {
+    for (const p of parts) {
+      p.age += dt;
+      if (p.spark) {
+        const d = 1 - 3.4 * dt;
+        p.vx *= d;
+        p.vy = p.vy * d + 150 * S * dt;
+      } else {
+        p.vx += Math.sin(p.age * 3 + p.seed) * 42 * S * dt;
+        p.vx *= 1 - 0.9 * dt;
+        p.vy -= 13 * S * dt;
+      }
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+    }
+    parts = parts.filter((p) => p.age < p.life);
+  }
+  function draw2() {
+    g.clearRect(0, 0, W, H);
+    g.globalCompositeOperation = "lighter";
+    g.lineCap = "round";
+    for (const p of parts) {
+      const u = p.age / p.life;
+      if (p.spark) {
+        g.globalAlpha = (1 - u * u) * 0.62;
+        g.strokeStyle = u < 0.35 ? "#ffc773" : u < 0.7 ? "#ff9a3c" : "#e4581e";
+        g.lineWidth = (1.35 - u * 0.65) * S;
+        g.beginPath();
+        g.moveTo(p.x, p.y);
+        g.lineTo(p.x - p.vx * 0.024, p.y - p.vy * 0.024);
+        g.stroke();
+      } else {
+        const s = p.size * (1 - u * 0.5);
+        g.globalAlpha = Math.min(1, (1 - u) * 1.7) * (0.65 + 0.35 * Math.sin(p.age * 15 + p.seed));
+        g.drawImage(glow, p.x - s, p.y - s, s * 2, s * 2);
+      }
+    }
+    g.globalAlpha = 1;
+    g.globalCompositeOperation = "source-over";
+  }
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1e3);
+    last = now;
+    if (run3) follow(now);
+    step(dt);
+    draw2();
+    if (run3 || parts.length) {
+      raf = requestAnimationFrame(frame);
+      return;
+    }
+    raf = 0;
+    canvas.hidden = true;
+  }
+  function stop() {
+    cancelAnimationFrame(raf);
+    raf = 0;
+    run3 = null;
+    parts = [];
+    g.clearRect(0, 0, W, H);
+    canvas.hidden = true;
+  }
+  return {
+    /** throw: { frames, hits, n (dice), natural (which dice are natural 20s), ppu, speed, embers, sparks } */
+    play({ frames: frames2, hits, n, natural, ppu: scale, speed: speed2, embers, sparks }) {
+      const r = container.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = r.width;
+      H = r.height;
+      ppu = scale;
+      S = ppu / 64;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas.hidden = false;
+      run3 = { frames: frames2, hits, n, natural, speed: speed2, embers, sparks, crowd: 1 / Math.sqrt(n), t0: performance.now(), next: 0, landed: 0 };
+      if (!raf) {
+        last = performance.now();
+        raf = requestAnimationFrame(frame);
+      }
+    },
+    clear: stop
+  };
+}
+var FPS2, MAX_PARTICLES, LINGER, rand;
+var init_effects = __esm({
+  "src/dice3d/effects.js"() {
+    FPS2 = 60;
+    MAX_PARTICLES = 900;
+    LINGER = 1500;
+    rand = (a2, b2) => a2 + Math.random() * (b2 - a2);
   }
 });
 
@@ -35154,38 +36094,48 @@ function expand({ sides, value, dropped }) {
   return [{ sides, digit: sides === 10 ? value % 10 : value, dropped }];
 }
 function createDice(container) {
-  let tray = null;
+  let tray = null, effects = null;
   return {
     /**
-     * dice: [{ sides, value, dropped? }]; opts: { theme (key of THEMES), font, scale (key of SCALES), max }.
+     * dice: [{ sides, value, dropped? }]; opts: { theme (a pick, src/dice3d/themes.js), font, scale (key of SCALES), max, embers, sparks }.
      * At most `max` dice are thrown (default 10); the rest show as "+N more".
      * Returns a Promise that resolves when they've faded, with the recording (to replay elsewhere, e.g. on other players' screens).
      */
-    async show(dice2, { theme = "ivory", font = "", scale = "medium", max = 10 } = {}) {
+    async show(dice2, { theme = "ivory", font = "", scale = "medium", max = 10, embers = false, sparks = false } = {}) {
       const all = dice2.flatMap(expand);
       if (!all.length) return null;
       const shown4 = all.slice(0, max);
       tray ??= createTray(container);
       const r = container.getBoundingClientRect();
-      tray.setScale(Math.max(32, Math.min(SCALES[scale] || SCALES.medium, r.width / 16, r.height / 10)));
-      const { frames: frames2, tops } = simulate(shown4.map((d) => d.sides), tray.bounds());
+      const ppu = Math.max(32, Math.min(SCALES[scale] || SCALES.medium, r.width / 16, r.height / 10));
+      tray.setScale(ppu);
+      const { frames: frames2, tops, hits } = simulate(shown4.map((d) => d.sides), tray.bounds());
       const labelled = shown4.map((d, i) => ({ ...d, labels: relabel(dieShape(d.sides), tops[i].index, d.digit) }));
-      await tray.play(labelled, frames2, { theme: THEMES[theme] || THEMES.ivory, font, more: all.length - shown4.length });
+      if (embers || sparks) {
+        effects ??= createEffects(container);
+        const natural = shown4.flatMap((d, i) => d.sides === 20 && d.digit === 20 && !d.dropped ? [i] : []);
+        effects.play({ frames: frames2, hits, n: shown4.length, natural, ppu, speed: SPEED, embers, sparks });
+      }
+      await tray.play(labelled, frames2, { theme: themeOf(theme), font, speed: SPEED, more: all.length - shown4.length });
       return { dice: labelled, frames: frames2 };
     },
     clear() {
       tray?.clear();
+      effects?.clear();
     }
   };
 }
-var DIE_SIZES, SCALES;
+var DIE_SIZES, SCALES, SPEED;
 var init_dice3d = __esm({
   "src/dice3d/index.js"() {
     init_physics();
     init_shapes();
     init_view();
+    init_themes();
+    init_effects();
     DIE_SIZES = [...SUPPORTED, 100];
     SCALES = { small: 48, medium: 64, large: 84 };
+    SPEED = 1.3;
   }
 });
 
@@ -35369,7 +36319,7 @@ function showDice(r) {
   diceStage ??= document.body.appendChild(h("div.dice-stage"));
   Promise.resolve().then(() => (init_dice3d(), dice3d_exports)).then(({ createDice: createDice2 }) => {
     dice ??= createDice2(diceStage);
-    return dice.show(list, { theme: s.theme, font: s.font, scale: s.scale });
+    return dice.show(list, { theme: pickTheme(s), font: s.font, scale: s.scale, embers: s.embers, sparks: s.sparks });
   }).catch((e2) => console.error("Dice animation failed:", e2));
 }
 function rollFromClick(el11, expr, opts2) {
@@ -35482,13 +36432,14 @@ var esc, richText, hasImage, rollLog, rollListeners, onRoll, DICE_DEFAULTS, dice
 var init_ui = __esm({
   "src/ui.js"() {
     init_dice();
+    init_themes();
     esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c2) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c2]);
     richText = (s) => esc(s).replace(/&lt;(\/?)(em|strong|b|i)&gt;/g, "<$1$2>").replace(/&lt;(\/?)spell&gt;/g, "<$1em>").replace(/\n/g, "<br>");
     hasImage = (dt) => [...dt?.items || []].some((it) => it.kind === "file" && it.type.startsWith("image/")) || !!imageLink(dt);
     rollLog = [];
     rollListeners = /* @__PURE__ */ new Set();
     onRoll = (fn) => rollListeners.add(fn);
-    DICE_DEFAULTS = { animate: true, theme: "ivory", scale: "medium", font: "", cooldown: 3 };
+    DICE_DEFAULTS = { animate: true, theme: "ivory", scale: "medium", font: "", cooldown: 3, embers: true, sparks: true };
     dice = null;
     diceStage = null;
     coolUntil = 0;
@@ -37568,8 +38519,8 @@ function restoreLineStarts(text, alt) {
         const front = a2.slice(s, i);
         if (!front.length || front.slice(0, -1).some((w) => w.endsWith("."))) break;
         const whole = [...front, ...t];
-        const dot = whole.findIndex((w) => /\.$/.test(w));
-        const ok = front[front.length - 1].endsWith(".") ? /^[A-Z]/.test(t[0]) && titled(front) : dot >= front.length && titled(whole.slice(0, dot + 1));
+        const dot2 = whole.findIndex((w) => /\.$/.test(w));
+        const ok = front[front.length - 1].endsWith(".") ? /^[A-Z]/.test(t[0]) && titled(front) : dot2 >= front.length && titled(whole.slice(0, dot2 + 1));
         if (ok) return `${line.match(/^\s*/)[0]}${whole.join(" ")}`;
         break;
       }
@@ -40656,18 +41607,18 @@ function styleSummary(creatures) {
   if (casters) parts.push(`${casters} caster${casters === 1 ? "" : "s"}`);
   return parts.join(", ");
 }
-var STYLES, plain, ATTACK, entriesOf, ACTION_KEYS, SPELL_ACTION, spellcasting, styleOf, SHAPES, SHAPE_COUNT, STYLE_GOALS, THEMES2, difficultyNames, defaultParams, lc2, isHomebrew2, newSeed, int, rangedShare, meleeShare, racesOf;
+var STYLES2, plain, ATTACK, entriesOf, ACTION_KEYS, SPELL_ACTION, spellcasting, styleOf, SHAPES, SHAPE_COUNT, STYLE_GOALS, THEMES2, difficultyNames, defaultParams, lc2, isHomebrew2, newSeed, int, rangedShare, meleeShare, racesOf;
 var init_generator = __esm({
   "src/generator.js"() {
     init_rules();
-    STYLES = { melee: "Melee", ranged: "Ranged", mixed: "Mixed", caster: "Spellcaster" };
+    STYLES2 = { melee: "Melee", ranged: "Ranged", mixed: "Mixed", caster: "Spellcaster" };
     plain = (s) => String(s || "").replace(/<[^>]+>/g, "");
     ATTACK = /(Melee or Ranged|Melee|Ranged) (?:Weapon |Spell )?Attack(?: Roll)?:/i;
     entriesOf = (m, keys) => keys.flatMap((k) => m[k] || []);
     ACTION_KEYS = ["actions", "bonusActions", "legendaryActions"];
     SPELL_ACTION = /\b(?:Level \d|\d(?:st|nd|rd|th) Level) Spell\b|\bCantrip\b/i;
     spellcasting = (m) => entriesOf(m, ["traits", ...ACTION_KEYS]).find((e2) => /spellcasting/i.test(e2.name || "") || /casts one of the following spells/i.test(plain(e2.text)));
-    styleOf = (m) => STYLES[m.fightingStyle] ? m.fightingStyle : guessStyle(m);
+    styleOf = (m) => STYLES2[m.fightingStyle] ? m.fightingStyle : guessStyle(m);
     SHAPES = { random: "Random", solo: "Solo", boss: "Boss + minions", elite: "Elite pair", squad: "Squad", horde: "Horde" };
     SHAPE_COUNT = { solo: [1, 1], elite: [2, 2], boss: [3, 9], squad: [3, 5], horde: [6, 12] };
     STYLE_GOALS = {
@@ -41675,8 +42626,8 @@ function themeFor(m, { themes, typeMap }) {
 function carriedGear(m, items) {
   const found = /* @__PURE__ */ new Set();
   const named = (text) => items.find((x) => x.category !== "magic" && (lc3(x.name) === text || `${lc3(x.name)}s` === text)) || items.find((x) => x.category !== "magic" && (lc3(x.name).startsWith(`${text} (`) || lc3(x.name).endsWith(`(${text})`)));
-  const gear = (m.notes || []).filter((n) => /^gear$/i.test(n.name || "")).flatMap((n) => String(n.text || "").split(","));
-  for (const g of gear) {
+  const gear2 = (m.notes || []).filter((n) => /^gear$/i.test(n.name || "")).flatMap((n) => String(n.text || "").split(","));
+  for (const g of gear2) {
     const it = named(lc3(g).replace(/\s*\(.*$/, "").trim());
     if (it) found.add(it);
   }
@@ -64182,12 +65133,12 @@ function lootDialog(enc2) {
       h("span.muted", x.scrap ? `scrap ${priceText(x.value)}` : x.qty > 1 ? `${priceText(x.value)} each` : priceText(x.value)),
       x.rarity ? h("span.tag", x.rarity.toUpperCase()) : x.kind === "minor" ? h("span.tag", "MINOR MAGIC") : null
     );
-    const gear = res.lines.filter((x) => x.kind !== "magic"), magic = res.lines.filter((x) => x.kind === "magic");
+    const gear2 = res.lines.filter((x) => x.kind !== "magic"), magic = res.lines.filter((x) => x.kind === "magic");
     fill(
       out,
       h("div.loot-coins", h("span.loot-label", "Coins"), coinText(res.coins)),
       h("h4", "Items"),
-      gear.length ? h("ul.loot-list", gear.map(line)) : h("p.muted", "Nothing worth taking."),
+      gear2.length ? h("ul.loot-list", gear2.map(line)) : h("p.muted", "Nothing worth taking."),
       st.magic ? [h("h4", "Magic items"), magic.length ? h("ul.loot-list", magic.map(line)) : h("p.muted", "No magic item could be chosen.")] : null,
       res.harvest.length ? [
         h("h4", "Harvestable"),
@@ -66015,7 +66966,7 @@ window.desktop = {
 
 // src/app.js
 init_ui();
-init_view();
+init_themes();
 
 // src/dice-tray.js
 init_ui();
@@ -67067,7 +68018,7 @@ function readText(unsure) {
     state.unsure = unsure;
     status2("#mk-parse-status", "");
     renderReview();
-    changed(`${prev ? "Updated in your library." : "Saved to your library."} Fighting preference guessed as ${STYLES[monster.fightingStyle]} (change it in Creatures).`);
+    changed(`${prev ? "Updated in your library." : "Saved to your library."} Fighting preference guessed as ${STYLES2[monster.fightingStyle]} (change it in Creatures).`);
   } catch (e2) {
     status2("#mk-parse-status", `Could not read the text: ${e2.message || e2}`, "error");
   }
@@ -68512,7 +69463,7 @@ function renderEdit4() {
       pane,
       h("div.edit-head", h("h2", m.name), h("button.primary", { onclick: () => duplicate2(m) }, "Copy to my creatures")),
       h("p.muted", "SRD creatures are read-only. Copy one to your creatures to change it (for example to reskin or retune it)."),
-      h("p.muted", `Fighting preference (guessed from the stat block): ${STYLES[guessStyle(m)]}. The encounter generator uses it.`),
+      h("p.muted", `Fighting preference (guessed from the stat block): ${STYLES2[guessStyle(m)]}. The encounter generator uses it.`),
       h("div.form-grid", lootFields(lootOf(m), (key3, value) => {
         setSrdLoot(m, key3, value);
         renderEdit4();
@@ -68661,8 +69612,8 @@ function editor(m) {
           else delete m.fightingStyle;
           changed3();
         } },
-        h("option", { value: "", selected: !STYLES[m.fightingStyle] }, `Auto (guess: ${STYLES[guessStyle(m)]})`),
-        Object.entries(STYLES).map(([k, v]) => h("option", { value: k, selected: m.fightingStyle === k }, v))
+        h("option", { value: "", selected: !STYLES2[m.fightingStyle] }, `Auto (guess: ${STYLES2[guessStyle(m)]})`),
+        Object.entries(STYLES2).map(([k, v]) => h("option", { value: k, selected: m.fightingStyle === k }, v))
       )),
       // the loot generator: whether it carries loot at all, and which theme (blank = keyword or creature type)
       lootFields(m, (key3, value) => {
@@ -69505,7 +70456,7 @@ function row(res, g) {
       h(
         "div.gen-name",
         h("div.n", m.name, isHomebrew(m) ? null : h("span.tag", "SRD")),
-        h("div.s", h("span.style-chip", { title: m.fightingStyle ? "Fighting preference set on the monster" : "Fighting preference guessed from the stat block" }, STYLES[style]), extraTags(m).map((t) => h("span.style-chip.extra", t)), ` ${m.size} ${(m.monsterType || "").toLowerCase()}`)
+        h("div.s", h("span.style-chip", { title: m.fightingStyle ? "Fighting preference set on the monster" : "Fighting preference guessed from the stat block" }, STYLES2[style]), extraTags(m).map((t) => h("span.style-chip.extra", t)), ` ${m.size} ${(m.monsterType || "").toLowerCase()}`)
       ),
       h("div.gen-cr", h("div", "CR ", h("strong", m.challengeRating)), h("div.muted", `${monsterXp(m).toLocaleString()} XP each${isMinion(m) ? " (minion)" : ""}`)),
       h(
@@ -70088,7 +71039,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.9.1";
+var version2 = "1.10.0";
 
 // src/app.js
 var TABS = [
@@ -70457,6 +71408,40 @@ function settings() {
       ...[.../* @__PURE__ */ new Set([...d.font ? [d.font] : [], ...fonts])].sort((a2, b2) => a2.localeCompare(b2)).map((f) => h("option", { value: f, selected: d.font === f }, f))
     );
   });
+  const swatches = h("div.dice-swatches");
+  let styleTab = "plain";
+  const drawSwatches = () => {
+    const on = themesOf(d);
+    const change = (list) => {
+      d.themes = list;
+      setDiceSettings(d);
+      drawSwatches();
+    };
+    const { font, italic, glow } = STYLES[styleTab];
+    const number = [font ? `font-family:${font.replace(/"/g, "'")};font-style:${italic ? "italic" : "normal"}` : "", glow ? `text-shadow:0 0 5px ${glow}` : ""].filter(Boolean).join(";");
+    fill(
+      swatches,
+      h("div.view-switch.dice-styles", Object.entries(STYLES).map(([style, s2]) => h("button" + (style === styleTab ? ".on" : ""), { onclick: () => {
+        styleTab = style;
+        drawSwatches();
+      } }, s2.label))),
+      h("div.dice-swatch-grid", Object.entries(THEMES).map(([colour, t]) => {
+        const key3 = pickKey(styleTab, colour), picked = on.includes(key3);
+        return h("button.dice-swatch" + (picked ? ".on" : "") + (t.metal ? ".metal" : ""), {
+          title: pickLabel(key3),
+          "aria-pressed": String(picked),
+          disabled: !picked && on.length >= MAX_THEMES,
+          onclick: () => {
+            if (!picked) change([...on, key3]);
+            else if (on.length > 1) change(on.filter((x) => x !== key3));
+          }
+          // always at least one
+        }, h("span.dice-swatch-die", { style: `${number};background-color:${t.body};color:${t.text}` }, "20"), h("span.dice-swatch-name", t.label));
+      })),
+      h("div.chips.dice-picked", on.map((key3) => h("span.chip", pickLabel(key3), on.length > 1 ? h("button.chip-x", { title: "Remove", onclick: () => change(on.filter((x) => x !== key3)) }, "\xD7") : null)))
+    );
+  };
+  drawSwatches();
   const body2 = h(
     "div.settings",
     h("h4", "Roll pop-ups"),
@@ -70469,8 +71454,19 @@ function settings() {
       setDiceSettings(d);
     } }), "Show 3D dice"),
     h(
+      "div.dice-effects-row",
+      h("label.check-row", h("input", { type: "checkbox", checked: d.embers, onchange: (e2) => {
+        d.embers = e2.target.checked;
+        setDiceSettings(d);
+      } }), "Embers"),
+      h("label.check-row", h("input", { type: "checkbox", checked: d.sparks, onchange: (e2) => {
+        d.sparks = e2.target.checked;
+        setDiceSettings(d);
+      } }), "Sparks")
+    ),
+    h("div.dice-colours", h("div.dice-colours-head", "Colours"), swatches, h("div.hint", `Pick up to ${MAX_THEMES}, in any styles. With more than one, each roll uses one of them at random.`)),
+    h(
       "div.form-grid",
-      dicePick("Colours", "theme", Object.entries(THEMES).map(([k, t]) => [k, t.label])),
       dicePick("Size", "scale", [["small", "Small"], ["medium", "Medium"], ["large", "Large"]]),
       dicePick("Time between rolls", "cooldown", [[0, "No wait"], [1, "1 second"], [2, "2 seconds"], [3, "3 seconds"], [5, "5 seconds"]], Number),
       h("label", "Font for the numbers", fontSel)
