@@ -3537,6 +3537,7 @@ var lib_default = OBR;
 var EXT = "com.encounter-builder";
 var TRACKER_KEY = `${EXT}/tracker`;
 var SETTINGS_KEY = `${EXT}/settings`;
+var EFFECTS = `${EXT}/effects`;
 var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
 var LOCAL_ASK = `${EXT}/status?`;

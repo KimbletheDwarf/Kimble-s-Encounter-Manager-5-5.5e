@@ -41,6 +41,10 @@ In **Run Encounter**, press **Run**, roll initiative and **Start combat**. Bonus
 - **Companions and summons:** give a character its Steel Defender, familiar or beast companion in the Party tab and switch it on in play; it follows its owner's turn. Right-click anyone in a fight > **Summon for…** to add summoned creatures on its side.
 - **Shapeshifters:** mark a druid, vampire or werewolf as a Shapeshifter and give it shapes; right-click it to **Shapeshift** into one and back.
 - **Conditions:** **+ Condition** puts a badge on the linked token. 0 HP shows a skull (monsters) or Unconscious (characters).
+- **Bloodied:** at 50% of their hit points or fewer, a creature or character gets a Bloodied badge and a red shift on their token, for everyone. Change the percentage in **Settings** (⚙).
+- **Token effects:** a linked token shakes and flashes red when it takes damage, and glows with a swirl around it when healed, for everyone in the room. Choose the shake intensity and one of five healing effects in **Settings** (⚙).
+- **Hidden creatures:** right-click a creature > **Hide from players** hides its token, and a hidden monster leaves the players' turn order until it's shown again. Hiding or showing the token in Owlbear does the same.
+- **Load tokens into scene:** each character remembers their last linked token. The button in the Active party panel puts the party on any scene, in the middle of your view.
 - **Next / Undo** work from the GM window or from the GM's panel in Owlbear. Players see whose turn it is; monster HP is never shown to them.
 
 ![Combat runner](https://kimblethedwarf.github.io/Kimble-s-Encounter-Manager-5-5.5e/store/combat.webp)

@@ -4,8 +4,8 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+var __commonJS = (cb, mod2) => function __require() {
+  return mod2 || (0, cb[__getOwnPropNames(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
@@ -15,13 +15,13 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__getProtoOf(mod2)) : {}, __copyProps(
   // If the importer is in node compatibility mode or this is not an ESM
   // file that has been converted to a CommonJS file using a Babel-
   // compatible transform (i.e. "__esModule" has not been set), then set
   // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
+  isNodeMode || !mod2 || !mod2.__esModule ? __defProp(target, "default", { value: mod2, enumerable: true }) : target,
+  mod2
 ));
 
 // node_modules/events/events.js
@@ -193,10 +193,10 @@ var require_events = __commonJS({
       }
     }
     function _onceWrap(target, type, listener) {
-      var state3 = { fired: false, wrapFn: void 0, target, type, listener };
-      var wrapped = onceWrapper.bind(state3);
+      var state4 = { fired: false, wrapFn: void 0, target, type, listener };
+      var wrapped = onceWrapper.bind(state4);
       wrapped.listener = listener;
-      state3.wrapFn = wrapped;
+      state4.wrapFn = wrapped;
       return wrapped;
     }
     EventEmitter2.prototype.once = function once2(type, listener) {
@@ -488,8 +488,8 @@ var PlayerApi = class {
   }
   getRole() {
     return __awaiter(this, void 0, void 0, function* () {
-      const { role: role4 } = yield this.messageBus.sendAsync("OBR_PLAYER_GET_ROLE", {});
-      return role4;
+      const { role: role6 } = yield this.messageBus.sendAsync("OBR_PLAYER_GET_ROLE", {});
+      return role6;
     });
   }
   getMetadata() {
@@ -505,8 +505,8 @@ var PlayerApi = class {
   }
   hasPermission(permission) {
     return __awaiter(this, void 0, void 0, function* () {
-      const role4 = yield this.getRole();
-      if (role4 === "GM") {
+      const role6 = yield this.getRole();
+      if (role6 === "GM") {
         return true;
       }
       const { permissions } = yield this.messageBus.sendAsync("OBR_ROOM_GET_PERMISSIONS", {});
@@ -1175,8 +1175,8 @@ function each(obj, iter, strict = true) {
   }
 }
 function getArchtype(thing) {
-  const state3 = thing[DRAFT_STATE];
-  return state3 ? state3.type_ : Array.isArray(thing) ? 1 : isMap(thing) ? 2 : isSet(thing) ? 3 : 0;
+  const state4 = thing[DRAFT_STATE];
+  return state4 ? state4.type_ : Array.isArray(thing) ? 1 : isMap(thing) ? 2 : isSet(thing) ? 3 : 0;
 }
 function has(thing, prop) {
   return getArchtype(thing) === 2 ? thing.has(prop) : Object.prototype.hasOwnProperty.call(thing, prop);
@@ -1206,8 +1206,8 @@ function isMap(target) {
 function isSet(target) {
   return target instanceof Set;
 }
-function latest(state3) {
-  return state3.copy_ || state3.base_;
+function latest(state4) {
+  return state4.copy_ || state4.base_;
 }
 function shallowCopy(base, strict) {
   if (isMap(base)) {
@@ -1325,11 +1325,11 @@ function enterScope(immer2) {
   return currentScope = createScope(currentScope, immer2);
 }
 function revokeDraft(draft) {
-  const state3 = draft[DRAFT_STATE];
-  if (state3.type_ === 0 || state3.type_ === 1)
-    state3.revoke_();
+  const state4 = draft[DRAFT_STATE];
+  if (state4.type_ === 0 || state4.type_ === 1)
+    state4.revoke_();
   else
-    state3.revoked_ = true;
+    state4.revoked_ = true;
 }
 function processResult(result, scope) {
   scope.unfinalizedDrafts_ = scope.drafts_.length;
@@ -1366,28 +1366,28 @@ function finalize(rootScope, value, path) {
   if (isFrozen(value))
     return value;
   const useStrictIteration = rootScope.immer_.shouldUseStrictIteration();
-  const state3 = value[DRAFT_STATE];
-  if (!state3) {
+  const state4 = value[DRAFT_STATE];
+  if (!state4) {
     each(
       value,
-      (key, childValue) => finalizeProperty(rootScope, state3, value, key, childValue, path),
+      (key, childValue) => finalizeProperty(rootScope, state4, value, key, childValue, path),
       useStrictIteration
     );
     return value;
   }
-  if (state3.scope_ !== rootScope)
+  if (state4.scope_ !== rootScope)
     return value;
-  if (!state3.modified_) {
-    maybeFreeze(rootScope, state3.base_, true);
-    return state3.base_;
+  if (!state4.modified_) {
+    maybeFreeze(rootScope, state4.base_, true);
+    return state4.base_;
   }
-  if (!state3.finalized_) {
-    state3.finalized_ = true;
-    state3.scope_.unfinalizedDrafts_--;
-    const result = state3.copy_;
+  if (!state4.finalized_) {
+    state4.finalized_ = true;
+    state4.scope_.unfinalizedDrafts_--;
+    const result = state4.copy_;
     let resultEach = result;
     let isSet2 = false;
-    if (state3.type_ === 3) {
+    if (state4.type_ === 3) {
       resultEach = new Set(result);
       result.clear();
       isSet2 = true;
@@ -1396,7 +1396,7 @@ function finalize(rootScope, value, path) {
       resultEach,
       (key, childValue) => finalizeProperty(
         rootScope,
-        state3,
+        state4,
         result,
         key,
         childValue,
@@ -1408,14 +1408,14 @@ function finalize(rootScope, value, path) {
     maybeFreeze(rootScope, result, false);
     if (path && rootScope.patches_) {
       getPlugin("Patches").generatePatches_(
-        state3,
+        state4,
         path,
         rootScope.patches_,
         rootScope.inversePatches_
       );
     }
   }
-  return state3.copy_;
+  return state4.copy_;
 }
 function finalizeProperty(rootScope, parentState, targetObject, prop, childValue, rootPath, targetIsSet) {
   if (childValue == null) {
@@ -1461,7 +1461,7 @@ function maybeFreeze(scope, value, deep = false) {
 }
 function createProxyProxy(base, parent) {
   const isArray = Array.isArray(base);
-  const state3 = {
+  const state4 = {
     type_: isArray ? 1 : 0,
     // Track which produce call this is associated with.
     scope_: parent ? parent.scope_ : getCurrentScope(),
@@ -1484,91 +1484,91 @@ function createProxyProxy(base, parent) {
     revoke_: null,
     isManual_: false
   };
-  let target = state3;
+  let target = state4;
   let traps = objectTraps;
   if (isArray) {
-    target = [state3];
+    target = [state4];
     traps = arrayTraps;
   }
   const { revoke, proxy } = Proxy.revocable(target, traps);
-  state3.draft_ = proxy;
-  state3.revoke_ = revoke;
+  state4.draft_ = proxy;
+  state4.revoke_ = revoke;
   return proxy;
 }
 var objectTraps = {
-  get(state3, prop) {
+  get(state4, prop) {
     if (prop === DRAFT_STATE)
-      return state3;
-    const source = latest(state3);
+      return state4;
+    const source = latest(state4);
     if (!has(source, prop)) {
-      return readPropFromProto(state3, source, prop);
+      return readPropFromProto(state4, source, prop);
     }
     const value = source[prop];
-    if (state3.finalized_ || !isDraftable(value)) {
+    if (state4.finalized_ || !isDraftable(value)) {
       return value;
     }
-    if (value === peek(state3.base_, prop)) {
-      prepareCopy(state3);
-      return state3.copy_[prop] = createProxy(value, state3);
+    if (value === peek(state4.base_, prop)) {
+      prepareCopy(state4);
+      return state4.copy_[prop] = createProxy(value, state4);
     }
     return value;
   },
-  has(state3, prop) {
-    return prop in latest(state3);
+  has(state4, prop) {
+    return prop in latest(state4);
   },
-  ownKeys(state3) {
-    return Reflect.ownKeys(latest(state3));
+  ownKeys(state4) {
+    return Reflect.ownKeys(latest(state4));
   },
-  set(state3, prop, value) {
-    const desc = getDescriptorFromProto(latest(state3), prop);
+  set(state4, prop, value) {
+    const desc = getDescriptorFromProto(latest(state4), prop);
     if (desc?.set) {
-      desc.set.call(state3.draft_, value);
+      desc.set.call(state4.draft_, value);
       return true;
     }
-    if (!state3.modified_) {
-      const current2 = peek(latest(state3), prop);
+    if (!state4.modified_) {
+      const current2 = peek(latest(state4), prop);
       const currentState = current2?.[DRAFT_STATE];
       if (currentState && currentState.base_ === value) {
-        state3.copy_[prop] = value;
-        state3.assigned_[prop] = false;
+        state4.copy_[prop] = value;
+        state4.assigned_[prop] = false;
         return true;
       }
-      if (is(value, current2) && (value !== void 0 || has(state3.base_, prop)))
+      if (is(value, current2) && (value !== void 0 || has(state4.base_, prop)))
         return true;
-      prepareCopy(state3);
-      markChanged(state3);
+      prepareCopy(state4);
+      markChanged(state4);
     }
-    if (state3.copy_[prop] === value && // special case: handle new props with value 'undefined'
-    (value !== void 0 || prop in state3.copy_) || // special case: NaN
-    Number.isNaN(value) && Number.isNaN(state3.copy_[prop]))
+    if (state4.copy_[prop] === value && // special case: handle new props with value 'undefined'
+    (value !== void 0 || prop in state4.copy_) || // special case: NaN
+    Number.isNaN(value) && Number.isNaN(state4.copy_[prop]))
       return true;
-    state3.copy_[prop] = value;
-    state3.assigned_[prop] = true;
+    state4.copy_[prop] = value;
+    state4.assigned_[prop] = true;
     return true;
   },
-  deleteProperty(state3, prop) {
-    if (peek(state3.base_, prop) !== void 0 || prop in state3.base_) {
-      state3.assigned_[prop] = false;
-      prepareCopy(state3);
-      markChanged(state3);
+  deleteProperty(state4, prop) {
+    if (peek(state4.base_, prop) !== void 0 || prop in state4.base_) {
+      state4.assigned_[prop] = false;
+      prepareCopy(state4);
+      markChanged(state4);
     } else {
-      delete state3.assigned_[prop];
+      delete state4.assigned_[prop];
     }
-    if (state3.copy_) {
-      delete state3.copy_[prop];
+    if (state4.copy_) {
+      delete state4.copy_[prop];
     }
     return true;
   },
   // Note: We never coerce `desc.value` into an Immer draft, because we can't make
   // the same guarantee in ES5 mode.
-  getOwnPropertyDescriptor(state3, prop) {
-    const owner = latest(state3);
+  getOwnPropertyDescriptor(state4, prop) {
+    const owner = latest(state4);
     const desc = Reflect.getOwnPropertyDescriptor(owner, prop);
     if (!desc)
       return desc;
     return {
       writable: true,
-      configurable: state3.type_ !== 1 || prop !== "length",
+      configurable: state4.type_ !== 1 || prop !== "length",
       enumerable: desc.enumerable,
       value: owner[prop]
     };
@@ -1576,8 +1576,8 @@ var objectTraps = {
   defineProperty() {
     die(11);
   },
-  getPrototypeOf(state3) {
-    return getPrototypeOf(state3.base_);
+  getPrototypeOf(state4) {
+    return getPrototypeOf(state4.base_);
   },
   setPrototypeOf() {
     die(12);
@@ -1590,27 +1590,27 @@ each(objectTraps, (key, fn) => {
     return fn.apply(this, arguments);
   };
 });
-arrayTraps.deleteProperty = function(state3, prop) {
+arrayTraps.deleteProperty = function(state4, prop) {
   if (isNaN(parseInt(prop)))
     die(13);
-  return arrayTraps.set.call(this, state3, prop, void 0);
+  return arrayTraps.set.call(this, state4, prop, void 0);
 };
-arrayTraps.set = function(state3, prop, value) {
+arrayTraps.set = function(state4, prop, value) {
   if (prop !== "length" && isNaN(parseInt(prop)))
     die(14);
-  return objectTraps.set.call(this, state3[0], prop, value, state3[0]);
+  return objectTraps.set.call(this, state4[0], prop, value, state4[0]);
 };
 function peek(draft, prop) {
-  const state3 = draft[DRAFT_STATE];
-  const source = state3 ? latest(state3) : draft;
+  const state4 = draft[DRAFT_STATE];
+  const source = state4 ? latest(state4) : draft;
   return source[prop];
 }
-function readPropFromProto(state3, source, prop) {
+function readPropFromProto(state4, source, prop) {
   const desc = getDescriptorFromProto(source, prop);
   return desc ? `value` in desc ? desc.value : (
     // This is a very special case, if the prop is a getter defined by the
     // prototype, we should invoke it with the draft as context!
-    desc.get?.call(state3.draft_)
+    desc.get?.call(state4.draft_)
   ) : void 0;
 }
 function getDescriptorFromProto(source, prop) {
@@ -1625,19 +1625,19 @@ function getDescriptorFromProto(source, prop) {
   }
   return void 0;
 }
-function markChanged(state3) {
-  if (!state3.modified_) {
-    state3.modified_ = true;
-    if (state3.parent_) {
-      markChanged(state3.parent_);
+function markChanged(state4) {
+  if (!state4.modified_) {
+    state4.modified_ = true;
+    if (state4.parent_) {
+      markChanged(state4.parent_);
     }
   }
 }
-function prepareCopy(state3) {
-  if (!state3.copy_) {
-    state3.copy_ = shallowCopy(
-      state3.base_,
-      state3.scope_.immer_.useStrictShallowCopy_
+function prepareCopy(state4) {
+  if (!state4.copy_) {
+    state4.copy_ = shallowCopy(
+      state4.base_,
+      state4.scope_.immer_.useStrictShallowCopy_
     );
   }
 }
@@ -1695,7 +1695,7 @@ var Immer2 = class {
     };
     this.produceWithPatches = (base, recipe) => {
       if (typeof base === "function") {
-        return (state3, ...args) => this.produceWithPatches(state3, (draft) => base(draft, ...args));
+        return (state4, ...args) => this.produceWithPatches(state4, (draft) => base(draft, ...args));
       }
       let patches, inversePatches;
       const result = this.produce(base, recipe, (p, ip) => {
@@ -1723,10 +1723,10 @@ var Immer2 = class {
     return proxy;
   }
   finishDraft(draft, patchListener) {
-    const state3 = draft && draft[DRAFT_STATE];
-    if (!state3 || !state3.isManual_)
+    const state4 = draft && draft[DRAFT_STATE];
+    if (!state4 || !state4.isManual_)
       die(9);
-    const { scope_: scope } = state3;
+    const { scope_: scope } = state4;
     usePatchesInScope(scope, patchListener);
     return processResult(void 0, scope);
   }
@@ -1794,15 +1794,15 @@ function current(value) {
 function currentImpl(value) {
   if (!isDraftable(value) || isFrozen(value))
     return value;
-  const state3 = value[DRAFT_STATE];
+  const state4 = value[DRAFT_STATE];
   let copy;
   let strict = true;
-  if (state3) {
-    if (!state3.modified_)
-      return state3.base_;
-    state3.finalized_ = true;
-    copy = shallowCopy(value, state3.scope_.immer_.useStrictShallowCopy_);
-    strict = state3.scope_.immer_.shouldUseStrictIteration();
+  if (state4) {
+    if (!state4.modified_)
+      return state4.base_;
+    state4.finalized_ = true;
+    copy = shallowCopy(value, state4.scope_.immer_.useStrictShallowCopy_);
+    strict = state4.scope_.immer_.shouldUseStrictIteration();
   } else {
     copy = shallowCopy(value, true);
   }
@@ -1813,8 +1813,8 @@ function currentImpl(value) {
     },
     strict
   );
-  if (state3) {
-    state3.finalized_ = false;
+  if (state4) {
+    state4.finalized_ = false;
   }
   return copy;
 }
@@ -1835,30 +1835,30 @@ function enablePatches() {
   const REPLACE = "replace";
   const ADD = "add";
   const REMOVE = "remove";
-  function generatePatches_(state3, basePath, patches, inversePatches) {
-    switch (state3.type_) {
+  function generatePatches_(state4, basePath, patches, inversePatches) {
+    switch (state4.type_) {
       case 0:
       case 2:
         return generatePatchesFromAssigned(
-          state3,
+          state4,
           basePath,
           patches,
           inversePatches
         );
       case 1:
-        return generateArrayPatches(state3, basePath, patches, inversePatches);
+        return generateArrayPatches(state4, basePath, patches, inversePatches);
       case 3:
         return generateSetPatches(
-          state3,
+          state4,
           basePath,
           patches,
           inversePatches
         );
     }
   }
-  function generateArrayPatches(state3, basePath, patches, inversePatches) {
-    let { base_, assigned_ } = state3;
-    let copy_ = state3.copy_;
+  function generateArrayPatches(state4, basePath, patches, inversePatches) {
+    let { base_, assigned_ } = state4;
+    let copy_ = state4.copy_;
     if (copy_.length < base_.length) {
       ;
       [base_, copy_] = [copy_, base_];
@@ -1899,9 +1899,9 @@ function enablePatches() {
       });
     }
   }
-  function generatePatchesFromAssigned(state3, basePath, patches, inversePatches) {
-    const { base_, copy_ } = state3;
-    each(state3.assigned_, (key, assignedValue) => {
+  function generatePatchesFromAssigned(state4, basePath, patches, inversePatches) {
+    const { base_, copy_ } = state4;
+    each(state4.assigned_, (key, assignedValue) => {
       const origValue = get(base_, key);
       const value = get(copy_, key);
       const op = !assignedValue ? REMOVE : has(base_, key) ? REPLACE : ADD;
@@ -1914,8 +1914,8 @@ function enablePatches() {
       );
     });
   }
-  function generateSetPatches(state3, basePath, patches, inversePatches) {
-    let { base_, copy_ } = state3;
+  function generateSetPatches(state4, basePath, patches, inversePatches) {
+    let { base_, copy_ } = state4;
     let i = 0;
     base_.forEach((value) => {
       if (!copy_.has(value)) {
@@ -3957,6 +3957,47 @@ function getDetails() {
   return { origin, roomId };
 }
 
+// node_modules/@owlbear-rodeo/sdk/lib/builders/EffectBuilder.js
+var EffectBuilder = class extends GenericItemBuilder {
+  constructor(player) {
+    super(player);
+    this._item.name = "Effect";
+    this._width = 0;
+    this._height = 0;
+    this._sksl = "";
+    this._effectType = "VIEWPORT";
+    this._uniforms = [];
+    this._blendMode = "SRC_OVER";
+  }
+  width(width) {
+    this._width = width;
+    return this.self();
+  }
+  height(height) {
+    this._height = height;
+    return this.self();
+  }
+  sksl(sksl) {
+    this._sksl = sksl;
+    return this.self();
+  }
+  effectType(effectType) {
+    this._effectType = effectType;
+    return this.self();
+  }
+  uniforms(uniforms) {
+    this._uniforms = uniforms;
+    return this.self();
+  }
+  blendMode(blendMode) {
+    this._blendMode = blendMode;
+    return this.self();
+  }
+  build() {
+    return Object.assign(Object.assign({}, this._item), { type: "EFFECT", width: this._width, height: this._height, sksl: this._sksl, effectType: this._effectType, uniforms: this._uniforms, blendMode: this._blendMode });
+  }
+};
+
 // node_modules/@owlbear-rodeo/sdk/lib/types/items/Path.js
 var Command;
 (function(Command2) {
@@ -4018,6 +4059,9 @@ var OBR = {
 function buildCurve() {
   return new CurveBuilder(playerApi);
 }
+function buildEffect() {
+  return new EffectBuilder(playerApi);
+}
 function buildImage(image, grid) {
   return new ImageBuilder(playerApi, image, grid);
 }
@@ -4033,6 +4077,7 @@ var lib_default = OBR;
 var EXT = "com.encounter-builder";
 var TRACKER_KEY = `${EXT}/tracker`;
 var SETTINGS_KEY = `${EXT}/settings`;
+var EFFECTS = `${EXT}/effects`;
 var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
 var LOCAL_ASK = `${EXT}/status?`;
@@ -4171,7 +4216,7 @@ function trailDots(points, segments, { step = 5, speed = null } = {}) {
   }
   return { dots, used, over: speed != null && used > speed };
 }
-var feet = (squares, perSquare) => Math.round(squares * perSquare * 10) / 10;
+var feet = (squares2, perSquare) => Math.round(squares2 * perSquare * 10) / 10;
 function usedText(used, speed, unit = "ft") {
   const u = Math.round(used * 10) / 10;
   if (speed == null) return `${u} ${unit}`;
@@ -4371,6 +4416,399 @@ async function drawTrail(id, m, { visible = true } = {}) {
   await items.addItems(add);
 }
 
+// src/rules.js
+var CR_XP = {
+  "0": 10,
+  "1/8": 25,
+  "1/4": 50,
+  "1/2": 100,
+  "1": 200,
+  "2": 450,
+  "3": 700,
+  "4": 1100,
+  "5": 1800,
+  "6": 2300,
+  "7": 2900,
+  "8": 3900,
+  "9": 5e3,
+  "10": 5900,
+  "11": 7200,
+  "12": 8400,
+  "13": 1e4,
+  "14": 11500,
+  "15": 13e3,
+  "16": 15e3,
+  "17": 18e3,
+  "18": 2e4,
+  "19": 22e3,
+  "20": 25e3,
+  "21": 33e3,
+  "22": 41e3,
+  "23": 5e4,
+  "24": 62e3,
+  "25": 75e3,
+  "26": 9e4,
+  "27": 105e3,
+  "28": 12e4,
+  "29": 135e3,
+  "30": 155e3
+};
+var CR_ORDER = Object.keys(CR_XP);
+
+// src/maker/constants.js
+var CRS = ["0", "1/8", "1/4", "1/2", ...Array.from({ length: 30 }, (_, i) => String(i + 1))];
+
+// src/combat.js
+var BLOODIED = "Bloodied";
+
+// src/obr/tracker-state.js
+function bloodiedTokens(state4) {
+  const maps = [...(state4?.order || []).map((r) => r.tm), state4?.tmExtra].filter(Boolean);
+  return maps.flatMap((tm) => Object.entries(tm)).filter(([, marks]) => marks.some((m) => m.n === BLOODIED)).map(([token]) => token);
+}
+
+// src/obr/bloodied.js
+var KEY2 = `${EXT}/bloodied`;
+var TINT = `uniform vec2 size;
+
+half4 main(float2 coord) {
+  float d = length(coord / size - 0.5) * 2.0;
+  float disc = 1.0 - smoothstep(0.90, 0.98, d);
+  float a = disc * mix(0.24, 0.46, d * d);
+  return half4(0.78 * a, 0.02 * a, 0.04 * a, a);
+}
+`;
+var role3 = "PLAYER";
+var state3 = null;
+var busy3 = false;
+var again3 = false;
+async function sync2() {
+  if (busy3) {
+    again3 = true;
+    return;
+  }
+  busy3 = true;
+  try {
+    do {
+      again3 = false;
+      await draw2();
+    } while (again3);
+  } catch (err) {
+    console.error("Encounter Builder: could not draw the bloodied tint", err);
+  } finally {
+    busy3 = false;
+  }
+}
+async function draw2() {
+  if (!await lib_default.scene.isReady()) return;
+  const ids = bloodiedTokens(state3);
+  const tokens = ids.length ? (await lib_default.scene.items.getItems(ids)).filter((t) => role3 === "GM" || t.visible) : [];
+  const want = new Map(tokens.map((t) => [t.id, t]));
+  const have = await lib_default.scene.local.getItems((i) => !!i.metadata?.[KEY2]);
+  const old = have.filter((i) => !want.has(i.attachedTo)).map((i) => i.id);
+  const drawn2 = new Set(have.map((i) => i.attachedTo));
+  const add = tokens.filter((t) => !drawn2.has(t.id)).map((t) => buildEffect().effectType("ATTACHMENT").attachedTo(t.id).sksl(TINT).position(t.position).rotation(t.rotation).layer("ATTACHMENT").zIndex(0).disableAutoZIndex(true).locked(true).disableHit(true).disableAttachmentBehavior(["COPY"]).name("Bloodied").metadata({ [KEY2]: true }).build());
+  if (old.length) await lib_default.scene.local.deleteItems(old);
+  if (add.length) await lib_default.scene.local.addItems(add);
+}
+async function startBloodied() {
+  role3 = await lib_default.player.getRole();
+  lib_default.player.onChange((p) => {
+    if (p.role !== role3) {
+      role3 = p.role;
+      sync2();
+    }
+  });
+  state3 = (await lib_default.room.getMetadata())[TRACKER_KEY] || null;
+  lib_default.room.onMetadataChange((m) => {
+    state3 = m[TRACKER_KEY] || null;
+    sync2();
+  });
+  lib_default.scene.onReadyChange(() => sync2());
+  let timer = null;
+  lib_default.scene.items.onChange(() => {
+    clearTimeout(timer);
+    timer = setTimeout(sync2, 200);
+  });
+  sync2();
+}
+
+// src/obr/fx-shaders.js
+var HIT_SECONDS = 0.825;
+var HEAL_SECONDS = 1.4;
+var HIT_REACH = 1.4;
+var HEAL_REACH = 1.45;
+var GLOW_SECONDS = 1;
+var HEAL_GLOW_END = GLOW_SECONDS / HEAL_SECONDS;
+var HIT = `uniform shader scene;
+uniform mat3 modelView;
+uniform vec2 size;
+uniform float reach;
+uniform float shake;
+uniform float seed;
+uniform float progress;
+
+half4 at(vec2 p) { return scene.eval((vec3(p, 1) * modelView).xy); }
+float disc(vec2 p) { return 1.0 - smoothstep(0.95, 1.0, length((p / size - 0.5) * 2.0 * reach)); }
+
+half4 main(float2 coord) {
+  float amount = pow(1.0 - progress, 1.5);
+  vec2 shift = vec2(sin(progress * 52.0 + seed), cos(progress * 41.0 + seed * 1.7) * 0.7) * 0.09 * shake * amount * size.x / reach;
+  vec2 from = coord + shift;
+  float moved = disc(from);
+  half4 c = mix(at(coord), at(from), moved);
+  float shown = max(moved, disc(coord));
+  half3 rgb = mix(c.rgb, half3(0.92, 0.05, 0.06), amount * 0.72);
+  return half4(rgb * shown, shown);
+}
+`;
+var HEAL_LIGHT = `uniform vec2 size;
+uniform float reach;
+uniform float glowEnd;
+uniform float seed;
+uniform float progress;
+
+half4 main(float2 coord) {
+  vec2 p = (coord / size - 0.5) * 2.0 * reach;
+  float r = length(p);
+  float angle = atan(p.y, p.x) + seed;
+  float glow = sin(min(progress / glowEnd, 1.0) * 3.14159);
+  float inside = 1.0 - smoothstep(0.95, 1.0, r);
+  float outside = smoothstep(0.98, 1.05, r) * (1.0 - smoothstep(1.2, reach * 0.97, r));
+  float arms = pow(0.5 + 0.5 * sin(angle * 3.0 + r * 11.0 - progress * 15.0), 3.0);
+  float glints = pow(0.5 + 0.5 * sin(angle * 11.0 - r * 24.0 + progress * 24.0), 14.0);
+  float life = sin(progress * 3.14159);
+  float halo = (1.0 - inside) * exp(-(r - 1.0) * 7.0) * glow * 0.4;
+  float a = clamp(inside * glow * 0.5 + (arms * 0.85 + glints * 0.7) * outside * life + halo, 0.0, 0.95);
+  return half4(a, a, a * 0.96, a);
+}
+`;
+var HEAL_NATURE = `uniform vec2 size;
+uniform float reach;
+uniform float glowEnd;
+uniform float seed;
+uniform float progress;
+
+float leaf(vec2 p, vec2 at, float turn) {
+  vec2 d = p - at;
+  float c = cos(turn), s = sin(turn);
+  d = vec2(d.x * c + d.y * s, d.y * c - d.x * s);
+  float width = 0.052 * (1.0 - pow(abs(d.x) / 0.1, 2.0));
+  return (1.0 - smoothstep(0.0, 0.016, abs(d.y) - width)) * step(abs(d.x), 0.1);
+}
+
+half4 main(float2 coord) {
+  vec2 p = (coord / size - 0.5) * 2.0 * reach;
+  float r = length(p);
+  float angle = atan(p.y, p.x) + seed;
+  float glow = sin(min(progress / glowEnd, 1.0) * 3.14159);
+  float inside = 1.0 - smoothstep(0.95, 1.0, r);
+  float outside = smoothstep(0.98, 1.05, r) * (1.0 - smoothstep(1.22, reach * 0.97, r));
+  float vine = pow(0.5 + 0.5 * sin(angle * 2.0 + r * 13.0 - progress * 11.0 + sin(angle * 5.0) * 0.6), 5.0);
+  float life = sin(progress * 3.14159);
+  float halo = (1.0 - inside) * exp(-(r - 1.0) * 7.0) * glow * 0.5;
+  float leaves = 0.0;
+  for (int i = 0; i < 9; i++) {
+    float k = float(i);
+    float a = k * 0.698 + seed * 2.0 + progress * (2.4 + 0.3 * sin(k * 2.1));
+    float out_ = 1.1 + 0.26 * fract(k * 0.37 + progress * 0.55);
+    leaves = max(leaves, leaf(p, vec2(cos(a), sin(a)) * out_, a + 1.2 + progress * 3.0));
+  }
+  float bright = clamp(vine * outside * life * 0.9 + leaves * life, 0.0, 1.0);
+  half3 ring = mix(half3(0.10, 0.52, 0.16), half3(0.56, 0.93, 0.33), leaves * 0.8 + vine * 0.3);
+  float g = inside * glow * 0.46;
+  float a = clamp(bright + halo + g, 0.0, 0.95);
+  half3 rgb = (ring * (bright + 0.0001) + half3(0.42, 0.88, 0.30) * (halo + g)) / (bright + halo + g + 0.0001);
+  return half4(rgb * a, a);
+}
+`;
+var HEAL_RADIANT = `uniform vec2 size;
+uniform float reach;
+uniform float glowEnd;
+uniform float seed;
+uniform float progress;
+
+float star(vec2 d, float s) {
+  if (s <= 0.001) return 0.0;
+  d = abs(d) / s;
+  return clamp(1.0 - sqrt(d.x) - sqrt(d.y), 0.0, 1.0);
+}
+
+half4 main(float2 coord) {
+  vec2 p = (coord / size - 0.5) * 2.0 * reach;
+  float r = length(p);
+  float angle = atan(p.y, p.x) + seed;
+  float glow = sin(min(progress / glowEnd, 1.0) * 3.14159);
+  float life = sin(progress * 3.14159);
+  float inside = 1.0 - smoothstep(0.95, 1.0, r);
+  float edge = 1.0 - smoothstep(1.26, reach * 0.97, r);
+  float rim = exp(-pow((r - 1.03) / 0.035, 2.0)) * life;
+  float pulseAt = 1.0 + 0.36 * pow(progress, 0.7);
+  float pulse = exp(-pow((r - pulseAt) / 0.03, 2.0)) * (1.0 - progress) * 0.9;
+  float rays = pow(0.5 + 0.5 * sin(angle * 12.0 + progress * 3.0), 5.0) * pow(0.5 + 0.5 * sin(angle * 5.0 - progress * 5.0), 2.0);
+  float beam = rays * smoothstep(0.98, 1.03, r) * exp(-(r - 1.0) * 4.5) * life * 1.2;
+  float glints = 0.0;
+  for (int i = 0; i < 8; i++) {
+    float k = float(i);
+    float a = k * 0.785 + seed + progress * 1.6;
+    float at = 1.13 + 0.14 * sin(k * 3.7 + progress * 6.0);
+    float twinkle = sin(fract(progress * 1.7 + k * 0.37) * 3.14159);
+    glints = max(glints, star(p - vec2(cos(a), sin(a)) * at, 0.16 * twinkle * twinkle));
+  }
+  float g = inside * glow * 0.42;
+  float gold = clamp((beam + pulse) * edge + g, 0.0, 1.0);
+  float white = clamp((rim + glints * life) * edge * (1.0 - inside * 0.6), 0.0, 1.0);
+  float a = clamp(gold + white, 0.0, 0.95);
+  half3 rgb = (half3(1.0, 0.93, 0.78) * gold + half3(1.0, 0.98, 0.9) * white) / (gold + white + 0.0001);
+  return half4(rgb * a, a);
+}
+`;
+var HEAL_RISING = `uniform vec2 size;
+uniform float reach;
+uniform float glowEnd;
+uniform float seed;
+uniform float progress;
+
+half4 main(float2 coord) {
+  vec2 p = (coord / size - 0.5) * 2.0 * reach;
+  float r = length(p);
+  float angle = atan(p.y, p.x);
+  float glow = sin(min(progress / glowEnd, 1.0) * 3.14159);
+  float life = sin(progress * 3.14159);
+  float inside = 1.0 - smoothstep(0.95, 1.0, r);
+  float edge = 1.0 - smoothstep(1.28, reach * 0.97, r);
+  float ribbons = 0.0;
+  for (int i = 0; i < 2; i++) {
+    float k = float(i) * 3.14159;
+    float head = progress * 10.0 + k + seed;
+    float along = pow(0.5 + 0.5 * cos(angle - head), 3.0);
+    float at = 1.12 + 0.1 * sin(angle * 2.0 - progress * 12.0 + k);
+    ribbons = max(ribbons, exp(-pow((r - at) / (0.02 + 0.035 * along), 2.0)) * along);
+  }
+  float motes = 0.0;
+  for (int i = 0; i < 14; i++) {
+    float k = float(i);
+    float t = fract(progress * 1.3 + k * 0.619 + seed);
+    float x = (fract(k * 0.7548 + seed * 0.3) - 0.5) * 2.5;
+    float y = 1.28 - t * 2.6;
+    float m = 1.0 - smoothstep(0.012, 0.05, length(p - vec2(x + sin(t * 6.0 + k) * 0.06, y)));
+    motes = max(motes, m * sin(t * 3.14159));
+  }
+  float halo = (1.0 - inside) * exp(-(r - 1.0) * 7.0) * glow * 0.42;
+  float g = inside * glow * 0.42;
+  float soft = clamp(g + halo, 0.0, 1.0);
+  float bright = clamp((ribbons * smoothstep(0.98, 1.04, r) + motes) * edge * life * 1.15, 0.0, 1.0);
+  float a = clamp(soft + bright, 0.0, 0.95);
+  half3 rgb = (half3(0.85, 0.93, 1.0) * soft + half3(0.92, 0.97, 1.0) * bright) / (soft + bright + 0.0001);
+  return half4(rgb * a, a);
+}
+`;
+var HEAL_BLOOM = `uniform vec2 size;
+uniform float reach;
+uniform float glowEnd;
+uniform float seed;
+uniform float progress;
+
+half4 main(float2 coord) {
+  vec2 p = (coord / size - 0.5) * 2.0 * reach;
+  float r = length(p);
+  float glow = sin(min(progress / glowEnd, 1.0) * 3.14159);
+  float life = sin(progress * 3.14159);
+  float inside = 1.0 - smoothstep(0.95, 1.0, r);
+  float petals = 0.0, hearts = 0.0;
+  for (int i = 0; i < 9; i++) {
+    float k = float(i);
+    float a = k * 0.698 + seed;
+    float big = 0.135 + 0.05 * fract(k * 0.618);
+    float open = smoothstep(0.0, 0.32, progress - k * 0.035) * (1.0 - smoothstep(0.82, 1.0, progress));
+    vec2 d = p - vec2(cos(a), sin(a)) * (1.15 + 0.04 * sin(k * 2.3));
+    float t = atan(d.y, d.x) + a + progress * 1.5;
+    float n = length(d) / max(big * open, 0.001);
+    petals = max(petals, 1.0 - smoothstep(0.62, 0.72, n / (0.62 + 0.38 * abs(cos(t * 2.5)))));
+    hearts = max(hearts, 1.0 - smoothstep(0.2, 0.28, n));
+  }
+  float pollen = 0.0;
+  for (int i = 0; i < 12; i++) {
+    float k = float(i);
+    float t = fract(progress * 1.1 + k * 0.618 + seed);
+    vec2 at = vec2((fract(k * 0.7548) - 0.5) * 2.5 + sin(t * 5.0 + k) * 0.08, 1.25 - t * 2.5);
+    pollen = max(pollen, (1.0 - smoothstep(0.01, 0.04, length(p - at))) * sin(t * 3.14159));
+  }
+  float halo = (1.0 - inside) * exp(-(r - 1.0) * 7.0) * glow * 0.5;
+  float g = inside * glow * 0.44;
+  float soft = clamp(g + halo, 0.0, 1.0);
+  float bloom = clamp(petals * 0.95, 0.0, 1.0);
+  float gold = clamp(hearts + pollen * life, 0.0, 1.0);
+  float a = clamp(soft + bloom + gold, 0.0, 0.95);
+  half3 petal = mix(half3(0.98, 0.72, 0.84), half3(1.0, 0.95, 0.95), petals * 0.4);
+  half3 rgb = (half3(0.42, 0.88, 0.30) * soft + petal * bloom + half3(1.0, 0.86, 0.32) * gold) / (soft + bloom + gold + 0.0001);
+  return half4(rgb * a, a);
+}
+`;
+var HEALS = { light: HEAL_LIGHT, nature: HEAL_NATURE, radiant: HEAL_RADIANT, rising: HEAL_RISING, bloom: HEAL_BLOOM };
+
+// src/obr/token-fx.js
+var KEY3 = `${EXT}/fx`;
+var FRAME_MS2 = 40;
+var role4 = "PLAYER";
+var running = /* @__PURE__ */ new Map();
+function effectOn(bounds, { sksl, reach, layer, uniforms }) {
+  const w = Math.max(bounds.width, bounds.height) * reach;
+  return buildEffect().effectType("STANDALONE").width(w).height(w).position({ x: bounds.center.x - w / 2, y: bounds.center.y - w / 2 }).sksl(sksl).uniforms([{ name: "reach", value: reach }, ...uniforms, { name: "seed", value: Math.random() * 6.283 }, { name: "progress", value: 0 }]).layer(layer).locked(true).disableHit(true).name("Token effect").metadata({ [KEY3]: true }).build();
+}
+async function play({ hits = [], heals = [], shake = 1, style = "light" }) {
+  if (!await lib_default.scene.isReady()) return;
+  const shown = async (ids) => ids.length ? (await lib_default.scene.items.getItems(ids)).filter((t) => role4 === "GM" || t.visible) : [];
+  const add = [], seconds = /* @__PURE__ */ new Map();
+  for (const t of await shown(hits)) {
+    const it = effectOn(await lib_default.scene.items.getItemBounds([t.id]), { sksl: HIT, reach: HIT_REACH, layer: "POST_PROCESS", uniforms: [{ name: "shake", value: shake }] });
+    add.push(it);
+    seconds.set(it.id, HIT_SECONDS);
+  }
+  for (const t of await shown(heals)) {
+    const it = effectOn(await lib_default.scene.items.getItemBounds([t.id]), { sksl: HEALS[style] || HEALS.light, reach: HEAL_REACH, layer: "ATTACHMENT", uniforms: [{ name: "glowEnd", value: HEAL_GLOW_END }] });
+    add.push(it);
+    seconds.set(it.id, HEAL_SECONDS);
+  }
+  if (!add.length) return;
+  await lib_default.scene.local.addItems(add);
+  const start = performance.now();
+  for (const [id, s] of seconds) running.set(id, { start, seconds: s });
+}
+var drawing = false;
+setInterval(async () => {
+  if (drawing || !running.size) return;
+  drawing = true;
+  const now = performance.now(), done = [], progress = /* @__PURE__ */ new Map();
+  for (const [id, e] of running) {
+    const p = (now - e.start) / (e.seconds * 1e3);
+    if (p >= 1) {
+      done.push(id);
+      running.delete(id);
+    } else progress.set(id, p);
+  }
+  try {
+    if (done.length) await lib_default.scene.local.deleteItems(done);
+    if (progress.size) {
+      await lib_default.scene.local.updateItems([...progress.keys()], (items) => {
+        for (const it of items) it.uniforms.find((u) => u.name === "progress").value = progress.get(it.id);
+      }, true);
+    }
+  } catch {
+  }
+  drawing = false;
+}, FRAME_MS2);
+async function startTokenFx() {
+  role4 = await lib_default.player.getRole();
+  lib_default.player.onChange((p) => {
+    role4 = p.role;
+  });
+  lib_default.broadcast.onMessage(EFFECTS, ({ data }) => {
+    play(data || {}).catch((err) => console.error("Encounter Builder: could not play a token effect", err));
+  });
+  lib_default.scene.onReadyChange(() => running.clear());
+}
+
 // src/obr/whisper.js
 var KEEP = 200;
 function readThread(thread) {
@@ -4437,9 +4875,58 @@ function startWhispers(gm2) {
   } };
 }
 
+// src/obr/token-look.js
+function lookOf(t) {
+  if (t.type !== "IMAGE" || !t.image?.url) return null;
+  return { image: t.image, grid: t.grid, scale: t.scale, rotation: t.rotation, layer: t.layer, text: t.text, textItemType: t.textItemType, owner: t.createdUserId };
+}
+var squares = (look) => Math.max(1, Math.ceil(Math.max(look.image.width, look.image.height) / (look.grid.dpi || 1) * Math.abs(look.scale?.x || 1)));
+function spots(centre, n, step) {
+  const cols = Math.ceil(Math.sqrt(n)), rows = Math.ceil(n / cols);
+  return Array.from({ length: n }, (_, i) => {
+    const row = Math.floor(i / cols), inRow = row === rows - 1 ? n - cols * row : cols;
+    return { x: centre.x + (i % cols - (inRow - 1) / 2) * step, y: centre.y + (row - (rows - 1) / 2) * step };
+  });
+}
+
+// src/obr/latest-writer.js
+function latestWriter(write, { onStatus = () => {
+}, wait = (ms) => new Promise((r) => setTimeout(r, ms)), firstDelay = 1e3, maxDelay = 8e3 } = {}) {
+  let next = null, busy4 = false, failing = false;
+  async function run() {
+    busy4 = true;
+    let delay = firstDelay;
+    while (next) {
+      const { value } = next;
+      next = null;
+      try {
+        await write(value);
+        delay = firstDelay;
+        if (failing) {
+          failing = false;
+          onStatus({ ok: true });
+        }
+      } catch (err) {
+        next ??= { value };
+        if (!failing) {
+          failing = true;
+          onStatus({ ok: false, error: String(err?.message || err) });
+        }
+        await wait(delay);
+        delay = Math.min(delay * 2, maxDelay);
+      }
+    }
+    busy4 = false;
+  }
+  return (value) => {
+    next = { value };
+    if (!busy4) run();
+  };
+}
+
 // src/obr/background.js
 var whispers = null;
-var role3 = "PLAYER";
+var role5 = "PLAYER";
 var settings3 = {};
 var gm = null;
 var gmSeen = 0;
@@ -4454,6 +4941,12 @@ var post = (target, msg) => {
   }
 };
 var linked = () => !!gm && Date.now() - gmSeen < 8e3;
+var writeTracker = latestWriter((state4) => lib_default.room.setMetadata({ [TRACKER_KEY]: state4 }), {
+  onStatus: (s) => {
+    if (s.error) console.error("Encounter Builder: Owlbear refused a tracker update", s.error);
+    if (gm) post(gm, { type: "trackerStatus", ...s });
+  }
+});
 var lastStatus = null;
 function status(force = false) {
   const connected = linked();
@@ -4465,7 +4958,7 @@ function status(force = false) {
 window.addEventListener("message", async (e) => {
   if (e.origin !== location.origin || !e.data?.eb || !e.source) return;
   await ready;
-  if (role3 !== "GM") return;
+  if (role5 !== "GM") return;
   const m = e.data;
   if (m.type === "hello") {
     gm = e.source;
@@ -4482,12 +4975,16 @@ window.addEventListener("message", async (e) => {
   } else if (m.type === "publish") {
     gm = e.source;
     gmSeen = Date.now();
-    await lib_default.room.setMetadata({ [TRACKER_KEY]: m.state ?? null });
+    writeTracker(m.state ?? null);
     syncMarkers(m.state ?? null);
   } else if (m.type === "setSettings") await lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings3, ...m.settings || {} } });
   else if (m.type === "pick") startPick(e.source, m);
   else if (m.type === "unlink") await unlink(m.ids || []);
   else if (m.type === "rename") await rename(m.items || []);
+  else if (m.type === "setVisible") await setVisible(m.ids || [], !!m.visible);
+  else if (m.type === "effects") lib_default.broadcast.sendMessage(EFFECTS, { hits: m.hits, heals: m.heals, shake: m.shake, style: m.style }, { destination: "ALL" }).catch(() => {
+  });
+  else if (m.type === "addTokens") post(e.source, { type: "tokensAdded", id: m.id, ...await addTokens(m.list || []).catch((err) => ({ error: String(err?.message || err) })) });
   else if (m.type === "whisper") post(e.source, { type: "whisperResult", id: m.id, ...await sendWhisper(m).catch((err) => ({ error: String(err?.message || err) })) });
 });
 var TOOL = `${EXT}/link-tool`;
@@ -4589,10 +5086,30 @@ async function rename(list) {
     });
   }
 }
+async function setVisible(ids, visible) {
+  const here = await onMap(ids);
+  if (here.length) await lib_default.scene.items.updateItems(here, (items) => {
+    for (const it of items) it.visible = visible;
+  });
+}
+async function addTokens(list) {
+  if (!await lib_default.scene.isReady()) return { error: "No scene is open in Owlbear." };
+  const [w, ht, dpi] = await Promise.all([lib_default.viewport.getWidth(), lib_default.viewport.getHeight(), lib_default.scene.grid.getDpi()]);
+  const centre = await lib_default.viewport.inverseTransformPoint({ x: w / 2, y: ht / 2 });
+  const at = spots(centre, list.length, dpi * Math.max(...list.map((x) => squares(x.look))));
+  const items = await Promise.all(list.map(async ({ name, look, visible }, i) => {
+    const b = buildImage(look.image, look.grid).name(name).position(await lib_default.scene.grid.snapPosition(at[i])).scale(look.scale).rotation(look.rotation).layer(look.layer).visible(visible !== false).metadata({ [LINK_KEY]: { name, linked: Date.now() } });
+    if (look.text) b.text({ ...look.text, plainText: name, type: "PLAIN" }).textItemType(look.textItemType);
+    if (look.owner) b.createdUserId(look.owner);
+    return b.build();
+  }));
+  await lib_default.scene.items.addItems(items);
+  return { added: items.length };
+}
 var lastTokens = "";
 async function sendTokens(force = false) {
-  if (role3 !== "GM" || !linked() || !await lib_default.scene.isReady()) return;
-  const tokens = (await lib_default.scene.items.getItems((i) => i.layer === "CHARACTER" || i.layer === "MOUNT")).map((i) => ({ id: i.id, name: i.name || "", label: i.text?.plainText || "" }));
+  if (role5 !== "GM" || !linked() || !await lib_default.scene.isReady()) return;
+  const tokens = (await lib_default.scene.items.getItems((i) => i.layer === "CHARACTER" || i.layer === "MOUNT")).map((i) => ({ id: i.id, name: i.name || "", label: i.text?.plainText || "", visible: i.visible, look: lookOf(i) }));
   const sig = JSON.stringify(tokens);
   if (!force && sig === lastTokens) return;
   lastTokens = sig;
@@ -4603,9 +5120,9 @@ var iconUrl = (id) => new URL(`../conditions%20symbols/png-128/${id}.png`, locat
 var syncRunning = false;
 var syncNext;
 var lastState = null;
-async function syncMarkers(state3) {
-  lastState = state3;
-  syncNext = state3;
+async function syncMarkers(state4) {
+  lastState = state4;
+  syncNext = state4;
   if (syncRunning) return;
   syncRunning = true;
   try {
@@ -4620,11 +5137,11 @@ async function syncMarkers(state3) {
     syncRunning = false;
   }
 }
-async function drawMarkers(state3) {
-  if (role3 !== "GM" || !await lib_default.scene.isReady()) return;
+async function drawMarkers(state4) {
+  if (role5 !== "GM" || !await lib_default.scene.isReady()) return;
   const want = /* @__PURE__ */ new Map();
-  for (const r of state3?.order || []) for (const [token, marks] of Object.entries(r.tm || {})) want.set(token, marks);
-  for (const [token, marks] of Object.entries(state3?.tmExtra || {})) want.set(token, marks);
+  for (const r of state4?.order || []) for (const [token, marks] of Object.entries(r.tm || {})) want.set(token, marks);
+  for (const [token, marks] of Object.entries(state4?.tmExtra || {})) want.set(token, marks);
   const tokens = new Map((want.size ? await lib_default.scene.items.getItems([...want.keys()]) : []).map((t) => [t.id, t]));
   const have = /* @__PURE__ */ new Map();
   const remove = [];
@@ -4642,7 +5159,7 @@ async function drawMarkers(state3) {
   const add = [];
   for (const [id, token] of tokens) {
     const marks = want.get(id);
-    const sig = JSON.stringify([marks.map((x) => x.i || `~${x.t}`), token.scale.x, token.scale.y]);
+    const sig = JSON.stringify([marks.map((x) => x.i || `~${x.t}`), token.scale.x, token.scale.y, token.visible]);
     const h = have.get(id);
     if (h && !h.mixed && h.sig === sig) continue;
     if (h) remove.push(...h.ids);
@@ -4654,20 +5171,24 @@ async function drawMarkers(state3) {
 async function markersFor(token, marks, sig, dpi) {
   const b = await lib_default.scene.items.getItemBounds([token.id]);
   const size = dpi * 0.3, step = size * 1.04;
-  const shown = marks.length > 4 ? marks.slice(0, 3) : marks;
-  const extra = marks.length - shown.length;
+  const row = marks.filter((m) => m.n !== BLOODIED);
+  const shown = row.length > 4 ? row.slice(0, 3) : row;
+  const extra = row.length - shown.length;
   const count = shown.length + (extra ? 1 : 0);
   const at = (k) => ({ x: b.center.x - step * (count - 1) / 2 + k * step, y: b.min.y + size * 0.3 });
   const finish = (builder, name) => builder.attachedTo(token.id).layer("ATTACHMENT").locked(true).disableHit(true).visible(token.visible).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).name(name).metadata({ [MARK_KEY]: { sig } }).build();
   const badge = (text, k) => buildLabel().plainText(text).fontSize(size * 0.42).fontWeight(700).padding(size * 0.12).cornerRadius(size / 2).backgroundColor("#3a3d45").backgroundOpacity(0.95).fillColor("#ffffff").pointerWidth(0).pointerHeight(0).position({ ...at(k), y: at(k).y + size * 0.35 });
   const items = shown.map((m, k) => m.i ? finish(buildImage({ url: iconUrl(m.i), width: 128, height: 128, mime: "image/png" }, { dpi: 128, offset: { x: 64, y: 64 } }).scale({ x: size / dpi, y: size / dpi }).position(at(k)), `Condition: ${m.n}`) : finish(badge(m.t, k), `Condition: ${m.n}`));
   if (extra) items.push(finish(badge(`+${extra}`, shown.length), `Conditions: ${extra} more`));
+  if (row.length < marks.length) {
+    items.push(finish(buildImage({ url: new URL("bloodied-mark.png", location.href).href, width: 128, height: 128, mime: "image/png" }, { dpi: 128, offset: { x: 64, y: 64 } }).scale({ x: size * 0.6 / dpi, y: size * 0.6 / dpi }).position({ x: b.center.x, y: b.max.y - size * 0.22 }), `Condition: ${BLOODIED}`));
+  }
   return items;
 }
 lib_default.onReady(async () => {
-  role3 = await lib_default.player.getRole();
+  role5 = await lib_default.player.getRole();
   lib_default.player.onChange((p) => {
-    role3 = p.role;
+    role5 = p.role;
   });
   settings3 = (await lib_default.room.getMetadata())[SETTINGS_KEY] || {};
   lib_default.room.onMetadataChange((md) => {
@@ -4677,13 +5198,13 @@ lib_default.onReady(async () => {
     if (linked()) post(gm, { type: "settings", settings: settings3 });
   });
   lib_default.broadcast.onMessage(LOCAL_COMMAND, ({ data }) => {
-    if (role3 === "GM" && linked()) post(gm, { type: "command", cmd: data?.cmd });
+    if (role5 === "GM" && linked()) post(gm, { type: "command", cmd: data?.cmd });
   });
   lib_default.broadcast.onMessage(LOCAL_ASK, () => status(true));
   removeLinkTool();
   setInterval(() => status(), 2e3);
   const redraw = async () => {
-    if (role3 === "GM") syncMarkers((await lib_default.room.getMetadata())[TRACKER_KEY] ?? null);
+    if (role5 === "GM") syncMarkers((await lib_default.room.getMetadata())[TRACKER_KEY] ?? null);
   };
   lib_default.scene.onReadyChange((ready2) => {
     if (ready2) {
@@ -4693,18 +5214,20 @@ lib_default.onReady(async () => {
   });
   let resizeTimer = null, tokensTimer = null;
   lib_default.scene.items.onChange(() => {
-    if (role3 === "GM") {
+    if (role5 === "GM") {
       clearTimeout(tokensTimer);
       tokensTimer = setTimeout(() => sendTokens(), 400);
     }
-    if (role3 !== "GM" || !lastState) return;
+    if (role5 !== "GM" || !lastState) return;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => syncMarkers(lastState), 250);
   });
   redraw();
   startTurnDie();
   startMovement();
-  whispers = startWhispers({ isGM: () => role3 === "GM", toWindow: (msg) => {
+  startBloodied();
+  startTokenFx();
+  whispers = startWhispers({ isGM: () => role5 === "GM", toWindow: (msg) => {
     if (!linked()) return false;
     post(gm, msg);
     return true;

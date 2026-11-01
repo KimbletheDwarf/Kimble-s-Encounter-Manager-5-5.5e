@@ -1221,12 +1221,12 @@ var init_cannon_es = __esm({
         if (this._listeners === void 0) {
           this._listeners = {};
         }
-        const listeners2 = this._listeners;
-        if (listeners2[type] === void 0) {
-          listeners2[type] = [];
+        const listeners3 = this._listeners;
+        if (listeners3[type] === void 0) {
+          listeners3[type] = [];
         }
-        if (!listeners2[type].includes(listener)) {
-          listeners2[type].push(listener);
+        if (!listeners3[type].includes(listener)) {
+          listeners3[type].push(listener);
         }
         return this;
       }
@@ -1237,8 +1237,8 @@ var init_cannon_es = __esm({
         if (this._listeners === void 0) {
           return false;
         }
-        const listeners2 = this._listeners;
-        if (listeners2[type] !== void 0 && listeners2[type].includes(listener)) {
+        const listeners3 = this._listeners;
+        if (listeners3[type] !== void 0 && listeners3[type].includes(listener)) {
           return true;
         }
         return false;
@@ -1250,8 +1250,8 @@ var init_cannon_es = __esm({
         if (this._listeners === void 0) {
           return false;
         }
-        const listeners2 = this._listeners;
-        return listeners2[type] !== void 0;
+        const listeners3 = this._listeners;
+        return listeners3[type] !== void 0;
       }
       /**
        * Remove an event listener
@@ -1261,13 +1261,13 @@ var init_cannon_es = __esm({
         if (this._listeners === void 0) {
           return this;
         }
-        const listeners2 = this._listeners;
-        if (listeners2[type] === void 0) {
+        const listeners3 = this._listeners;
+        if (listeners3[type] === void 0) {
           return this;
         }
-        const index = listeners2[type].indexOf(listener);
+        const index = listeners3[type].indexOf(listener);
         if (index !== -1) {
-          listeners2[type].splice(index, 1);
+          listeners3[type].splice(index, 1);
         }
         return this;
       }
@@ -1279,8 +1279,8 @@ var init_cannon_es = __esm({
         if (this._listeners === void 0) {
           return this;
         }
-        const listeners2 = this._listeners;
-        const listenerArray = listeners2[event.type];
+        const listeners3 = this._listeners;
+        const listenerArray = listeners3[event.type];
         if (listenerArray !== void 0) {
           event.target = this;
           for (let i = 0, l = listenerArray.length; i < l; i++) {
@@ -7672,12 +7672,12 @@ var init_three_core = __esm({
        */
       addEventListener(type, listener) {
         if (this._listeners === void 0) this._listeners = {};
-        const listeners2 = this._listeners;
-        if (listeners2[type] === void 0) {
-          listeners2[type] = [];
+        const listeners3 = this._listeners;
+        if (listeners3[type] === void 0) {
+          listeners3[type] = [];
         }
-        if (listeners2[type].indexOf(listener) === -1) {
-          listeners2[type].push(listener);
+        if (listeners3[type].indexOf(listener) === -1) {
+          listeners3[type].push(listener);
         }
       }
       /**
@@ -7688,9 +7688,9 @@ var init_three_core = __esm({
        * @return {boolean} Whether the given event listener has been added to the given event type.
        */
       hasEventListener(type, listener) {
-        const listeners2 = this._listeners;
-        if (listeners2 === void 0) return false;
-        return listeners2[type] !== void 0 && listeners2[type].indexOf(listener) !== -1;
+        const listeners3 = this._listeners;
+        if (listeners3 === void 0) return false;
+        return listeners3[type] !== void 0 && listeners3[type].indexOf(listener) !== -1;
       }
       /**
        * Removes the given event listener from the given event type.
@@ -7699,9 +7699,9 @@ var init_three_core = __esm({
        * @param {Function} listener - The listener to remove.
        */
       removeEventListener(type, listener) {
-        const listeners2 = this._listeners;
-        if (listeners2 === void 0) return;
-        const listenerArray = listeners2[type];
+        const listeners3 = this._listeners;
+        if (listeners3 === void 0) return;
+        const listenerArray = listeners3[type];
         if (listenerArray !== void 0) {
           const index = listenerArray.indexOf(listener);
           if (index !== -1) {
@@ -7715,9 +7715,9 @@ var init_three_core = __esm({
        * @param {Object} event - The event that gets fired.
        */
       dispatchEvent(event) {
-        const listeners2 = this._listeners;
-        if (listeners2 === void 0) return;
-        const listenerArray = listeners2[event.type];
+        const listeners3 = this._listeners;
+        if (listeners3 === void 0) return;
+        const listenerArray = listeners3[event.type];
         if (listenerArray !== void 0) {
           event.target = this;
           const array = listenerArray.slice(0);
@@ -43088,6 +43088,7 @@ function partyCombatant(ch) {
     if (live2.form.pool) c2.maxHp = live2.form.maxHp;
   }
   if (live2.timers) c2.timers = structuredClone(live2.timers);
+  if (live2.hidden) c2.hidden = true;
   return c2;
 }
 function liveOf(c2) {
@@ -43096,6 +43097,7 @@ function liveOf(c2) {
   if (c2.tempHp) live2.tempHp = c2.tempHp;
   if (c2.tokens?.length) live2.tokens = [...c2.tokens];
   if (c2.form) live2.form = { ...c2.form };
+  if (c2.hidden) live2.hidden = true;
   return live2;
 }
 function setupCombat(e2, { character, monster, asGroup }) {
@@ -43235,6 +43237,7 @@ function companionCombatant(ch, comp, m, rules = "2014") {
     }
   }
   if (live2.tempHp) c2.tempHp = live2.tempHp;
+  if (live2.hidden) c2.hidden = true;
   return c2;
 }
 function companionLiveOf(c2) {
@@ -43242,6 +43245,7 @@ function companionLiveOf(c2) {
   const live2 = { members: structuredClone(c2.members), conditions: [...c2.conditions || []] };
   if (c2.tempHp) live2.tempHp = c2.tempHp;
   if (c2.timers) live2.timers = structuredClone(c2.timers);
+  if (c2.hidden) live2.hidden = true;
   return live2;
 }
 function summon(s, ownerKey, m, n = 1, rules = "2014") {
@@ -43371,20 +43375,30 @@ function settleDown(c2) {
   } else if (c2.kind === "monster" && down2(c2.hp) && c2.conditions?.length) c2.conditions = [];
   pruneTimers(c2);
 }
-function rowMarks(c2) {
+function rowMarks(c2, pct = 50) {
   const conds = c2.conditions || [];
-  if (c2.kind === "monster") return (isGroup(c2) ? groupOut(c2) : down2(c2.hp)) ? [DEAD] : [...conds];
-  return down2(c2.hp) && !conds.includes(UNCONSCIOUS) ? [...conds, UNCONSCIOUS] : [...conds];
+  if (c2.kind === "monster") return (isGroup(c2) ? groupOut(c2) : down2(c2.hp)) ? [DEAD] : withBloodied(c2, [...conds], pct);
+  return down2(c2.hp) && !conds.includes(UNCONSCIOUS) ? [...conds, UNCONSCIOUS] : withBloodied(c2, [...conds], pct);
 }
-function tokenMarks(c2) {
+function tokenMarks(c2, pct = 50) {
   if (!isGroup(c2)) {
-    const marks = rowMarks(c2);
+    const marks = rowMarks(c2, pct);
     return tokensOf(c2).map((token) => ({ token, marks }));
   }
-  return c2.members.filter((m) => m.token).map((m) => ({
-    token: m.token,
-    marks: m.hp <= 0 ? [DEAD] : [.../* @__PURE__ */ new Set([...c2.conditions || [], ...m.conditions])]
-  }));
+  return c2.members.filter((m) => m.token).map((m) => {
+    if (m.hp <= 0) return { token: m.token, marks: [DEAD] };
+    const marks = [.../* @__PURE__ */ new Set([...c2.conditions || [], ...m.conditions])];
+    if (c2.group !== "minion" && isBloodied(m.hp, c2.maxHp, pct) && !marks.includes(BLOODIED)) marks.push(BLOODIED);
+    return { token: m.token, marks };
+  });
+}
+function setHidden(c2, on) {
+  if (on) c2.hidden = true;
+  else delete c2.hidden;
+}
+function hiddenByTokens(c2, tokens) {
+  const here = tokensOf(c2).map((id) => tokens.find((t) => t.id === id)).filter(Boolean);
+  return here.length ? here.every((t) => t.visible === false) : null;
 }
 function linkPlan(c2) {
   if (!isGroup(c2)) return [{ member: -1, name: tokenName(c2) }];
@@ -43434,6 +43448,29 @@ function matchFightTokens(s, tokens) {
   }
   return { links, twice };
 }
+function tokenVitals(c2) {
+  if (c2.hidden) return [];
+  if (isGroup(c2)) return c2.members.filter((m) => m.token).map((m) => ({ token: m.token, hp: m.hp, total: m.hp }));
+  return tokensOf(c2).map((token) => ({ token, hp: c2.hp, total: (c2.hp ?? 0) + (c2.tempHp || 0), form: c2.form?.id }));
+}
+function hpChanges(before, now) {
+  const hits = [], heals = [];
+  for (const v of now) {
+    const was = before.get(v.token);
+    if (!was || was.form !== v.form || v.hp == null || was.hp == null) continue;
+    if (v.total < was.total) hits.push(v.token);
+    else if (v.hp > was.hp) heals.push(v.token);
+  }
+  return { hits, heals };
+}
+function planTokenLoad(entries, tokens) {
+  const load2 = [], here = [], none = [];
+  for (const x of entries) {
+    if (x.ids.some((id) => tokens.some((t) => t.id === id)) || tokensNamed(tokens, x.name).length) here.push(x);
+    else (x.look ? load2 : none).push(x);
+  }
+  return { load: load2, here, none };
+}
 function conSave(c2, m, pc) {
   if (c2.kind === "monster") {
     if (!m) return null;
@@ -43441,14 +43478,14 @@ function conSave(c2, m, pc) {
   }
   return pc?.sheet?.saves?.find((s) => s.ability === "CON")?.bonus ?? null;
 }
-var LEGENDARY_KEY, sameLive, LETTERS, isOut, ownTurn, ownerInit, formsOf, statRef, DEAD, UNCONSCIOUS, down2, tokensOf, tokenName, tokenRenames, normName, tokensNamed, concentrationDc;
+var LEGENDARY_KEY, sameLive, LETTERS, isOut, ownTurn, ownerInit, formsOf, statRef, DEAD, UNCONSCIOUS, BLOODIED, down2, isBloodied, withBloodied, hiddenFromOrder, tokensOf, tokenName, tokenRenames, normName, tokensNamed, concentrationDc;
 var init_combat = __esm({
   "src/combat.js"() {
     init_format();
     init_rules();
     init_groups();
     LEGENDARY_KEY = "legendaryActions:uses";
-    sameLive = (a2 = {}, b2 = {}) => (a2.hp ?? null) === (b2.hp ?? null) && (a2.tempHp || 0) === (b2.tempHp || 0) && JSON.stringify(a2.conditions || []) === JSON.stringify(b2.conditions || []) && JSON.stringify(a2.tokens || []) === JSON.stringify(b2.tokens || []) && JSON.stringify(a2.form || null) === JSON.stringify(b2.form || null) && JSON.stringify(a2.timers || null) === JSON.stringify(b2.timers || null);
+    sameLive = (a2 = {}, b2 = {}) => (a2.hp ?? null) === (b2.hp ?? null) && (a2.tempHp || 0) === (b2.tempHp || 0) && !!a2.hidden === !!b2.hidden && JSON.stringify(a2.conditions || []) === JSON.stringify(b2.conditions || []) && JSON.stringify(a2.tokens || []) === JSON.stringify(b2.tokens || []) && JSON.stringify(a2.form || null) === JSON.stringify(b2.form || null) && JSON.stringify(a2.timers || null) === JSON.stringify(b2.timers || null);
     LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     isOut = (c2) => c2.kind === "monster" && (isGroup(c2) ? groupOut(c2) : c2.hp != null && c2.hp <= 0);
     ownTurn = (s, c2) => !(c2.during && s.combatants.some((o) => o.key === c2.owner));
@@ -43457,7 +43494,11 @@ var init_combat = __esm({
     statRef = (c2) => c2?.form?.monsterId || c2?.refId;
     DEAD = "Dead";
     UNCONSCIOUS = "Unconscious";
+    BLOODIED = "Bloodied";
     down2 = (hp) => hp != null && hp <= 0;
+    isBloodied = (hp, maxHp, pct = 50) => pct > 0 && hp > 0 && maxHp > 0 && hp * 100 <= maxHp * pct;
+    withBloodied = (c2, marks, pct) => !isGroup(c2) && isBloodied(c2.hp, c2.maxHp, pct) && !marks.includes(BLOODIED) ? [...marks, BLOODIED] : marks;
+    hiddenFromOrder = (c2) => !!c2.hidden && c2.kind === "monster" && !c2.ally;
     tokensOf = (c2) => isGroup(c2) ? c2.members.map((m) => m.token).filter(Boolean) : (c2.tokens || []).filter(Boolean);
     tokenName = (c2, i = -1) => i >= 0 ? `${c2.name} ${i + 1}` : c2.name;
     tokenRenames = (c2) => isGroup(c2) ? c2.members.map((m, i) => m.token ? { id: m.token, name: tokenName(c2, i) } : null).filter(Boolean) : tokensOf(c2).map((id) => ({ id, name: c2.name }));
@@ -65468,7 +65509,7 @@ var init_loot_dialog = __esm({
 var CONDITION_ICONS;
 var init_condition_icons = __esm({
   "src/condition-icons.js"() {
-    CONDITION_ICONS = /* @__PURE__ */ new Set(["asleep", "attached", "banished", "bleeding", "blinded", "burning", "charmed", "choking", "concentrating", "confused", "cursed", "dazed", "dead", "deafened", "diseased", "dominated", "exhaustion", "flanked", "frightened", "grappled", "hidden", "incapacitated", "invisible", "levitating", "limb-damage", "paralyzed", "petrified", "poisoned", "possessed", "prone", "reduced-statistics", "restrained", "save-ends", "stunned", "suffocating", "swallowed", "temporary-hit-points", "turned", "unconscious"]);
+    CONDITION_ICONS = /* @__PURE__ */ new Set(["asleep", "attached", "banished", "bleeding", "blinded", "bloodied", "burning", "charmed", "choking", "concentrating", "confused", "cursed", "dazed", "dead", "deafened", "diseased", "dominated", "exhaustion", "flanked", "frightened", "grappled", "hidden", "incapacitated", "invisible", "levitating", "limb-damage", "paralyzed", "petrified", "poisoned", "possessed", "prone", "reduced-statistics", "restrained", "save-ends", "stunned", "suffocating", "swallowed", "temporary-hit-points", "turned", "unconscious"]);
   }
 });
 
@@ -65492,12 +65533,59 @@ var init_condition_icon = __esm({
   }
 });
 
+// src/fight-settings.js
+function bloodiedAt() {
+  try {
+    const saved = localStorage.getItem("bloodiedAt");
+    return saved === null ? BLOODIED_DEFAULT : clampPercent(saved);
+  } catch {
+    return BLOODIED_DEFAULT;
+  }
+}
+function setBloodiedAt(n) {
+  try {
+    localStorage.setItem("bloodiedAt", String(clampPercent(n)));
+  } catch {
+  }
+  listeners2.forEach((fn) => fn());
+}
+function fxSettings() {
+  try {
+    return { ...FX_DEFAULTS, ...JSON.parse(localStorage.getItem("tokenEffects") || "{}") };
+  } catch {
+    return { ...FX_DEFAULTS };
+  }
+}
+function setFxSettings(s) {
+  try {
+    localStorage.setItem("tokenEffects", JSON.stringify(s));
+  } catch {
+  }
+}
+var BLOODIED_DEFAULT, listeners2, onBloodiedChange, clampPercent, FX_DEFAULTS, HEAL_STYLES;
+var init_fight_settings = __esm({
+  "src/fight-settings.js"() {
+    BLOODIED_DEFAULT = 50;
+    listeners2 = /* @__PURE__ */ new Set();
+    onBloodiedChange = (fn) => listeners2.add(fn);
+    clampPercent = (n) => {
+      const v = Math.round(Number(n));
+      return Number.isFinite(v) ? Math.min(100, Math.max(0, v)) : BLOODIED_DEFAULT;
+    };
+    FX_DEFAULTS = { on: true, shake: 100, heal: "light" };
+    HEAL_STYLES = { light: "White light", radiant: "Radiant", rising: "Rising light", nature: "Green nature", bloom: "Bloom" };
+  }
+});
+
 // src/tabs/runner.js
 function mountRunner(root, navigate) {
   el10 = root;
   go7 = navigate;
   onRoll(() => {
     if (!el10.hidden && enc) renderLog();
+  });
+  onBloodiedChange(() => {
+    if (!el10.hidden) render4();
   });
   document.addEventListener("keydown", onKey);
   el10.addEventListener("click", (e2) => {
@@ -65527,6 +65615,12 @@ function setLive(id) {
     localStorage.setItem("liveEncounter", id);
   } catch {
   }
+}
+function tokenVitalsNow() {
+  const fight = liveEncounter()?.combat?.combatants || [];
+  const inFight = new Set(fight.map((c2) => c2.key));
+  const party = activeParty().flatMap((ch) => [partyCombatant(ch), ...companionCombatants(ch)]).filter((c2) => !inFight.has(c2.key));
+  return [...fight, ...party].flatMap(tokenVitals);
 }
 function runnerCommand(cmd) {
   const e2 = liveEncounter();
@@ -65562,7 +65656,8 @@ function renderPicker() {
           )
         ),
         party.length ? h("div.party-list", party.flatMap((ch) => [partyCard(ch), ...(ch.companions || []).map((comp) => companionCard(ch, comp))])) : h("div.empty", store.party.length ? "No one is in the active party yet. Choose characters to track their HP and conditions between fights." : "Add your characters in the Party tab first."),
-        party.length ? h("div.hint", `Their HP, conditions and linked token carry into every encounter you run, and back out again. Companions and summons (added in the Party tab) join them when In play.${linker ? " Right-click a character to link its token in Owlbear." : ""}`) : null
+        linker && party.length ? h("div.party-tools", h("button.outline", { onclick: loadTokens, title: "Puts each character's last linked token on the open Owlbear scene, in the middle of your view" }, "Load tokens into scene")) : null,
+        party.length ? h("div.hint", `Their HP, conditions and linked token carry into every encounter you run, and back out again. Companions and summons (added in the Party tab) join them when In play.${linker ? " Right-click a character to link its token in Owlbear, or to hide it from the players." : ""}`) : null
       ),
       h(
         "div.run-encounters",
@@ -65623,11 +65718,11 @@ function condChips(c2, { add: add2, remove: remove2, timed = false, setRounds })
       } : null
     }, condIcon(cond), cond, left(cond) ? h("span.cond-left", left(cond)) : null, " \xD7")),
     // shown by HP, not set by hand: the skull for a monster at 0 HP, Unconscious for a player at 0 HP
-    rowMarks(c2).filter((q) => !c2.conditions.includes(q)).map((q) => h("span.cond.auto", { title: q === "Dead" ? "At 0 HP. Healing it above 0 removes this." : "At 0 HP: unconscious until healed.", dataset: { cond: q } }, condIcon(q), q)),
+    rowMarks(c2, bloodiedAt()).filter((q) => !c2.conditions.includes(q)).map((q) => h("span.cond.auto", { title: q === "Dead" ? "At 0 HP. Healing it above 0 removes this." : q === BLOODIED ? `At ${bloodiedAt()}% of its hit points or fewer. Healing it above that removes this.` : "At 0 HP: unconscious until healed.", dataset: { cond: q } }, condIcon(q), q)),
     isOut(c2) ? null : h("button.cond.add", { title: "Add a condition", onclick: (e2) => {
       e2.stopPropagation();
       const anchor = e2.currentTarget;
-      popMenu(anchor, [...conditionNames(), "Concentrating", "Dodging"].filter((q) => !c2.conditions.includes(q)).map((q) => [[condIcon(q), q], () => timed ? roundsPop(anchor, q, 0, (n) => add2(q, n)) : add2(q), "", { dataset: { cond: q } }]));
+      popMenu(anchor, [.../* @__PURE__ */ new Set([...conditionNames(), BLOODIED, "Concentrating", "Dodging"])].filter((q) => !rowMarks(c2, bloodiedAt()).includes(q)).map((q) => [[condIcon(q), q], () => timed ? roundsPop(anchor, q, 0, (n) => add2(q, n)) : add2(q), "", { dataset: { cond: q } }]));
     } }, "+ Condition")
   );
 }
@@ -65645,7 +65740,10 @@ function act(fn, { redraw = true } = {}) {
 function undo() {
   const last = undoStack().pop();
   if (!last) return;
+  undoneAt = Date.now();
+  const hidden = new Map(C().combatants.map((c2) => [c2.key, c2.hidden]));
   enc.combat = JSON.parse(last);
+  for (const c2 of enc.combat.combatants) if (hidden.has(c2.key)) setHidden(c2, hidden.get(c2.key));
   syncParty(enc.combat);
   save("encounters", enc);
   render4();
@@ -65699,7 +65797,7 @@ function renderSetup() {
           "div.setup-row" + (c2.owner ? ".follow" : ""),
           { oncontextmenu: (e2) => tokenMenu(e2, c2) },
           avatarFor(c2, "sm"),
-          h("div.setup-name", c2.name, linkTag(c2), h("div.muted", `${c2.owner ? followText(c2) : c2.kind === "pc" ? "Character" : isGroup(c2) ? `Group of ${c2.members.length} ${c2.group === "minion" ? "minions" : "(pack)"}` : "Monster"}${c2.owner ? "" : ` \xB7 init ${signed(c2.initBonus)}`}`)),
+          h("div.setup-name", c2.name, linkTag(c2), hiddenTag(c2), h("div.muted", `${c2.owner ? followText(c2) : c2.kind === "pc" ? "Character" : isGroup(c2) ? `Group of ${c2.members.length} ${c2.group === "minion" ? "minions" : "(pack)"}` : "Monster"}${c2.owner ? "" : ` \xB7 init ${signed(c2.initBonus)}`}`)),
           c2.owner ? h("span.muted.follow-init", "\u21B3") : h("input.init-input", { type: "number", value: c2.init ?? "", placeholder: "\u2014", oninput: (e2) => {
             c2.init = e2.target.value === "" ? null : Number(e2.target.value);
             save("encounters", enc);
@@ -65963,7 +66061,7 @@ function combatantRow(c2, current3) {
       avatarFor(c2, "sm"),
       h(
         "div.turn-info",
-        h("div.turn-name", c2.name, grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null, isOut(c2) ? h("span.tag.dead", "Down") : null, shapeTag(c2), c2.owner ? h("span.tag.follow", { title: followText(c2) }, c2.summoned || c2.companion?.summon ? "Summon" : "Companion") : null, linkTag(c2)),
+        h("div.turn-name", c2.name, grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null, isOut(c2) ? h("span.tag.dead", "Down") : null, shapeTag(c2), c2.owner ? h("span.tag.follow", { title: followText(c2) }, c2.summoned || c2.companion?.summon ? "Summon" : "Companion") : null, linkTag(c2), hiddenTag(c2)),
         h("div.turn-stats", stats),
         grp ? pips(c2) : null,
         condChips(c2, {
@@ -66109,7 +66207,7 @@ ${minion ? "Click: down / back up" : "Click: change just its HP"}. Right-click: 
 }
 function memberConditions(anchor, c2, i) {
   const has2 = c2.members[i].conditions;
-  popMenu(anchor, [...conditionNames(), "Concentrating"].map((q) => [[has2.includes(q) ? "\u2713 " : "", condIcon(q), q], () => act((x) => {
+  popMenu(anchor, [.../* @__PURE__ */ new Set([...conditionNames(), BLOODIED, "Concentrating"])].map((q) => [[has2.includes(q) ? "\u2713 " : "", condIcon(q), q], () => act((x) => {
     const m = find(x, c2.key).members[i];
     m.conditions = m.conditions.includes(q) ? m.conditions.filter((z) => z !== q) : [...m.conditions, q];
   }), "", { dataset: { cond: q } }]));
@@ -66344,12 +66442,26 @@ function characterTokens(charId) {
 function setTokenLinker(l) {
   linker = l;
 }
+function hideItem(c2, change) {
+  const on = !c2.hidden;
+  return [on ? "Hide from players" : "Show to players", () => {
+    if (!linker.available()) return notice(NOT_LINKED, "error");
+    change(on);
+    linker.setVisible(tokensOf(c2), !on);
+  }];
+}
 function tokenItems(c2) {
   const n = tokensOf(c2).length, plan = linkPlan(c2);
   const label = !n ? "Link to token\u2026" : isGroup(c2) ? n < c2.members.length ? `Link the other ${plan.length} token${plan.length === 1 ? "" : "s"}\u2026` : "Relink tokens\u2026" : "Link to a different token\u2026";
   return [
     [label, () => startLink(c2)],
     ...n ? [[n === 1 ? "Unlink token" : `Unlink ${n} tokens`, () => unlinkCombatant(c2)]] : [],
+    hideItem(c2, (on) => {
+      setHidden(find(C(), c2.key), on);
+      syncParty(C());
+      save("encounters", enc);
+      render4();
+    }),
     ...c2.kind === "pc" && c2.refId ? messageItem(c2.refId, c2.name) : []
   ];
 }
@@ -66413,6 +66525,7 @@ function startLink(c2) {
       actOn(encId, (s) => {
         linkToken(s, c2.key, plan[i].member, id);
       });
+      if (c2.hidden) linker.setVisible([id], false);
     },
     (reason) => {
       if (reason === "cancelled") notice("Linking stopped.");
@@ -66452,15 +66565,21 @@ function setPartyLive(ch, next2) {
   else delete c2.tokens;
   if (next2.timers) c2.timers = structuredClone(next2.timers);
   else delete c2.timers;
+  setHidden(c2, next2.hidden);
   save("encounters", e2);
 }
 function partyUndoLast() {
   const u = partyUndo.pop();
+  undoneAt = Date.now();
   const ch = u && findCharacter(u.id);
   if (ch && u.companions) {
     ch.companions = u.companions;
     save("party", ch);
-  } else if (ch) setPartyLive(ch, u.live);
+  } else if (ch) {
+    const live2 = { ...u.live };
+    setHidden(live2, ch.live?.hidden);
+    setPartyLive(ch, live2);
+  }
   render4();
 }
 function companionCombatants(ch) {
@@ -66548,6 +66667,7 @@ function companionCard(ch, comp) {
         grp ? h("span.tag.count", `\xD7${c2.members.length}`) : null,
         h("span.tag.follow", comp.type === "summon" ? "Summon" : "Companion"),
         on ? linkTag(c2) : null,
+        on ? hiddenTag(c2) : null,
         m ? h("label.comp-on", { title: "In play: it joins fights and shows in Owlbear" }, h("input", { type: "checkbox", checked: !!comp.on, onchange: (ev) => setCompanionOn(ch.id, comp.id, ev.target.checked) }), "In play") : h("span.bad-text", " Its stat block is missing from the library")
       ),
       on ? h("div.turn-stats", h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "HP "), `${c2.maxHp ?? "\u2014"}${grp ? " each" : ""}`), h("span.muted", `${ch.name}'s ${comp.type === "summon" ? "summon" : "companion"}`)) : null,
@@ -66576,6 +66696,7 @@ function companionTokenItems(ch, comp, c2) {
           companionAct(ch.id, comp.id, (y, s) => {
             linkToken(s, y.key, plan[i].member, id);
           });
+          if (c2.hidden) linker.setVisible([id], false);
         },
         (reason) => {
           if (reason === "cancelled") notice("Linking stopped.");
@@ -66590,7 +66711,8 @@ function companionTokenItems(ch, comp, c2) {
       });
       for (const id of ids) unlinkedByHand.add(id);
       if (ids.length && linker.available()) linker.unlink(ids);
-    }]] : []
+    }]] : [],
+    hideItem(c2, (on) => companionAct(ch.id, comp.id, (y) => setHidden(y, on), { undo: false }))
   ];
 }
 function partyCard(ch) {
@@ -66608,7 +66730,7 @@ function partyCard(ch) {
     avatar(shape?.avatar || ch.avatar, ch.name, "md"),
     h(
       "div.party-main",
-      h("div.party-name", ch.name, shapeTag(c2), linkTag(c2)),
+      h("div.party-name", ch.name, shapeTag(c2), linkTag(c2), hiddenTag(c2)),
       h("div.turn-stats", h("span", h("b", "AC "), c2.ac ?? "\u2014"), h("span", h("b", "Speed "), `${shape ? walkSpeed(shape) || "\u2014" : ch.speed ?? 30} ft`), h("span", h("b", "Pass. Perception "), ch.passivePerception ?? "\u2014")),
       condChips(c2, {
         add: (q) => partyAct(ch.id, (p) => {
@@ -66670,7 +66792,7 @@ function chooseParty() {
 function partyTokenItems(ch) {
   const n = ch.live?.tokens?.length || 0;
   if (!linker) return [];
-  return [[n ? "Link to a different token\u2026" : "Link to token\u2026", () => startPartyLink(ch)], ...n ? [["Unlink token", () => unlinkParty(ch)]] : [], ...messageItem(ch.id, ch.name)];
+  return [[n ? "Link to a different token\u2026" : "Link to token\u2026", () => startPartyLink(ch)], ...n ? [["Unlink token", () => unlinkParty(ch)]] : [], hideItem(partyCombatant(ch), (on) => hideCharacter(ch, on)), ...messageItem(ch.id, ch.name)];
 }
 function startPartyLink(ch) {
   if (!linker.available()) return notice('Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".', "error");
@@ -66680,10 +66802,17 @@ function startPartyLink(ch) {
     partyAct(ch.id, (p) => {
       p.tokens = [id];
     });
+    if (ch.live?.hidden) linker.setVisible([id], false);
   }, (reason) => {
     if (reason === "cancelled") notice("Linking stopped.");
   });
   notice(`In Owlbear, click the token for ${ch.name} (Esc cancels).`);
+}
+function hideCharacter(ch, on) {
+  const live2 = liveOf(partyCombatant(ch));
+  setHidden(live2, on);
+  setPartyLive(ch, live2);
+  render4();
 }
 function unlinkParty(ch) {
   const ids = ch.live?.tokens || [];
@@ -66694,7 +66823,8 @@ function unlinkParty(ch) {
   if (ids.length && linker.available()) linker.unlink(ids);
 }
 function linkByName(all) {
-  if (linking) return;
+  const hide = /* @__PURE__ */ new Set();
+  if (linking) return hide;
   const tokens = all.filter((t) => !unlinkedByHand.has(t.id));
   const linked2 = [], twice = [];
   linking = true;
@@ -66705,6 +66835,7 @@ function linkByName(all) {
       const ch = findCharacter(id), now = characterTokens(id);
       if (now.length === 1 && now[0] === token) continue;
       setPartyLive(ch, { ...liveOf(partyCombatant(ch)), tokens: [token] });
+      if (ch.live.hidden) hide.add(token);
       linked2.push(ch.name);
     }
     const e2 = liveEncounter();
@@ -66714,6 +66845,7 @@ function linkByName(all) {
       for (const l of fight.links) {
         linkToken(e2.combat, l.key, l.member, l.token);
         const c2 = e2.combat.combatants.find((x) => x.key === l.key);
+        if (c2.hidden) hide.add(l.token);
         linked2.push(l.member >= 0 ? `${c2.name} ${l.member + 1}` : c2.name);
       }
       if (fight.links.length) {
@@ -66730,11 +66862,13 @@ function linkByName(all) {
       companionAct(c2.companion.char, c2.companion.id, (y, s) => {
         linkToken(s, y.key, l.member, l.token);
       }, { undo: false });
+      if (c2.hidden) hide.add(l.token);
       linked2.push(l.member >= 0 ? `${c2.name} ${l.member + 1}` : c2.name);
     }
   } finally {
     linking = false;
   }
+  linker?.setVisible([...hide], false);
   if (linked2.length) {
     render4();
     notice(`Owlbear: linked ${linked2.length > 5 ? `${linked2.length} tokens` : linked2.join(", ")} on this scene.`);
@@ -66742,6 +66876,81 @@ function linkByName(all) {
   const warn3 = twice.join(", ");
   if (warn3 && warn3 !== warnedTwice) notice(`Owlbear: more than one token is named ${twice.join(" / ")}, so ${twice.length === 1 ? "it was" : "they were"} not linked. Link by hand, or rename the extras.`);
   warnedTwice = warn3;
+  return hide;
+}
+function sceneTokensChanged(all) {
+  sceneTokens = all;
+  const hide = linkByName(all);
+  let changed3 = false;
+  linking = true;
+  try {
+    changed3 = followTokens(all.filter((t) => !hide.has(t.id)));
+    keepTokenLooks(all);
+  } finally {
+    linking = false;
+  }
+  if (changed3) render4();
+}
+function followTokens(tokens) {
+  let changed3 = false;
+  const follow = (c2, apply) => {
+    const now = hiddenByTokens(c2, tokens);
+    if (now === null || now === !!c2.hidden) return;
+    apply(now);
+    changed3 = true;
+  };
+  const e2 = liveEncounter();
+  if (e2?.combat) {
+    for (const c2 of e2.combat.combatants) follow(c2, (on) => setHidden(c2, on));
+    if (changed3) {
+      syncParty(e2.combat);
+      save("encounters", e2);
+    }
+  }
+  const inFight = new Set(e2?.combat?.combatants.map((c2) => c2.key) || []);
+  for (const ch of activeParty()) {
+    const pc = partyCombatant(ch);
+    if (!inFight.has(pc.key)) follow(pc, (on) => {
+      const live2 = liveOf(pc);
+      setHidden(live2, on);
+      setPartyLive(ch, live2);
+    });
+  }
+  for (const c2 of activeParty().flatMap(companionCombatants)) {
+    if (!inFight.has(c2.key)) follow(c2, (on) => companionAct(c2.companion.char, c2.companion.id, (y) => setHidden(y, on), { undo: false }));
+  }
+  return changed3;
+}
+function keepTokenLooks(all) {
+  const looks = new Map(all.filter((t) => t.look).map((t) => [t.id, t.look]));
+  const keep2 = (x, ids, ch) => {
+    const look = ids.map((id) => looks.get(id)).find(Boolean);
+    if (!look || JSON.stringify(look) === JSON.stringify(x.savedToken)) return;
+    x.savedToken = look;
+    save("party", ch);
+  };
+  for (const ch of store.party) {
+    keep2(ch, characterTokens(ch.id), ch);
+    for (const comp of ch.companions || []) if (comp.on && single(comp)) keep2(comp, companionTokens(ch, comp), ch);
+  }
+}
+function loadTokens() {
+  if (!linker.available()) return notice(NOT_LINKED, "error");
+  const entries = activeParty().flatMap((ch) => [
+    { name: ch.name, ids: characterTokens(ch.id), look: ch.savedToken, visible: !ch.live?.hidden },
+    ...(ch.companions || []).filter((comp) => comp.on && single(comp) && findMonster(comp.monsterId)).map((comp) => {
+      const c2 = companionCombatant(ch, comp, findMonster(comp.monsterId));
+      return { name: c2.name, ids: companionTokens(ch, comp), look: comp.savedToken, visible: !c2.hidden };
+    })
+  ]);
+  const { load: load2, here, none } = planTokenLoad(entries, sceneTokens);
+  const names = (list) => list.map((x) => x.name).join(", ");
+  const rest = [here.length ? `Already on this scene: ${names(here)}.` : "", none.length ? `No saved token yet: ${names(none)}. Link one once and it is kept.` : ""].filter(Boolean).join(" ");
+  if (!load2.length) return notice(rest || "There is no one to load.");
+  linker.addTokens(load2.map(({ name, look, visible }) => ({ name, look, visible })), ({ error: error2 }) => {
+    if (error2) notice(error2, "error");
+    else notice([`Loaded ${names(load2)}.`, rest].filter(Boolean).join(" "));
+  });
 }
 function renderBlock() {
   const box = el10.querySelector("#run-block");
@@ -66813,7 +67022,7 @@ function renderLog() {
     h("div.log-total", r.total)
   ))) : h("div.empty", "Rolls show here. Click dice in a stat block; Shift-click rolls with advantage, Ctrl-click with disadvantage."));
 }
-var el10, go7, enc, sameInit, UNDO_LIMIT, undoStacks, undoStack, live, liveEncounter, condIcon, closePop, roundsPop, setupCombat2, C, ordered2, PICKS, pick4, SHORTCUTS, conSave2, find, numberInput, linker, messenger, messageItem, linkTag, shapeTag, activeParty, partyUndo, companionKey, warnedTwice, linking, unlinkedByHand;
+var el10, go7, enc, sameInit, UNDO_LIMIT, undoStacks, undoStack, live, liveEncounter, undoneAt, justUndone, condIcon, closePop, roundsPop, setupCombat2, C, ordered2, PICKS, pick4, SHORTCUTS, conSave2, find, numberInput, linker, messenger, messageItem, hiddenTag, NOT_LINKED, linkTag, shapeTag, activeParty, partyUndo, companionKey, warnedTwice, linking, unlinkedByHand, sceneTokens, companionTokens, single;
 var init_runner = __esm({
   "src/tabs/runner.js"() {
     init_ui();
@@ -66829,6 +67038,7 @@ var init_runner = __esm({
     init_format();
     init_encounters();
     init_rules();
+    init_fight_settings();
     init_groups();
     enc = null;
     sameInit = true;
@@ -66844,6 +67054,8 @@ var init_runner = __esm({
     } catch {
     }
     liveEncounter = () => store.encounters.find((e2) => e2.id === live) || null;
+    undoneAt = 0;
+    justUndone = () => Date.now() - undoneAt < 500;
     condIcon = (name) => {
       const i = iconOf(name, store.conditions);
       return i ? h("img.cond-icon", { src: iconPath(i, 64), alt: "" }) : h("span.cond-badge", iconLetters(name));
@@ -66874,6 +67086,8 @@ var init_runner = __esm({
     linker = null;
     messenger = null;
     messageItem = (charId, name) => messenger ? [["Send message\u2026", () => messenger.compose({ charId, character: name })]] : [];
+    hiddenTag = (c2) => c2.hidden ? h("span.tag.unseen", { title: "Hidden from the players" }, "Hidden") : null;
+    NOT_LINKED = 'Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".';
     linkTag = (c2) => {
       const n = tokensOf(c2).length;
       return n ? h("span.tag.link", { title: `Linked to ${n === 1 ? "a token" : `${n} tokens`} in Owlbear` }, n > 1 ? `\u{1F517} ${n}` : "\u{1F517}") : null;
@@ -66885,6 +67099,12 @@ var init_runner = __esm({
     warnedTwice = "";
     linking = false;
     unlinkedByHand = /* @__PURE__ */ new Set();
+    sceneTokens = [];
+    companionTokens = (ch, comp) => {
+      const c2 = liveEncounter()?.combat?.combatants.find((x) => x.key === companionKey(ch.id, comp.id));
+      return c2 ? tokensOf(c2) : comp.live?.tokens || [];
+    };
+    single = (comp) => (comp.count || 1) === 1;
   }
 });
 
@@ -71787,6 +72007,7 @@ function mountSearch(go9) {
 // src/app.js
 init_loot_dialog();
 init_loot();
+init_fight_settings();
 
 // src/owlbear-settings.js
 var link2 = null;
@@ -71808,7 +72029,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.11.0";
+var version2 = "1.12.0";
 
 // src/app.js
 var TABS = [
@@ -72274,6 +72495,8 @@ function settings() {
         setToastSettings({ ...TOAST_DEFAULTS });
         setDiceSettings({ ...DICE_DEFAULTS });
         setLootSettings({ ...LOOT_DEFAULTS });
+        setBloodiedAt(BLOODIED_DEFAULT);
+        setFxSettings({ ...FX_DEFAULTS });
         close2();
         settings();
       } }, "Reset to defaults")
@@ -72285,10 +72508,49 @@ function settings() {
       { onchange: (e2) => setLootSettings({ ...lootSettings(), generosity: Number(e2.target.value) }) },
       GENEROSITY.stops.map(([g, name]) => h("option", { value: g, selected: lootSettings().generosity === g }, `${name} (${g}\xD7)`))
     ))),
+    h("h4", "Bloodied"),
+    h("p.muted", "A creature or character at this share of its hit points or fewer shows Bloodied, in the fight and on its Owlbear token. Healing it above that removes it."),
+    h("div.form-grid", h("label", "Bloodied at or below (% of max HP)", h("input", { type: "number", min: 0, max: 100, value: bloodiedAt(), onchange: (e2) => {
+      setBloodiedAt(e2.target.value);
+      e2.target.value = bloodiedAt();
+    } }))),
+    h("div.hint", `${BLOODIED_DEFAULT}% is the 2024 rule. 0 turns it off.`),
+    effectsSection(),
     owlbearSection()
   );
   const close2 = modal("Settings", body2, [["Done", () => {
   }, "primary"]]);
+}
+function effectsSection() {
+  if (!WEB) return null;
+  const fx = fxSettings();
+  const change = (patch) => setFxSettings({ ...fxSettings(), ...patch });
+  const shown4 = h("span.fx-shake-value", `${fx.shake}%`);
+  return [
+    h("h4", "Token effects"),
+    h("p.muted", "When a linked token takes damage it shakes and flashes red; when it is healed it glows, with a swirl around it. Everyone in the room sees them."),
+    h("label.check-row", h("input", { type: "checkbox", checked: fx.on, onchange: (e2) => change({ on: e2.target.checked }) }), "Play effects on tokens"),
+    h(
+      "div.form-grid",
+      h("label", "Shake intensity", h("div.fx-shake", h("input.loot-slider", {
+        type: "range",
+        min: 0,
+        max: 200,
+        step: 10,
+        value: fx.shake,
+        oninput: (e2) => {
+          shown4.textContent = `${e2.target.value}%`;
+        },
+        onchange: (e2) => change({ shake: Number(e2.target.value) })
+      }), shown4)),
+      h("label", "Healing effect", h(
+        "select",
+        { onchange: (e2) => change({ heal: e2.target.value }) },
+        Object.entries(HEAL_STYLES).map(([value, text]) => h("option", { value, selected: fx.heal === value }, text))
+      ))
+    ),
+    h("div.hint", "0% shake only flashes red.")
+  ];
 }
 function owlbearSection() {
   if (!WEB) return null;
@@ -72462,36 +72724,46 @@ init_format();
 init_condition_icon();
 init_ui();
 init_runner();
+init_combat();
 
 // src/obr/tracker-state.js
 init_combat();
 init_groups();
 var STATE_VERSION = 1;
 var MAX_BYTES = 12e3;
-function publicState(enc2, { showPartyHp = false, mark: mark2 = (n) => ({ n }), party = [], speed: speed2 = () => null, companions = () => [] } = {}) {
+function publicState(enc2, { showPartyHp = false, mark: mark2 = (n) => ({ n }), party = [], speed: speed2 = () => null, companions = () => [], bloodied = 50 } = {}) {
   const s = enc2?.combat;
   if (!s) return null;
-  const state2 = {
-    v: STATE_VERSION,
-    encounter: enc2.id,
-    name: enc2.name,
-    phase: s.phase,
-    round: s.round,
-    turn: s.turnKey,
-    showPartyHp: !!showPartyHp,
-    order: ordered(s).map((c2) => rowOf(c2, showPartyHp, mark2, speed2))
-  };
+  const all = ordered(s);
+  const order = all.filter((c2) => !hiddenFromOrder(c2)).map((c2) => rowOf(c2, showPartyHp, mark2, speed2, bloodied));
+  const shown4 = new Set(order.map((r) => r.key));
+  for (const r of order) if (r.with && !shown4.has(r.with)) {
+    delete r.with;
+    delete r.during;
+  }
+  const state2 = { v: STATE_VERSION, encounter: enc2.id, name: enc2.name, phase: s.phase, ...publicTurn(s, all), showPartyHp: !!showPartyHp, order };
   const inFight = new Set(s.combatants.map((c2) => c2.key));
-  const extra = party.flatMap((ch) => [partyCombatant(ch), ...companions(ch)]).filter((c2) => !inFight.has(c2.key)).flatMap((c2) => tokenMarks(c2)).filter((x) => x.marks.length);
+  const extra = party.flatMap((ch) => [partyCombatant(ch), ...companions(ch)]).filter((c2) => !inFight.has(c2.key)).flatMap((c2) => tokenMarks(c2, bloodied)).filter((x) => x.marks.length);
   if (extra.length) state2.tmExtra = Object.fromEntries(extra.map((x) => [x.token, x.marks.map(mark2)]));
   return fit(state2);
 }
-function partyState(characters, { showPartyHp = false, mark: mark2 = (n) => ({ n }), companions = () => [] } = {}) {
+function publicTurn(s, order) {
+  const at2 = order.findIndex((c2) => c2.key === s.turnKey);
+  if (at2 < 0 || !hiddenFromOrder(order[at2])) return { round: s.round, turn: s.turnKey };
+  for (let step = 1; step < order.length; step++) {
+    const i = at2 - step;
+    if (i < 0 && s.round <= 1) break;
+    const c2 = order[(i + order.length) % order.length];
+    if (!hiddenFromOrder(c2) && !isOut(c2) && ownTurn(s, c2)) return { round: i < 0 ? s.round - 1 : s.round, turn: c2.key };
+  }
+  return { round: s.round, turn: null };
+}
+function partyState(characters, { showPartyHp = false, mark: mark2 = (n) => ({ n }), companions = () => [], bloodied = 50 } = {}) {
   if (!characters?.length) return null;
-  const rows = [...characters].sort((a2, b2) => a2.name.localeCompare(b2.name)).flatMap((ch) => [partyCombatant(ch), ...companions(ch)]).map((c2) => rowOf(c2, showPartyHp, mark2));
+  const rows = [...characters].sort((a2, b2) => a2.name.localeCompare(b2.name)).flatMap((ch) => [partyCombatant(ch), ...companions(ch)]).map((c2) => rowOf(c2, showPartyHp, mark2, void 0, bloodied));
   return fit({ v: STATE_VERSION, phase: "party", name: "Party", showPartyHp: !!showPartyHp, order: rows });
 }
-function rowOf(c2, showPartyHp, mark2, speed2 = () => null) {
+function rowOf(c2, showPartyHp, mark2, speed2 = () => null, bloodied = 50) {
   const row2 = { key: c2.key, name: isGroup(c2) ? `${c2.name} \xD7${standing(c2).length}` : c2.form ? `${c2.name} (${c2.form.name})` : c2.name, kind: c2.ally ? "ally" : c2.kind };
   if (c2.init != null) row2.init = c2.init;
   if (isOut(c2)) row2.down = true;
@@ -72507,9 +72779,9 @@ function rowOf(c2, showPartyHp, mark2, speed2 = () => null) {
   if (tokens.length) row2.tokens = tokens;
   const sp = Number(speed2(c2));
   if (tokens.length && sp > 0) row2.sp = sp;
-  const marks = rowMarks(c2);
+  const marks = rowMarks(c2, bloodied);
   if (marks.length) row2.marks = marks.map(mark2);
-  const tm = tokenMarks(c2).filter((x) => x.marks.length);
+  const tm = tokenMarks(c2, bloodied).filter((x) => x.marks.length);
   if (tm.length) row2.tm = Object.fromEntries(tm.map((x) => [x.token, x.marks.map(mark2)]));
   return row2;
 }
@@ -72524,17 +72796,20 @@ function fit(state2) {
 
 // src/obr/link.js
 init_chat();
+init_fight_settings();
 var obr = window.opener ? window.opener.top : null;
 var bridge = null;
 var lastPong = 0;
 var settings2 = {};
 var lastSent = null;
-var sceneTokens = [];
+var sceneTokens2 = [];
 var badge = h("span.obr-link", { title: "" });
+var refused = "";
 function setBadge() {
-  badge.textContent = bridge ? "\u25CF Owlbear" : "\u25CB Owlbear";
-  badge.classList.toggle("on", !!bridge);
-  badge.title = bridge ? "Linked to Owlbear: the tracker there follows this window's Run Encounter." : obr ? "Looking for Owlbear\u2026" : 'Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".';
+  badge.textContent = refused ? "\u26A0 Owlbear" : bridge ? "\u25CF Owlbear" : "\u25CB Owlbear";
+  badge.classList.toggle("on", !!bridge && !refused);
+  badge.classList.toggle("warn", !!refused);
+  badge.title = refused ? `Owlbear is refusing the tracker's updates, so players may see an old turn order. Trying again. (${refused})` : bridge ? "Linked to Owlbear: the tracker there follows this window's Run Encounter." : obr ? "Looking for Owlbear\u2026" : 'Not linked to Owlbear. In Owlbear, open the Encounter Builder panel and press "Open / reconnect GM window".';
 }
 function* frames(win, depth = 0) {
   let n = 0;
@@ -72582,7 +72857,7 @@ var speed = (c2) => {
 };
 function publish(force = false) {
   if (!bridge) return;
-  const e2 = liveEncounter(), opts2 = { showPartyHp: !!settings2.showPartyHp, mark, party: activeParty(), speed, companions: companionCombatants };
+  const e2 = liveEncounter(), opts2 = { showPartyHp: !!settings2.showPartyHp, mark, party: activeParty(), speed, companions: companionCombatants, bloodied: bloodiedAt() };
   const state2 = e2?.combat ? publicState(e2, opts2) : partyState(opts2.party, opts2);
   const text = JSON.stringify(state2);
   if (!force && text === lastSent) return;
@@ -72592,8 +72867,23 @@ function publish(force = false) {
 var timer = null;
 var schedule = () => {
   clearTimeout(timer);
-  timer = setTimeout(() => publish(), 120);
+  timer = setTimeout(() => {
+    playEffects();
+    publish();
+  }, 120);
 };
+var vitals = null;
+function playEffects() {
+  if (!bridge) {
+    vitals = null;
+    return;
+  }
+  const now = tokenVitalsNow(), fx = fxSettings();
+  const { hits, heals } = vitals && !justUndone() ? hpChanges(vitals, now) : { hits: [], heals: [] };
+  vitals = new Map(now.map((v) => [v.token, v]));
+  if (fx.on && (hits.length || heals.length)) post(bridge, { type: "effects", hits, heals, shake: fx.shake / 100, style: fx.heal });
+}
+onBloodiedChange(schedule);
 window.addEventListener("message", (e2) => {
   if (e2.origin !== location.origin || !e2.data?.eb) return;
   const m = e2.data;
@@ -72608,18 +72898,28 @@ window.addEventListener("message", (e2) => {
     settings2 = m.settings || {};
     setBadge();
     publish(true);
+    vitals = null;
+    playEffects();
   } else if (m.type === "pong") lastPong = Date.now();
   else if (m.type === "settings") {
     settings2 = m.settings || {};
     publish();
   } else if (m.type === "command") runnerCommand(m.cmd);
   else if (m.type === "sceneTokens") {
-    sceneTokens = m.tokens || [];
-    linkByName(sceneTokens);
+    sceneTokens2 = m.tokens || [];
+    sceneTokensChanged(sceneTokens2);
   } else if (m.type === "picked") picks.get(m.id)?.onPicked(m.index, m.token);
   else if (m.type === "pickDone") {
     picks.get(m.id)?.onDone(m.reason);
     picks.delete(m.id);
+  } else if (m.type === "trackerStatus") {
+    refused = m.ok ? "" : m.error || "no reason given";
+    setBadge();
+    if (m.ok) notice("Owlbear is taking the tracker's updates again.");
+    else notice("Owlbear refused a tracker update, so players may see an old turn order. Trying again until it works.", "error");
+  } else if (m.type === "tokensAdded") {
+    loads.get(m.id)?.(m);
+    loads.delete(m.id);
   } else if (m.type === "whisperResult") chat.result(m);
   else if (m.type === "whisperAck") chat.ack(m);
   else if (m.type === "whisperReply") chat.reply(m);
@@ -72640,6 +72940,7 @@ var chat = initChat({ send: (msg) => {
   return true;
 }, linked: () => !!bridge });
 var picks = /* @__PURE__ */ new Map();
+var loads = /* @__PURE__ */ new Map();
 var pickCount = 0;
 setTokenLinker({
   available: () => !!bridge,
@@ -72655,6 +72956,14 @@ setTokenLinker({
   unlink: (ids) => post(bridge, { type: "unlink", ids }),
   rename: (items) => {
     if (items.length) post(bridge, { type: "rename", items });
+  },
+  setVisible: (ids, visible) => {
+    if (ids.length) post(bridge, { type: "setVisible", ids, visible });
+  },
+  addTokens(list, onDone) {
+    const id = `load-${Date.now().toString(36)}-${++pickCount}`;
+    loads.set(id, onDone);
+    post(bridge, { type: "addTokens", id, list });
   }
 });
 setInterval(() => {
@@ -72670,8 +72979,9 @@ setInterval(() => {
 }, 3e3);
 onChange((kind2) => {
   if (kind2 !== "encounters" && kind2 !== "party" && kind2 !== "all") return;
+  if (kind2 === "all") vitals = null;
   schedule();
-  if (bridge) linkByName(sceneTokens);
+  if (bridge) linkByName(sceneTokens2);
 });
 var mount = () => {
   const bar = document.querySelector("header.top .top-right");

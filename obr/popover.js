@@ -3537,6 +3537,7 @@ var lib_default = OBR;
 var EXT = "com.encounter-builder";
 var TRACKER_KEY = `${EXT}/tracker`;
 var SETTINGS_KEY = `${EXT}/settings`;
+var EFFECTS = `${EXT}/effects`;
 var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
 var LOCAL_ASK = `${EXT}/status?`;
@@ -3592,10 +3593,10 @@ var CRS = ["0", "1/8", "1/4", "1/2", ...Array.from({ length: 30 }, (_, i) => Str
 // src/obr/tracker-state.js
 function upcoming(state2, n = 3) {
   const order = state2?.order || [];
-  const at = Math.max(0, order.findIndex((r) => r.key === state2.turn));
+  const at = order.findIndex((r) => r.key === state2.turn);
   const out = [];
   let marked = false;
-  for (let step = 1; step < order.length && out.length < n; step++) {
+  for (let step = 1; step < order.length + (at < 0 ? 1 : 0) && out.length < n; step++) {
     const crossed = at + step >= order.length;
     const row2 = order[(at + step) % order.length];
     if (row2.down || ownsTurn(order, row2) === false) continue;
