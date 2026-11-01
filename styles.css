@@ -865,6 +865,11 @@ button.temp { background: #13283a; border-color: #2b5a80; color: #8fd0ff; }
 .item-desc { width: 100%; font: 13px/1.5 Consolas, "Cascadia Mono", monospace; }
 .maker-item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 420px); gap: 16px; align-items: start; }
 @media (max-width: 1250px) { .maker-item { grid-template-columns: 1fr; } }
+.image-tip { position: fixed; z-index: 75; width: 300px; padding: 8px; background: #1b1d21; border: 1px solid #3a3d45; border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, .55); }
+.image-tip[hidden] { display: none; }
+.image-tip-pic { display: block; width: 100%; height: 284px; object-fit: contain; border-radius: 4px; background: #2a2c31; }
+.image-tip-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; }
+.image-tip-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
 .tip-actions { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
 .tip-actions .cond-hint { margin-top: 0; }
 .tip-copy { font: 12px "Segoe UI", sans-serif; padding: 4px 10px; white-space: nowrap; flex-shrink: 0; background: #e6dcc4; color: #2a2016; border-color: #c9a96b; }

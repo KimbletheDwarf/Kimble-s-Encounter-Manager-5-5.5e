@@ -35084,11 +35084,11 @@ function trace(g, poly, c2, k) {
   g.stroke();
 }
 function leaf(g, x, y, angle, len, width) {
-  const tip = [x + Math.cos(angle) * len, y + Math.sin(angle) * len];
+  const tip2 = [x + Math.cos(angle) * len, y + Math.sin(angle) * len];
   const side = (s) => [x + Math.cos(angle) * len * 0.45 + Math.cos(angle + Math.PI / 2) * width * s, y + Math.sin(angle) * len * 0.45 + Math.sin(angle + Math.PI / 2) * width * s];
   g.beginPath();
   g.moveTo(x, y);
-  g.quadraticCurveTo(...side(1), ...tip);
+  g.quadraticCurveTo(...side(1), ...tip2);
   g.quadraticCurveTo(...side(-1), x, y);
   g.fill();
 }
@@ -35224,8 +35224,8 @@ function dieMesh(sides, labels, theme, font, tens) {
     const c2 = vs.reduce((s, v) => s.clone().add(v), new Vector3()).divideScalar(vs.length);
     let u = new Vector3().subVectors(vs[1], vs[0]).normalize();
     if (sides === 10) {
-      const tip = vs.reduce((a2, v) => v.distanceTo(c2) > a2.distanceTo(c2) ? v : a2);
-      u = new Vector3().subVectors(tip, c2).normalize().cross(n).normalize();
+      const tip2 = vs.reduce((a2, v) => v.distanceTo(c2) > a2.distanceTo(c2) ? v : a2);
+      u = new Vector3().subVectors(tip2, c2).normalize().cross(n).normalize();
     }
     const w = new Vector3().crossVectors(n, u);
     let faceUV, tex;
@@ -36217,7 +36217,7 @@ function append(el11, kids) {
   for (const k of kids.flat(Infinity)) if (k != null && k !== false) el11.append(k instanceof Node ? k : String(k));
 }
 function avatar(src, name, cls = "") {
-  if (src) return h(`img.avatar${cls ? "." + cls : ""}`, { src, alt: "" });
+  if (src) return h(`img.avatar${cls ? "." + cls : ""}`, { src, alt: "", dataset: { name: name || "" } });
   const initials = String(name || "?").split(/\s+/).filter((w) => /^[A-Za-z]/.test(w)).slice(0, 2).map((w) => w[0].toUpperCase()).join("") || "?";
   let hue = 0;
   for (const c2 of String(name)) hue = (hue * 31 + c2.charCodeAt(0)) % 360;
@@ -36963,9 +36963,9 @@ function save(kind2, item, { delay = 500, touch = true } = {}) {
   emit(kind2);
 }
 async function flushSaves() {
-  const waiting = [...timers.values()];
-  for (const t of waiting) clearTimeout(t.timer);
-  await Promise.allSettled([...waiting.map((t) => t.write()), ...writing]);
+  const waiting2 = [...timers.values()];
+  for (const t of waiting2) clearTimeout(t.timer);
+  await Promise.allSettled([...waiting2.map((t) => t.write()), ...writing]);
 }
 async function remove(kind2, item) {
   const key3 = `${kind2}/${item.id}`;
@@ -40665,7 +40665,8 @@ var init_parse_spell = __esm({
 var snapshot_exports = {};
 __export(snapshot_exports, {
   copyElementImage: () => copyElementImage,
-  elementPng: () => elementPng
+  elementPng: () => elementPng,
+  putOnClipboard: () => putOnClipboard
 });
 async function elementPng(el11, { skip = "button:not(.roll)", box = {}, scale = 2 } = {}) {
   const hidden = [...el11.querySelectorAll(skip)];
@@ -40716,22 +40717,24 @@ function inlineStyles(src, dst) {
   const a2 = src.children, b2 = dst.children;
   for (let i = 0; i < a2.length; i++) inlineStyles(a2[i], b2[i]);
 }
+async function putOnClipboard(png, name = "card") {
+  try {
+    if (window.desktop?.copyImage) await window.desktop.copyImage(new Uint8Array(await png.arrayBuffer()));
+    else await navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
+    notice("Copied as an image: paste it into a chat (Ctrl+V).");
+  } catch {
+    const url = URL.createObjectURL(png);
+    const a2 = Object.assign(document.createElement("a"), { href: url, download: `${name.replace(/[^\w -]+/g, "").trim() || "card"}.png` });
+    document.body.append(a2);
+    a2.click();
+    a2.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1e4);
+    notice("The clipboard would not take a picture here, so it was saved as a file instead.");
+  }
+}
 async function copyElementImage(el11, name = "card", opts2) {
   try {
-    const png = await elementPng(el11, opts2);
-    try {
-      if (window.desktop?.copyImage) await window.desktop.copyImage(new Uint8Array(await png.arrayBuffer()));
-      else await navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
-      notice("Copied as an image: paste it into a chat (Ctrl+V).");
-    } catch {
-      const url = URL.createObjectURL(png);
-      const a2 = Object.assign(document.createElement("a"), { href: url, download: `${name.replace(/[^\w -]+/g, "").trim() || "card"}.png` });
-      document.body.append(a2);
-      a2.click();
-      a2.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1e4);
-      notice("The clipboard would not take a picture here, so it was saved as a file instead.");
-    }
+    await putOnClipboard(await elementPng(el11, opts2), name);
   } catch (e2) {
     notice(`Could not make the picture: ${e2.message}`, "error");
   }
@@ -40773,18 +40776,18 @@ function show(el11, n) {
   if (!html) return;
   clearTimeout(level.hideTimer);
   closeFrom(n + 1);
-  const tip = level.tip;
-  tip.innerHTML = `<div class="tip-body">${html}</div>${pinned ? '<div class="tip-actions"><button class="tip-copy" data-copy-tip title="A picture of this card, to paste into a chat">Copy as image</button><span class="cond-hint">Pinned. Links in it open their own cards. Click elsewhere or press Esc to close.</span></div>' : '<div class="cond-hint">Click the word to pin this open (and copy it as an image).</div>'}`;
-  tip.hidden = false;
-  tip.scrollTop = 0;
-  const r = el11.getBoundingClientRect(), tw = tip.offsetWidth;
+  const tip2 = level.tip;
+  tip2.innerHTML = `<div class="tip-body">${html}</div>${pinned ? '<div class="tip-actions"><button class="tip-copy" data-copy-tip title="A picture of this card, to paste into a chat">Copy as image</button><span class="cond-hint">Pinned. Links in it open their own cards. Click elsewhere or press Esc to close.</span></div>' : '<div class="cond-hint">Click the word to pin this open (and copy it as an image).</div>'}`;
+  tip2.hidden = false;
+  tip2.scrollTop = 0;
+  const r = el11.getBoundingClientRect(), tw = tip2.offsetWidth;
   const below = window.innerHeight - r.bottom - 14, above = r.top - 14;
-  tip.style.maxHeight = "";
-  const th = tip.offsetHeight;
+  tip2.style.maxHeight = "";
+  const th = tip2.offsetHeight;
   const under = th <= below || th > above && below >= above;
-  tip.style.maxHeight = `${Math.min(th, under ? below : above)}px`;
-  tip.style.left = `${Math.min(Math.max(8, r.left), window.innerWidth - tw - 8)}px`;
-  tip.style.top = `${under ? r.bottom + 6 : r.top - 6 - tip.offsetHeight}px`;
+  tip2.style.maxHeight = `${Math.min(th, under ? below : above)}px`;
+  tip2.style.left = `${Math.min(Math.max(8, r.left), window.innerWidth - tw - 8)}px`;
+  tip2.style.top = `${under ? r.bottom + 6 : r.top - 6 - tip2.offsetHeight}px`;
 }
 function hideSoon(n) {
   const level = levels[n];
@@ -65616,11 +65619,10 @@ function setLive(id) {
   } catch {
   }
 }
-function tokenVitalsNow() {
+function trackedCombatants() {
   const fight = liveEncounter()?.combat?.combatants || [];
   const inFight = new Set(fight.map((c2) => c2.key));
-  const party = activeParty().flatMap((ch) => [partyCombatant(ch), ...companionCombatants(ch)]).filter((c2) => !inFight.has(c2.key));
-  return [...fight, ...party].flatMap(tokenVitals);
+  return [...fight, ...activeParty().flatMap((ch) => [partyCombatant(ch), ...companionCombatants(ch)]).filter((c2) => !inFight.has(c2.key))];
 }
 function runnerCommand(cmd) {
   const e2 = liveEncounter();
@@ -66019,7 +66021,7 @@ function renderTracker() {
 }
 function avatarFor(c2, size) {
   const src = c2.form ? findMonster(c2.form.monsterId)?.avatar : c2.kind === "pc" ? findCharacter(c2.refId)?.avatar : findMonster(c2.refId)?.avatar;
-  return avatar(src, c2.name.replace(/\s\([A-Z]\d*\)$/, ""), size);
+  return avatar(src || artOf(c2), c2.name.replace(/\s\([A-Z]\d*\)$/, ""), size);
 }
 function combatantRow(c2, current3) {
   const s = C();
@@ -66658,7 +66660,7 @@ function companionCard(ch, comp) {
         popMenu(ev.currentTarget.querySelector(".party-name"), items());
       }
     },
-    avatar(m?.avatar, c2.name, "sm"),
+    avatar(m?.avatar || artOf(c2), c2.name, "sm"),
     h(
       "div.party-main",
       h(
@@ -66727,7 +66729,7 @@ function partyCard(ch) {
       e2.preventDefault();
       menu(e2.currentTarget.querySelector(".party-name"));
     } },
-    avatar(shape?.avatar || ch.avatar, ch.name, "md"),
+    avatar(shape?.avatar || ch.avatar || artOf(c2), ch.name, "md"),
     h(
       "div.party-main",
       h("div.party-name", ch.name, shapeTag(c2), linkTag(c2), hiddenTag(c2)),
@@ -66823,8 +66825,8 @@ function unlinkParty(ch) {
   if (ids.length && linker.available()) linker.unlink(ids);
 }
 function linkByName(all) {
-  const hide = /* @__PURE__ */ new Set();
-  if (linking) return hide;
+  const hide2 = /* @__PURE__ */ new Set();
+  if (linking) return hide2;
   const tokens = all.filter((t) => !unlinkedByHand.has(t.id));
   const linked2 = [], twice = [];
   linking = true;
@@ -66835,7 +66837,7 @@ function linkByName(all) {
       const ch = findCharacter(id), now = characterTokens(id);
       if (now.length === 1 && now[0] === token) continue;
       setPartyLive(ch, { ...liveOf(partyCombatant(ch)), tokens: [token] });
-      if (ch.live.hidden) hide.add(token);
+      if (ch.live.hidden) hide2.add(token);
       linked2.push(ch.name);
     }
     const e2 = liveEncounter();
@@ -66845,7 +66847,7 @@ function linkByName(all) {
       for (const l of fight.links) {
         linkToken(e2.combat, l.key, l.member, l.token);
         const c2 = e2.combat.combatants.find((x) => x.key === l.key);
-        if (c2.hidden) hide.add(l.token);
+        if (c2.hidden) hide2.add(l.token);
         linked2.push(l.member >= 0 ? `${c2.name} ${l.member + 1}` : c2.name);
       }
       if (fight.links.length) {
@@ -66862,13 +66864,13 @@ function linkByName(all) {
       companionAct(c2.companion.char, c2.companion.id, (y, s) => {
         linkToken(s, y.key, l.member, l.token);
       }, { undo: false });
-      if (c2.hidden) hide.add(l.token);
+      if (c2.hidden) hide2.add(l.token);
       linked2.push(l.member >= 0 ? `${c2.name} ${l.member + 1}` : c2.name);
     }
   } finally {
     linking = false;
   }
-  linker?.setVisible([...hide], false);
+  linker?.setVisible([...hide2], false);
   if (linked2.length) {
     render4();
     notice(`Owlbear: linked ${linked2.length > 5 ? `${linked2.length} tokens` : linked2.join(", ")} on this scene.`);
@@ -66876,20 +66878,28 @@ function linkByName(all) {
   const warn3 = twice.join(", ");
   if (warn3 && warn3 !== warnedTwice) notice(`Owlbear: more than one token is named ${twice.join(" / ")}, so ${twice.length === 1 ? "it was" : "they were"} not linked. Link by hand, or rename the extras.`);
   warnedTwice = warn3;
-  return hide;
+  return hide2;
 }
 function sceneTokensChanged(all) {
   sceneTokens = all;
-  const hide = linkByName(all);
+  let newArt = false;
+  for (const t of all) {
+    const url = t.look?.image?.url;
+    if (url?.startsWith("https:") && tokenArt.get(t.id) !== url) {
+      tokenArt.set(t.id, url);
+      newArt = true;
+    }
+  }
+  const hide2 = linkByName(all);
   let changed3 = false;
   linking = true;
   try {
-    changed3 = followTokens(all.filter((t) => !hide.has(t.id)));
+    changed3 = followTokens(all.filter((t) => !hide2.has(t.id)));
     keepTokenLooks(all);
   } finally {
     linking = false;
   }
-  if (changed3) render4();
+  if (changed3 || newArt && trackedCombatants().some(artOf)) render4();
 }
 function followTokens(tokens) {
   let changed3 = false;
@@ -67022,7 +67032,7 @@ function renderLog() {
     h("div.log-total", r.total)
   ))) : h("div.empty", "Rolls show here. Click dice in a stat block; Shift-click rolls with advantage, Ctrl-click with disadvantage."));
 }
-var el10, go7, enc, sameInit, UNDO_LIMIT, undoStacks, undoStack, live, liveEncounter, undoneAt, justUndone, condIcon, closePop, roundsPop, setupCombat2, C, ordered2, PICKS, pick4, SHORTCUTS, conSave2, find, numberInput, linker, messenger, messageItem, hiddenTag, NOT_LINKED, linkTag, shapeTag, activeParty, partyUndo, companionKey, warnedTwice, linking, unlinkedByHand, sceneTokens, companionTokens, single;
+var el10, go7, enc, sameInit, UNDO_LIMIT, undoStacks, undoStack, live, liveEncounter, undoneAt, justUndone, tokenVitalsNow, tokenArt, artOf, condIcon, closePop, roundsPop, setupCombat2, C, ordered2, PICKS, pick4, SHORTCUTS, conSave2, find, numberInput, linker, messenger, messageItem, hiddenTag, NOT_LINKED, linkTag, shapeTag, activeParty, partyUndo, companionKey, warnedTwice, linking, unlinkedByHand, sceneTokens, companionTokens, single;
 var init_runner = __esm({
   "src/tabs/runner.js"() {
     init_ui();
@@ -67056,6 +67066,9 @@ var init_runner = __esm({
     liveEncounter = () => store.encounters.find((e2) => e2.id === live) || null;
     undoneAt = 0;
     justUndone = () => Date.now() - undoneAt < 500;
+    tokenVitalsNow = () => trackedCombatants().flatMap(tokenVitals);
+    tokenArt = /* @__PURE__ */ new Map();
+    artOf = (c2) => tokensOf(c2).map((id) => tokenArt.get(id)).find(Boolean);
     condIcon = (name) => {
       const i = iconOf(name, store.conditions);
       return i ? h("img.cond-icon", { src: iconPath(i, 64), alt: "" }) : h("span.cond-badge", iconLetters(name));
@@ -71951,7 +71964,7 @@ function open(go9) {
     close();
     go9(r.source.tab, r.x.id);
   };
-  const show2 = () => {
+  const show3 = () => {
     list.querySelectorAll(".search-row").forEach((row2, i) => row2.classList.toggle("active", i === at2));
     list.querySelector(".active")?.scrollIntoView({ block: "nearest" });
     const r = results[at2], node = r?.source.view?.(r.x);
@@ -71965,18 +71978,18 @@ function open(go9) {
       "button.search-row",
       { onmouseenter: () => {
         at2 = i;
-        show2();
+        show3();
       }, onclick: () => chosen(r) },
       h("span.search-name", r.x.name, h("span.tag", r.source.label)),
       h("span.search-sub", r.source.sub(r.x))
     )) : [h("div.empty", input.value.trim() ? "Nothing matches." : "Type to search. Up and Down move, Enter opens it in its tab, Esc closes.")]);
-    show2();
+    show3();
   };
   input.addEventListener("keydown", (e2) => {
     if (e2.key === "ArrowDown" || e2.key === "ArrowUp") {
       e2.preventDefault();
       if (results.length) at2 = (at2 + (e2.key === "ArrowDown" ? 1 : results.length - 1)) % results.length;
-      show2();
+      show3();
     } else if (e2.key === "Enter") {
       e2.preventDefault();
       chosen(results[at2]);
@@ -72007,6 +72020,84 @@ function mountSearch(go9) {
 // src/app.js
 init_loot_dialog();
 init_loot();
+
+// src/image-tip.js
+init_ui();
+init_snapshot();
+var WAIT_MS = 1e3;
+var HIDE_MS = 180;
+var GAP = 10;
+var tip = h("div.image-tip", { hidden: true });
+var waiting = null;
+var hiding = null;
+var shownFor = null;
+var pictureAt = (el11) => {
+  const p = el11?.closest?.("img.avatar");
+  return p && !p.closest(".drop-pic") ? p : null;
+};
+function hide() {
+  clearTimeout(hiding);
+  shownFor = null;
+  tip.hidden = true;
+}
+var hideSoon2 = () => {
+  clearTimeout(hiding);
+  hiding = setTimeout(hide, HIDE_MS);
+};
+function show2(pic) {
+  if (!pic.isConnected) return;
+  clearTimeout(hiding);
+  shownFor = pic;
+  const name = pic.dataset.name || "Picture";
+  if (!tip.isConnected) document.body.append(tip);
+  tip.replaceChildren(
+    h("img.image-tip-pic", { src: pic.src, alt: "" }),
+    h("div.image-tip-foot", h("span.image-tip-name", name), h("button.tip-copy", { title: "A copy of this picture, to paste into a chat", onclick: () => copyPicture(pic.src, name) }, "Copy image"))
+  );
+  tip.hidden = false;
+  const r = pic.getBoundingClientRect(), w = tip.offsetWidth, ht = tip.offsetHeight;
+  const right = r.right + GAP + w <= window.innerWidth - 8;
+  tip.style.left = `${right ? r.right + GAP : Math.max(8, r.left - GAP - w)}px`;
+  tip.style.top = `${Math.max(8, Math.min(r.top, window.innerHeight - ht - 8))}px`;
+}
+async function copyPicture(src, name) {
+  try {
+    const res = await fetch(src);
+    if (!res.ok) throw new Error(`error ${res.status}`);
+    const bitmap = await createImageBitmap(await res.blob());
+    const canvas = Object.assign(document.createElement("canvas"), { width: bitmap.width, height: bitmap.height });
+    canvas.getContext("2d").drawImage(bitmap, 0, 0);
+    const png = await new Promise((resolve, reject) => canvas.toBlob((b2) => b2 ? resolve(b2) : reject(new Error("no picture")), "image/png"));
+    await putOnClipboard(png, name);
+  } catch {
+    notice("That picture's site would not let it be copied from here. Right-click the picture > Copy image.", "error");
+  }
+}
+document.addEventListener("mouseover", (e2) => {
+  const pic = pictureAt(e2.target);
+  if (!pic) return;
+  clearTimeout(hiding);
+  clearTimeout(waiting);
+  if (pic !== shownFor) waiting = setTimeout(() => show2(pic), WAIT_MS);
+});
+document.addEventListener("mouseout", (e2) => {
+  if (!pictureAt(e2.target)) return;
+  clearTimeout(waiting);
+  if (shownFor && !tip.contains(e2.relatedTarget)) hideSoon2();
+});
+tip.addEventListener("mouseenter", () => clearTimeout(hiding));
+tip.addEventListener("mouseleave", hideSoon2);
+document.addEventListener("keydown", (e2) => {
+  if (e2.key === "Escape" && !tip.hidden) hide();
+});
+document.addEventListener("mousedown", (e2) => {
+  if (!tip.hidden && !tip.contains(e2.target)) hide();
+});
+document.addEventListener("scroll", (e2) => {
+  if (!tip.hidden && !tip.contains(e2.target)) hide();
+}, true);
+
+// src/app.js
 init_fight_settings();
 
 // src/owlbear-settings.js
@@ -72029,7 +72120,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.12.0";
+var version2 = "1.13.0";
 
 // src/app.js
 var TABS = [
