@@ -31,7 +31,7 @@ Nothing runs on a server. The app is a set of files on GitHub Pages, and **your 
 
 ## Running a session
 
-- **Party tab:** add your characters. A D&D Beyond PDF export can be imported, or type them in.
+- **Party tab:** add your characters. Import a D&D Beyond PDF export or a filled-in official sheet, or type them in, full sheet included.
 - **Run Encounter > Choose characters:** pick the active party. Right-click a character to **Link to token…**, then click its token on the map. The token takes the character's name.
 - **Encounter Builder:** build an encounter (or Generate one), then **Run** it from Run Encounter.
   - The party comes in as they are, already linked.

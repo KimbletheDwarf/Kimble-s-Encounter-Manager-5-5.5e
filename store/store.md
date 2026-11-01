@@ -28,7 +28,7 @@ Includes the SRD 5.2.1 monsters (330), spells (339) and items. Nothing runs on a
 
 ## Build an encounter
 
-**Party:** add your characters, typed in or from a D&D Beyond PDF. **Encounter Builder:** add monsters (or **Generate**) and watch the difficulty as you go.
+**Party:** add your characters, typed in or from a D&D Beyond or official fillable PDF. **Encounter Builder:** add monsters (or **Generate**) and watch the difficulty as you go.
 
 ![Encounter builder](https://kimblethedwarf.github.io/Kimble-s-Encounter-Manager-5-5.5e/store/builder.webp)
 

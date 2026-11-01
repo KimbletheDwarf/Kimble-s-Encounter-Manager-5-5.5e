@@ -43,9 +43,9 @@ function parseDice(expr) {
   if (!/^[+\-]?(\d*d\d+|\d+)([+\-](\d*d\d+|\d+))*$/.test(s)) return null;
   const terms = [];
   for (const m of s.matchAll(TERM)) {
-    const sign2 = m[1] === "-" ? -1 : 1;
-    if (m[3]) terms.push({ sign: sign2, count: Number(m[2] || 1), sides: Number(m[3]) });
-    else terms.push({ sign: sign2, flat: Number(m[4]) });
+    const sign3 = m[1] === "-" ? -1 : 1;
+    if (m[3]) terms.push({ sign: sign3, count: Number(m[2] || 1), sides: Number(m[3]) });
+    else terms.push({ sign: sign3, flat: Number(m[4]) });
   }
   return terms.length ? terms : null;
 }
@@ -79,9 +79,9 @@ function roll(expr, mode3 = "normal", rng2 = Math.random) {
 }
 function describe(r) {
   return r.parts.map((p, i) => {
-    const sign2 = i === 0 ? p.flat < 0 || p.sign < 0 ? "-" : "" : p.flat < 0 || p.sign < 0 ? " - " : " + ";
-    if (p.flat != null) return sign2 + Math.abs(p.flat);
-    return `${sign2}[${p.rolls.join(", ")}${p.dropped != null ? ` | ${p.dropped}` : ""}]`;
+    const sign3 = i === 0 ? p.flat < 0 || p.sign < 0 ? "-" : "" : p.flat < 0 || p.sign < 0 ? " - " : " + ";
+    if (p.flat != null) return sign3 + Math.abs(p.flat);
+    return `${sign3}[${p.rolls.join(", ")}${p.dropped != null ? ` | ${p.dropped}` : ""}]`;
   }).join("");
 }
 var TERM, die, mod, signed;
@@ -116,7 +116,24 @@ function pickTheme(settings3, random = Math.random) {
   const list = themesOf(settings3);
   return list[Math.floor(random() * list.length)];
 }
-var THEMES, STYLES, MAX_THEMES, pickKey;
+function emberHex(value) {
+  if (EMBER_COLOURS[value]) return EMBER_COLOURS[value].hex;
+  return /^#[0-9a-f]{6}$/i.test(value) ? value.toLowerCase() : EMBER_COLOURS.orange.hex;
+}
+function emberGlow(value) {
+  const c2 = channels(emberHex(value)), peak = Math.max(...c2);
+  if (peak < 40) {
+    const rim = mix(c2, [205, 205, 215], 0.6);
+    return { dark: true, stops: [[0, rgba(c2, 1)], [0.52, rgba(c2, 0.96)], [0.72, rgba(rim, 0.6)], [1, rgba(rim, 0)]], sparks: [rgba([205, 205, 215], 1), rgba(rim, 1), rgba(mix(rim, c2, 0.5), 1)] };
+  }
+  const lit = peak < 130 ? c2.map((v) => v * 130 / peak) : c2;
+  return {
+    dark: false,
+    stops: [[0, rgba(mix(lit, [255, 255, 255], 0.7), 1)], [0.25, rgba(lit, 0.85)], [1, rgba(mix(lit, [0, 0, 0], 0.25), 0)]],
+    sparks: [rgba(mix(lit, [255, 255, 255], 0.4), 1), rgba(lit, 1), rgba(mix(lit, [0, 0, 0], 0.25), 1)]
+  };
+}
+var THEMES, STYLES, MAX_THEMES, pickKey, EMBER_COLOURS, channels, rgba, mix;
 var init_themes = __esm({
   "src/dice3d/themes.js"() {
     THEMES = {
@@ -153,6 +170,21 @@ var init_themes = __esm({
     };
     MAX_THEMES = 3;
     pickKey = (style, colour) => style === "plain" ? colour : `${style}:${colour}`;
+    EMBER_COLOURS = {
+      orange: { label: "Orange", hex: "#ff9632" },
+      red: { label: "Red", hex: "#ff3b30" },
+      gold: { label: "Gold", hex: "#ffd23f" },
+      green: { label: "Green", hex: "#3fe06a" },
+      teal: { label: "Teal", hex: "#2fe0d0" },
+      blue: { label: "Blue", hex: "#55a6ff" },
+      purple: { label: "Purple", hex: "#b05cff" },
+      pink: { label: "Pink", hex: "#ff5cb0" },
+      white: { label: "White", hex: "#ffffff" },
+      black: { label: "Black", hex: "#000000" }
+    };
+    channels = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    rgba = (c2, a2) => `rgba(${c2.map(Math.round).join(",")},${a2})`;
+    mix = (c2, to, t) => c2.map((v, i) => v + (to[i] - v) * t);
   }
 });
 
@@ -813,10 +845,10 @@ var init_cannon_es = __esm({
        * @param t2 Vector object to save the second tangent in
        */
       tangents(t1, t2) {
-        const norm3 = this.length();
-        if (norm3 > 0) {
+        const norm4 = this.length();
+        if (norm4 > 0) {
           const n = Vec3_tangents_n;
-          const inorm = 1 / norm3;
+          const inorm = 1 / norm4;
           n.set(this.x * inorm, this.y * inorm, this.z * inorm);
           const randVec = Vec3_tangents_randVec;
           if (Math.abs(n.x) < 0.9) {
@@ -23243,11 +23275,11 @@ function WebGLAttributes(gl) {
   const buffers = /* @__PURE__ */ new WeakMap();
   function createBuffer(attribute, bufferType) {
     const array = attribute.array;
-    const usage3 = attribute.usage;
+    const usage4 = attribute.usage;
     const size = array.byteLength;
     const buffer = gl.createBuffer();
     gl.bindBuffer(bufferType, buffer);
-    gl.bufferData(bufferType, array, usage3);
+    gl.bufferData(bufferType, array, usage4);
     attribute.onUploadCallback();
     let type;
     if (array instanceof Float32Array) {
@@ -23294,26 +23326,26 @@ function WebGLAttributes(gl) {
       let mergeIndex = 0;
       for (let i = 1; i < updateRanges.length; i++) {
         const previousRange = updateRanges[mergeIndex];
-        const range = updateRanges[i];
-        if (range.start <= previousRange.start + previousRange.count + 1) {
+        const range2 = updateRanges[i];
+        if (range2.start <= previousRange.start + previousRange.count + 1) {
           previousRange.count = Math.max(
             previousRange.count,
-            range.start + range.count - previousRange.start
+            range2.start + range2.count - previousRange.start
           );
         } else {
           ++mergeIndex;
-          updateRanges[mergeIndex] = range;
+          updateRanges[mergeIndex] = range2;
         }
       }
       updateRanges.length = mergeIndex + 1;
       for (let i = 0, l = updateRanges.length; i < l; i++) {
-        const range = updateRanges[i];
+        const range2 = updateRanges[i];
         gl.bufferSubData(
           bufferType,
-          range.start * array.BYTES_PER_ELEMENT,
+          range2.start * array.BYTES_PER_ELEMENT,
           array,
-          range.start,
-          range.count
+          range2.start,
+          range2.count
         );
       }
       attribute.clearUpdateRanges();
@@ -28928,18 +28960,18 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
       let mergeIndex = 0;
       for (let i = 1; i < updateRanges.length; i++) {
         const previousRange = updateRanges[mergeIndex];
-        const range = updateRanges[i];
+        const range2 = updateRanges[i];
         const previousEnd = previousRange.start + previousRange.count;
-        const currentRow = getRow(range.start, image.width, componentStride);
+        const currentRow = getRow(range2.start, image.width, componentStride);
         const previousRow = getRow(previousRange.start, image.width, componentStride);
-        if (range.start <= previousEnd + 1 && currentRow === previousRow && getRow(range.start + range.count - 1, image.width, componentStride) === currentRow) {
+        if (range2.start <= previousEnd + 1 && currentRow === previousRow && getRow(range2.start + range2.count - 1, image.width, componentStride) === currentRow) {
           previousRange.count = Math.max(
             previousRange.count,
-            range.start + range.count - previousRange.start
+            range2.start + range2.count - previousRange.start
           );
         } else {
           ++mergeIndex;
-          updateRanges[mergeIndex] = range;
+          updateRanges[mergeIndex] = range2;
         }
       }
       updateRanges.length = mergeIndex + 1;
@@ -28948,9 +28980,9 @@ function WebGLTextures(_gl, extensions, state2, properties, capabilities, utils,
       const currentUnpackSkipRows = state2.getParameter(_gl.UNPACK_SKIP_ROWS);
       state2.pixelStorei(_gl.UNPACK_ROW_LENGTH, image.width);
       for (let i = 0, l = updateRanges.length; i < l; i++) {
-        const range = updateRanges[i];
-        const pixelStart = Math.floor(range.start / componentStride);
-        const pixelCount = Math.ceil(range.count / componentStride);
+        const range2 = updateRanges[i];
+        const pixelStart = Math.floor(range2.start / componentStride);
+        const pixelCount = Math.ceil(range2.count / componentStride);
         const x = pixelStart % image.width;
         const y = Math.floor(pixelStart / image.width);
         const width = pixelCount;
@@ -30265,9 +30297,9 @@ function WebGLUniformsGroups(gl, info2, capabilities, state2) {
     uniformsGroup.__bindingPointIndex = bindingPointIndex;
     const buffer = gl.createBuffer();
     const size = uniformsGroup.__size;
-    const usage3 = uniformsGroup.usage;
+    const usage4 = uniformsGroup.usage;
     gl.bindBuffer(gl.UNIFORM_BUFFER, buffer);
-    gl.bufferData(gl.UNIFORM_BUFFER, size, usage3);
+    gl.bufferData(gl.UNIFORM_BUFFER, size, usage4);
     gl.bindBuffer(gl.UNIFORM_BUFFER, null);
     gl.bindBufferBase(gl.UNIFORM_BUFFER, bindingPointIndex, buffer);
     return buffer;
@@ -34919,7 +34951,7 @@ function throwOnce(sides, { w, h: h2 }, rng2) {
       const force = Math.abs(e2.contact.getImpactVelocityAlongNormal());
       if (force < HARD_HIT) return;
       const at2 = e2.contact.bi.position.vadd(e2.contact.ri);
-      hits.push({ frame: frames2.length, x: at2.x, z: at2.z, force });
+      hits.push({ frame: frames2.length, die: i, x: at2.x, z: at2.z, force });
     });
     world.addBody(b2);
     return b2;
@@ -35925,13 +35957,11 @@ var init_view = __esm({
 });
 
 // src/dice3d/effects.js
-function speck() {
+function speck(stops) {
   const c2 = document.createElement("canvas");
   c2.width = c2.height = 64;
   const g = c2.getContext("2d"), r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  r.addColorStop(0, "rgba(255,235,170,1)");
-  r.addColorStop(0.25, "rgba(255,150,50,.85)");
-  r.addColorStop(1, "rgba(255,70,10,0)");
+  for (const [at2, colour] of stops) r.addColorStop(at2, colour);
   g.fillStyle = r;
   g.fillRect(0, 0, 64, 64);
   return c2;
@@ -35942,7 +35972,7 @@ function createEffects(container) {
   Object.assign(canvas.style, { position: "absolute", inset: "0", width: "100%", height: "100%", pointerEvents: "none", zIndex: "46" });
   canvas.hidden = true;
   container.append(canvas);
-  const g = canvas.getContext("2d"), glow = speck();
+  const g = canvas.getContext("2d");
   let W = 0, H = 0, S = 1, ppu = 64, run3 = null, parts = [], raf = 0, last = 0;
   const add2 = (p) => {
     if (parts.length < MAX_PARTICLES) parts.push({ age: 0, seed: Math.random() * 6.3, ...p });
@@ -35950,38 +35980,46 @@ function createEffects(container) {
   const px = (x) => W / 2 + x * ppu, py = (z) => H / 2 + z * ppu;
   function spark(x, y, force) {
     const a2 = rand(0, Math.PI * 2), v = rand(110, 240 + force * 30) * S;
-    add2({ spark: true, x, y, vx: Math.cos(a2) * v, vy: Math.sin(a2) * v, life: rand(0.18, 0.5) });
+    add2({ spark: true, x, y, vx: Math.cos(a2) * v, vy: Math.sin(a2) * v, life: rand(0.18, 0.5), colours: run3.glow.sparks, dark: run3.glow.dark });
   }
-  function ember(x, y, push = 1) {
-    const a2 = rand(0, Math.PI * 2), v = rand(14, 95) * S * push;
-    add2({ x, y, vx: Math.cos(a2) * v, vy: Math.sin(a2) * v - rand(24, 60) * S, life: rand(0.9, 2.3), size: rand(3, 7.5) * S });
+  function ember(k, f, push = 1, wide = 1.12) {
+    const a2 = rand(0, Math.PI * 2), out = a2 + rand(-0.6, 0.6), v = rand(34, 105) * S * push, at2 = run3.radii[k] * ppu * rand(0.82, wide);
+    add2({
+      x: px(f[k * 7]) + Math.cos(a2) * at2,
+      y: py(f[k * 7 + 2]) + Math.sin(a2) * at2,
+      vx: Math.cos(out) * v,
+      vy: Math.sin(out) * v - rand(24, 60) * S,
+      life: rand(0.9, 2.3),
+      size: rand(3, 7.5) * S,
+      glow: run3.glow.image,
+      dark: run3.glow.dark
+    });
   }
-  function hit(x, y, force, crowd) {
-    if (run3.sparks) for (let i = Math.min(26, 5 + force * 1.9) * crowd; i > 0; i--) spark(x, y, force);
-    if (run3.embers) for (let i = Math.min(14, force * 1.1) * crowd; i > 0; i--) ember(x, y);
+  function hit(h2, crowd) {
+    if (run3.sparks) for (let i = Math.min(26, 5 + h2.force * 1.9) * crowd; i > 0; i--) spark(px(h2.x), py(h2.z), h2.force);
+    if (run3.embers) for (let i = Math.min(14, h2.force * 1.1) * crowd; i > 0; i--) ember(h2.die, run3.frames[h2.frame]);
   }
-  function shower(x, y) {
-    if (run3.sparks) for (let i = 0; i < 70; i++) spark(x, y, 24);
-    if (run3.embers) for (let i = 0; i < 75; i++) ember(x + rand(-34, 34) * S, y + rand(-34, 34) * S, 2.5);
+  function shower(k, f) {
+    if (run3.sparks) for (let i = 0; i < 70; i++) spark(px(f[k * 7]), py(f[k * 7 + 2]), 24);
+    if (run3.embers) for (let i = 0; i < 75; i++) ember(k, f, 2.5, 1.7);
   }
   function follow(now) {
     const { frames: frames2, speed: speed2, n, crowd } = run3;
     const i = Math.max(0, Math.min(frames2.length - 1, Math.floor((now - run3.t0) / 1e3 * FPS2 * speed2)));
     while (run3.next < run3.hits.length && run3.hits[run3.next].frame <= i) {
-      const h2 = run3.hits[run3.next++];
-      hit(px(h2.x), py(h2.z), h2.force, crowd);
+      hit(run3.hits[run3.next++], crowd);
     }
     const f = frames2[i], prev = frames2[Math.max(0, i - 2)], stopped = i >= frames2.length - 1;
     for (let k = 0; k < n; k++) {
       const x = f[k * 7], z = f[k * 7 + 2], moved = Math.hypot(x - prev[k * 7], z - prev[k * 7 + 2]) * 30 * speed2;
       if (moved > 2.2) {
-        if (run3.embers && Math.random() < 0.7 * crowd) ember(px(x), py(z), 0.7);
+        if (run3.embers && Math.random() < 0.7 * crowd) ember(k, f, 0.7);
         if (run3.sparks && Math.random() < 0.3 * crowd) spark(px(x), py(z), 2);
-      } else if (stopped && run3.embers && Math.random() < 0.3 * crowd) ember(px(x) + rand(-24, 24) * S, py(z) + rand(-24, 24) * S, 0.55);
+      } else if (stopped && run3.embers && Math.random() < 0.3 * crowd) ember(k, f, 0.55);
     }
     if (stopped && !run3.landed) {
       run3.landed = now;
-      run3.natural.forEach((k) => shower(px(f[k * 7]), py(f[k * 7 + 2])));
+      run3.natural.forEach((k) => shower(k, f));
     }
     if (run3.landed && now - run3.landed > LINGER) run3 = null;
   }
@@ -36004,13 +36042,13 @@ function createEffects(container) {
   }
   function draw2() {
     g.clearRect(0, 0, W, H);
-    g.globalCompositeOperation = "lighter";
     g.lineCap = "round";
     for (const p of parts) {
       const u = p.age / p.life;
+      g.globalCompositeOperation = p.dark ? "source-over" : "lighter";
       if (p.spark) {
         g.globalAlpha = (1 - u * u) * 0.62;
-        g.strokeStyle = u < 0.35 ? "#ffc773" : u < 0.7 ? "#ff9a3c" : "#e4581e";
+        g.strokeStyle = p.colours[u < 0.35 ? 0 : u < 0.7 ? 1 : 2];
         g.lineWidth = (1.35 - u * 0.65) * S;
         g.beginPath();
         g.moveTo(p.x, p.y);
@@ -36019,7 +36057,7 @@ function createEffects(container) {
       } else {
         const s = p.size * (1 - u * 0.5);
         g.globalAlpha = Math.min(1, (1 - u) * 1.7) * (0.65 + 0.35 * Math.sin(p.age * 15 + p.seed));
-        g.drawImage(glow, p.x - s, p.y - s, s * 2, s * 2);
+        g.drawImage(p.glow, p.x - s, p.y - s, s * 2, s * 2);
       }
     }
     g.globalAlpha = 1;
@@ -36047,8 +36085,8 @@ function createEffects(container) {
     canvas.hidden = true;
   }
   return {
-    /** throw: { frames, hits, n (dice), natural (which dice are natural 20s), ppu, speed, embers, sparks } */
-    play({ frames: frames2, hits, n, natural, ppu: scale, speed: speed2, embers, sparks }) {
+    /** throw: { frames, hits, n (dice), radii (of the dice, in world units), natural (which dice are natural 20s), ppu, speed, embers, emberColour, sparks } */
+    play({ frames: frames2, hits, n, radii, natural, ppu: scale, speed: speed2, embers, emberColour, sparks }) {
       const r = container.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
       W = r.width;
       H = r.height;
@@ -36058,7 +36096,8 @@ function createEffects(container) {
       canvas.height = H * dpr;
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
       canvas.hidden = false;
-      run3 = { frames: frames2, hits, n, natural, speed: speed2, embers, sparks, crowd: 1 / Math.sqrt(n), t0: performance.now(), next: 0, landed: 0 };
+      const glow = emberGlow(emberColour);
+      run3 = { frames: frames2, hits, n, radii, natural, speed: speed2, embers, sparks, glow: { image: speck(glow.stops), dark: glow.dark, sparks: glow.sparks }, crowd: 1 / Math.sqrt(n), t0: performance.now(), next: 0, landed: 0 };
       if (!raf) {
         last = performance.now();
         raf = requestAnimationFrame(frame);
@@ -36070,6 +36109,7 @@ function createEffects(container) {
 var FPS2, MAX_PARTICLES, LINGER, rand;
 var init_effects = __esm({
   "src/dice3d/effects.js"() {
+    init_themes();
     FPS2 = 60;
     MAX_PARTICLES = 900;
     LINGER = 1500;
@@ -36097,11 +36137,11 @@ function createDice(container) {
   let tray = null, effects = null;
   return {
     /**
-     * dice: [{ sides, value, dropped? }]; opts: { theme (a pick, src/dice3d/themes.js), font, scale (key of SCALES), max, embers, sparks }.
+     * dice: [{ sides, value, dropped? }]; opts: { theme (a pick, src/dice3d/themes.js), font, scale (key of SCALES), max, embers, emberColour (themes.js), sparks }.
      * At most `max` dice are thrown (default 10); the rest show as "+N more".
      * Returns a Promise that resolves when they've faded, with the recording (to replay elsewhere, e.g. on other players' screens).
      */
-    async show(dice2, { theme = "ivory", font = "", scale = "medium", max = 10, embers = false, sparks = false } = {}) {
+    async show(dice2, { theme = "ivory", font = "", scale = "medium", max = 10, embers = false, emberColour = "orange", sparks = false } = {}) {
       const all = dice2.flatMap(expand);
       if (!all.length) return null;
       const shown4 = all.slice(0, max);
@@ -36114,7 +36154,8 @@ function createDice(container) {
       if (embers || sparks) {
         effects ??= createEffects(container);
         const natural = shown4.flatMap((d, i) => d.sides === 20 && d.digit === 20 && !d.dropped ? [i] : []);
-        effects.play({ frames: frames2, hits, n: shown4.length, natural, ppu, speed: SPEED, embers, sparks });
+        const radii = shown4.map((d) => Math.max(...dieShape(d.sides).vertices.map((v) => Math.hypot(v.x, v.y, v.z))));
+        effects.play({ frames: frames2, hits, n: shown4.length, radii, natural, ppu, speed: SPEED, embers, emberColour, sparks });
       }
       await tray.play(labelled, frames2, { theme: themeOf(theme), font, speed: SPEED, more: all.length - shown4.length });
       return { dice: labelled, frames: frames2 };
@@ -36319,7 +36360,7 @@ function showDice(r) {
   diceStage ??= document.body.appendChild(h("div.dice-stage"));
   Promise.resolve().then(() => (init_dice3d(), dice3d_exports)).then(({ createDice: createDice2 }) => {
     dice ??= createDice2(diceStage);
-    return dice.show(list, { theme: pickTheme(s), font: s.font, scale: s.scale, embers: s.embers, sparks: s.sparks });
+    return dice.show(list, { theme: pickTheme(s), font: s.font, scale: s.scale, embers: s.embers, emberColour: s.emberColour, sparks: s.sparks });
   }).catch((e2) => console.error("Dice animation failed:", e2));
 }
 function rollFromClick(el11, expr, opts2) {
@@ -36348,6 +36389,16 @@ function rollFromClick(el11, expr, opts2) {
 }
 function rollButton(text, expr, label, who = "") {
   return `<button class="roll" data-expr="${esc(expr)}" data-label="${esc(label)}" data-who="${esc(who)}" title="Roll ${esc(expr)} (Shift: advantage, Ctrl: disadvantage)">${esc(text)}</button>`;
+}
+function rollify(html, label, who = "", diceLabel = `${label}: damage`) {
+  html = html.replace(/(Attack Roll:\s*(?:<\/em>)?\s*)([+\-−–]\s?\d+)/g, (m, lead, bonus) => {
+    const b2 = bonus.replace(/\s/g, "").replace(/[−–]/, "-");
+    return lead + rollButton(b2, `1d20${b2}`, `${label}: to hit`, who);
+  });
+  return html.replace(/(^|>)([^<]+)/g, (all, gt, text) => gt + text.replace(ROLLABLE, (m, hit, dice2) => {
+    if (hit) return rollButton(hit.replace(/\s/g, ""), `1d20${hit.replace(/[\s−–]/g, (c2) => c2.trim() ? "-" : "")}`, `${label}: to hit`, who);
+    return rollButton(dice2, dice2.replace(/[−–]/g, "-"), diceLabel, who);
+  }));
 }
 function toastSettings() {
   try {
@@ -36428,7 +36479,7 @@ function debounce(fn, ms) {
     t = setTimeout(() => fn(...a2), ms);
   };
 }
-var esc, richText, hasImage, rollLog, rollListeners, onRoll, DICE_DEFAULTS, dice, diceStage, coolUntil, coolTimer, TOAST_DEFAULTS, toastBox, noticeEl;
+var esc, richText, hasImage, rollLog, rollListeners, onRoll, DICE_DEFAULTS, dice, diceStage, coolUntil, coolTimer, ROLLABLE, TOAST_DEFAULTS, toastBox, noticeEl;
 var init_ui = __esm({
   "src/ui.js"() {
     init_dice();
@@ -36439,7 +36490,7 @@ var init_ui = __esm({
     rollLog = [];
     rollListeners = /* @__PURE__ */ new Set();
     onRoll = (fn) => rollListeners.add(fn);
-    DICE_DEFAULTS = { animate: true, theme: "ivory", scale: "medium", font: "", cooldown: 3, embers: true, sparks: true };
+    DICE_DEFAULTS = { animate: true, theme: "ivory", scale: "medium", font: "", cooldown: 3, embers: true, emberColour: "orange", sparks: true };
     dice = null;
     diceStage = null;
     coolUntil = 0;
@@ -36453,6 +36504,7 @@ var init_ui = __esm({
       const mode3 = e2.shiftKey ? "advantage" : e2.ctrlKey ? "disadvantage" : "normal";
       rollFromClick(b2, b2.dataset.expr, { who: b2.dataset.who || "", label: b2.dataset.label || "", mode: mode3 });
     }, true);
+    ROLLABLE = /([+\-−–]\s?\d+)(?=\s+to hit)|\b(\d+d\d+(?:\s*[+\-−–]\s*\d+)?)/g;
     TOAST_DEFAULTS = { position: "bottom-left", size: 2, seconds: 5 };
     noticeEl = null;
   }
@@ -38425,9 +38477,9 @@ function parseRow2024(t) {
   };
   const signed3 = (rest) => {
     const o = [];
-    for (const [sign2, r] of [[rest[0] === "-" ? -1 : 1, /^[+\-]/.test(rest) ? rest.slice(1) : null], [1, rest[0] === "4" ? rest.slice(1) : null], [1, rest]]) {
+    for (const [sign3, r] of [[rest[0] === "-" ? -1 : 1, /^[+\-]/.test(rest) ? rest.slice(1) : null], [1, rest[0] === "4" ? rest.slice(1) : null], [1, rest]]) {
       if (r == null) continue;
-      for (const len of [1, 2]) if (/^\d+$/.test(r.slice(0, len)) && r.length >= len) o.push([sign2, r.slice(0, len), r.slice(len)]);
+      for (const len of [1, 2]) if (/^\d+$/.test(r.slice(0, len)) && r.length >= len) o.push([sign3, r.slice(0, len), r.slice(len)]);
     }
     return o;
   };
@@ -38634,12 +38686,12 @@ ${right.text}`;
   const abilities = readings.map((r, i) => confirmed(i) ?? (r.find((p) => p.ok) || r[0])?.score ?? null);
   const abilityUncertain = readings.map((_, i) => confirmed(i) == null);
   if (grid && abilities.some((s) => s != null)) {
-    const sign2 = (v) => v >= 0 ? `+${v}` : `${v}`;
+    const sign3 = (v) => v >= 0 ? `+${v}` : `${v}`;
     const rows = KEYS.map((k, i) => {
       if (abilities[i] == null) return null;
       const m = Math.floor((abilities[i] - 10) / 2);
       const save2 = readings[i].find((p) => p.score === abilities[i] && p.save != null)?.save ?? m;
-      return `${k} ${abilities[i]} ${sign2(m)} ${sign2(save2)}`;
+      return `${k} ${abilities[i]} ${sign3(m)} ${sign3(save2)}`;
     }).filter(Boolean);
     const lines = text.split("\n");
     const end = lines.findIndex((l) => /^\W*(traits|actions)\W*$/i.test(l.trim()));
@@ -40615,7 +40667,7 @@ __export(snapshot_exports, {
   copyElementImage: () => copyElementImage,
   elementPng: () => elementPng
 });
-async function elementPng(el11, { skip = "button", box = {}, scale = 2 } = {}) {
+async function elementPng(el11, { skip = "button:not(.roll)", box = {}, scale = 2 } = {}) {
   const hidden = [...el11.querySelectorAll(skip)];
   const before = hidden.map((x) => x.style.display);
   hidden.forEach((x) => {
@@ -40626,6 +40678,7 @@ async function elementPng(el11, { skip = "button", box = {}, scale = 2 } = {}) {
     const clone = el11.cloneNode(true);
     inlineStyles(el11, clone);
     clone.querySelectorAll(skip).forEach((x) => x.remove());
+    clone.querySelectorAll(".roll").forEach((x) => x.replaceWith(x.textContent));
     Object.assign(clone.style, { position: "static", left: "auto", top: "auto", margin: "0", maxHeight: "none", height: "auto", overflow: "visible", boxShadow: "none", width: `${width}px`, boxSizing: "content-box", display: "inline-block", ...box });
     const probe = document.createElement("div");
     Object.assign(probe.style, { position: "fixed", left: "-10000px", top: "0" });
@@ -40937,7 +40990,7 @@ var init_conditions = __esm({
     findCondition = (word) => byWord.get(String(word).toLowerCase().replace(/\s+/g, " "));
     conditionNames = () => store.conditions.filter((c2) => c2.id !== "save-ends").map((c2) => c2.name).sort((a2, b2) => a2.localeCompare(b2));
     inline = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\*(.+?)\*/g, "<em>$1</em>");
-    conditionHtml = (c2) => `<div class="cond-name">${esc(c2.name)}</div>${markupHtml(c2.text)}`;
+    conditionHtml = (c2) => `<div class="cond-name">${esc(c2.name)}</div>${rollify(markupHtml(c2.text), c2.name, "", c2.name)}`;
     registerTip("cond", (name) => {
       const c2 = findCondition(name);
       return c2 ? conditionHtml(c2) : "";
@@ -41096,6 +41149,7 @@ __export(spells_exports, {
   spellLevelText: () => spellLevelText,
   spellLink: () => spellLink,
   spellTags: () => spellTags,
+  spellUsage: () => spellUsage,
   spellify: () => spellify
 });
 function rebuild3() {
@@ -41140,12 +41194,30 @@ function spellLink(name) {
   const s = findSpell(base) || findSpell(base.replace(/^[A-Z][a-z]+['’]s\s+/, ""));
   return s ? `${link(s, esc(name))}` : esc(name);
 }
-function spellHtml(s, { body: body2 = (t) => markupHtml(t) } = {}) {
+function spellUsage(monsters) {
+  const usage4 = /* @__PURE__ */ new Map();
+  for (const m of monsters) {
+    const seen2 = /* @__PURE__ */ new Set();
+    for (const e2 of WHERE.flatMap((k) => m[k] || [])) {
+      const html = spellify(richText(e2.text));
+      for (const x of html.matchAll(LINKED)) {
+        const s = findSpell(plain(x[1]));
+        if (!s || seen2.has(s.id)) continue;
+        seen2.add(s.id);
+        const snippet = `\u2026${plain(html.slice(0, x.index)).slice(-45)}[[${plain(x[2])}]]${plain(html.slice(x.index + x[0].length)).slice(0, 45)}\u2026`;
+        if (!usage4.has(s.id)) usage4.set(s.id, []);
+        usage4.get(s.id).push({ monster: m, snippet });
+      }
+    }
+  }
+  return usage4;
+}
+function spellHtml(s, { links = (html) => html } = {}) {
   const prop = (label, value) => `<div><strong>${label}:</strong> ${esc(value)}</div>`;
   return `<div class="cond-name">${esc(s.name)}</div>
     <div class="spell-meta">${esc(spellLevelText(s))}</div>
     <div class="spell-props">${prop("Casting Time", s.castingTime + (s.ritual ? " or Ritual" : ""))}${prop("Range", s.range)}${prop("Components", s.components)}${prop("Duration", s.duration)}${s.book ? prop("Source", s.book) : ""}</div>
-    ${body2(s.text)}`;
+    ${links(rollify(markupHtml(s.text), s.name, "", s.name))}`;
 }
 function spellEditor(s, { changed: changed3 }) {
   const text = (label, k, attrs = {}) => h("label", label, h("input", { type: "text", value: s[k] ?? "", ...attrs, oninput: (e2) => {
@@ -41216,7 +41288,7 @@ function spellEditor(s, { changed: changed3 }) {
     h("div.hint", 'A blank line starts a new paragraph. **bold**, *italic*, "- " for a list, "| a | b |" rows for a table.')
   );
 }
-var norm, escRe, byName, byId, plainRe, findSpell, spellById, link, CASTS, spellLevelText, spellTags, blankSpell, opener, setSpellOpener;
+var norm, escRe, byName, byId, plainRe, findSpell, spellById, link, CASTS, WHERE, LINKED, plain, spellLevelText, spellTags, blankSpell, opener, setSpellOpener;
 var init_spells = __esm({
   "src/spells.js"() {
     init_ui();
@@ -41242,6 +41314,9 @@ var init_spells = __esm({
     };
     link = (s, text) => `<span class="cond-link spell-link" data-spell="${esc(s.name)}" tabindex="0">${text}</span>`;
     CASTS = /(?:\bcast(?:s|ing)?\s+(?:the\s+)?|(?:at will|\d+\/day(?: each)?):\s+(?:[^.\n]*,\s*)?)$/i;
+    WHERE = ["traits", "actions", "bonusActions", "reactions", "legendaryActions", "mythicActions", "lairActions", "description"];
+    LINKED = /<span class="cond-link spell-link" data-spell="([^"]*)"[^>]*>(.*?)<\/span>/g;
+    plain = (html) => html.replace(/<br\s*\/?>/g, " ").replace(/<[^>]+>/g, "").replace(/&(amp|lt|gt|quot|#39);/g, (x, c2) => ({ amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'" })[c2]);
     spellLevelText = (s) => (s.level ? `Level ${s.level} ${s.school}` : `${s.school} Cantrip`) + (s.classes?.length ? ` (${s.classes.join(", ")})` : "");
     spellTags = (s) => [s.concentration ? "Concentration" : "", s.ritual ? "Ritual" : ""].filter(Boolean);
     blankSpell = (name = "New Spell") => ({ name, level: 1, school: "Evocation", classes: [], castingTime: "Action", ritual: false, range: "60 feet", components: "V, S", duration: "Instantaneous", concentration: false, text: "", source: "Homebrew" });
@@ -41265,7 +41340,7 @@ var init_spells = __esm({
 
 // src/generator.js
 function attackInfo(e2) {
-  const t = plain(e2.text);
+  const t = plain2(e2.text);
   const a2 = t.match(ATTACK);
   if (!a2) return null;
   const kind2 = /or Ranged/i.test(a2[1]) ? "both" : /^Melee/i.test(a2[1]) ? "melee" : "ranged";
@@ -41279,12 +41354,12 @@ function spellCount(e2) {
   const t = String(e2.text || "");
   const marked = (t.match(/<(em|spell)>/g) || []).length;
   if (marked) return marked;
-  return plain(t).split("\n").filter((l) => /:/.test(l)).reduce((n, l) => n + l.split(":").pop().split(",").filter((x) => x.trim()).length, 0);
+  return plain2(t).split("\n").filter((l) => /:/.test(l)).reduce((n, l) => n + l.split(":").pop().split(",").filter((x) => x.trim()).length, 0);
 }
 function guessStyle(m) {
   const acts = entriesOf(m, ACTION_KEYS);
   const attacks = acts.map(attackInfo).filter(Boolean);
-  const multi = plain(acts.find((e2) => /^multiattack/i.test(e2.name || ""))?.text).toLowerCase();
+  const multi = plain2(acts.find((e2) => /^multiattack/i.test(e2.name || ""))?.text).toLowerCase();
   let melee = 0, ranged = 0, magic = 0;
   for (const a2 of attacks) {
     const w = a2.dmg * (multi && a2.name && multi.includes(a2.name) ? 2 : 1);
@@ -41302,7 +41377,7 @@ function guessStyle(m) {
       magic += attackInfo(e2).dmg;
       continue;
     }
-    const w = [...plain(e2.text).matchAll(/(\d+)\s*\(\s*\d+d\d+/g)].reduce((n, x) => n + Number(x[1]), 0) || 1;
+    const w = [...plain2(e2.text).matchAll(/(\d+)\s*\(\s*\d+d\d+/g)].reduce((n, x) => n + Number(x[1]), 0) || 1;
     ranged += w;
     magic += w;
   }
@@ -41315,7 +41390,7 @@ function guessStyle(m) {
 }
 function extraTags(m) {
   const tags = [];
-  const all = entriesOf(m, ["traits", ...ACTION_KEYS, "reactions"]).map((e2) => plain(e2.text)).join("\n");
+  const all = entriesOf(m, ["traits", ...ACTION_KEYS, "reactions"]).map((e2) => plain2(e2.text)).join("\n");
   if (/saving throw/i.test(all) && /\b(Cone|Line|Sphere|Emanation|Cube|Cylinder|radius|each creature)\b/i.test(all)) tags.push("Area");
   if (m.legendaryActions?.length) tags.push("Legendary");
   return tags;
@@ -41487,8 +41562,8 @@ function generate({ params: p0, monsters, party, seed = newSeed(), seen: seen2 =
     for (let t = 0; t < 90; t++) {
       const shape = list.length ? list[int(r, 0, list.length - 1)] : "squad";
       const lo = Math.max(user[0], SHAPE_COUNT[shape][0]), hi = Math.min(user[1], SHAPE_COUNT[shape][1]);
-      const mix = build3(shape, lo <= hi ? int(r, lo, hi) : user[0], list.length === 1);
-      if (mix) out.push(mix);
+      const mix2 = build3(shape, lo <= hi ? int(r, lo, hi) : user[0], list.length === 1);
+      if (mix2) out.push(mix2);
     }
     return out.sort((a2, b2) => a2.score - b2.score);
   }
@@ -41607,17 +41682,17 @@ function styleSummary(creatures) {
   if (casters) parts.push(`${casters} caster${casters === 1 ? "" : "s"}`);
   return parts.join(", ");
 }
-var STYLES2, plain, ATTACK, entriesOf, ACTION_KEYS, SPELL_ACTION, spellcasting, styleOf, SHAPES, SHAPE_COUNT, STYLE_GOALS, THEMES2, difficultyNames, defaultParams, lc2, isHomebrew2, newSeed, int, rangedShare, meleeShare, racesOf;
+var STYLES2, plain2, ATTACK, entriesOf, ACTION_KEYS, SPELL_ACTION, spellcasting, styleOf, SHAPES, SHAPE_COUNT, STYLE_GOALS, THEMES2, difficultyNames, defaultParams, lc2, isHomebrew2, newSeed, int, rangedShare, meleeShare, racesOf;
 var init_generator = __esm({
   "src/generator.js"() {
     init_rules();
     STYLES2 = { melee: "Melee", ranged: "Ranged", mixed: "Mixed", caster: "Spellcaster" };
-    plain = (s) => String(s || "").replace(/<[^>]+>/g, "");
+    plain2 = (s) => String(s || "").replace(/<[^>]+>/g, "");
     ATTACK = /(Melee or Ranged|Melee|Ranged) (?:Weapon |Spell )?Attack(?: Roll)?:/i;
     entriesOf = (m, keys) => keys.flatMap((k) => m[k] || []);
     ACTION_KEYS = ["actions", "bonusActions", "legendaryActions"];
     SPELL_ACTION = /\b(?:Level \d|\d(?:st|nd|rd|th) Level) Spell\b|\bCantrip\b/i;
-    spellcasting = (m) => entriesOf(m, ["traits", ...ACTION_KEYS]).find((e2) => /spellcasting/i.test(e2.name || "") || /casts one of the following spells/i.test(plain(e2.text)));
+    spellcasting = (m) => entriesOf(m, ["traits", ...ACTION_KEYS]).find((e2) => /spellcasting/i.test(e2.name || "") || /casts one of the following spells/i.test(plain2(e2.text)));
     styleOf = (m) => STYLES2[m.fightingStyle] ? m.fightingStyle : guessStyle(m);
     SHAPES = { random: "Random", solo: "Solo", boss: "Boss + minions", elite: "Elite pair", squad: "Squad", horde: "Horde" };
     SHAPE_COUNT = { solo: [1, 1], elite: [2, 2], boss: [3, 9], squad: [3, 5], horde: [6, 12] };
@@ -42625,15 +42700,15 @@ function themeFor(m, { themes, typeMap }) {
 }
 function carriedGear(m, items) {
   const found = /* @__PURE__ */ new Set();
-  const named = (text) => items.find((x) => x.category !== "magic" && (lc3(x.name) === text || `${lc3(x.name)}s` === text)) || items.find((x) => x.category !== "magic" && (lc3(x.name).startsWith(`${text} (`) || lc3(x.name).endsWith(`(${text})`)));
+  const named2 = (text) => items.find((x) => x.category !== "magic" && (lc3(x.name) === text || `${lc3(x.name)}s` === text)) || items.find((x) => x.category !== "magic" && (lc3(x.name).startsWith(`${text} (`) || lc3(x.name).endsWith(`(${text})`)));
   const gear2 = (m.notes || []).filter((n) => /^gear$/i.test(n.name || "")).flatMap((n) => String(n.text || "").split(","));
   for (const g of gear2) {
-    const it = named(lc3(g).replace(/\s*\(.*$/, "").trim());
+    const it = named2(lc3(g).replace(/\s*\(.*$/, "").trim());
     if (it) found.add(it);
   }
   const attacks = ["actions", "bonusActions", "reactions"].flatMap((k) => (m[k] || []).map((e2) => lc3(e2.name).replace(/\s*\(.*$/, "").trim()));
   for (const a2 of attacks) {
-    const it = named(a2);
+    const it = named2(a2);
     if (it?.category === "weapon") found.add(it);
   }
   const ac = lc3(m.armorClassType);
@@ -42664,7 +42739,7 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
   const level = Math.min(20, Math.max(1, Math.round(Number(partyLevel) || 1)));
   const cap3 = gearCap(level, gen);
   const C2 = LOOT_CONFIG;
-  let coins = 0;
+  let coins2 = 0;
   const lines = [], harvest = [], notes = [];
   const add2 = (list, x) => {
     const same = list.find((y) => y.kind === x.kind && y.name === x.name && !!y.damaged === !!x.damaged && y.value === x.value);
@@ -42691,7 +42766,7 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
       if (share > 0) {
         const [lo, hi] = C2.spread;
         const gp = goldFor(xp, level, gen) * minion * share * extra * (lo + r() * (hi - lo));
-        coins += gp >= 1 ? Math.round(gp) * 100 : Math.round(gp * 100);
+        coins2 += gp >= 1 ? Math.round(gp) * 100 : Math.round(gp * 100);
         if (r() < Math.min(C2.gearCeiling, C2.gearChance * gen * share * extra)) {
           let it = null;
           if (carried.length && r() < C2.carriedShare) it = carried[Math.floor(r() * carried.length)];
@@ -42768,7 +42843,7 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
     delete x.total;
   }
   const worth = (kind2) => round2(lines.filter((x) => kind2 === "magic" === (x.kind === "magic")).reduce((n, x) => n + x.qty * x.value, 0));
-  return { seed, coins, lines, harvest, totalGp: round2(coins / 100 + worth("other")), magicGp: worth("magic"), notes, partyLevel: level, generosity: gen };
+  return { seed, coins: coins2, lines, harvest, totalGp: round2(coins2 / 100 + worth("other")), magicGp: worth("magic"), notes, partyLevel: level, generosity: gen };
 }
 function spellScroll(r, rarity, spells) {
   const levels2 = SCROLL_LEVELS[rarity].filter((l) => spells.some((s2) => s2.level === l));
@@ -42806,8 +42881,8 @@ function baseOptions(text, items) {
     if (armorKinds.length) list = items.filter((x) => x.category === "armor" && armorKinds.includes(x.armor));
     else list = items.filter((x) => x.category === "weapon" && (!weaponKinds.length || weaponKinds.includes(x.weapon?.simple ? "simple" : "martial")) && (!/melee/.test(want) || !x.weapon?.ranged) && (!/ranged/.test(want) || x.weapon?.ranged));
   } else {
-    const named = items.filter((x) => ["weapon", "armor", "shield"].includes(x.category) && new RegExp(`\\b${lc3(x.name)}\\b`).test(want));
-    list = named.filter((x) => !named.some((y) => y !== x && lc3(y.name).includes(lc3(x.name))));
+    const named2 = items.filter((x) => ["weapon", "armor", "shield"].includes(x.category) && new RegExp(`\\b${lc3(x.name)}\\b`).test(want));
+    list = named2.filter((x) => !named2.some((y) => y !== x && lc3(y.name).includes(lc3(x.name))));
   }
   return list.filter((x) => !except || !except.includes(lc3(x.name)));
 }
@@ -43396,16 +43471,6 @@ var init_combat = __esm({
 });
 
 // src/statblock.js
-function rollify(html, label, who) {
-  html = html.replace(/(Attack Roll:\s*(?:<\/em>)?\s*)([+\-−–]\s?\d+)/g, (m, lead, bonus) => {
-    const b2 = bonus.replace(/\s/g, "").replace(/[−–]/, "-");
-    return lead + rollButton(b2, `1d20${b2}`, `${label}: to hit`, who);
-  });
-  return html.replace(/(^|>)([^<]+)/g, (all, gt, text) => gt + text.replace(ROLLABLE, (m, hit, dice2) => {
-    if (hit) return rollButton(hit.replace(/\s/g, ""), `1d20${hit.replace(/[\s−–]/g, (c2) => c2.trim() ? "-" : "")}`, `${label}: to hit`, who);
-    return rollButton(dice2, dice2.replace(/[−–]/g, "-"), `${label}: damage`, who);
-  }));
-}
 function legendaryUses(m) {
   const text = (m.legendaryActions || []).map((e2) => e2.text).join(" ").replace(/<[^>]+>/g, "");
   const x = text.match(/Legendary Action Uses:\s*(\d+)/i) || text.match(/can take (\w+) legendary actions?/i);
@@ -43516,7 +43581,7 @@ function statBlock(m, opts2 = {}) {
   });
   return el11;
 }
-var ROLLABLE, WORDS, rechargeChip, sessionTicks, sessionTracker, SAVE_RX, SKILL_RX, skillsTextOf;
+var WORDS, rechargeChip, sessionTicks, sessionTracker, SAVE_RX, SKILL_RX, skillsTextOf;
 var init_statblock = __esm({
   "src/statblock.js"() {
     init_ui();
@@ -43530,7 +43595,6 @@ var init_statblock = __esm({
     init_dice();
     init_constants();
     init_format();
-    ROLLABLE = /([+\-−–]\s?\d+)(?=\s+to hit)|\b(\d+d\d+(?:\s*[+\-−–]\s*\d+)?)/g;
     WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5 };
     rechargeChip = (key3, used, rc) => `<button class="sb-recharge${used ? " used" : ""}" data-rk="${key3}" title="${used ? `Used. ${rc.min ? `It recharges on a ${rc.min === 6 ? "6" : `${rc.min}\u20136`}, rolled at the start of its turn. ` : ""}Click when it's available again.` : "Available. Click when it is used."}">${used ? "Used" : "Ready"}</button>`;
     sessionTicks = /* @__PURE__ */ new Map();
@@ -43602,36 +43666,171 @@ var init_monster_picker = __esm({
   }
 });
 
+// src/sheet-data.js
+function blankSheet(source) {
+  return {
+    source,
+    importedAt: Date.now(),
+    classes: [],
+    classText: "",
+    species: "",
+    background: "",
+    experience: "",
+    abilities: Object.fromEntries(ABILITIES2.map(([, key3]) => [key3, null])),
+    saves: ABILITIES2.map(([ability]) => ({ ability, bonus: 0, proficient: false })),
+    skills: SKILLS2.map(([name, ability]) => ({ name, ability, bonus: 0, proficiency: "" })),
+    passives: { perception: null, insight: null, investigation: null },
+    senses: "",
+    defenses: "",
+    speedText: "",
+    hitDice: "",
+    proficiencyBonus: "",
+    proficiencies: "",
+    actions: "",
+    features: "",
+    attacks: [],
+    casting: [],
+    spells: [],
+    slots: {},
+    equipment: [],
+    appearance: {},
+    personality: {}
+  };
+}
+function parseAttack(name, hit, damage = "", notes = "") {
+  const dm = damage.match(/^\s*([\dd+\-\s]+?)\s+([A-Za-z].*)$/);
+  const dice2 = dm ? dm[1] : /^\s*\d+d\d/.test(damage) ? damage : "";
+  return { name, hit, damage, damageDice: dice2.replace(/\s/g, ""), damageType: dm ? dm[2] : dice2 ? "" : damage, notes };
+}
+function parseEquipment(text) {
+  const out = [];
+  for (const raw of String(text ?? "").split(/[\n,]/)) {
+    const line = raw.trim();
+    if (!line) continue;
+    const m = line.match(/^(\d+)\s*[x×]?\s+(.+)$/) || line.match(/^(.+?)\s*[x×]\s*(\d+)$/);
+    const name = m ? /^\d/.test(m[1]) ? m[2] : m[1] : line, qty = m ? Number(/^\d/.test(m[1]) ? m[1] : m[2]) : 1;
+    const have = out.find((e2) => e2.name === name);
+    if (have) have.qty += qty;
+    else out.push({ name, qty });
+  }
+  return out;
+}
+function computedSkill(s, x, level) {
+  const pb = sheetProf(s, level);
+  return modOf2(s.abilities[keyOf2(x.ability)]) + (x.proficiency === "expertise" ? pb * 2 : x.proficiency === "proficient" ? pb : x.proficiency === "half" ? Math.floor(pb / 2) : 0);
+}
+function deriveSheet(s, level) {
+  s.proficiencyBonus = sign(sheetProf(s, level));
+  for (const x of s.saves) x.bonus = x.override ?? computedSave(s, x, level);
+  for (const x of s.skills) x.bonus = x.override ?? computedSkill(s, x, level);
+  s.passives.insight = s.passiveOverride?.insight ?? computedPassive(s, "Insight");
+  s.passives.investigation = s.passiveOverride?.investigation ?? computedPassive(s, "Investigation");
+  s.derived = true;
+  return s;
+}
+function pinSheet(s, level) {
+  if (s.derived) return s;
+  const pb = bonusNum(s.proficiencyBonus);
+  if (pb != null && pb !== profForLevel(level)) s.profOverride = pb;
+  for (const x of s.saves) if (x.bonus !== computedSave(s, x, level)) x.override = x.bonus;
+  for (const x of s.skills) if (x.bonus !== computedSkill(s, x, level)) x.override = x.bonus;
+  for (const [key3, name] of [["insight", "Insight"], ["investigation", "Investigation"]]) {
+    if (s.passives[key3] != null && s.passives[key3] !== 10 + skillOf(s, name)) (s.passiveOverride ||= {})[key3] = s.passives[key3];
+  }
+  return deriveSheet(s, level);
+}
+function checkBasics(b2) {
+  const missing = CHECKS.filter(([k]) => b2[k] == null).map(([, label]) => label);
+  const odd = CHECKS.filter(([k, , lo, hi]) => b2[k] != null && (b2[k] < lo || b2[k] > hi)).map(([k, label]) => `${label} ${b2[k]}`);
+  return [
+    missing.length ? `Not found on the sheet: ${missing.join(", ")}.` : "",
+    odd.length ? `These look wrong, so check them: ${odd.join(", ")}.` : ""
+  ].filter(Boolean);
+}
+var ABILITIES2, SKILLS2, SPELL_LEVELS, slotsLabel, sign, bonusNum, firstNum, modOf2, profForLevel, parseClasses, equipmentText, keyOf2, sheetProf, computedSave, skillOf, computedPassive, CHECKS;
+var init_sheet_data = __esm({
+  "src/sheet-data.js"() {
+    ABILITIES2 = [["STR", "strength"], ["DEX", "dexterity"], ["CON", "constitution"], ["INT", "intelligence"], ["WIS", "wisdom"], ["CHA", "charisma"]];
+    SKILLS2 = [
+      ["Acrobatics", "DEX"],
+      ["Animal Handling", "WIS"],
+      ["Arcana", "INT"],
+      ["Athletics", "STR"],
+      ["Deception", "CHA"],
+      ["History", "INT"],
+      ["Insight", "WIS"],
+      ["Intimidation", "CHA"],
+      ["Investigation", "INT"],
+      ["Medicine", "WIS"],
+      ["Nature", "INT"],
+      ["Perception", "WIS"],
+      ["Performance", "CHA"],
+      ["Persuasion", "CHA"],
+      ["Religion", "INT"],
+      ["Sleight of Hand", "DEX"],
+      ["Stealth", "DEX"],
+      ["Survival", "WIS"]
+    ];
+    SPELL_LEVELS = ["Cantrips", "1st Level", "2nd Level", "3rd Level", "4th Level", "5th Level", "6th Level", "7th Level", "8th Level", "9th Level"];
+    slotsLabel = (n) => `${n} Slot${n === 1 ? "" : "s"}`;
+    sign = (n) => n >= 0 ? `+${n}` : `${n}`;
+    bonusNum = (s) => {
+      const n = parseInt(String(s ?? "").replace(/[−–]/g, "-").replace(/[^\d\-+]/g, ""), 10);
+      return Number.isFinite(n) ? n : null;
+    };
+    firstNum = (s) => {
+      const m = String(s ?? "").match(/\d+/);
+      return m ? Number(m[0]) : null;
+    };
+    modOf2 = (score) => Math.floor(((score ?? 10) - 10) / 2);
+    profForLevel = (level) => 2 + Math.floor((Math.min(20, Math.max(1, Number(level) || 1)) - 1) / 4);
+    parseClasses = (text) => [...String(text ?? "").matchAll(/([A-Za-z][A-Za-z' -]*?)\s+(\d{1,2})\b/g)].map((m) => ({ name: m[1].trim(), level: Number(m[2]) })).filter((c2) => !/^(level|lvl)$/i.test(c2.name));
+    equipmentText = (list) => (list || []).map((e2) => `${e2.name}${e2.qty > 1 ? ` \xD7${e2.qty}` : ""}`).join("\n");
+    keyOf2 = (ability) => ABILITIES2.find(([ab2]) => ab2 === ability)[1];
+    sheetProf = (s, level) => s.profOverride ?? profForLevel(level);
+    computedSave = (s, x, level) => modOf2(s.abilities[keyOf2(x.ability)]) + (x.proficient ? sheetProf(s, level) : 0);
+    skillOf = (s, name) => s.skills.find((k) => k.name === name)?.bonus ?? 0;
+    computedPassive = (s, name) => 10 + skillOf(s, name);
+    CHECKS = [["level", "level", 1, 20], ["armorClass", "Armor Class", 1, 40], ["maxHp", "max HP", 1, 999], ["speed", "speed", 0, 240], ["passivePerception", "passive Perception", 1, 50], ["initiativeBonus", "initiative", -10, 30]];
+  }
+});
+
 // src/sheet.js
 function characterSheet(c2, opts2 = {}) {
   const s = c2.sheet, who = c2.name;
-  if (!s) return h("div.empty", "No character sheet yet. Import this character's D&D Beyond PDF on the Party tab to see the full sheet here.");
-  const imported = new Date(s.importedAt).toLocaleDateString(void 0, { month: "short", day: "numeric", year: "numeric" });
-  const abil = Object.entries(s.abilities).map(([k, v]) => `<div class="sh-abil"><div class="sh-k">${ABBR2[k]}</div><div class="sh-score">${v ?? "\u2014"}</div>${roll2(sign(mod3(v)), `1d20${sign(mod3(v))}`, `${ABBR2[k]} check`, who)}</div>`).join("");
-  const saves = s.saves.map((x) => `<span class="sh-chip${x.proficient ? " prof" : ""}" title="${x.proficient ? "Proficient" : ""}">${x.ability} ${roll2(sign(x.bonus), `1d20${sign(x.bonus)}`, `${x.ability} save`, who)}</span>`).join("");
-  const skills = s.skills.map((k) => `<div class="sh-skill${k.proficiency ? ` ${k.proficiency}` : ""}"><span class="sh-mark" title="${k.proficiency}">${k.proficiency === "expertise" ? "E" : k.proficiency === "proficient" ? "P" : k.proficiency === "half" ? "\xBD" : ""}</span><span>${esc(k.name)} <small>${k.ability}</small></span>${roll2(sign(k.bonus), `1d20${sign(k.bonus)}`, k.name, who)}</div>`).join("");
+  if (!s) return h("div.empty", "No character sheet yet. On the Party tab, import this character's PDF or add a sheet by hand to see it here.");
+  const day = (t) => new Date(t).toLocaleDateString(void 0, { month: "short", day: "numeric", year: "numeric" });
+  const source = s.source || "D&D Beyond PDF";
+  const origin = source === "hand" ? `Added ${day(s.importedAt)}` : `From ${/^o/.test(source) ? "an" : "a"} ${source}, ${day(s.importedAt)}${s.edited ? ` \xB7 edited ${day(s.edited)}` : ""}`;
+  const abil = Object.entries(s.abilities).map(([k, v]) => `<div class="sh-abil"><div class="sh-k">${ABBR2[k]}</div><div class="sh-score">${v ?? "\u2014"}</div>${v == null ? "" : roll2(sign2(mod3(v)), `1d20${sign2(mod3(v))}`, `${ABBR2[k]} check`, who)}</div>`).join("");
+  const saves = s.saves.map((x) => `<span class="sh-chip${x.proficient ? " prof" : ""}" title="${x.proficient ? "Proficient" : ""}">${x.ability} ${roll2(sign2(x.bonus), `1d20${sign2(x.bonus)}`, `${x.ability} save`, who)}</span>`).join("");
+  const skills = s.skills.map((k) => `<div class="sh-skill${k.proficiency ? ` ${k.proficiency}` : ""}"><span class="sh-mark" title="${k.proficiency}">${k.proficiency === "expertise" ? "E" : k.proficiency === "proficient" ? "P" : k.proficiency === "half" ? "\xBD" : ""}</span><span>${esc(k.name)} <small>${k.ability}</small></span>${roll2(sign2(k.bonus), `1d20${sign2(k.bonus)}`, k.name, who)}</div>`).join("");
   const attacks = s.attacks.length ? `<table class="sh-table"><thead><tr><th>Attack</th><th>Hit</th><th>Damage</th><th>Notes</th></tr></thead><tbody>${s.attacks.map((a2) => `<tr><td>${esc(a2.name)}</td><td>${roll2(a2.hit, bonusExpr(a2.hit), `${a2.name}: to hit`, who)}</td><td>${a2.damageDice && /d/.test(a2.damageDice) ? rollButton(a2.damageDice, a2.damageDice, `${a2.name}: damage`, who) : esc(a2.damageDice)} ${esc(a2.damageType)}</td><td class="sh-notes">${esc(a2.notes)}</td></tr>`).join("")}</tbody></table>` : "";
-  const levels2 = [...new Set(s.spells.map((x) => x.level))];
+  const rank = (lv) => {
+    const i = SPELL_LEVELS.indexOf(lv);
+    return i < 0 ? SPELL_LEVELS.length : i;
+  };
+  const levels2 = [...new Set(s.spells.map((x) => x.level))].sort((a2, b2) => rank(a2) - rank(b2));
   const spells = levels2.map((lv, i) => {
     const list = s.spells.filter((x) => x.level === lv);
-    return `<details class="sh-spells"${i < 2 ? " open" : ""}><summary>${esc(lv)} <span class="muted">${esc(s.slots[lv] || "")} \xB7 ${list.length}</span></summary><table class="sh-table"><tbody>${list.map((x) => `<tr><td>${spellLink(x.name)}${x.prepared ? ' <span class="tag">ALWAYS</span>' : ""}</td><td>${/^[+\-]\d/.test(x.saveHit) ? roll2(x.saveHit, bonusExpr(x.saveHit), `${x.name}: spell attack`, who) : esc(x.saveHit)}</td><td>${esc(x.time)}</td><td>${esc(x.range)}</td><td class="sh-notes">${esc(x.duration)}</td></tr>`).join("")}</tbody></table></details>`;
+    return `<details class="sh-spells"${i < 2 ? " open" : ""}><summary>${esc(lv)} <span class="muted">${esc(s.slots[lv] || "")} \xB7 ${list.length}</span></summary><table class="sh-table"><tbody>${list.map((x) => `<tr><td>${spellLink(x.name)}${x.prepared === "always" ? ' <span class="tag">ALWAYS</span>' : x.prepared ? ' <span class="tag">PREPARED</span>' : ""}</td><td>${/^[+\-]\d/.test(x.saveHit) ? roll2(x.saveHit, bonusExpr(x.saveHit), `${x.name}: spell attack`, who) : esc(x.saveHit)}</td><td>${esc(x.time)}</td><td>${esc(x.range)}</td><td class="sh-notes">${esc(x.duration)}</td></tr>`).join("")}</tbody></table></details>`;
   }).join("");
   const casting = s.casting.map((k) => `<span class="sh-chip">${esc(k.className || "Spellcasting")} \xB7 ${esc(k.ability)} \xB7 DC ${k.saveDC ?? "\u2014"} \xB7 ${roll2(k.attack, bonusExpr(k.attack), "Spell attack", who)}</span>`).join("");
   const look = Object.entries(s.appearance || {}).map(([k, v]) => `${k[0].toUpperCase()}${k.slice(1)}: ${v}`).join(" \xB7 ");
   const person = Object.entries(s.personality || {}).map(([k, v]) => `${k[0].toUpperCase()}${k.slice(1)}:
 ${v}`).join("\n\n");
   const html = `
-    <div class="sh-head">${esc([s.classText, s.species, s.background, s.appearance?.alignment].filter(Boolean).join(" \xB7 "))}<span class="sh-imported">Imported ${imported}</span></div>
+    <div class="sh-head">${esc([s.classText, s.species, s.background, s.appearance?.alignment].filter(Boolean).join(" \xB7 "))}<span class="sh-imported">${esc(origin)}</span></div>
     <div class="sh-combat">
       <div><div class="sh-k">AC</div><div class="sh-v">${c2.armorClass ?? "\u2014"}</div></div>
       <div><div class="sh-k">HP</div><div class="sh-v">${opts2.hp != null ? `${opts2.hp}/` : ""}${c2.maxHp ?? "\u2014"}</div><div class="sh-sub">${esc(s.hitDice)}</div></div>
       <div><div class="sh-k">Speed</div><div class="sh-v">${c2.speed ?? "\u2014"}</div><div class="sh-sub">ft.</div></div>
-      <div><div class="sh-k">Init</div><div class="sh-v">${rollButton(sign(c2.initiativeBonus || 0), `1d20${sign(c2.initiativeBonus || 0)}`, "Initiative", who)}</div></div>
+      <div><div class="sh-k">Init</div><div class="sh-v">${rollButton(sign2(c2.initiativeBonus || 0), `1d20${sign2(c2.initiativeBonus || 0)}`, "Initiative", who)}</div></div>
       <div><div class="sh-k">Prof.</div><div class="sh-v">${esc(s.proficiencyBonus)}</div></div>
     </div>
     <div class="sh-abils">${abil}</div>
     <div class="sh-row"><span class="sh-label">Saves</span> ${saves}</div>
-    <div class="sh-row sh-small"><span class="sh-label">Passive</span> Perception ${s.passives.perception ?? "\u2014"} \xB7 Insight ${s.passives.insight ?? "\u2014"} \xB7 Investigation ${s.passives.investigation ?? "\u2014"}${s.senses ? ` \xB7 ${esc(s.senses)}` : ""}</div>
+    <div class="sh-row sh-small"><span class="sh-label">Passive</span> Perception ${c2.passivePerception ?? s.passives.perception ?? "\u2014"} \xB7 Insight ${s.passives.insight ?? "\u2014"} \xB7 Investigation ${s.passives.investigation ?? "\u2014"}${s.senses ? ` \xB7 ${esc(s.senses)}` : ""}</div>
     ${s.defenses ? `<div class="sh-row sh-small"><span class="sh-label">Defenses</span> ${condify(esc(s.defenses))}</div>` : ""}
     ${attacks ? `<div class="sh-section">Attacks</div>${attacks}` : ""}
     ${s.spells.length || s.casting.length ? `<div class="sh-section">Spells</div><div class="sh-row">${casting}</div>${spells}` : ""}
@@ -43643,18 +43842,19 @@ ${v}`).join("\n\n");
     ${opts2.compact ? "" : block("Appearance & personality", [look, person].filter(Boolean).join("\n\n"))}`;
   return h("div.sheet", { html });
 }
-var sign, mod3, ABBR2, bonusExpr, roll2, block;
+var sign2, mod3, ABBR2, bonusExpr, roll2, block;
 var init_sheet = __esm({
   "src/sheet.js"() {
     init_ui();
     init_conditions();
     init_spells();
-    sign = (n) => n >= 0 ? `+${n}` : `${n}`;
+    init_sheet_data();
+    sign2 = (n) => n >= 0 ? `+${n}` : `${n}`;
     mod3 = (s) => Math.floor(((s ?? 10) - 10) / 2);
     ABBR2 = { strength: "STR", dexterity: "DEX", constitution: "CON", intelligence: "INT", wisdom: "WIS", charisma: "CHA" };
     bonusExpr = (b2) => {
       const n = parseInt(String(b2).replace(/[−–]/, "-"), 10);
-      return Number.isFinite(n) ? `1d20${sign(n)}` : null;
+      return Number.isFinite(n) ? `1d20${sign2(n)}` : null;
     };
     roll2 = (text, expr, label, who) => expr ? rollButton(text, expr, label, who) : esc(text);
     block = (title2, text, open3 = false) => text ? `<details class="sh-text"${open3 ? " open" : ""}><summary>${title2}</summary><div>${condify(spellify(esc(text.replace(/[ \t]+\n/g, "\n").trim()))).replace(/\n/g, "<br>")}</div></details>` : "";
@@ -47921,8 +48121,8 @@ var init_pdf = __esm({
         }
         const boxes = [];
         for (let i = 0, ii = selection.rangeCount; i < ii; i++) {
-          const range = selection.getRangeAt(i);
-          if (range.collapsed) {
+          const range2 = selection.getRangeAt(i);
+          if (range2.collapsed) {
             continue;
           }
           for (const {
@@ -47930,7 +48130,7 @@ var init_pdf = __esm({
             y,
             width,
             height
-          } of range.getClientRects()) {
+          } of range2.getClientRects()) {
             if (width === 0 || height === 0) {
               continue;
             }
@@ -53276,14 +53476,14 @@ var init_pdf = __esm({
       constructor(renderingIntent, {
         name,
         intent,
-        usage: usage3,
+        usage: usage4,
         rbGroups
       }) {
         this.#isDisplay = !!(renderingIntent & RenderingIntentFlag.DISPLAY);
         this.#isPrint = !!(renderingIntent & RenderingIntentFlag.PRINT);
         this.name = name;
         this.intent = intent;
-        this.usage = usage3;
+        this.usage = usage4;
         this.rbGroups = rbGroups;
       }
       get visible() {
@@ -59994,9 +60194,9 @@ var init_pdf = __esm({
         }
         this.editorDiv.normalize();
         selection.deleteFromDocument();
-        const range = selection.getRangeAt(0);
+        const range2 = selection.getRangeAt(0);
         if (!paste.includes("\n")) {
-          range.insertNode(document.createTextNode(paste));
+          range2.insertNode(document.createTextNode(paste));
           this.editorDiv.normalize();
           selection.collapseToStart();
           return;
@@ -60004,7 +60204,7 @@ var init_pdf = __esm({
         const {
           startContainer,
           startOffset
-        } = range;
+        } = range2;
         const bufferBefore = [];
         const bufferAfter = [];
         if (startContainer.nodeType === Node.TEXT_NODE) {
@@ -68465,20 +68665,24 @@ init_dice();
 init_rules();
 
 // src/ddb-import.js
-async function readPdfFields(pdfjs2, data) {
+init_sheet_data();
+async function readPdfForm(pdfjs2, data) {
   const doc = await pdfjs2.getDocument({ data, isEvalSupported: false, verbosity: 0 }).promise;
-  const out = [];
+  const fields2 = [], names = /* @__PURE__ */ new Set();
   for (let n = 1; n <= doc.numPages; n++) {
     for (const a2 of await (await doc.getPage(n)).getAnnotations()) {
-      if (!a2.fieldName || a2.fieldValue == null || a2.fieldValue === "" || a2.fieldValue === "Off") continue;
-      out.push({ name: a2.fieldName.replace(/\s+/g, " ").trim(), value: String(a2.fieldValue).replace(/\r/g, "").trim() });
+      if (!a2.fieldName) continue;
+      const name = a2.fieldName.replace(/\s+/g, " ").trim();
+      names.add(name);
+      if (a2.fieldValue == null || a2.fieldValue === "" || a2.fieldValue === "Off") continue;
+      fields2.push({ name, value: String(a2.fieldValue).replace(/\r/g, "").trim() });
     }
   }
   await doc.destroy();
-  return out;
+  return { fields: fields2, names };
 }
-var ABILITIES2 = [["STR", "strength"], ["DEX", "dexterity"], ["CON", "constitution"], ["INT", "intelligence"], ["WIS", "wisdom"], ["CHA", "charisma"]];
-var SKILLS2 = [
+var ABILITIES3 = [["STR", "strength"], ["DEX", "dexterity"], ["CON", "constitution"], ["INT", "intelligence"], ["WIS", "wisdom"], ["CHA", "charisma"]];
+var SKILLS3 = [
   ["Acrobatics", "Acrobatics", "DEX"],
   ["Animal", "Animal Handling", "WIS"],
   ["Arcana", "Arcana", "INT"],
@@ -68498,10 +68702,6 @@ var SKILLS2 = [
   ["Stealth", "Stealth", "DEX"],
   ["Survival", "Survival", "WIS"]
 ];
-var num = (s) => {
-  const n = parseInt(String(s ?? "").replace(/[^\d\-+]/g, ""), 10);
-  return Number.isFinite(n) ? n : null;
-};
 var isDash = (s) => !s || /^-+$/.test(s.trim());
 function parseDdbSheet(fields2) {
   const first = /* @__PURE__ */ new Map(), lower = /* @__PURE__ */ new Map();
@@ -68511,23 +68711,21 @@ function parseDdbSheet(fields2) {
   }
   const get = (name) => first.get(name) ?? "";
   const getI = (name) => lower.get(name.toLowerCase()) ?? "";
-  const joined = (prefix) => [...first.keys()].filter((k) => new RegExp(`^${prefix}\\d+$`).test(k)).sort((a2, b2) => num(a2.slice(prefix.length)) - num(b2.slice(prefix.length))).map((k) => first.get(k)).join("\n");
+  const joined = (prefix) => [...first.keys()].filter((k) => new RegExp(`^${prefix}\\d+$`).test(k)).sort((a2, b2) => bonusNum(a2.slice(prefix.length)) - bonusNum(b2.slice(prefix.length))).map((k) => first.get(k)).join("\n");
   const classText = get("CLASS LEVEL");
   const classes = [...classText.matchAll(/([A-Za-z][A-Za-z' -]*?)\s+(\d{1,2})\b/g)].map((m) => ({ name: m[1].trim(), level: Number(m[2]) }));
-  const level = classes.reduce((n, c2) => n + c2.level, 0) || num(classText) || 1;
-  const abilities = Object.fromEntries(ABILITIES2.map(([ab2, key3]) => [key3, num(get(ab2))]));
-  const saves = ABILITIES2.map(([ab2, key3]) => {
+  const level = classes.reduce((n, c2) => n + c2.level, 0) || firstNum(classText);
+  const abilities = Object.fromEntries(ABILITIES3.map(([ab2, key3]) => [key3, bonusNum(get(ab2))]));
+  const saves = ABILITIES3.map(([ab2, key3]) => {
     const label = key3[0].toUpperCase() + key3.slice(1);
-    return { ability: ab2, bonus: num(get(`ST ${label}`)) ?? 0, proficient: !!getI(`${ab2[0]}${ab2.slice(1).toLowerCase()}Prof`) };
+    return { ability: ab2, bonus: bonusNum(get(`ST ${label}`)) ?? 0, proficient: !!getI(`${ab2[0]}${ab2.slice(1).toLowerCase()}Prof`) };
   });
-  const skills = SKILLS2.map(([field, name, ab2]) => ({ name, ability: ab2, bonus: num(getI(field)) ?? 0, proficiency: { P: "proficient", E: "expertise", H: "half" }[getI(`${field}Prof`)] || "" }));
+  const skills = SKILLS3.map(([field, name, ab2]) => ({ name, ability: ab2, bonus: bonusNum(getI(field)) ?? 0, proficiency: { P: "proficient", E: "expertise", H: "half" }[getI(`${field}Prof`)] || "" }));
   const attacks = [];
   for (let i = 1; i <= 20; i++) {
     const name = get(i === 1 ? "Wpn Name" : `Wpn Name ${i}`);
     if (!name) continue;
-    const damage = get(`Wpn${i} Damage`);
-    const dm = damage.match(/^\s*([\dd+\-\s]+?)\s+([A-Za-z].*)$/);
-    attacks.push({ name, hit: get(`Wpn${i} AtkBonus`), damage, damageDice: dm ? dm[1].replace(/\s/g, "") : "", damageType: dm ? dm[2] : "", notes: get(`Wpn Notes ${i}`) });
+    attacks.push(parseAttack(name, get(`Wpn${i} AtkBonus`), get(`Wpn${i} Damage`), get(`Wpn Notes ${i}`)));
   }
   const spells = [], slots = {}, byIndex = /* @__PURE__ */ new Map();
   let levelLabel = "";
@@ -68563,19 +68761,19 @@ function parseDdbSheet(fields2) {
   const casting = [];
   for (let i = 0; i < 6; i++) {
     const cls = get(`spellCastingClass${i}`), ability = get(`spellCastingAbility${i}`);
-    if (cls || ability) casting.push({ className: cls, ability, saveDC: num(get(`spellSaveDC${i}`)), attack: get(`spellAtkBonus${i}`) });
+    if (cls || ability) casting.push({ className: cls, ability, saveDC: bonusNum(get(`spellSaveDC${i}`)), attack: get(`spellAtkBonus${i}`) });
   }
   const equipment = [];
   for (let i = 0; i < 200; i++) {
     const name = get(`Eq Name${i}`);
     if (!name) continue;
-    const qty = num(get(`Eq Qty${i}`)) || 1, have = equipment.find((e2) => e2.name === name);
+    const qty = bonusNum(get(`Eq Qty${i}`)) || 1, have = equipment.find((e2) => e2.name === name);
     if (have) have.qty += qty;
     else equipment.push({ name, qty });
   }
   const speedText2 = get("Speed");
   const sheet = {
-    importedAt: Date.now(),
+    ...blankSheet("D&D Beyond PDF"),
     classes,
     classText,
     species: get("RACE"),
@@ -68585,7 +68783,7 @@ function parseDdbSheet(fields2) {
     abilities,
     saves,
     skills,
-    passives: { perception: num(get("Passive1")), insight: num(get("Passive2")), investigation: num(get("Passive3")) },
+    passives: { perception: bonusNum(get("Passive1")), insight: bonusNum(get("Passive2")), investigation: bonusNum(get("Passive3")) },
     senses: get("AdditionalSenses"),
     defenses: get("Defenses"),
     speedText: speedText2,
@@ -68606,19 +68804,521 @@ function parseDdbSheet(fields2) {
     name: get("CharacterName"),
     className: classes.map((c2) => c2.name).join(" / ") || classText,
     level,
-    armorClass: num(get("AC")),
-    maxHp: num(get("MaxHP")),
-    speed: num(speedText2) ?? 30,
+    armorClass: firstNum(get("AC")),
+    maxHp: firstNum(get("MaxHP")),
+    speed: firstNum(speedText2),
     passivePerception: sheet.passives.perception,
-    initiativeBonus: num(get("Init")) ?? 0
+    initiativeBonus: bonusNum(get("Init"))
   };
   return { basics, sheet };
 }
 
+// src/sheet-import.js
+init_sheet_data();
+var SOURCE_2024 = "official 2024 sheet";
+var SOURCE_2014 = "official 2014 sheet";
+var SOURCE_FORM = "fillable PDF";
+var norm2 = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+var joinText = (...parts) => parts.map((p) => String(p ?? "").trim()).filter(Boolean).join("\n\n");
+var named = (title2, text) => text ? `${title2}:
+${text}` : "";
+function parseCharacterForm({ fields: fields2, names }) {
+  if (!names.size) throw new Error('This PDF has no fillable fields, so there is nothing to read. It may be a scan, a blank print copy, or a sheet saved with "Print to PDF". Use a fillable PDF, or add the character by hand.');
+  if (!fields2.length) throw new Error("This form is empty. Fill it in and save it, then import it again.");
+  let parsed;
+  if (names.has("CLASS LEVEL") || names.has("MaxHP") && names.has("Passive1")) parsed = { ...parseDdbSheet(fields2), source: "D&D Beyond PDF" };
+  else if (names.has("Text106.0") && names.has("Text270")) parsed = buildSheet(read2024(fields2), SOURCE_2024);
+  else {
+    const official = names.has("ClassLevel") && names.has("HPMax") && names.has("Check Box 11");
+    const v = readForm(fields2, official);
+    if (["classText", "level", "ac", "hpMax"].filter((k) => v[k]).length + (Object.values(v.scores).some(Boolean) ? 1 : 0) < 2) throw new Error("This doesn't look like a character sheet: its fields aren't ones the app knows. Add the character by hand instead.");
+    parsed = buildSheet(v, official ? SOURCE_2014 : SOURCE_FORM);
+  }
+  if (!parsed.basics.name) throw new Error("No character name on the sheet. Add one to the PDF and import it again.");
+  parsed.sheet.source = parsed.source;
+  return { basics: parsed.basics, sheet: parsed.sheet, warnings: checkBasics(parsed.basics) };
+}
+function buildSheet(v, source) {
+  const sheet = blankSheet(source);
+  const named2 = parseClasses(v.classText), level = firstNum(v.level) || named2.reduce((n, c2) => n + c2.level, 0) || null;
+  const classes = named2.length ? named2 : v.classText ? [{ name: v.classText, level: level || 1 }] : [];
+  const pb = bonusNum(v.prof) ?? profForLevel(level);
+  const haveScores = Object.values(v.scores).some(Boolean) || Object.values(v.mods).some(Boolean);
+  const modFor = (ab2) => firstNum(v.scores[ab2]) != null ? modOf2(firstNum(v.scores[ab2])) : bonusNum(v.mods[ab2]) ?? 0;
+  for (const [ab2, key3] of ABILITIES2) sheet.abilities[key3] = firstNum(v.scores[ab2]);
+  sheet.saves = ABILITIES2.map(([ability]) => {
+    const x = v.saves[ability] || {};
+    return { ability, proficient: !!x.proficient, bonus: bonusNum(x.bonus) ?? modFor(ability) + (x.proficient ? pb : 0) };
+  });
+  sheet.skills = SKILLS2.map(([name, ability]) => {
+    const x = v.skills[name] || {};
+    return { name, ability, proficiency: x.proficient ? "proficient" : "", bonus: bonusNum(x.bonus) ?? modFor(ability) + (x.proficient ? pb : 0) };
+  });
+  const skill = (name) => sheet.skills.find((k) => k.name === name).bonus;
+  const perception = firstNum(v.passive) ?? (haveScores ? 10 + skill("Perception") : null);
+  sheet.passives = { perception, insight: haveScores ? 10 + skill("Insight") : null, investigation: haveScores ? 10 + skill("Investigation") : null };
+  Object.assign(sheet, {
+    classes,
+    classText: [named2.length ? v.classText : classes[0] ? `${classes[0].name} ${classes[0].level}` : "", v.subclass && `(${v.subclass})`].filter(Boolean).join(" "),
+    species: v.species || "",
+    background: v.background || "",
+    experience: v.experience || "",
+    speedText: v.speed || "",
+    hitDice: v.hitDice || "",
+    proficiencyBonus: `+${pb}`,
+    senses: v.senses || "",
+    defenses: v.defenses || "",
+    proficiencies: v.proficiencies || "",
+    actions: v.actions || "",
+    features: v.features || "",
+    attacks: (v.attacks || []).filter((a2) => a2.name).map((a2) => parseAttack(a2.name, a2.hit || "", a2.damage || "", a2.notes || "")),
+    casting: v.casting || [],
+    spells: v.spells || [],
+    slots: v.slots || {},
+    equipment: parseEquipment(v.equipment),
+    appearance: Object.fromEntries(Object.entries(v.appearance || {}).filter(([, x]) => x)),
+    personality: Object.fromEntries(Object.entries(v.personality || {}).filter(([, x]) => x))
+  });
+  const basics = {
+    name: v.name || "",
+    className: classes.map((c2) => c2.name).join(" / "),
+    level,
+    armorClass: firstNum(v.ac),
+    maxHp: firstNum(v.hpMax),
+    speed: firstNum(v.speed),
+    passivePerception: perception,
+    initiativeBonus: bonusNum(v.init) ?? (haveScores ? modFor("DEX") : null)
+  };
+  return { basics, sheet, source };
+}
+var ABILITY_2024 = { STR: [21, 64, 91, 37], DEX: [22, 66, 87, 33], CON: [24, 67, 86, 32], INT: [20, 63, 69, 4], WIS: [23, 65, 75, 21], CHA: [25, 68, 81, 26] };
+var SKILL_2024 = {
+  Athletics: [92, 38],
+  Acrobatics: [88, 34],
+  "Sleight of Hand": [89, 35],
+  Stealth: [90, 36],
+  Arcana: [70, 16],
+  History: [71, 17],
+  Investigation: [72, 19],
+  Nature: [73, 20],
+  Religion: [74, 18],
+  "Animal Handling": [76, 22],
+  Insight: [77, 23],
+  Medicine: [78, 25],
+  Perception: [79, 31],
+  Survival: [80, 24],
+  Deception: [82, 27],
+  Intimidation: [83, 28],
+  Performance: [84, 30],
+  Persuasion: [85, 29]
+};
+var SLOT_2024 = [112, 113, 114, 117, 116, 115, 118, 119, 120];
+var SPELL_NOTES_2024 = [108, ...Array.from({ length: 18 }, (_, i) => 208 + i), 227, 228, 229, 230, 244, 231, 232, 233, 234, 235, 236];
+var spellTicks2024 = (i) => {
+  const [block2, at2] = i < 7 ? [252, i] : i < 20 ? [255, i - 7] : [258, i - 20];
+  return [`${block2}.${at2}`, `${block2 + 1}.${at2}`, block2 === 252 ? `254.0.${at2}` : `${block2 + 2}.${at2}`];
+};
+var spellLevelLabel = (text) => {
+  if (/cantrip/i.test(text) || /^\s*0\b/.test(text)) return SPELL_LEVELS[0];
+  const n = firstNum(text);
+  return n >= 1 && n <= 9 ? SPELL_LEVELS[n] : "Spells";
+};
+function read2024(fields2) {
+  const map = new Map(fields2.map((f) => [f.name, f.value]));
+  const T = (n) => map.get(`Text${n}`) ?? "", box = (n) => map.has(`Check Box${n}`);
+  const pick5 = (table, f) => Object.fromEntries(Object.entries(table).map(([k, row2]) => [k, f(row2)]));
+  const spells = [];
+  for (let i = 0; i < 30; i++) {
+    const name = T(`106.${i}`);
+    if (!name) continue;
+    const [c2, r, m] = spellTicks2024(i).map(box);
+    spells.push({
+      level: spellLevelLabel(T(`105.${i}`)),
+      name,
+      source: "",
+      saveHit: "",
+      time: T(`107.${i}`),
+      range: T(`109.${i}`),
+      components: m ? "M" : "",
+      duration: c2 ? "Concentration" : "",
+      page: "",
+      notes: [r && "Ritual", T(SPELL_NOTES_2024[i])].filter(Boolean).join(" \xB7 "),
+      prepared: ""
+    });
+  }
+  const armor = [[13, "Light"], [14, "Medium"], [15, "Heavy"], [12, "Shields"]].filter(([n]) => box(n)).map(([, label]) => label).join(", ");
+  const slots = {};
+  SLOT_2024.forEach((n, i) => {
+    const total = firstNum(T(n));
+    if (total) slots[SPELL_LEVELS[i + 1]] = slotsLabel(total);
+  });
+  return {
+    name: T(1),
+    background: T(6),
+    classText: T(7),
+    species: T(8),
+    subclass: T(9),
+    level: T(11),
+    experience: T(12),
+    ac: T(13),
+    hpMax: T(16),
+    hitDice: T(17),
+    prof: T(19),
+    init: T(26),
+    speed: T(27),
+    passive: T(29),
+    mods: pick5(ABILITY_2024, ([m]) => T(m)),
+    scores: pick5(ABILITY_2024, ([, s]) => T(s)),
+    saves: pick5(ABILITY_2024, ([, , s, c2]) => ({ bonus: T(s), proficient: box(c2) })),
+    skills: pick5(SKILL_2024, ([s, c2]) => ({ bonus: T(s), proficient: box(c2) })),
+    attacks: [0, 1, 2, 3, 4, 5].map((i) => ({ name: T(30 + i * 4), hit: T(31 + i * 4), damage: T(32 + i * 4), notes: T(33 + i * 4) })),
+    casting: T(111) || T(94) || T(95) ? [{ className: "", ability: T(111), saveDC: firstNum(T(94)), attack: T(95) }] : [],
+    spells,
+    slots,
+    proficiencies: [armor && `Armor: ${armor}`, T(59) && `Weapons: ${T(59)}`, T(60) && `Tools: ${T(60)}`, T(98) && `Languages: ${T(98)}`].filter(Boolean).join("\n"),
+    features: joinText(joinText(T(54), T(55)), named("Species traits", T(57)), named("Feats", T(58))),
+    equipment: [T(99), ...[[101, 249], [102, 250], [103, 251]].filter(([n]) => T(n)).map(([n, c2]) => `${T(n)}${box(c2) ? " (attuned)" : ""}`), ...coins([[226, "CP"], [267, "SP"], [268, "EP"], [269, "GP"], [270, "PP"]], T)].filter(Boolean).join("\n"),
+    appearance: { size: T(28), alignment: T(100), description: T(96) },
+    personality: { backstory: T(97) }
+  };
+}
+var coins = (rows, get) => rows.filter(([field]) => get(field)).map(([field, label]) => `${label} \xD7${get(field)}`);
+var ALIASES = {
+  name: ["charactername", "charname", "pcname", "name", "character"],
+  classText: ["classlevel", "classandlevel", "classlvl", "class", "classes"],
+  level: ["level", "characterlevel", "lvl"],
+  species: ["race", "species", "ancestry"],
+  background: ["background"],
+  experience: ["xp", "experiencepoints", "experience"],
+  alignment: ["alignment"],
+  ac: ["ac", "armorclass", "armourclass"],
+  hpMax: ["hpmax", "maxhp", "hitpointmaximum", "maxhitpoints", "hitpointsmaximum", "hitpointsmax", "hpmaximum", "hitpoints", "hp"],
+  speed: ["speed", "walkingspeed", "walkspeed"],
+  init: ["initiative", "init", "initiativebonus", "initiativemod"],
+  prof: ["profbonus", "proficiencybonus", "probonus", "pb"],
+  passive: ["passive", "passiveperception", "passivewisdomperception", "passivewisdom"],
+  hitDice: ["hdtotal", "hitdicetotal", "totalhitdice", "hitdice"],
+  proficiencies: ["proficiencieslang", "proficienciesandlanguages", "otherproficienciesandlanguages", "proficiencies"],
+  equipment: ["equipment", "inventory", "gear"],
+  features: ["featuresandtraits", "featurestraits", "features"],
+  extraFeatures: ["feattraits", "additionalfeaturestraits", "additionalfeatures"],
+  actions: ["attacksspellcasting", "attacksandspellcasting", "actions"],
+  treasure: ["treasure"],
+  traits: ["personalitytraits", "personality"],
+  ideals: ["ideals"],
+  bonds: ["bonds"],
+  flaws: ["flaws"],
+  backstory: ["backstory", "characterbackstory"],
+  allies: ["allies", "alliesorganizations", "alliesandorganizations"],
+  faction: ["factionname"]
+};
+var SAVE_TICK_2014 = { STR: 11, DEX: 18, CON: 19, INT: 20, WIS: 21, CHA: 22 };
+var SKILL_TICK_FIRST_2014 = 23;
+var range = (from, to) => Array.from({ length: to - from + 1 }, (_, i) => from + i);
+var SPELL_ROWS_2014 = [
+  // level, line fields, the tick box of each line
+  [0, [1014, ...range(1016, 1022)], []],
+  [1, [1015, ...range(1023, 1033)], [251, 309, ...range(3010, 3019)]],
+  [2, [1046, ...range(1034, 1045)], [313, 310, ...range(3020, 3030)]],
+  [3, [1048, 1047, ...range(1049, 1059)], [315, 314, ...range(3031, 3041)]],
+  [4, [1061, 1060, ...range(1062, 1072)], [317, 316, ...range(3042, 3052)]],
+  [5, [1074, 1073, ...range(1075, 1081)], [319, 318, ...range(3053, 3059)]],
+  [6, [1083, 1082, ...range(1084, 1090)], [321, 320, ...range(3060, 3066)]],
+  [7, [1092, 1091, ...range(1093, 1099)], [323, 322, ...range(3067, 3073)]],
+  [8, [10101, 10100, ...range(10102, 10106)], [325, 324, ...range(3074, 3078)]],
+  [9, [10108, 10107, 10109, 101010, 101011, 101012, 101013], [327, 326, ...range(3079, 3083)]]
+];
+var isTicked = (s) => !!s && !/^(off|no|false|0)$/i.test(s);
+function readForm(fields2, official) {
+  const map = /* @__PURE__ */ new Map();
+  for (const f of fields2) if (!map.has(norm2(f.name))) map.set(norm2(f.name), f.value);
+  const raw = new Map(fields2.map((f) => [f.name, f.value]));
+  const get = (...names) => {
+    for (const n of names) if (map.get(n)) return map.get(n);
+    return "";
+  };
+  const pick5 = (key3) => get(...ALIASES[key3]);
+  const per = (list, f) => Object.fromEntries(list.map(([k, v]) => [k, f(k, v)]));
+  const spells = [], slots = {};
+  if (official) {
+    for (const [lv, lines, ticks] of SPELL_ROWS_2014) {
+      const label = SPELL_LEVELS[lv];
+      lines.forEach((n, i) => {
+        const name = raw.get(`Spells ${n}`);
+        if (name) spells.push({ level: label, name, source: "", saveHit: "", time: "", range: "", components: "", duration: "", page: "", notes: "", prepared: raw.has(`Check Box ${ticks[i]}`) ? "yes" : "" });
+      });
+      if (lv && firstNum(raw.get(`SlotsTotal ${18 + lv}`))) slots[label] = slotsLabel(firstNum(raw.get(`SlotsTotal ${18 + lv}`)));
+    }
+  }
+  const skillKey = (name) => norm2(name);
+  const attacks = [];
+  for (let i = 1; i <= 8; i++) {
+    const name = get(i === 1 ? "wpnname" : `wpnname${i}`, `weaponname${i}`, `attack${i}`);
+    attacks.push({ name, hit: get(`wpn${i}atkbonus`, `weapon${i}atkbonus`), damage: get(`wpn${i}damage`, `weapon${i}damage`), notes: get(`wpnnotes${i}`) });
+  }
+  const casting = get("spellcastingclass2", "spellcastingclass") || get("spellcastingability2", "spellcastingability") || get("spellsavedc2", "spellsavedc") ? [{ className: get("spellcastingclass2", "spellcastingclass"), ability: get("spellcastingability2", "spellcastingability"), saveDC: firstNum(get("spellsavedc2", "spellsavedc")), attack: get("spellatkbonus2", "spellattackbonus", "spellatkbonus") }] : [];
+  return {
+    name: pick5("name"),
+    classText: pick5("classText"),
+    level: pick5("level"),
+    species: pick5("species"),
+    background: pick5("background"),
+    experience: pick5("experience"),
+    ac: pick5("ac"),
+    hpMax: pick5("hpMax"),
+    speed: pick5("speed"),
+    init: pick5("init"),
+    prof: pick5("prof"),
+    passive: pick5("passive"),
+    hitDice: pick5("hitDice"),
+    scores: per(ABILITIES2, (ab2, key3) => get(norm2(ab2), key3, `${key3}score`, `${norm2(ab2)}score`)),
+    mods: per(ABILITIES2, (ab2, key3) => get(`${norm2(ab2)}mod`, `${key3}mod`, `${key3}modifier`)),
+    saves: per(ABILITIES2, (ab2, key3) => ({
+      bonus: get(`st${key3}`, `${key3}save`, `${norm2(ab2)}save`, `savingthrow${key3}`),
+      proficient: official ? raw.has(`Check Box ${SAVE_TICK_2014[ab2]}`) : isTicked(get(`${norm2(ab2)}prof`, `st${key3}prof`, `${key3}saveprof`))
+    })),
+    skills: per(SKILLS2, (name) => ({
+      bonus: get(skillKey(name), name === "Animal Handling" ? "animal" : ""),
+      proficient: official ? raw.has(`Check Box ${SKILL_TICK_FIRST_2014 + SKILLS2.findIndex(([n]) => n === name)}`) : isTicked(get(`${skillKey(name)}prof`, `${skillKey(name)}proficient`))
+    })),
+    attacks,
+    casting,
+    spells,
+    slots,
+    proficiencies: pick5("proficiencies"),
+    actions: pick5("actions"),
+    features: joinText(pick5("features"), pick5("extraFeatures")),
+    equipment: [pick5("equipment"), ...coins([["cp", "CP"], ["sp", "SP"], ["ep", "EP"], ["gp", "GP"], ["pp", "PP"]], (f) => get(f)), named("Treasure", pick5("treasure"))].filter(Boolean).join("\n"),
+    appearance: { alignment: pick5("alignment"), age: get("age"), height: get("height"), weight: get("weight"), eyes: get("eyes"), skin: get("skin"), hair: get("hair") },
+    personality: { traits: pick5("traits"), ideals: pick5("ideals"), bonds: pick5("bonds"), flaws: pick5("flaws"), backstory: pick5("backstory"), allies: joinText(pick5("faction"), pick5("allies")) }
+  };
+}
+
 // src/tabs/party.js
+init_sheet_data();
 init_sheet();
+
+// src/sheet-editor.js
+init_ui();
+init_sheet_data();
+init_spells();
+init_store();
+var APPEARANCE = [["size", "Size"], ["alignment", "Alignment"], ["age", "Age"], ["gender", "Gender"], ["height", "Height"], ["weight", "Weight"], ["eyes", "Eyes"], ["hair", "Hair"], ["skin", "Skin"], ["faith", "Faith"]];
+var PERSONALITY = [["traits", "Personality traits"], ["ideals", "Ideals"], ["bonds", "Bonds"], ["flaws", "Flaws"], ["backstory", "Backstory"], ["allies", "Allies & organizations"], ["notes", "Notes"]];
+var CASTING_ABILITIES = ["", ...ABILITIES2.map(([ab2]) => ab2)];
+var PROFICIENCY = [["", "\u2014"], ["half", "Half"], ["proficient", "Proficient"], ["expertise", "Expertise"]];
+function sheetEditor(c2, changed3) {
+  const s = pinSheet(c2.sheet, c2.level);
+  const live2 = [];
+  const touch = () => {
+    s.edited = Date.now();
+    deriveSheet(s, c2.level);
+    live2.forEach((f) => f());
+    changed3();
+  };
+  const text = (label, get, set2, attrs = {}) => h("label", label, h("input", { type: "text", value: get() ?? "", oninput: (e2) => {
+    set2(e2.target.value);
+    touch();
+  }, ...attrs }));
+  const area = (label, get, set2, rows2 = 3) => h("label", label, h("textarea", { rows: rows2, value: get() ?? "", oninput: (e2) => {
+    set2(e2.target.value);
+    touch();
+  } }));
+  const field = (key3, label, attrs) => text(label, () => s[key3], (v) => {
+    s[key3] = v;
+  }, attrs);
+  const inMap = (map, key3, label) => text(label, () => map[key3], (v) => {
+    if (v.trim()) map[key3] = v;
+    else delete map[key3];
+  });
+  const override = (attrs, get, set2, computed) => {
+    const input = h("input", { type: "text", inputmode: "numeric", value: get() == null ? "" : sign(get()), oninput: (e2) => {
+      set2(bonusNum(e2.target.value) ?? void 0);
+      touch();
+    }, ...attrs });
+    const refresh = () => {
+      input.placeholder = sign(computed());
+    };
+    live2.push(refresh);
+    refresh();
+    return input;
+  };
+  const passive = (key3, name, label) => {
+    const input = h("input", { type: "number", value: s.passiveOverride?.[key3] ?? "", oninput: (e2) => {
+      const o = s.passiveOverride ||= {};
+      if (e2.target.value === "") delete o[key3];
+      else o[key3] = Number(e2.target.value);
+      touch();
+    } });
+    const refresh = () => {
+      input.placeholder = computedPassive(s, name);
+    };
+    live2.push(refresh);
+    refresh();
+    return h("label", label, input);
+  };
+  const abilities = h("div.se-abils", ABILITIES2.map(([ab2, key3]) => h("label", ab2, h("input", { type: "number", min: 1, max: 30, value: s.abilities[key3] ?? "", oninput: (e2) => {
+    s.abilities[key3] = e2.target.value === "" ? null : Number(e2.target.value);
+    touch();
+  } }))));
+  const saves = h("div.se-saves", s.saves.map((x) => h(
+    "div.se-line",
+    h("label.check-row", h("input", { type: "checkbox", checked: x.proficient, onchange: (e2) => {
+      x.proficient = e2.target.checked;
+      touch();
+    } }), x.ability),
+    override({ title: `${x.ability} save. Leave blank to work it out.` }, () => x.override, (v) => {
+      x.override = v;
+    }, () => computedSave(s, x, c2.level))
+  )));
+  const skills = h("div.se-skills", s.skills.map((x) => h(
+    "div.se-line",
+    h("span.se-name", x.name, " ", h("small", x.ability)),
+    h("select", { title: `${x.name} proficiency`, onchange: (e2) => {
+      x.proficiency = e2.target.value;
+      touch();
+    } }, PROFICIENCY.map(([v, label]) => h("option", { value: v, selected: x.proficiency === v }, label))),
+    override({ title: `${x.name} bonus. Leave blank to work it out.` }, () => x.override, (v) => {
+      x.override = v;
+    }, () => computedSkill(s, x, c2.level))
+  )));
+  const rows = (list, make, blank, addText) => {
+    const box = h("div.se-rows");
+    const draw2 = () => fill(
+      box,
+      list.map((x, i) => h("div.se-row", make(x, draw2), h("button.icon-btn", { title: "Remove", onclick: () => {
+        list.splice(i, 1);
+        touch();
+        draw2();
+      } }, "\xD7"))),
+      h("button.outline", { onclick: () => {
+        list.push(blank());
+        touch();
+        draw2();
+        box.querySelectorAll(".se-row:last-of-type input")[0]?.focus();
+      } }, addText)
+    );
+    draw2();
+    return box;
+  };
+  const cell = (x, key3, placeholder, attrs = {}) => h("input", { type: "text", value: x[key3] ?? "", placeholder, "aria-label": placeholder, oninput: (e2) => {
+    x[key3] = e2.target.value;
+    touch();
+  }, ...attrs });
+  const attackRow = (a2) => {
+    const redo = () => Object.assign(a2, parseAttack(a2.name, a2.hit, a2.damage, a2.notes));
+    const damage = h("input", { type: "text", value: a2.damage || [a2.damageDice, a2.damageType].filter(Boolean).join(" "), placeholder: "Damage: 1d8+3 slashing", "aria-label": "Damage", oninput: (e2) => {
+      a2.damage = e2.target.value;
+      redo();
+      touch();
+    } });
+    return h("div.se-attack", cell(a2, "name", "Attack"), cell(a2, "hit", "To hit: +5 or DC 13"), damage, cell(a2, "notes", "Notes"));
+  };
+  const castingRow = (k) => h(
+    "div.se-casting",
+    cell(k, "className", "Class"),
+    h("select", { "aria-label": "Spellcasting ability", onchange: (e2) => {
+      k.ability = e2.target.value;
+      touch();
+    } }, CASTING_ABILITIES.map((ab2) => h("option", { value: ab2, selected: k.ability === ab2 }, ab2 || "Ability"))),
+    h("input", { type: "number", value: k.saveDC ?? "", placeholder: "Save DC", "aria-label": "Save DC", oninput: (e2) => {
+      k.saveDC = e2.target.value === "" ? null : Number(e2.target.value);
+      touch();
+    } }),
+    cell(k, "attack", "Attack: +5")
+  );
+  const spellRow = (x, draw2) => {
+    const name = cell(x, "name", "Spell", { list: "se-spell-names", onchange: (e2) => {
+      const found = findSpell(e2.target.value);
+      if (!found) return;
+      x.level = SPELL_LEVELS[found.level] ?? x.level;
+      x.time ||= found.castingTime || "";
+      x.range ||= found.range || "";
+      x.duration ||= found.duration || "";
+      touch();
+      draw2();
+    } });
+    return h(
+      "div.se-spell",
+      h("select", { "aria-label": "Spell level", onchange: (e2) => {
+        x.level = e2.target.value;
+        touch();
+      } }, [.../* @__PURE__ */ new Set([...SPELL_LEVELS, x.level])].map((lv) => h("option", { value: lv, selected: x.level === lv }, lv))),
+      name,
+      cell(x, "saveHit", "Save / hit"),
+      cell(x, "time", "Time"),
+      cell(x, "range", "Range"),
+      cell(x, "duration", "Duration"),
+      h("select", { "aria-label": "Prepared", onchange: (e2) => {
+        x.prepared = e2.target.value;
+        touch();
+      } }, [["", "Known"], ["yes", "Prepared"], ["always", "Always"]].map(([v, label]) => h("option", { value: v, selected: x.prepared === v }, label)))
+    );
+  };
+  const slots = h("div.se-slots", SPELL_LEVELS.slice(1).map((lv) => h("label", lv.replace(" Level", ""), h("input", { type: "number", min: 0, value: firstNum(s.slots[lv]) ?? "", oninput: (e2) => {
+    if (Number(e2.target.value) > 0) s.slots[lv] = slotsLabel(Number(e2.target.value));
+    else delete s.slots[lv];
+    touch();
+  } }))));
+  s.appearance ||= {};
+  s.personality ||= {};
+  const profBonus2 = override({ title: "Leave blank to use the level" }, () => s.profOverride, (v) => {
+    s.profOverride = v;
+  }, () => profForLevel(c2.level));
+  return h(
+    "div.sheet-editor",
+    h(
+      "div.form-grid",
+      field("classText", "Classes and levels", { placeholder: "Fighter 2 / Wizard 1" }),
+      field("species", "Species"),
+      field("background", "Background"),
+      field("hitDice", "Hit dice", { placeholder: "3d10" }),
+      h("label", "Proficiency bonus", profBonus2),
+      field("senses", "Senses", { placeholder: "Darkvision 60 ft." }),
+      field("defenses", "Defenses", { placeholder: "Resistant to fire" })
+    ),
+    h("div.sh-section", "Ability scores"),
+    abilities,
+    h("div.sh-section", "Saving throws"),
+    saves,
+    h("div.hint", "Tick the proficient ones. Saves and skills work themselves out from the scores and the level; type a number to set one yourself, for a magic item say, and clear it to go back."),
+    h("div.sh-section", "Skills"),
+    skills,
+    h("div.form-grid", passive("insight", "Insight", "Passive Insight"), passive("investigation", "Investigation", "Passive Investigation")),
+    h("div.sh-section", "Attacks"),
+    rows(s.attacks, attackRow, () => parseAttack("", ""), "Add attack"),
+    h("div.sh-section", "Spells"),
+    rows(s.casting, castingRow, () => ({ className: "", ability: "", saveDC: null, attack: "" }), "Add spellcasting class"),
+    h("div.hint", "Spell slots by level. A spell that's in your library fills in its own details and links to its card."),
+    slots,
+    h("datalist#se-spell-names", allSpells().map((x) => h("option", { value: x.name }))),
+    rows(s.spells, spellRow, () => ({ level: SPELL_LEVELS[0], name: "", source: "", saveHit: "", time: "", range: "", components: "", duration: "", page: "", notes: "", prepared: "" }), "Add spell"),
+    h("div.sh-section", "Features and gear"),
+    area("Actions", () => s.actions, (v) => {
+      s.actions = v;
+    }),
+    area("Features & traits", () => s.features, (v) => {
+      s.features = v;
+    }, 6),
+    area("Proficiencies & languages", () => s.proficiencies, (v) => {
+      s.proficiencies = v;
+    }),
+    area("Equipment (one item per line, like Dagger \xD76)", () => equipmentText(s.equipment), (v) => {
+      s.equipment = parseEquipment(v);
+    }, 5),
+    h("div.sh-section", "Appearance and personality"),
+    h("div.form-grid", APPEARANCE.map(([key3, label]) => inMap(s.appearance, key3, label))),
+    PERSONALITY.map(([key3, label]) => area(label, () => s.personality[key3], (v) => {
+      if (v.trim()) s.personality[key3] = v;
+      else delete s.personality[key3];
+    }))
+  );
+}
+
+// src/tabs/party.js
 var el3;
 var selectedId2 = null;
+var editingSheet = null;
 function blankCharacter() {
   return { id: newId("character"), name: "New Character", player: "", className: "", level: 1, armorClass: 10, maxHp: 10, speed: 30, passivePerception: 10, initiativeBonus: 0, power: 1 };
 }
@@ -68629,12 +69329,12 @@ function mountParty(root) {
     e2.target.value = "";
   } });
   el3.append(
-    h("div.page-head", h("h1", "Party"), h("div.page-sub", "Player characters. Add them to encounters in the builder; the runner uses their AC, HP and initiative bonus. Drop D&D Beyond character sheet PDFs anywhere here to add or update characters.")),
+    h("div.page-head", h("h1", "Party"), h("div.page-sub", "Player characters. Add them to encounters in the builder; the runner uses their AC, HP and initiative bonus. Drop character sheet PDFs anywhere here to add or update characters: D&D Beyond exports, the official fillable sheets, and forms like them.")),
     h(
       "div.split",
       h(
         "div.card.list-pane",
-        h("div.list-tools", h("button.primary#pt-add", "Add character"), h("button", { onclick: () => fileInput.click(), title: "D&D Beyond character page > Export to PDF" }, "Import PDF"), fileInput),
+        h("div.list-tools", h("button.primary#pt-add", "Add character"), h("button", { onclick: () => fileInput.click(), title: "A D&D Beyond export (character page > Export to PDF), a filled-in official 2014 or 2024 sheet, or a fillable form like them" }, "Import PDF"), fileInput),
         h("div.list#pt-list")
       ),
       h("div.card.edit-pane#pt-edit")
@@ -68685,18 +69385,23 @@ function renderList2() {
       selectedId2 = c2.id;
       render2();
     }
-  }, avatar(c2.avatar, c2.name, "sm"), h("div.list-main", h("div.list-name", c2.name, c2.sheet ? h("span.tag", "SHEET") : null), h("div.list-sub", [`Level ${c2.level}`, (c2.power ?? 1) !== 1 && `power \xD7${Number(Number(c2.power).toFixed(2))}`, c2.className, c2.player && `played by ${c2.player}`].filter(Boolean).join(" \xB7 "))))) : [h("div.empty", "No characters yet. Add one, or drop D&D Beyond character PDFs here.")]);
+  }, avatar(c2.avatar, c2.name, "sm"), h("div.list-main", h("div.list-name", c2.name, c2.sheet ? h("span.tag", "SHEET") : null), h("div.list-sub", [`Level ${c2.level}`, (c2.power ?? 1) !== 1 && `power \xD7${Number(Number(c2.power).toFixed(2))}`, c2.className, c2.player && `played by ${c2.player}`].filter(Boolean).join(" \xB7 "))))) : [h("div.empty", "No characters yet. Add one, or drop character sheet PDFs here.")]);
 }
 function renderEdit2() {
   const pane = el3.querySelector("#pt-edit");
   const c2 = store.party.find((x) => x.id === selectedId2);
-  if (!c2) return fill(pane, h("div.empty", store.party.length ? "Select a character." : "Add your party's characters here, or import their D&D Beyond PDFs."));
-  const set2 = (k, num2) => (e2) => {
-    c2[k] = num2 ? Number(e2.target.value) || 0 : e2.target.value;
+  if (!c2) return fill(pane, h("div.empty", store.party.length ? "Select a character." : "Add your party's characters here, or import their character sheet PDFs."));
+  const sheetBox = h("div");
+  const set2 = (k, num) => (e2) => {
+    c2[k] = num ? Number(e2.target.value) || 0 : e2.target.value;
+    if (k === "level" && c2.sheet?.derived) {
+      deriveSheet(c2.sheet, c2.level);
+      if (editingSheet !== c2.id) fill(sheetBox, characterSheet(c2));
+    }
     save("party", c2);
     if (k === "name" || k === "level" || k === "className" || k === "player") renderList2();
   };
-  const field = (label, k, num2, attrs = {}) => h("label", label, h("input", { type: num2 ? "number" : "text", value: c2[k] ?? "", oninput: set2(k, num2), ...attrs }));
+  const field = (label, k, num, attrs = {}) => h("label", label, h("input", { type: num ? "number" : "text", value: c2[k] ?? "", oninput: set2(k, num), ...attrs }));
   const pic = pictureDrop({
     src: c2.avatar,
     name: c2.name,
@@ -68743,18 +69448,35 @@ function renderEdit2() {
     pic,
     formsEditor(c2, () => save("party", c2)),
     companionsEditor(c2),
-    h(
-      "div.sheet-head",
-      h("h3", "Character sheet"),
-      c2.sheet ? h("button.link", { onclick: () => confirmBox(`Remove ${c2.name}'s imported sheet? The basics above stay.`, "Remove", () => {
+    h("div.sheet-head", h("h3", "Character sheet"), h(
+      "div.sheet-actions",
+      c2.sheet ? h("button.link", { onclick: () => {
+        editingSheet = editingSheet === c2.id ? null : c2.id;
+        render2();
+      } }, editingSheet === c2.id ? "Done" : "Edit sheet") : h("button.outline", { onclick: () => addSheet(c2) }, "Add a sheet by hand"),
+      c2.sheet ? h("button.link", { onclick: () => confirmBox(`Remove ${c2.name}'s sheet? The basics above stay.`, "Remove", () => {
         delete c2.sheet;
+        editingSheet = null;
         save("party", c2);
         render2();
       }) }, "Remove sheet") : null
-    ),
-    h("div.hint", c2.sheet ? "From the D&D Beyond PDF. To update it, export the PDF again and drop it here." : ""),
-    characterSheet(c2)
+    )),
+    h("div.hint", sheetHint(c2)),
+    fill(sheetBox, editingSheet === c2.id && c2.sheet ? sheetEditor(c2, () => save("party", c2)) : characterSheet(c2))
   );
+}
+function sheetHint(c2) {
+  if (!c2.sheet) return "Type one in, or drop this character's PDF here.";
+  if (c2.sheet.source === "hand") return "Typed in here. Importing a PDF asks before it replaces this.";
+  return "To update it, save the PDF again and drop it here.";
+}
+function addSheet(c2) {
+  const sheet = blankSheet("hand");
+  sheet.classText = [c2.className, c2.level].filter(Boolean).join(" ");
+  c2.sheet = deriveSheet(sheet, c2.level);
+  editingSheet = c2.id;
+  save("party", c2);
+  render2();
 }
 function companionsEditor(c2) {
   const box = h("div.companions");
@@ -68816,7 +69538,7 @@ function companionsEditor(c2) {
   return box;
 }
 var isPdf = (f) => f.type === "application/pdf" || /\.pdf$/i.test(f.name);
-var norm2 = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+var norm3 = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 var BASICS = [["name", "Name"], ["className", "Class"], ["level", "Level"], ["armorClass", "Armor Class"], ["maxHp", "Max HP"], ["speed", "Speed"], ["passivePerception", "Passive Perception"], ["initiativeBonus", "Initiative bonus"]];
 var pdfjs;
 async function loadPdfjs() {
@@ -68827,11 +69549,11 @@ async function loadPdfjs() {
   return pdfjs;
 }
 function findMatch(name) {
-  const n = norm2(name);
-  const exact = store.party.find((c2) => norm2(c2.name) === n);
+  const n = norm3(name);
+  const exact = store.party.find((c2) => norm3(c2.name) === n);
   if (exact) return exact;
-  const firstWord = norm2(String(name).split(/\s+/)[0]);
-  const byFirst = store.party.filter((c2) => norm2(String(c2.name).split(/\s+/)[0]) === firstWord);
+  const firstWord = norm3(String(name).split(/\s+/)[0]);
+  const byFirst = store.party.filter((c2) => norm3(String(c2.name).split(/\s+/)[0]) === firstWord);
   return byFirst.length === 1 ? byFirst[0] : null;
 }
 async function importPdfs(files) {
@@ -68842,16 +69564,16 @@ async function importPdfs(files) {
   const results = [];
   for (const f of files) {
     try {
-      const parsed = parseDdbSheet(await readPdfFields(lib, new Uint8Array(await f.arrayBuffer())));
-      if (!parsed.basics.name) throw new Error("No character name in it. Is it a D&D Beyond character sheet PDF (character page > Export to PDF)?");
+      const parsed = parseCharacterForm(await readPdfForm(lib, new Uint8Array(await f.arrayBuffer())));
       const match = findMatch(parsed.basics.name);
-      results.push({ file: f.name, ...parsed, target: match ? match.id : "new", keep: /* @__PURE__ */ new Set() });
+      results.push({ file: f.name, ...parsed, target: match ? match.id : "new", keep: /* @__PURE__ */ new Set(), keepSheet: true });
     } catch (e2) {
       results.push({ file: f.name, error: e2.message || String(e2) });
     }
   }
   reviewImport(results);
 }
+var handWork = (c2) => !!c2.sheet && (c2.sheet.source === "hand" || !!c2.sheet.edited);
 function reviewImport(results) {
   const rows = results.map((r) => {
     const box = h("div.imp-row");
@@ -68870,7 +69592,14 @@ function reviewImport(results) {
           h("input", { type: "checkbox", checked: !r.keep.has(k), onchange: (e2) => e2.target.checked ? r.keep.delete(k) : r.keep.add(k) }),
           h("span", h("strong", label), `: ${t[k] ?? "\u2014"} \u2192 ${r.basics[k]}`)
         )),
-        h("div.muted", `${t.sheet ? "Refreshes" : "Adds"} the full character sheet. Picture, player name and power multiplier stay as they are.`)
+        handWork(t) ? h(
+          "label.check-row",
+          h("input", { type: "checkbox", checked: r.keepSheet, onchange: (e2) => {
+            r.keepSheet = e2.target.checked;
+          } }),
+          h("span", `Keep the sheet you typed in or edited, and only update the numbers above. Untick to replace it with this PDF.`)
+        ) : null,
+        h("div.muted", `${handWork(t) ? "Picture" : `${t.sheet ? "Refreshes" : "Adds"} the full character sheet. Picture`}, player name and power multiplier stay as they are.`)
       );
     };
     const select2 = h(
@@ -68887,7 +69616,8 @@ function reviewImport(results) {
     drawChanges();
     return fill(
       box,
-      h("div.imp-title", h("strong", r.basics.name), ` \xB7 ${r.sheet.classText} \xB7 ${r.sheet.species}`, h("span.muted", `  (${r.file})`)),
+      h("div.imp-title", h("strong", r.basics.name), [r.sheet.classText, r.sheet.species].filter(Boolean).map((x) => ` \xB7 ${x}`).join(""), h("span.muted", `  (${r.file}, ${r.sheet.source})`)),
+      r.warnings.length ? h("ul.warnings", r.warnings.map((w) => h("li", w))) : null,
       h("label.inline", "Import as", select2),
       changes
     );
@@ -68904,12 +69634,14 @@ function applyImport(results) {
   for (const r of results) {
     if (r.error || r.target === "skip") continue;
     let c2 = store.party.find((x) => x.id === r.target);
+    const found = Object.fromEntries(BASICS.filter(([k]) => r.basics[k] != null && r.basics[k] !== "").map(([k]) => [k, r.basics[k]]));
     if (!c2) {
-      c2 = { ...blankCharacter(), ...r.basics, id: newId(r.basics.name) };
+      c2 = { ...blankCharacter(), ...found, id: newId(r.basics.name) };
     } else {
-      for (const [k] of BASICS) if (!r.keep.has(k) && r.basics[k] != null && r.basics[k] !== "") c2[k] = r.basics[k];
+      for (const [k] of BASICS) if (!r.keep.has(k) && k in found) c2[k] = found[k];
     }
-    c2.sheet = r.sheet;
+    if (!(handWork(c2) && r.keepSheet)) c2.sheet = r.sheet;
+    if (editingSheet === c2.id) editingSheet = null;
     save("party", c2, { delay: 0 });
     last = c2;
   }
@@ -69485,7 +70217,7 @@ function editor(m) {
     set2(e2.target.value);
     changed3();
   } }));
-  const num2 = (label, k) => h("label", label, h("input", { type: "number", value: m[k] ?? "", oninput: (e2) => {
+  const num = (label, k) => h("label", label, h("input", { type: "number", value: m[k] ?? "", oninput: (e2) => {
     m[k] = Number(e2.target.value) || 0;
     changed3();
   } }));
@@ -69592,12 +70324,12 @@ function editor(m) {
         m.subtypes = parseList(v);
       }),
       select2("Alignment", "alignment", ALIGNMENTS),
-      num2("Armor Class", "armorClass"),
+      num("Armor Class", "armorClass"),
       text("Armor type", () => m.armorClassType || "", (v) => {
         m.armorClassType = v;
       }, { placeholder: "natural armor" }),
-      num2("Hit points (average)", "averageHitPoints"),
-      h("div.hp-dice", num2("Hit dice", "hitDiceCount"), select2("Die", "hitDieValue", ["d4", "d6", "d8", "d10", "d12", "d20"]), num2("Bonus", "hitPointsModifier")),
+      num("Hit points (average)", "averageHitPoints"),
+      h("div.hp-dice", num("Hit dice", "hitDiceCount"), select2("Die", "hitDieValue", ["d4", "d6", "d8", "d10", "d12", "d20"]), num("Bonus", "hitPointsModifier")),
       parsed("Speed", speedText, (v) => {
         m.movement = parseSpeedText(v);
       }, "30 ft., fly 60 ft. (hover)"),
@@ -69677,7 +70409,7 @@ function editor(m) {
       parsed("Senses", sensesText, (v) => {
         m.senses = parseSensesText(v);
       }, "darkvision 60 ft."),
-      num2("Passive Perception", "passivePerception"),
+      num("Passive Perception", "passivePerception"),
       text("Languages", () => m.languagesNote || (m.languages || []).map((l) => `${l.name} ${l.note || ""}`.trim()).join(", "), (v) => {
         m.languagesNote = v;
         m.languages = [];
@@ -69840,10 +70572,10 @@ function renderFilters3() {
     } }, "Clear filters") : null
   );
 }
-var plain2 = (s) => String(s || "").replace(/<[^>]+>/g, "");
+var plain3 = (s) => String(s || "").replace(/<[^>]+>/g, "");
 function monsterTexts(m) {
   return [
-    ...["traits", "actions", "bonusActions", "reactions", "legendaryActions", "mythicActions", "lairActions"].flatMap((k) => (m[k] || []).map((e2) => plain2(e2.text))),
+    ...["traits", "actions", "bonusActions", "reactions", "legendaryActions", "mythicActions", "lairActions"].flatMap((k) => (m[k] || []).map((e2) => plain3(e2.text))),
     (m.conditionImmunities || []).join(", ")
   ];
 }
@@ -70012,6 +70744,7 @@ var el7;
 var go5;
 var selectedId6 = null;
 var filtersOpen4 = false;
+var usage3 = /* @__PURE__ */ new Map();
 var noFilter3 = () => ({ q: "", level: "", school: "", cls: "", source: "", review: "", concentration: false, ritual: false });
 var filter4 = noFilter3();
 var LEVELS = [["0", "Cantrip"], ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => [String(n), `Level ${n}`])];
@@ -70051,7 +70784,7 @@ function mountSpells(root, navigate) {
     )
   );
   onChange((kind2) => {
-    if (!el7.hidden && (kind2 === "all" || kind2 === "spells")) renderList6();
+    if (!el7.hidden && ["all", "spells", "monsters"].includes(kind2)) recount2();
   });
 }
 function showSpells(id) {
@@ -70060,11 +70793,20 @@ function showSpells(id) {
     Object.assign(filter4, noFilter3());
     el7.querySelector("#sp-q").value = "";
   }
+  countUsage2();
   renderFilters4();
   renderList6();
   renderEdit6();
   if (id) el7.querySelector("#sp-list .active")?.scrollIntoView({ block: "center" });
 }
+var countUsage2 = () => {
+  usage3 = spellUsage(allMonsters());
+};
+var recount2 = debounce(() => {
+  countUsage2();
+  renderList6();
+  renderUses();
+}, 400);
 var uniq = (xs) => [...new Set(xs)].sort((a2, b2) => a2.localeCompare(b2));
 function renderFilters4() {
   const box = el7.querySelector("#sp-filters");
@@ -70128,7 +70870,7 @@ function renderList6() {
     h(
       "div.list-main",
       h("div.list-name", s.name, mine2(s) ? null : h("span.tag", "SRD"), spellTags(s).map((t) => h("span.tag", { title: t }, t === "Concentration" ? "C" : "R")), needsReview(s) ? h("span.tag.check", { title: REVIEW_TIP }, "CHECK") : null),
-      h("div.list-sub", spellLevelText(s).replace(/ \(.*\)$/, ""))
+      h("div.list-sub", spellLevelText(s).replace(/ \(.*\)$/, "") + (usage3.has(s.id) ? ` \xB7 In ${usesText(s)}` : ""))
     )
   )) : [h("div.empty", "No spells match.")]);
 }
@@ -70148,13 +70890,39 @@ function duplicate4(s) {
   selectedId6 = copy.id;
   showSpells();
 }
-var relist2 = debounce(() => renderList6(), 300);
+var usesText = (s) => {
+  const n = usage3.get(s.id)?.length || 0;
+  return `${n} monster${n === 1 ? "" : "s"}`;
+};
 var renderCard2 = (s) => fill(
   el7.querySelector("#sp-view"),
-  h("div.cond-ref-body.spell-card", { html: spellHtml(s, { body: (t) => glossify(condify(markupHtml(t))) }) + (spellTags(s).length ? `<div class="spell-tags">${spellTags(s).join(" \xB7 ")}</div>` : "") }),
-  s.creature ? h("div.spell-creature", statBlock(s.creature, { description: false })) : null
+  h("div.cond-ref-body.spell-card", { html: spellHtml(s, { links: (html) => glossify(condify(html)) }) + (spellTags(s).length ? `<div class="spell-tags">${spellTags(s).join(" \xB7 ")}</div>` : "") }),
+  s.creature ? h("div.spell-creature", statBlock(s.creature, { description: false })) : null,
+  h("div#sp-uses")
 );
-var refreshCard2 = debounce(renderCard2, 150);
+function renderUses() {
+  const box = el7.querySelector("#sp-uses"), s = spellById(selectedId6);
+  if (!box || !s) return;
+  const uses = usage3.get(s.id) || [];
+  fill(
+    box,
+    h("h3.uses-head", `Found in ${usesText(s)}`),
+    uses.length ? h(
+      "div.uses",
+      uses.slice(0, 60).map((u) => h(
+        "button.use-row",
+        { onclick: () => go5("library", u.monster.id), title: "Open in Creatures" },
+        h("strong", u.monster.name),
+        h("div.use-snip", { html: esc(u.snippet).replace(/\[\[(.+?)\]\]/, "<mark>$1</mark>") })
+      )),
+      uses.length > 60 ? h("div.hint", `\u2026and ${uses.length - 60} more.`) : null
+    ) : null
+  );
+}
+var refreshCard2 = debounce((s) => {
+  renderCard2(s);
+  renderUses();
+}, 150);
 function renderEdit6() {
   const pane = el7.querySelector("#sp-edit"), card2 = el7.querySelector("#sp-view");
   const s = spellById(selectedId6);
@@ -70164,6 +70932,7 @@ function renderEdit6() {
     return;
   }
   renderCard2(s);
+  renderUses();
   if (!mine2(s)) {
     fill(
       pane,
@@ -70177,7 +70946,7 @@ function renderEdit6() {
     refreshCard2(s);
     if (renamed) {
       pane.querySelector(".edit-head h2").textContent = s.name;
-      relist2();
+      recount2();
     }
   };
   fill(
@@ -70297,7 +71066,7 @@ function renderParams() {
     { onchange: (e2) => set(key3, conv(e2.target.value)) },
     options.map(([value, text]) => h("option", { value, selected: String(p[key3]) === String(value) }, text))
   ));
-  const num2 = (key3, min, max) => h("input.num", { type: "number", min, max, value: p[key3], onchange: (e2) => set(key3, Math.min(max, Math.max(min, Number(e2.target.value) || min))) });
+  const num = (key3, min, max) => h("input.num", { type: "number", min, max, value: p[key3], onchange: (e2) => set(key3, Math.min(max, Math.max(min, Number(e2.target.value) || min))) });
   const crSel = (key3) => h("select", { onchange: (e2) => set(key3, e2.target.value) }, CR_ORDER.map((c2) => h("option", { value: c2, selected: p[key3] === c2 }, c2)));
   const levels2 = encounterLevels(p);
   const labels = monsterLabels();
@@ -70328,8 +71097,8 @@ function renderParams() {
       h("label", "Number of creatures", h(
         "div.gen-count",
         h("select", { onchange: (e2) => set("countMode", e2.target.value) }, [["any", "Any"], ["exact", "Exactly"], ["range", "Between"]].map(([v, t]) => h("option", { value: v, selected: p.countMode === v }, t))),
-        p.countMode === "exact" ? num2("count", 1, 30) : null,
-        p.countMode === "range" ? [num2("countMin", 1, 30), h("span", "and"), num2("countMax", 1, 30)] : null
+        p.countMode === "exact" ? num("count", 1, 30) : null,
+        p.countMode === "range" ? [num("countMin", 1, 30), h("span", "and"), num("countMax", 1, 30)] : null
       )),
       h(
         "div.form-grid",
@@ -71039,7 +71808,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.10.0";
+var version2 = "1.11.0";
 
 // src/app.js
 var TABS = [
@@ -71442,6 +72211,29 @@ function settings() {
     );
   };
   drawSwatches();
+  const emberSwatches = h("div.ember-swatches");
+  const emberPicker = h("input", { type: "color", value: emberHex(d.emberColour), "aria-label": "Any colour for the embers and sparks", oninput: (e2) => {
+    d.emberColour = e2.target.value;
+    setDiceSettings(d);
+    drawEmbers();
+  } });
+  const emberAny = h("label.ember-any", { title: "Choose any colour" }, emberPicker, "Any colour");
+  const drawEmbers = () => {
+    emberAny.classList.toggle("on", !EMBER_COLOURS[d.emberColour]);
+    fill(emberSwatches, Object.entries(EMBER_COLOURS).map(([key3, c2]) => h("button.ember-swatch" + (d.emberColour === key3 ? ".on" : ""), {
+      title: c2.label,
+      "aria-label": `${c2.label} embers and sparks`,
+      "aria-pressed": String(d.emberColour === key3),
+      style: `background:${c2.hex}`,
+      onclick: () => {
+        d.emberColour = key3;
+        emberPicker.value = c2.hex;
+        setDiceSettings(d);
+        drawEmbers();
+      }
+    })));
+  };
+  drawEmbers();
   const body2 = h(
     "div.settings",
     h("h4", "Roll pop-ups"),
@@ -71464,6 +72256,7 @@ function settings() {
         setDiceSettings(d);
       } }), "Sparks")
     ),
+    h("div.ember-colours", h("div.dice-colours-head", "Ember and spark colour"), emberSwatches, emberAny),
     h("div.dice-colours", h("div.dice-colours-head", "Colours"), swatches, h("div.hint", `Pick up to ${MAX_THEMES}, in any styles. With more than one, each roll uses one of them at random.`)),
     h(
       "div.form-grid",
