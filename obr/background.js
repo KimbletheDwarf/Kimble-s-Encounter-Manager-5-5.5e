@@ -4478,6 +4478,13 @@ function markedTokens(state5, names) {
   }
   return out;
 }
+function tokenBadges(state5, spells) {
+  const out = /* @__PURE__ */ new Map();
+  for (const tm of [...(state5?.order || []).map((r) => r.tm), state5?.tmExtra].filter(Boolean)) {
+    for (const [token, marks] of Object.entries(tm)) out.set(token, marks.filter((m) => !spells.has(m.n)));
+  }
+  return out;
+}
 
 // src/obr/bloodied.js
 var KEY2 = `${EXT}/bloodied`;
@@ -5163,6 +5170,9 @@ function latestWriter(write, { onStatus = () => {
   };
 }
 
+// src/spell-loop-names.js
+var CREATURE_SPELLS = ["Aid", "Arcane Shield", "Aura of Life", "Bane", "Barkskin", "Beacon of Hope", "Blindness/Deafness", "Charm Person", "Confusion", "Death Ward", "Enhance Ability", "Ensnaring Strike", "Flame Blade", "Foresight", "Freedom of Movement", "Haste", "Heat Metal", "Heroes\u2019 Feast", "Heroism", "Hex", "Holy Aura", "Hypnotic Pattern", "Mage Armor", "Magic Weapon", "Mind Blank", "Nondetection", "Protection from Energy", "Protection from Evil and Good", "Protection from Poison", "Ray of Sickness", "Regenerate", "Resistance", "Sanctuary", "Slow", "Spider Climb", "Starry Wisp", "Stoneskin", "Sunbeam", "Sunburst", "Vicious Mockery", "Vitriolic Sphere", "Warding Bond"];
+
 // src/obr/background.js
 var whispers = null;
 var role6 = "PLAYER";
@@ -5376,11 +5386,10 @@ async function syncMarkers(state5) {
     syncRunning = false;
   }
 }
+var SPELLS = new Set(CREATURE_SPELLS);
 async function drawMarkers(state5) {
   if (role6 !== "GM" || !await lib_default.scene.isReady()) return;
-  const want = /* @__PURE__ */ new Map();
-  for (const r of state5?.order || []) for (const [token, marks] of Object.entries(r.tm || {})) want.set(token, marks);
-  for (const [token, marks] of Object.entries(state5?.tmExtra || {})) want.set(token, marks);
+  const want = tokenBadges(state5, SPELLS);
   const tokens = new Map((want.size ? await lib_default.scene.items.getItems([...want.keys()]) : []).map((t) => [t.id, t]));
   const have = /* @__PURE__ */ new Map();
   const remove = [];
