@@ -4983,11 +4983,10 @@ var TOOL = `${EXT}/zone-tool`;
 var MODE = `${EXT}/zone-place`;
 var MENU2 = `${EXT}/zone-menu`;
 var MOVE = "rodeo.owlbear.tool/move";
-var SQUARE = 64;
 var placing = null;
-function zoneProp(spell, position) {
-  const { w, h } = ZONE_LOOPS[spell], width = Math.round(w * SQUARE), height = Math.round(h * SQUARE);
-  return buildImage({ url: new URL("zone-handle.png", location.href).href, width, height, mime: "image/png" }, { dpi: SQUARE, offset: { x: width / 2, y: height / 2 } }).name(spell).position(position).layer("PROP").metadata({ [ZONE_KEY]: { spell } }).build();
+async function zoneProp(spell, position) {
+  const dpi = await lib_default.scene.grid.getDpi(), { w, h } = ZONE_LOOPS[spell], width = w * dpi, height = h * dpi;
+  return buildShape().shapeType("RECTANGLE").width(width).height(height).position({ x: position.x - width / 2, y: position.y - height / 2 }).fillColor("#ffffff").fillOpacity(0.02).strokeOpacity(0).strokeWidth(0).name(spell).layer("PROP").metadata({ [ZONE_KEY]: { spell } }).build();
 }
 async function startPlacing(spell) {
   if (!ZONE_LOOPS[spell]) return;
@@ -5012,7 +5011,7 @@ async function finish2() {
 }
 async function place(position) {
   if (!placing) return;
-  const prop = zoneProp(placing.spell, position);
+  const prop = await zoneProp(placing.spell, position);
   await lib_default.scene.items.addItems([prop]);
   await finish2();
   await lib_default.player.select([prop.id]);
