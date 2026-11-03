@@ -4882,6 +4882,7 @@ function onZone(prop, spell, sig, fade) {
   const loop = ZONE_LOOPS[spell];
   return finish(buildEffect().effectType("ATTACHMENT").position(prop.position).rotation(prop.rotation).sksl(SHADERS[loop.s]).uniforms(uniforms(loop, loop, fade)).layer("ATTACHMENT").disableAttachmentBehavior(["COPY"]), prop, sig).build();
 }
+var placeOf = (it) => [it.position.x, it.position.y, it.rotation, it.scale?.x, it.scale?.y, it.width, it.height].map((n) => typeof n === "number" ? Math.round(n * 100) / 100 : "").join(",");
 async function draw3() {
   if (!await lib_default.scene.isReady()) {
     settled = false;
@@ -4897,22 +4898,23 @@ async function draw3() {
     const b = await lib_default.scene.items.getItemBounds([t.id]);
     for (const spell of marked.get(t.id)) CREATURE_LOOPS[spell].items.forEach((_, i) => {
       const sig = [t.id, spell, i, Math.round(b.width), t.visible].join("|");
-      want.set(sig, (fade) => onToken(t, b, spell, i, sig, fade, dpi));
+      want.set(sig, { parent: t.id, build: (fade) => onToken(t, b, spell, i, sig, fade, dpi) });
     });
   }
   for (const z of zones) {
-    const spell = z.metadata[ZONE_KEY].spell, sig = [z.id, spell, z.visible].join("|");
-    want.set(sig, (fade) => onZone(z, spell, sig, fade));
+    const spell = z.metadata[ZONE_KEY].spell, sig = [z.id, spell, z.visible, placeOf(z)].join("|");
+    want.set(sig, { parent: z.id, build: (fade) => onZone(z, spell, sig, fade) });
   }
   const have = await lib_default.scene.local.getItems((i) => i.metadata?.[KEY4] !== void 0);
   const old = have.filter((i) => !want.has(i.metadata[KEY4])).map((i) => i.id);
-  const drawn2 = new Set(have.map((i) => i.metadata[KEY4]));
-  const add = [...want].filter(([sig]) => !drawn2.has(sig)).map(([, build]) => build(settled ? 0 : 1));
+  const drawn2 = new Set(have.map((i) => i.metadata[KEY4])), shown = new Set(have.map((i) => i.attachedTo));
+  const add = [...want].filter(([sig]) => !drawn2.has(sig)).map(([, { parent, build }]) => {
+    const it = build(settled && !shown.has(parent) ? 0 : 1);
+    if (it.uniforms.find((u) => u.name === "fade").value === 0) fading.set(it.id, performance.now());
+    return it;
+  });
   if (old.length) await lib_default.scene.local.deleteItems(old);
-  if (add.length) {
-    await lib_default.scene.local.addItems(add);
-    if (settled) for (const it of add) fading.set(it.id, performance.now());
-  }
+  if (add.length) await lib_default.scene.local.addItems(add);
   settled = true;
 }
 async function sync3() {
