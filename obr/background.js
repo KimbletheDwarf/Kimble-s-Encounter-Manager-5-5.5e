@@ -4878,9 +4878,10 @@ function onToken(token, bounds, spell, i, sig, fade, dpi) {
   const w = it.w * unit, h = it.h * unit, x = bounds.center.x + it.dx * unit - w / 2, y = bounds.center.y + it.dy * unit - h / 2;
   return finish(buildEffect().effectType("STANDALONE").width(w).height(h).position({ x, y }).sksl(SHADERS[it.s]).uniforms(uniforms(loop, it, fade)).layer(it.ground ? "MOUNT" : "ATTACHMENT").disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]), token, sig).build();
 }
-function onZone(prop, spell, sig, fade) {
-  const loop = ZONE_LOOPS[spell];
-  return finish(buildEffect().effectType("ATTACHMENT").position(prop.position).rotation(prop.rotation).sksl(SHADERS[loop.s]).uniforms(uniforms(loop, loop, fade)).layer("ATTACHMENT").disableAttachmentBehavior(["COPY"]), prop, sig).build();
+function onZone(prop, spell, sig, fade, bounds) {
+  const loop = ZONE_LOOPS[spell], shape = prop.type === "SHAPE";
+  const w = shape ? prop.width * Math.abs(prop.scale.x) : bounds.width, h = shape ? prop.height * Math.abs(prop.scale.y) : bounds.height;
+  return finish(buildEffect().effectType("STANDALONE").width(w).height(h).position(shape ? prop.position : bounds.min).rotation(shape ? prop.rotation : 0).sksl(SHADERS[loop.s]).uniforms(uniforms(loop, loop, fade)).layer("ATTACHMENT").disableAttachmentBehavior(["COPY"]), prop, sig).build();
 }
 var placeOf = (it) => [it.position.x, it.position.y, it.rotation, it.scale?.x, it.scale?.y, it.width, it.height].map((n) => typeof n === "number" ? Math.round(n * 100) / 100 : "").join(",");
 async function draw3() {
@@ -4903,7 +4904,8 @@ async function draw3() {
   }
   for (const z of zones) {
     const spell = z.metadata[ZONE_KEY].spell, sig = [z.id, spell, z.visible, placeOf(z)].join("|");
-    want.set(sig, { parent: z.id, build: (fade) => onZone(z, spell, sig, fade) });
+    const bounds = z.type === "SHAPE" ? null : await lib_default.scene.items.getItemBounds([z.id]);
+    want.set(sig, { parent: z.id, build: (fade) => onZone(z, spell, sig, fade, bounds) });
   }
   const have = await lib_default.scene.local.getItems((i) => i.metadata?.[KEY4] !== void 0);
   const old = have.filter((i) => !want.has(i.metadata[KEY4])).map((i) => i.id);

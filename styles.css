@@ -239,6 +239,9 @@ details summary { cursor: pointer; color: var(--muted); margin: 12px 0 8px; }
 }
 .roll:hover:not(:disabled) { background: var(--sb-red); color: #fff; border-color: var(--sb-red); }
 
+/* the version, small in the bottom left corner (the dice button has the right); toasts in that corner cover it */
+.app-version { position: fixed; left: 8px; bottom: 6px; z-index: 30; font-size: 11px; color: var(--muted); opacity: .7; pointer-events: auto; user-select: text; }
+
 /* ---------- toasts ---------- */
 /* corner from the Settings dialog (data-pos); size is zoom (--z), so offsets are divided by it to stay the same on screen */
 .toasts { --edge: calc(18px / var(--z, 1)); --below-header: calc(70px / var(--z, 1));

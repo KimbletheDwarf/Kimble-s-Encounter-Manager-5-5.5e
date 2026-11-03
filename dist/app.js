@@ -72202,7 +72202,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.14.0";
+var version2 = "1.14.1";
 
 // src/app.js
 var TABS = [
@@ -72833,18 +72833,22 @@ function about() {
   ));
 }
 async function init() {
-  document.body.append(h("header.top", h("div.brand", { title: "Kimble's Encounter Manager 5/5.5e" }, h("img.brand-mark", {
-    src: "logo/logo.png",
-    alt: "",
-    draggable: false,
-    // Kimble's logo; it spins while hovered
-    onmouseenter: (e2) => {
-      e2.target.src = "logo/logo-animated.webp";
-    },
-    onmouseleave: (e2) => {
-      e2.target.src = "logo/logo.png";
-    }
-  }), h("span.brand-text", h("span.brand-top", "Kimble's \xB7 5/5.5e"), h("span.brand-main", "Encounter Manager"))), nav, h("div.top-right", saveStatus, searchButton, ghButton, libButton, settingsButton)), main);
+  document.body.append(
+    h("header.top", h("div.brand", { title: "Kimble's Encounter Manager 5/5.5e" }, h("img.brand-mark", {
+      src: "logo/logo.png",
+      alt: "",
+      draggable: false,
+      // Kimble's logo; it spins while hovered
+      onmouseenter: (e2) => {
+        e2.target.src = "logo/logo-animated.webp";
+      },
+      onmouseleave: (e2) => {
+        e2.target.src = "logo/logo.png";
+      }
+    }), h("span.brand-text", h("span.brand-top", "Kimble's \xB7 5/5.5e"), h("span.brand-main", "Encounter Manager"))), nav, h("div.top-right", saveStatus, searchButton, ghButton, libButton, settingsButton)),
+    main,
+    h("div.app-version", { title: "This window's version. Owlbear may keep an older copy of its own part for up to 10 minutes after a publish." }, `v${version2}`)
+  );
   const ribbon = document.querySelector("header.top");
   ribbon.addEventListener("wheel", (e2) => {
     if (ribbon.scrollWidth <= ribbon.clientWidth || Math.abs(e2.deltaX) > Math.abs(e2.deltaY)) return;
