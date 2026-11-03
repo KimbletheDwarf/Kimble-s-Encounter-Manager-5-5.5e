@@ -389,6 +389,10 @@ details summary { cursor: pointer; color: var(--muted); margin: 12px 0 8px; }
 .tracker.picking .turn-row:hover { border-color: var(--gold); }
 .turn-row.picked { border-color: var(--gold); background: #33291a; box-shadow: inset 0 0 0 1px var(--gold); }
 .num-pop { width: 230px; padding: 10px; }
+.spell-pop { width: 240px; padding: 8px; }
+.spell-find { width: 100%; margin-bottom: 6px; }
+.spell-list { max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; }
+.spell-list button.on { background: var(--card-2); }
 .num-pop-title { font: 700 13px var(--head); margin-bottom: 6px; }
 .num-pop input { width: 100%; font-size: 18px; text-align: center; }
 .num-pop .hint { margin-top: 6px; white-space: normal; }

@@ -193,10 +193,10 @@ var require_events = __commonJS({
       }
     }
     function _onceWrap(target, type, listener) {
-      var state4 = { fired: false, wrapFn: void 0, target, type, listener };
-      var wrapped = onceWrapper.bind(state4);
+      var state5 = { fired: false, wrapFn: void 0, target, type, listener };
+      var wrapped = onceWrapper.bind(state5);
       wrapped.listener = listener;
-      state4.wrapFn = wrapped;
+      state5.wrapFn = wrapped;
       return wrapped;
     }
     EventEmitter2.prototype.once = function once2(type, listener) {
@@ -488,8 +488,8 @@ var PlayerApi = class {
   }
   getRole() {
     return __awaiter(this, void 0, void 0, function* () {
-      const { role: role6 } = yield this.messageBus.sendAsync("OBR_PLAYER_GET_ROLE", {});
-      return role6;
+      const { role: role7 } = yield this.messageBus.sendAsync("OBR_PLAYER_GET_ROLE", {});
+      return role7;
     });
   }
   getMetadata() {
@@ -505,8 +505,8 @@ var PlayerApi = class {
   }
   hasPermission(permission) {
     return __awaiter(this, void 0, void 0, function* () {
-      const role6 = yield this.getRole();
-      if (role6 === "GM") {
+      const role7 = yield this.getRole();
+      if (role7 === "GM") {
         return true;
       }
       const { permissions } = yield this.messageBus.sendAsync("OBR_ROOM_GET_PERMISSIONS", {});
@@ -1175,8 +1175,8 @@ function each(obj, iter, strict = true) {
   }
 }
 function getArchtype(thing) {
-  const state4 = thing[DRAFT_STATE];
-  return state4 ? state4.type_ : Array.isArray(thing) ? 1 : isMap(thing) ? 2 : isSet(thing) ? 3 : 0;
+  const state5 = thing[DRAFT_STATE];
+  return state5 ? state5.type_ : Array.isArray(thing) ? 1 : isMap(thing) ? 2 : isSet(thing) ? 3 : 0;
 }
 function has(thing, prop) {
   return getArchtype(thing) === 2 ? thing.has(prop) : Object.prototype.hasOwnProperty.call(thing, prop);
@@ -1206,8 +1206,8 @@ function isMap(target) {
 function isSet(target) {
   return target instanceof Set;
 }
-function latest(state4) {
-  return state4.copy_ || state4.base_;
+function latest(state5) {
+  return state5.copy_ || state5.base_;
 }
 function shallowCopy(base, strict) {
   if (isMap(base)) {
@@ -1325,11 +1325,11 @@ function enterScope(immer2) {
   return currentScope = createScope(currentScope, immer2);
 }
 function revokeDraft(draft) {
-  const state4 = draft[DRAFT_STATE];
-  if (state4.type_ === 0 || state4.type_ === 1)
-    state4.revoke_();
+  const state5 = draft[DRAFT_STATE];
+  if (state5.type_ === 0 || state5.type_ === 1)
+    state5.revoke_();
   else
-    state4.revoked_ = true;
+    state5.revoked_ = true;
 }
 function processResult(result, scope) {
   scope.unfinalizedDrafts_ = scope.drafts_.length;
@@ -1366,28 +1366,28 @@ function finalize(rootScope, value, path) {
   if (isFrozen(value))
     return value;
   const useStrictIteration = rootScope.immer_.shouldUseStrictIteration();
-  const state4 = value[DRAFT_STATE];
-  if (!state4) {
+  const state5 = value[DRAFT_STATE];
+  if (!state5) {
     each(
       value,
-      (key, childValue) => finalizeProperty(rootScope, state4, value, key, childValue, path),
+      (key, childValue) => finalizeProperty(rootScope, state5, value, key, childValue, path),
       useStrictIteration
     );
     return value;
   }
-  if (state4.scope_ !== rootScope)
+  if (state5.scope_ !== rootScope)
     return value;
-  if (!state4.modified_) {
-    maybeFreeze(rootScope, state4.base_, true);
-    return state4.base_;
+  if (!state5.modified_) {
+    maybeFreeze(rootScope, state5.base_, true);
+    return state5.base_;
   }
-  if (!state4.finalized_) {
-    state4.finalized_ = true;
-    state4.scope_.unfinalizedDrafts_--;
-    const result = state4.copy_;
+  if (!state5.finalized_) {
+    state5.finalized_ = true;
+    state5.scope_.unfinalizedDrafts_--;
+    const result = state5.copy_;
     let resultEach = result;
     let isSet2 = false;
-    if (state4.type_ === 3) {
+    if (state5.type_ === 3) {
       resultEach = new Set(result);
       result.clear();
       isSet2 = true;
@@ -1396,7 +1396,7 @@ function finalize(rootScope, value, path) {
       resultEach,
       (key, childValue) => finalizeProperty(
         rootScope,
-        state4,
+        state5,
         result,
         key,
         childValue,
@@ -1408,14 +1408,14 @@ function finalize(rootScope, value, path) {
     maybeFreeze(rootScope, result, false);
     if (path && rootScope.patches_) {
       getPlugin("Patches").generatePatches_(
-        state4,
+        state5,
         path,
         rootScope.patches_,
         rootScope.inversePatches_
       );
     }
   }
-  return state4.copy_;
+  return state5.copy_;
 }
 function finalizeProperty(rootScope, parentState, targetObject, prop, childValue, rootPath, targetIsSet) {
   if (childValue == null) {
@@ -1461,7 +1461,7 @@ function maybeFreeze(scope, value, deep = false) {
 }
 function createProxyProxy(base, parent) {
   const isArray = Array.isArray(base);
-  const state4 = {
+  const state5 = {
     type_: isArray ? 1 : 0,
     // Track which produce call this is associated with.
     scope_: parent ? parent.scope_ : getCurrentScope(),
@@ -1484,91 +1484,91 @@ function createProxyProxy(base, parent) {
     revoke_: null,
     isManual_: false
   };
-  let target = state4;
+  let target = state5;
   let traps = objectTraps;
   if (isArray) {
-    target = [state4];
+    target = [state5];
     traps = arrayTraps;
   }
   const { revoke, proxy } = Proxy.revocable(target, traps);
-  state4.draft_ = proxy;
-  state4.revoke_ = revoke;
+  state5.draft_ = proxy;
+  state5.revoke_ = revoke;
   return proxy;
 }
 var objectTraps = {
-  get(state4, prop) {
+  get(state5, prop) {
     if (prop === DRAFT_STATE)
-      return state4;
-    const source = latest(state4);
+      return state5;
+    const source = latest(state5);
     if (!has(source, prop)) {
-      return readPropFromProto(state4, source, prop);
+      return readPropFromProto(state5, source, prop);
     }
     const value = source[prop];
-    if (state4.finalized_ || !isDraftable(value)) {
+    if (state5.finalized_ || !isDraftable(value)) {
       return value;
     }
-    if (value === peek(state4.base_, prop)) {
-      prepareCopy(state4);
-      return state4.copy_[prop] = createProxy(value, state4);
+    if (value === peek(state5.base_, prop)) {
+      prepareCopy(state5);
+      return state5.copy_[prop] = createProxy(value, state5);
     }
     return value;
   },
-  has(state4, prop) {
-    return prop in latest(state4);
+  has(state5, prop) {
+    return prop in latest(state5);
   },
-  ownKeys(state4) {
-    return Reflect.ownKeys(latest(state4));
+  ownKeys(state5) {
+    return Reflect.ownKeys(latest(state5));
   },
-  set(state4, prop, value) {
-    const desc = getDescriptorFromProto(latest(state4), prop);
+  set(state5, prop, value) {
+    const desc = getDescriptorFromProto(latest(state5), prop);
     if (desc?.set) {
-      desc.set.call(state4.draft_, value);
+      desc.set.call(state5.draft_, value);
       return true;
     }
-    if (!state4.modified_) {
-      const current2 = peek(latest(state4), prop);
+    if (!state5.modified_) {
+      const current2 = peek(latest(state5), prop);
       const currentState = current2?.[DRAFT_STATE];
       if (currentState && currentState.base_ === value) {
-        state4.copy_[prop] = value;
-        state4.assigned_[prop] = false;
+        state5.copy_[prop] = value;
+        state5.assigned_[prop] = false;
         return true;
       }
-      if (is(value, current2) && (value !== void 0 || has(state4.base_, prop)))
+      if (is(value, current2) && (value !== void 0 || has(state5.base_, prop)))
         return true;
-      prepareCopy(state4);
-      markChanged(state4);
+      prepareCopy(state5);
+      markChanged(state5);
     }
-    if (state4.copy_[prop] === value && // special case: handle new props with value 'undefined'
-    (value !== void 0 || prop in state4.copy_) || // special case: NaN
-    Number.isNaN(value) && Number.isNaN(state4.copy_[prop]))
+    if (state5.copy_[prop] === value && // special case: handle new props with value 'undefined'
+    (value !== void 0 || prop in state5.copy_) || // special case: NaN
+    Number.isNaN(value) && Number.isNaN(state5.copy_[prop]))
       return true;
-    state4.copy_[prop] = value;
-    state4.assigned_[prop] = true;
+    state5.copy_[prop] = value;
+    state5.assigned_[prop] = true;
     return true;
   },
-  deleteProperty(state4, prop) {
-    if (peek(state4.base_, prop) !== void 0 || prop in state4.base_) {
-      state4.assigned_[prop] = false;
-      prepareCopy(state4);
-      markChanged(state4);
+  deleteProperty(state5, prop) {
+    if (peek(state5.base_, prop) !== void 0 || prop in state5.base_) {
+      state5.assigned_[prop] = false;
+      prepareCopy(state5);
+      markChanged(state5);
     } else {
-      delete state4.assigned_[prop];
+      delete state5.assigned_[prop];
     }
-    if (state4.copy_) {
-      delete state4.copy_[prop];
+    if (state5.copy_) {
+      delete state5.copy_[prop];
     }
     return true;
   },
   // Note: We never coerce `desc.value` into an Immer draft, because we can't make
   // the same guarantee in ES5 mode.
-  getOwnPropertyDescriptor(state4, prop) {
-    const owner = latest(state4);
+  getOwnPropertyDescriptor(state5, prop) {
+    const owner = latest(state5);
     const desc = Reflect.getOwnPropertyDescriptor(owner, prop);
     if (!desc)
       return desc;
     return {
       writable: true,
-      configurable: state4.type_ !== 1 || prop !== "length",
+      configurable: state5.type_ !== 1 || prop !== "length",
       enumerable: desc.enumerable,
       value: owner[prop]
     };
@@ -1576,8 +1576,8 @@ var objectTraps = {
   defineProperty() {
     die(11);
   },
-  getPrototypeOf(state4) {
-    return getPrototypeOf(state4.base_);
+  getPrototypeOf(state5) {
+    return getPrototypeOf(state5.base_);
   },
   setPrototypeOf() {
     die(12);
@@ -1590,27 +1590,27 @@ each(objectTraps, (key, fn) => {
     return fn.apply(this, arguments);
   };
 });
-arrayTraps.deleteProperty = function(state4, prop) {
+arrayTraps.deleteProperty = function(state5, prop) {
   if (isNaN(parseInt(prop)))
     die(13);
-  return arrayTraps.set.call(this, state4, prop, void 0);
+  return arrayTraps.set.call(this, state5, prop, void 0);
 };
-arrayTraps.set = function(state4, prop, value) {
+arrayTraps.set = function(state5, prop, value) {
   if (prop !== "length" && isNaN(parseInt(prop)))
     die(14);
-  return objectTraps.set.call(this, state4[0], prop, value, state4[0]);
+  return objectTraps.set.call(this, state5[0], prop, value, state5[0]);
 };
 function peek(draft, prop) {
-  const state4 = draft[DRAFT_STATE];
-  const source = state4 ? latest(state4) : draft;
+  const state5 = draft[DRAFT_STATE];
+  const source = state5 ? latest(state5) : draft;
   return source[prop];
 }
-function readPropFromProto(state4, source, prop) {
+function readPropFromProto(state5, source, prop) {
   const desc = getDescriptorFromProto(source, prop);
   return desc ? `value` in desc ? desc.value : (
     // This is a very special case, if the prop is a getter defined by the
     // prototype, we should invoke it with the draft as context!
-    desc.get?.call(state4.draft_)
+    desc.get?.call(state5.draft_)
   ) : void 0;
 }
 function getDescriptorFromProto(source, prop) {
@@ -1625,19 +1625,19 @@ function getDescriptorFromProto(source, prop) {
   }
   return void 0;
 }
-function markChanged(state4) {
-  if (!state4.modified_) {
-    state4.modified_ = true;
-    if (state4.parent_) {
-      markChanged(state4.parent_);
+function markChanged(state5) {
+  if (!state5.modified_) {
+    state5.modified_ = true;
+    if (state5.parent_) {
+      markChanged(state5.parent_);
     }
   }
 }
-function prepareCopy(state4) {
-  if (!state4.copy_) {
-    state4.copy_ = shallowCopy(
-      state4.base_,
-      state4.scope_.immer_.useStrictShallowCopy_
+function prepareCopy(state5) {
+  if (!state5.copy_) {
+    state5.copy_ = shallowCopy(
+      state5.base_,
+      state5.scope_.immer_.useStrictShallowCopy_
     );
   }
 }
@@ -1695,7 +1695,7 @@ var Immer2 = class {
     };
     this.produceWithPatches = (base, recipe) => {
       if (typeof base === "function") {
-        return (state4, ...args) => this.produceWithPatches(state4, (draft) => base(draft, ...args));
+        return (state5, ...args) => this.produceWithPatches(state5, (draft) => base(draft, ...args));
       }
       let patches, inversePatches;
       const result = this.produce(base, recipe, (p, ip) => {
@@ -1723,10 +1723,10 @@ var Immer2 = class {
     return proxy;
   }
   finishDraft(draft, patchListener) {
-    const state4 = draft && draft[DRAFT_STATE];
-    if (!state4 || !state4.isManual_)
+    const state5 = draft && draft[DRAFT_STATE];
+    if (!state5 || !state5.isManual_)
       die(9);
-    const { scope_: scope } = state4;
+    const { scope_: scope } = state5;
     usePatchesInScope(scope, patchListener);
     return processResult(void 0, scope);
   }
@@ -1794,15 +1794,15 @@ function current(value) {
 function currentImpl(value) {
   if (!isDraftable(value) || isFrozen(value))
     return value;
-  const state4 = value[DRAFT_STATE];
+  const state5 = value[DRAFT_STATE];
   let copy;
   let strict = true;
-  if (state4) {
-    if (!state4.modified_)
-      return state4.base_;
-    state4.finalized_ = true;
-    copy = shallowCopy(value, state4.scope_.immer_.useStrictShallowCopy_);
-    strict = state4.scope_.immer_.shouldUseStrictIteration();
+  if (state5) {
+    if (!state5.modified_)
+      return state5.base_;
+    state5.finalized_ = true;
+    copy = shallowCopy(value, state5.scope_.immer_.useStrictShallowCopy_);
+    strict = state5.scope_.immer_.shouldUseStrictIteration();
   } else {
     copy = shallowCopy(value, true);
   }
@@ -1813,8 +1813,8 @@ function currentImpl(value) {
     },
     strict
   );
-  if (state4) {
-    state4.finalized_ = false;
+  if (state5) {
+    state5.finalized_ = false;
   }
   return copy;
 }
@@ -1835,30 +1835,30 @@ function enablePatches() {
   const REPLACE = "replace";
   const ADD = "add";
   const REMOVE = "remove";
-  function generatePatches_(state4, basePath, patches, inversePatches) {
-    switch (state4.type_) {
+  function generatePatches_(state5, basePath, patches, inversePatches) {
+    switch (state5.type_) {
       case 0:
       case 2:
         return generatePatchesFromAssigned(
-          state4,
+          state5,
           basePath,
           patches,
           inversePatches
         );
       case 1:
-        return generateArrayPatches(state4, basePath, patches, inversePatches);
+        return generateArrayPatches(state5, basePath, patches, inversePatches);
       case 3:
         return generateSetPatches(
-          state4,
+          state5,
           basePath,
           patches,
           inversePatches
         );
     }
   }
-  function generateArrayPatches(state4, basePath, patches, inversePatches) {
-    let { base_, assigned_ } = state4;
-    let copy_ = state4.copy_;
+  function generateArrayPatches(state5, basePath, patches, inversePatches) {
+    let { base_, assigned_ } = state5;
+    let copy_ = state5.copy_;
     if (copy_.length < base_.length) {
       ;
       [base_, copy_] = [copy_, base_];
@@ -1899,9 +1899,9 @@ function enablePatches() {
       });
     }
   }
-  function generatePatchesFromAssigned(state4, basePath, patches, inversePatches) {
-    const { base_, copy_ } = state4;
-    each(state4.assigned_, (key, assignedValue) => {
+  function generatePatchesFromAssigned(state5, basePath, patches, inversePatches) {
+    const { base_, copy_ } = state5;
+    each(state5.assigned_, (key, assignedValue) => {
       const origValue = get(base_, key);
       const value = get(copy_, key);
       const op = !assignedValue ? REMOVE : has(base_, key) ? REPLACE : ADD;
@@ -1914,8 +1914,8 @@ function enablePatches() {
       );
     });
   }
-  function generateSetPatches(state4, basePath, patches, inversePatches) {
-    let { base_, copy_ } = state4;
+  function generateSetPatches(state5, basePath, patches, inversePatches) {
+    let { base_, copy_ } = state5;
     let i = 0;
     base_.forEach((value) => {
       if (!copy_.has(value)) {
@@ -3985,8 +3985,8 @@ var EffectBuilder = class extends GenericItemBuilder {
     this._effectType = effectType;
     return this.self();
   }
-  uniforms(uniforms) {
-    this._uniforms = uniforms;
+  uniforms(uniforms2) {
+    this._uniforms = uniforms2;
     return this.self();
   }
   blendMode(blendMode) {
@@ -4078,6 +4078,8 @@ var EXT = "com.encounter-builder";
 var TRACKER_KEY = `${EXT}/tracker`;
 var SETTINGS_KEY = `${EXT}/settings`;
 var EFFECTS = `${EXT}/effects`;
+var ZONE_KEY = `${EXT}/zone`;
+var ZONE_PICK = `${EXT}/zone-pick`;
 var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
 var LOCAL_ASK = `${EXT}/status?`;
@@ -4394,21 +4396,21 @@ async function drawTrail(id, m, { visible = true } = {}) {
   const [dpi, scale] = await Promise.all([lib_default.scene.grid.getDpi(), lib_default.scene.grid.getScale()]);
   const speed = m.sp ?? null, unit = scale.parsed.unit || "ft";
   const { dots, used, over } = trailDots(m.points, m.segments, { step: scale.parsed.multiplier || 5, speed });
-  const finish = (b, name) => b.layer("DRAWING").locked(true).disableHit(true).visible(visible).name(name).metadata({ [key]: { token: id } }).build();
+  const finish3 = (b, name) => b.layer("DRAWING").locked(true).disableHit(true).visible(visible).name(name).metadata({ [key]: { token: id } }).build();
   const add = [];
   if (m.points.length > 1) {
-    add.push(finish(buildCurve().points(m.points).tension(0).closed(false).strokeColor(over ? RED : GREEN).strokeOpacity(0.85).strokeWidth(dpi * 0.05).fillOpacity(0).position({ x: 0, y: 0 }).zIndex(0), "Movement trail"));
+    add.push(finish3(buildCurve().points(m.points).tension(0).closed(false).strokeColor(over ? RED : GREEN).strokeOpacity(0.85).strokeWidth(dpi * 0.05).fillOpacity(0).position({ x: 0, y: 0 }).zIndex(0), "Movement trail"));
   }
   for (const d of dots) {
     const size = d.start ? dpi * 0.22 : dpi * 0.13;
-    add.push(finish(buildShape().shapeType("CIRCLE").width(size).height(size).position({ x: d.x, y: d.y }).fillColor(d.over ? RED : GREEN).fillOpacity(0.95).strokeColor(d.start ? "#ffffff" : "#103018").strokeWidth(d.start ? dpi * 0.03 : dpi * 0.015).strokeOpacity(0.9).zIndex(1), d.start ? "Movement start" : "Movement: 5 ft"));
+    add.push(finish3(buildShape().shapeType("CIRCLE").width(size).height(size).position({ x: d.x, y: d.y }).fillColor(d.over ? RED : GREEN).fillOpacity(0.95).strokeColor(d.start ? "#ffffff" : "#103018").strokeWidth(d.start ? dpi * 0.03 : dpi * 0.015).strokeOpacity(0.9).zIndex(1), d.start ? "Movement start" : "Movement: 5 ft"));
   }
   const [token] = await lib_default.scene.items.getItems([id]);
   if (token) {
     const b = await lib_default.scene.items.getItemBounds([id]);
     const at = b.center;
     const style = token.text?.style || {};
-    const label = finish(buildLabel().plainText(usedText(used, speed, unit)).position({ x: at.x, y: at.y - b.height / 2 - dpi * 0.02 }).fontFamily(style.fontFamily || "Roboto").fontWeight(style.fontWeight || 400).fontSize(dpi * 0.075).padding(dpi * 0.02).cornerRadius(dpi * 0.03).pointerWidth(0).pointerHeight(0).backgroundColor("#000000").backgroundOpacity(0.6).fillColor(over ? "#ff8a80" : "#ffffff").attachedTo(id).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).zIndex(2), "Movement used");
+    const label = finish3(buildLabel().plainText(usedText(used, speed, unit)).position({ x: at.x, y: at.y - b.height / 2 - dpi * 0.02 }).fontFamily(style.fontFamily || "Roboto").fontWeight(style.fontWeight || 400).fontSize(dpi * 0.075).padding(dpi * 0.02).cornerRadius(dpi * 0.03).pointerWidth(0).pointerHeight(0).backgroundColor("#000000").backgroundOpacity(0.6).fillColor(over ? "#ff8a80" : "#ffffff").attachedTo(id).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).zIndex(2), "Movement used");
     label.layer = "TEXT";
     add.push(label);
   }
@@ -4462,9 +4464,19 @@ var CRS = ["0", "1/8", "1/4", "1/2", ...Array.from({ length: 30 }, (_, i) => Str
 var BLOODIED = "Bloodied";
 
 // src/obr/tracker-state.js
-function bloodiedTokens(state4) {
-  const maps = [...(state4?.order || []).map((r) => r.tm), state4?.tmExtra].filter(Boolean);
+function bloodiedTokens(state5) {
+  const maps = [...(state5?.order || []).map((r) => r.tm), state5?.tmExtra].filter(Boolean);
   return maps.flatMap((tm) => Object.entries(tm)).filter(([, marks]) => marks.some((m) => m.n === BLOODIED)).map(([token]) => token);
+}
+function markedTokens(state5, names) {
+  const out = /* @__PURE__ */ new Map();
+  for (const tm of [...(state5?.order || []).map((r) => r.tm), state5?.tmExtra].filter(Boolean)) {
+    for (const [token, marks] of Object.entries(tm)) {
+      const hit = marks.filter((m) => names.has(m.n)).map((m) => m.n);
+      if (hit.length) out.set(token, [.../* @__PURE__ */ new Set([...out.get(token) || [], ...hit])]);
+    }
+  }
+  return out;
 }
 
 // src/obr/bloodied.js
@@ -4752,9 +4764,9 @@ var KEY3 = `${EXT}/fx`;
 var FRAME_MS2 = 40;
 var role4 = "PLAYER";
 var running = /* @__PURE__ */ new Map();
-function effectOn(bounds, { sksl, reach, layer, uniforms }) {
+function effectOn(bounds, { sksl, reach, layer, uniforms: uniforms2 }) {
   const w = Math.max(bounds.width, bounds.height) * reach;
-  return buildEffect().effectType("STANDALONE").width(w).height(w).position({ x: bounds.center.x - w / 2, y: bounds.center.y - w / 2 }).sksl(sksl).uniforms([{ name: "reach", value: reach }, ...uniforms, { name: "seed", value: Math.random() * 6.283 }, { name: "progress", value: 0 }]).layer(layer).locked(true).disableHit(true).name("Token effect").metadata({ [KEY3]: true }).build();
+  return buildEffect().effectType("STANDALONE").width(w).height(w).position({ x: bounds.center.x - w / 2, y: bounds.center.y - w / 2 }).sksl(sksl).uniforms([{ name: "reach", value: reach }, ...uniforms2, { name: "seed", value: Math.random() * 6.283 }, { name: "progress", value: 0 }]).layer(layer).locked(true).disableHit(true).name("Token effect").metadata({ [KEY3]: true }).build();
 }
 async function play({ hits = [], heals = [], shake = 1, style = "light" }) {
   if (!await lib_default.scene.isReady()) return;
@@ -4807,6 +4819,233 @@ async function startTokenFx() {
     play(data || {}).catch((err) => console.error("Encounter Builder: could not play a token effect", err));
   });
   lib_default.scene.onReadyChange(() => running.clear());
+}
+
+// src/obr/spell-loops.js
+var SHADERS = [
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;\nuniform vec3 color;uniform float mode;uniform float sustain;\n\nfloat hash2(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash2(i),hash2(i+vec2(1.0,0.0)),f.x),mix(hash2(i+vec2(0.0,1.0)),hash2(i+vec2(1.0)),f.x),f.y);}\nfloat cloud(vec2 p){return noise2(p)*.65+noise2(p*2.13+7.7)*.35;}\nfloat segment(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat lineGlow(float d,float w){return exp(-d*d/(w*w));}\nvec2 turn(vec2 p,float a){return vec2(p.x*cos(a)-p.y*sin(a),p.x*sin(a)+p.y*cos(a));}\n\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.11,progress)*(1.0-smoothstep(.86,1.0,progress));}\nhalf4 paint(float v,float bright,vec3 c){float al=clamp(v*life(),0.0,.95);return half4(mix(c,vec3(.98,.98,1.0),clamp(bright,0.0,.9))*al,al);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=progress*6.2831853;\n float n=cloud(p*5.0+vec2(cos(t),sin(t))*.75);\n float flow=.61+.055*sin(a*4.0+t)+.025*sin(a*9.0-t);\n float ribbon=lineGlow(r-flow,.026)*(.5+n*.5)+lineGlow(r-flow,.09)*.25;\n float inner=lineGlow(r-(.48+.02*sin(a*5.0-t)),.018)*.4;\n float wisps=lineGlow(r-.66,.15)*pow(max(0.0,sin(a*6.0+r*15.0-t)),6.0)*n*.6;\n float motes=0.0;\n for(int i=0;i<8;i++){float k=float(i),theta=k*.785398+t,rad=.56+.12*sin(k*3.0+t);vec2 q=vec2(cos(theta),sin(theta))*rad;vec2 d=abs(p-q);\n  motes+=exp(-dot(d,d)*1600.0)+exp(-min(d.x,d.y)*150.0-max(d.x,d.y)*38.0)*.35;\n }\n return paint(ribbon+inner+wisps+motes,clamp(motes+ribbon*.3,0.0,.9),color);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;\nuniform vec3 color;uniform float mode;uniform float sustain;\n\nfloat hash2(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash2(i),hash2(i+vec2(1.0,0.0)),f.x),mix(hash2(i+vec2(0.0,1.0)),hash2(i+vec2(1.0)),f.x),f.y);}\nfloat cloud(vec2 p){return noise2(p)*.65+noise2(p*2.13+7.7)*.35;}\nfloat segment(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat lineGlow(float d,float w){return exp(-d*d/(w*w));}\nvec2 turn(vec2 p,float a){return vec2(p.x*cos(a)-p.y*sin(a),p.x*sin(a)+p.y*cos(a));}\n\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.11,progress)*(1.0-smoothstep(.86,1.0,progress));}\nhalf4 paint(float v,float bright,vec3 c){float al=clamp(v*life(),0.0,.95);return half4(mix(c,vec3(.98,.98,1.0),clamp(bright,0.0,.9))*al,al);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=progress*6.2831853;\n vec2 orbit=vec2(cos(t),sin(t));float n=cloud(p*5.0+orbit*.65+seed);\n float wave=.022*sin(a*7.0+t)+.018*(n-.5),rimRadius=.67+wave;\n float rim=lineGlow(r-rimRadius,.018)+lineGlow(r-rimRadius,.07)*.42;\n float shell=smoothstep(.27,.59,r)*(1.0-smoothstep(.62,.72,r))*(.16+n*.28);\n float glint=pow(max(0.0,cos(a+2.1)),9.0)*lineGlow(r-rimRadius,.035)*.9;\n float filaments=lineGlow(sin(a*3.0+r*17.0+t)*.06,.014)*lineGlow(r-.59,.07)*.3;\n if(mode<.5){vec2 q=p*13.0;float h=abs(cos(q.x)+2.0*cos(q.x*.5)*cos(q.y*.866));shell+=lineGlow(h-1.0,.09)*smoothstep(.4,.48,r)*(1.0-smoothstep(.58,.65,r))*.3;}\n if(mode>1.5){shell*=.6;filaments*=1.8;}\n float sparks=pow(max(0.0,cos(a*17.0-t*2.0)),35.0)*lineGlow(r-.76-wave,.02)*.6;\n return paint(rim*.8+shell+filaments+sparks+glint,clamp(glint+rim*.35+sparks*.6,0.0,.85),color);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;\nuniform vec3 color;uniform float mode;uniform float sustain;\n\nfloat hash2(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash2(i),hash2(i+vec2(1.0,0.0)),f.x),mix(hash2(i+vec2(0.0,1.0)),hash2(i+vec2(1.0)),f.x),f.y);}\nfloat cloud(vec2 p){return noise2(p)*.65+noise2(p*2.13+7.7)*.35;}\nfloat segment(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat lineGlow(float d,float w){return exp(-d*d/(w*w));}\nvec2 turn(vec2 p,float a){return vec2(p.x*cos(a)-p.y*sin(a),p.x*sin(a)+p.y*cos(a));}\n\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.11,progress)*(1.0-smoothstep(.86,1.0,progress));}\nhalf4 paint(float v,float bright,vec3 c){float al=clamp(v*life(),0.0,.95);return half4(mix(c,vec3(.98,.98,1.0),clamp(bright,0.0,.9))*al,al);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=progress*6.2831853;\n float rough=cloud(p*13.0)*.07;float ann=smoothstep(.58,.64,r)*(1.0-smoothstep(.68+rough,.75+rough,r));float v,shine;\n if(mode<.5){float u=a*8.0+.3*sin(r*11.0)+.2*noise2(p*17.0);float grain=abs(sin(u));float cut=smoothstep(.04,.18,grain);float knots=cloud(vec2(a*9.0,r*35.0));v=.35+cut*.4+knots*.25;shine=pow(max(0.0,cos(u+.7)),9.0)*.15;}\n else{vec2 q=p*7.0,cell=floor(q);float first=9.0,second=9.0,h=0.0;vec2 normal=vec2(0.0);\n  for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++){vec2 c=cell+vec2(float(x),float(y));vec2 center=c+vec2(hash2(c),hash2(c+23.0));vec2 d=q-center;float dist=dot(d,d);if(dist<first){second=first;first=dist;h=hash2(c+7.0);normal=d;}else if(dist<second){second=dist;}}\n  float seam=second-first;float plate=smoothstep(.015,.09,seam);v=(.35+.3*h+clamp(dot(normal,vec2(-.4,-.6)),0.0,.3))*plate;shine=lineGlow(seam-.1,.035)*.25;}\n float shimmer=pow(max(0.0,cos(a-t)),12.0)*.12;\n vec3 c=mix(color*.3,color,clamp(v+shine,0.0,1.0));return paint(ann*(.65+v*.35),shine+shimmer,c);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;\nuniform vec3 color;uniform float mode;uniform float sustain;\n\nfloat hash2(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash2(i),hash2(i+vec2(1.0,0.0)),f.x),mix(hash2(i+vec2(0.0,1.0)),hash2(i+vec2(1.0)),f.x),f.y);}\nfloat cloud(vec2 p){return noise2(p)*.65+noise2(p*2.13+7.7)*.35;}\nfloat segment(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat lineGlow(float d,float w){return exp(-d*d/(w*w));}\nvec2 turn(vec2 p,float a){return vec2(p.x*cos(a)-p.y*sin(a),p.x*sin(a)+p.y*cos(a));}\n\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.11,progress)*(1.0-smoothstep(.86,1.0,progress));}\nhalf4 paint(float v,float bright,vec3 c){float al=clamp(v*life(),0.0,.95);return half4(mix(c,vec3(.98,.98,1.0),clamp(bright,0.0,.9))*al,al);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=progress*6.2831853;\n float n=cloud(p*7.0+vec2(cos(t),sin(t)));\n float v=0.0;\n for(int i=0;i<3;i++){float k=float(i),radius=.5+k*.1+.025*sin(a*5.0+t+k);\n  float tail=pow(max(0.0,cos(a*2.0-t*2.0+k)),5.0);v+=lineGlow(r-radius,.018+k*.004)*tail;\n }\n float trail=lineGlow(p.y+.06*sin(p.x*12.0+t),.07)*exp(-pow((p.x+.48)/.23,2.0))*(.3+n*.5);\n return paint(v+trail,v*.6,color);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;\nuniform vec3 color;uniform float mode;uniform float sustain;\n\nfloat hash2(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash2(i),hash2(i+vec2(1.0,0.0)),f.x),mix(hash2(i+vec2(0.0,1.0)),hash2(i+vec2(1.0)),f.x),f.y);}\nfloat cloud(vec2 p){return noise2(p)*.65+noise2(p*2.13+7.7)*.35;}\nfloat segment(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat lineGlow(float d,float w){return exp(-d*d/(w*w));}\nvec2 turn(vec2 p,float a){return vec2(p.x*cos(a)-p.y*sin(a),p.x*sin(a)+p.y*cos(a));}\n\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.11,progress)*(1.0-smoothstep(.86,1.0,progress));}\nhalf4 paint(float v,float bright,vec3 c){float al=clamp(v*life(),0.0,.95);return half4(mix(c,vec3(.98,.98,1.0),clamp(bright,0.0,.9))*al,al);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float t=progress*6.2831853;p=turn(p,.08*sin(t));\n float blade=(1.0-smoothstep(.05,.075,abs(p.x)))*smoothstep(-.7,-.52,p.y)*(1.0-smoothstep(.19,.23,p.y));\n float guard=lineGlow(segment(p,vec2(-.25,.24),vec2(.25,.24)),.035);\n float grip=lineGlow(segment(p,vec2(0.0,.24),vec2(0.0,.55)),.03);\n float edge=lineGlow(abs(p.x)-.06,.012)*smoothstep(-.65,-.5,p.y)*(1.0-smoothstep(.18,.24,p.y));\n float n=cloud(p*7.0+vec2(cos(t),sin(t)));\n float flame=lineGlow(abs(p.x)-.1-.05*n,.08)*(1.0-smoothstep(.45,.8,abs(p.y)))*n*.55;\n return paint(blade*.7+guard+grip+edge+flame,edge+blade*step(p.x,0.0)*.5,color);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;\nuniform vec3 color;uniform float mode;uniform float sustain;\n\nfloat hash2(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash2(i),hash2(i+vec2(1.0,0.0)),f.x),mix(hash2(i+vec2(0.0,1.0)),hash2(i+vec2(1.0)),f.x),f.y);}\nfloat cloud(vec2 p){return noise2(p)*.65+noise2(p*2.13+7.7)*.35;}\nfloat segment(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat lineGlow(float d,float w){return exp(-d*d/(w*w));}\nvec2 turn(vec2 p,float a){return vec2(p.x*cos(a)-p.y*sin(a),p.x*sin(a)+p.y*cos(a));}\n\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.11,progress)*(1.0-smoothstep(.86,1.0,progress));}\nhalf4 paint(float v,float bright,vec3 c){float al=clamp(v*life(),0.0,.95);return half4(mix(c,vec3(.98,.98,1.0),clamp(bright,0.0,.9))*al,al);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=progress*6.2831853;\n float n=cloud(p*6.0+vec2(cos(t),sin(t))*.7);\n float rim=lineGlow(r-(.59+(n-.5)*.07),.025)*(.3+.4*n);\n float wisps=pow(max(0.0,sin(a*4.0+r*15.0+t)),12.0)*lineGlow(r-.58,.14)*n;\n float sheen=lineGlow(p.y-.5*sin(t)-.04*sin(p.x*15.0+t),.018)*(1.0-smoothstep(.4,.65,r))*.16;\n return paint(rim+wisps*.5+sheen,.35*rim,color);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;\nuniform vec3 color;uniform float mode;uniform float sustain;\n\nfloat hash2(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash2(i),hash2(i+vec2(1.0,0.0)),f.x),mix(hash2(i+vec2(0.0,1.0)),hash2(i+vec2(1.0)),f.x),f.y);}\nfloat cloud(vec2 p){return noise2(p)*.65+noise2(p*2.13+7.7)*.35;}\nfloat segment(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat lineGlow(float d,float w){return exp(-d*d/(w*w));}\nvec2 turn(vec2 p,float a){return vec2(p.x*cos(a)-p.y*sin(a),p.x*sin(a)+p.y*cos(a));}\n\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.11,progress)*(1.0-smoothstep(.86,1.0,progress));}\nhalf4 paint(float v,float bright,vec3 c){float al=clamp(v*life(),0.0,.95);return half4(mix(c,vec3(.98,.98,1.0),clamp(bright,0.0,.9))*al,al);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=progress*6.2831853;\n vec2 orbit=vec2(cos(t),sin(t));float n=cloud(p*5.0+orbit*.65+seed);\n float wave=.022*sin(a*7.0+t)+.018*(n-.5),rimRadius=.67+wave;\n float rim=lineGlow(r-rimRadius,.018)+lineGlow(r-rimRadius,.07)*.42;\n float shell=smoothstep(.27,.59,r)*(1.0-smoothstep(.62,.72,r))*(.16+n*.28);\n float glint=pow(max(0.0,cos(a+2.1)),9.0)*lineGlow(r-rimRadius,.035)*.9;\n float filaments=lineGlow(sin(a*3.0+r*17.0+t)*.06,.014)*lineGlow(r-.59,.07)*.3;\n if(mode<.5){vec2 q=p*13.0;float h=abs(cos(q.x)+2.0*cos(q.x*.5)*cos(q.y*.866));shell+=lineGlow(h-1.0,.09)*smoothstep(.4,.48,r)*(1.0-smoothstep(.58,.65,r))*.3;}\n if(mode>1.5){shell*=.6;filaments*=1.8;}\n float sparks=pow(max(0.0,cos(a*17.0-t*2.0)),35.0)*lineGlow(r-.76-wave,.02)*.6;\n return paint(rim+shell*1.5+filaments*1.8+sparks+glint,clamp(glint+rim*.35+sparks*.6,0.0,.85),color);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.12,progress)*(1.0-smoothstep(.84,1.0,progress));}\nfloat phase(){return progress*6.2831853;}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.95);return half4(c*a,a);}\nuniform vec3 color;uniform float mode;half4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=phase();\n vec2 drift=vec2(cos(t),sin(t));float n=noise(p*7.0+drift*.8)*.65+noise(p*15.0-drift)*.35;\n float radius=.43+(mode<.5?.025*sin(a*6.0+t):.05*(n-.5));\n float sphere=1.0-smoothstep(radius-.02,radius+.02,r);float rim=glow(r-radius,.025);\n float light=clamp(.5-dot(p,vec2(.6,.8))+.2*n,0.0,1.0);\n float corona=glow(r-radius,.12)*(.2+n*.55);float embers=pow(max(0.0,cos(a*17.0-t*2.0)),30.0)*glow(r-.6,.025)*.6;\n vec3 c=mix(color*.35,vec3(.96,.99,1.0),light*.7+rim*.2);\n if(mode>.5){float heat=.55+n*.5-r*.35;c=mix(vec3(.9,.06,.008),vec3(1.0,.76,.12),smoothstep(.25,.8,heat));c=mix(c,vec3(1.0,.97,.75),glow(r,.26)*(.35+n*.55));corona=glow(r-radius-(n-.5)*.14,.07)*(.5+n*.6);}\n return ink(c,sphere*.94+corona+embers);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.12,progress)*(1.0-smoothstep(.84,1.0,progress));}\nfloat phase(){return progress*6.2831853;}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.95);return half4(c*a,a);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float t=phase();float curve=.16*sin((p.y+.65)*2.5);float width=.065*clamp((p.y+.68)/.6,0.0,1.0);\n float n=noise(p*12.0+vec2(cos(t),sin(t)));float d=abs(p.x-curve);float blade=(1.0-smoothstep(width*.5,width+.015,d))*smoothstep(-.7,-.63,p.y)*(1.0-smoothstep(.12,.18,p.y));\n float flame=glow(d-width-.03*n,.055)*smoothstep(-.7,-.5,p.y)*(1.0-smoothstep(.12,.2,p.y))*(.3+n*.5);\n float grip=glow(p.x-.13,.025)*step(.18,p.y)*step(p.y,.55);\n return ink(mix(vec3(1.0,.18,.015),vec3(1.0,.95,.65),clamp(blade*.8+n*.15,0.0,.9)),blade+flame+grip*.7);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.12,progress)*(1.0-smoothstep(.84,1.0,progress));}\nfloat phase(){return progress*6.2831853;}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.95);return half4(c*a,a);}\nuniform vec3 color;uniform float mode;half4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=phase();\n float n=noise(p*8.0+vec2(cos(t),sin(t))*.7);\n float ring=glow(r-.65-.02*sin(a*5.0+t),.035);float v=ring*(.3+n*.5),white=0.0;\n if(mode<.5){float veins=glow(sin(a*13.0+r*35.0+n*3.0),.12);v+=veins*smoothstep(.45,.6,r)*(1.0-smoothstep(.65,.76,r));white=veins*.55;}\n else if(mode<1.5){float bubbles=pow(max(0.0,cos(a*11.0+t)),24.0)*glow(r-.66,.045);v+=bubbles*.8;white=bubbles*.5;}\n else if(mode<2.5){float plume=pow(max(0.0,sin(a*5.0+r*15.0-t)),6.0)*glow(r-.65,.15);v+=plume*n*.6;}\n else if(mode<3.5){float stars=pow(max(0.0,cos(a*8.0-t)),35.0)*glow(r-.67,.035);v+=stars;white=stars*.8;}\n else if(mode<4.5){v+=glow(sin(a*3.0+r*22.0-t*2.0),.15)*glow(r-.63,.12)*n*.65;}\n else{float glint=pow(max(0.0,cos(a*6.0+t)),22.0);v+=glint*glow(r-.63,.07);white=glint*.7;}\n return ink(mix(color,vec3(1.0),white),v);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.12,progress)*(1.0-smoothstep(.84,1.0,progress));}\nfloat phase(){return progress*6.2831853;}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.95);return half4(c*a,a);}\nuniform float wall;half4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float t=phase();vec2 q=p*vec2(wall>.5?24.0:12.0,wall>.5?4.0:12.0);\n vec2 cell=floor(q),f=fract(q)-.5;float h=hash(cell);f-=vec2(hash(cell+3.0)-.5,hash(cell+11.0)-.5)*.4;\n float angle=h*6.2831853+.03*sin(t+cell.x);f=vec2(f.x*cos(angle)-f.y*sin(angle),f.x*sin(angle)+f.y*cos(angle));\n float tilt=(h-.5)*.4,x=f.x-tilt*f.y;float stem=glow(x,.028)*(1.0-smoothstep(.2,.43,abs(f.y)));\n float point=-.35-.08*h,u=clamp((f.y-point)/(.3-point),0.0,1.0),width=(.09+.07*h)*u;\n float spike=(1.0-smoothstep(width*.65,width+.012,abs(x)))*step(point,f.y)*step(f.y,.3);\n float leaves=glow(abs(x)-.14,.04)*pow(max(0.0,sin(f.y*17.0+h*5.0)),10.0);\n float mask=wall>.5?1.0-smoothstep(.35,.75,abs(p.y)):1.0-smoothstep(.8,1.0,length(p));\n float under=noise(p*9.0)*.3;float v=(stem*.7+spike*.9+leaves*.7+under)*mask;\n float face=spike*(x<0.0?.8:.35);vec3 c=mix(vec3(.035,.09,.012),vec3(.4,.49,.14),clamp(face+leaves*.6+under,0.0,1.0));return ink(c,v);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.12,progress)*(1.0-smoothstep(.84,1.0,progress));}\nfloat phase(){return progress*6.2831853;}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.95);return half4(c*a,a);}\nuniform vec3 color;half4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float t=phase(),r=length(p);vec2 drift=vec2(cos(t),sin(t));\n float n=noise(p*4.5+drift*.65)*.65+noise(p*10.0-drift*.8)*.35;\n float edge=(1.0-smoothstep(.45,.92,r+(n-.5)*.25))*(1.0-smoothstep(.83,1.0,max(abs(p.x),abs(p.y))));\n vec3 c=mix(color*.18,color,.2+n*.8);return ink(c,edge*(.45+n*.48));\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.12,progress)*(1.0-smoothstep(.84,1.0,progress));}\nfloat phase(){return progress*6.2831853;}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.95);return half4(c*a,a);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float t=phase(),distance=2.0,highlight=0.0;\n float grow=sustain>.5?1.0:smoothstep(0.0,.35,progress);\n for(int i=0;i<6;i++){float k=float(i),angle=k*2.39996;vec2 root=vec2(cos(angle*1.3),sin(angle*1.7))*.5;\n  vec2 q=p-root;float a=mod(atan(q.y,q.x)-angle+.14*sin(t+k)+6.2831853,6.2831853),u=a/6.2831853;\n float radius=.05+.47*u;float width=.075*(1.0-u*.6);float signedD=length(q)-radius,d=abs(signedD);\n  if(u<grow){distance=min(distance,d/width);float gloss=glow(signedD+width*.2,width*.22);float suckers=pow(max(0.0,cos(u*55.0+k)),12.0)*glow(signedD/width-.45,.2);highlight=max(highlight,(gloss*.65+suckers*.25)*(1.0-u*.3));}\n }\n float body=1.0-smoothstep(.65,1.0,distance);float mask=1.0-smoothstep(.82,1.0,max(abs(p.x),abs(p.y)));\n vec3 c=mix(vec3(.012,.008,.02),vec3(.32,.25,.4),clamp(highlight*.8+body*.23,0.0,1.0));return ink(c,body*mask*.96);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.12,progress)*(1.0-smoothstep(.84,1.0,progress));}\nfloat phase(){return progress*6.2831853;}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.95);return half4(c*a,a);}\nuniform float wall;half4 spell(float2 coord) {\n vec2 p=vec2(coord.x/size.x,(coord.y/size.y-.5)*2.0);float t=phase();\n float v=0.0;\n for(int i=0;i<6;i++){float k=float(i),y=-.65+k*.25+.08*sin(p.x*18.84955-t+k);\n  float line=glow(p.y-y,.014);float streak=pow(max(0.0,cos(p.x*25.13274-t*3.0+k)),9.0);v+=line*(.2+.65*streak);\n }\n if(wall>.5){vec2 q=vec2(fract(p.x*8.0)-.5,p.y*.65);float a=atan(q.y,q.x),r=length(q);v=v*.45+glow(r-.29-.04*sin(a*3.0+t),.022)*(.35+.55*pow(max(0.0,cos(a-t)),4.0))+glow(r-.38,.018)*.22;}\n float n=noise(vec2(p.x*14.0,p.y*5.0)+vec2(cos(t),sin(t)));\n float veil=glow(p.y,.5)*n*.16;float mask=smoothstep(0.0,.03,p.x)*(1.0-smoothstep(.97,1.0,p.x));\n return ink(mix(vec3(.36,.6,.7),vec3(.92,.98,1.0),clamp(v,0.0,.9)),(v+veil)*mask);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.12,progress)*(1.0-smoothstep(.84,1.0,progress));}\nfloat phase(){return progress*6.2831853;}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.95);return half4(c*a,a);}\nhalf4 spell(float2 coord) {\n vec2 p=vec2(coord.x/size.x,(coord.y/size.y-.5)*2.0);float t=phase();\n float grow=sustain>.5?1.0:smoothstep(0.0,.35,progress);vec2 cell=vec2(floor(p.x*8.0),0.0);float h=hash(cell);\n float top=.65-grow*(1.05+h*.25);float slab=step(top,p.y)*(1.0-smoothstep(.56,.65,p.y));\n float edge=glow(fract(p.x*8.0)-.5,.015)+glow(p.y-top,.018);\n float facets=.25+.55*abs(fract(p.x*6.0+p.y*.27)-.5)*2.0+.1*noise(vec2(p.x*40.0,p.y*13.0));\n float cracks=glow(sin(p.x*58.0+p.y*3.0+noise(vec2(p.x*13.0,p.y*9.0))*.8),.045);\n float sheen=glow(p.y-.3*sin(t)-.2*p.x,.045)*.3;\n vec3 c=mix(vec3(.12,.35,.52),vec3(.65,.92,1.0),clamp(facets+edge*.4+cracks*.3+sheen,0.0,1.0));\n return ink(c,slab*.86*(1.0-smoothstep(.97,1.0,abs(p.x-.5)*2.0)));\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat line(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.13,progress)*(1.0-smoothstep(.85,1.0,progress));}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.92);return half4(c*a,a);}\nuniform vec3 color;uniform float mode;half4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=progress*6.2831853;\n float n=noise(p*8.0+vec2(cos(t),sin(t))*.7);float v=0.0,white=0.0;\n if(mode<.5){float ring=glow(r-.66,.018);float drag=pow(max(0.0,cos(a*6.0+t)),16.0);v=ring*(.25+.6*drag)+glow(r-.6,.09)*n*.22;white=drag*.4;}\n else if(mode<2.5){float bend=.035*sin(a*5.0-t)+(n-.5)*.05;float strands=glow(r-.63-bend,.025);float knots=pow(max(0.0,sin(a*7.0+r*9.0-t)),9.0)*glow(r-.64,.12);v=strands*.7+knots*n*.7;white=knots*.25;}\n else if(mode<3.5){for(int i=0;i<7;i++){float k=float(i),theta=k*.8976+t;vec2 q=vec2(cos(theta),sin(theta))*(.61+.035*sin(t+k));vec2 d=abs(p-q);v+=exp(-dot(d,d)*1500.0)+exp(-min(d.x,d.y)*150.0-max(d.x,d.y)*37.0)*.3;}v+=glow(r-.62,.04)*.24;white=v*.5;}\n else if(mode<4.5){float curve=sin(a*3.0+r*17.0+sin(t)*2.0);v=glow(curve,.16)*glow(r-.62,.13)*(.3+n*.5);v+=glow(r-.67-.025*sin(a*6.0-t),.018)*.35;}\n else if(mode<5.5){float fog=pow(max(0.0,sin(a*5.0+r*14.0-t)),7.0);v=glow(r-.64,.09)*(.2+n*.6)+fog*glow(r-.63,.14)*.6;}\n else if(mode<6.5){float fade=pow(abs(sin(t)),3.0);float vortex=glow(sin(a*4.0+r*17.0-t*2.0),.17)*glow(r-.63,.12);v=vortex*.7*fade+glow(r-.66,.025)*fade*.5;white=v*.5;}\n else{float facet=pow(max(0.0,cos(a*8.0-t)),20.0);v=glow(r-.65,.03)*(.5+n*.4)+facet*glow(r-.7,.04);white=facet*.6;}\n return ink(mix(color*.65,vec3(.97,.98,1.0),clamp(white,0.0,.6)),v);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat line(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.13,progress)*(1.0-smoothstep(.85,1.0,progress));}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.92);return half4(c*a,a);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=progress*6.2831853;\n float grow=sustain>.5?1.0:smoothstep(0.0,.25,progress);\n float radius=.6+.05*sin(a*3.0+t),stem=glow(r-radius,.03);\n float second=glow(r-.63-.045*sin(a*4.0-t),.022);\n float thorns=pow(max(0.0,cos(a*13.0+t)),24.0)*glow(r-.69,.045);\n float light=glow(r-radius+.012,.009)*.4;float mask=step(a, -3.14159+grow*6.28319);\n vec3 c=mix(vec3(.045,.13,.018),vec3(.4,.6,.12),clamp(light+thorns*.6,0.0,1.0));return ink(c,(stem+second*.7+thorns*.9)*mask);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat line(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.13,progress)*(1.0-smoothstep(.85,1.0,progress));}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.92);return half4(c*a,a);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float t=progress*6.2831853,v=0.0;\n for(int i=0;i<8;i++){float k=float(i),a=k*.785398;vec2 d=vec2(cos(a),sin(a));vec2 n=vec2(-d.y,d.x);vec2 joint=d*(.56+.02*sin(t+k));\n  float line1=line(p,d*.43,joint+n*.07),line2=line(p,joint+n*.07,d*.72+n*.1);v=max(v,glow(min(line1,line2),.017));v+=glow(length(p-(d*.72+n*.1)),.025)*.35;\n }return ink(vec3(.48,.8,.58),v*.7);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
+  "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;uniform float sustain;\nfloat hash(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0)),f.x),f.y);}\nfloat line(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat glow(float d,float w){return exp(-d*d/(w*w));}\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.13,progress)*(1.0-smoothstep(.85,1.0,progress));}\nhalf4 ink(vec3 c,float v){float a=clamp(v*life(),0.0,.92);return half4(c*a,a);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=progress*6.2831853;\n float rings=glow(r-.84,.012)+glow(r-.77,.008)*.6+glow(r-.87,.03)*.25;\n float braid=glow(r-.8-.015*sin(a*24.0+t),.006)*.5;\n float accents=pow(max(0.0,cos(a*16.0-t)),32.0)*glow(r-.83,.022);\n float curtain=glow(r-.81,.1)*noise(p*12.0+vec2(cos(t),sin(t)))*.14;\n return ink(mix(vec3(.5,.35,.16),vec3(1.0,.85,.48),clamp(rings+accents,0.0,1.0)),rings*.7+braid+accents*.6+curtain);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n"
+];
+var CREATURE_LOOPS = { "Aid": { "period": 2.4, "items": [{ "s": 0, "w": 1.75, "h": 1.75, "dx": 0, "dy": 0, "ground": true, "seed": 1.8, "u": { "color": { "x": 1, "y": 0.32, "z": 0.28 }, "mode": 0, "sustain": 1 } }] }, "Arcane Shield": { "period": 2.4, "items": [{ "s": 6, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 0.3, "y": 0.48, "z": 1 }, "mode": 0, "sustain": 1 } }] }, "Aura of Life": { "period": 2.4, "items": [{ "s": 0, "w": 1.75, "h": 1.75, "dx": 0, "dy": 0, "ground": true, "seed": 1.8, "u": { "color": { "x": 0.35, "y": 0.9, "z": 0.4 }, "mode": 1, "sustain": 1 } }, { "s": 1, "w": 6.406, "h": 6.406, "dx": 0, "dy": 0, "ground": true, "seed": 1.8, "u": { "color": { "x": 0.35, "y": 0.9, "z": 0.4 }, "mode": 1, "sustain": 1 } }] }, "Bane": { "period": 2.8, "items": [{ "s": 15, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "mode": 1, "color": { "x": 0.75, "y": 0.13, "z": 0.2 } } }] }, "Barkskin": { "period": 2.4, "items": [{ "s": 2, "w": 1.5, "h": 1.5, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 0.57, "y": 0.34, "z": 0.14 }, "mode": 0, "sustain": 1 } }] }, "Beacon of Hope": { "period": 2.4, "items": [{ "s": 0, "w": 1.75, "h": 1.75, "dx": 0, "dy": 0, "ground": true, "seed": 1.8, "u": { "color": { "x": 1, "y": 0.78, "z": 0.25 }, "mode": 1, "sustain": 1 } }] }, "Blindness/Deafness": { "period": 2.8, "items": [{ "s": 15, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "mode": 5, "color": { "x": 0.18, "y": 0.2, "z": 0.3 } } }] }, "Charm Person": { "period": 2.8, "items": [{ "s": 15, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "mode": 3, "color": { "x": 1, "y": 0.43, "z": 0.67 } } }] }, "Confusion": { "period": 2.8, "items": [{ "s": 15, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "mode": 4, "color": { "x": 0.8, "y": 0.36, "z": 0.85 } } }] }, "Death Ward": { "period": 2.4, "items": [{ "s": 1, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 0.7, "y": 0.85, "z": 1 }, "mode": 1, "sustain": 1 } }] }, "Enhance Ability": { "period": 2.4, "items": [{ "s": 0, "w": 1.75, "h": 1.75, "dx": 0, "dy": 0, "ground": true, "seed": 1.8, "u": { "color": { "x": 0.25, "y": 0.9, "z": 0.78 }, "mode": 0, "sustain": 1 } }] }, "Ensnaring Strike": { "period": 2.8, "items": [{ "s": 16, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1 } }] }, "Flame Blade": { "period": 2.8, "items": [{ "s": 8, "w": 1.55, "h": 1.55, "dx": 0.438, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1 } }] }, "Foresight": { "period": 2.4, "items": [{ "s": 1, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 1, "y": 0.78, "z": 0.25 }, "mode": 1, "sustain": 1 } }] }, "Freedom of Movement": { "period": 2.4, "items": [{ "s": 3, "w": 1.625, "h": 1.625, "dx": 0, "dy": 0, "ground": true, "seed": 1.8, "u": { "color": { "x": 0.25, "y": 0.9, "z": 0.78 }, "mode": 0, "sustain": 1 } }] }, "Haste": { "period": 2.4, "items": [{ "s": 3, "w": 1.625, "h": 1.625, "dx": 0, "dy": 0, "ground": true, "seed": 1.8, "u": { "color": { "x": 1, "y": 0.78, "z": 0.25 }, "mode": 0, "sustain": 1 } }] }, "Heat Metal": { "period": 2.8, "items": [{ "s": 9, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "color": { "x": 1, "y": 0.3, "z": 0.035 }, "mode": 0 } }] }, "Heroes\u2019 Feast": { "period": 2.4, "items": [{ "s": 0, "w": 1.75, "h": 1.75, "dx": 0, "dy": 0, "ground": true, "seed": 1.8, "u": { "color": { "x": 1, "y": 0.78, "z": 0.25 }, "mode": 1, "sustain": 1 } }] }, "Heroism": { "period": 2.4, "items": [{ "s": 0, "w": 1.75, "h": 1.75, "dx": 0, "dy": 0, "ground": true, "seed": 1.8, "u": { "color": { "x": 1, "y": 0.78, "z": 0.25 }, "mode": 0, "sustain": 1 } }] }, "Hex": { "period": 2.8, "items": [{ "s": 15, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "mode": 2, "color": { "x": 0.5, "y": 0.14, "z": 0.7 } } }] }, "Holy Aura": { "period": 2.4, "items": [{ "s": 1, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 1, "y": 0.78, "z": 0.25 }, "mode": 1, "sustain": 1 } }, { "s": 1, "w": 6.406, "h": 6.406, "dx": 0, "dy": 0, "ground": true, "seed": 1.8, "u": { "color": { "x": 1, "y": 0.78, "z": 0.25 }, "mode": 1, "sustain": 1 } }] }, "Hypnotic Pattern": { "period": 2.8, "items": [{ "s": 15, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "mode": 4, "color": { "x": 0.65, "y": 0.35, "z": 1 } } }] }, "Mage Armor": { "period": 2.4, "items": [{ "s": 1, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 0.25, "y": 0.65, "z": 1 }, "mode": 0, "sustain": 1 } }] }, "Magic Weapon": { "period": 2.4, "items": [{ "s": 4, "w": 1.719, "h": 1.719, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 0.65, "y": 0.35, "z": 1 }, "mode": 0, "sustain": 1 } }] }, "Mind Blank": { "period": 2.4, "items": [{ "s": 1, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 0.7, "y": 0.85, "z": 1 }, "mode": 2, "sustain": 1 } }] }, "Nondetection": { "period": 2.4, "items": [{ "s": 5, "w": 1.813, "h": 1.813, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 0.25, "y": 0.9, "z": 0.78 }, "mode": 0, "sustain": 1 } }] }, "Protection from Energy": { "period": 2.4, "items": [{ "s": 1, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 1, "y": 0.32, "z": 0.28 }, "mode": 0, "sustain": 1 } }] }, "Protection from Evil and Good": { "period": 2.4, "items": [{ "s": 1, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 1, "y": 0.78, "z": 0.25 }, "mode": 1, "sustain": 1 } }] }, "Protection from Poison": { "period": 2.4, "items": [{ "s": 1, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 0.35, "y": 0.9, "z": 0.4 }, "mode": 2, "sustain": 1 } }] }, "Ray of Sickness": { "period": 2.8, "items": [{ "s": 9, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "color": { "x": 0.35, "y": 0.65, "z": 0.08 }, "mode": 2 } }] }, "Regenerate": { "period": 2.4, "items": [{ "s": 0, "w": 1.75, "h": 1.75, "dx": 0, "dy": 0, "ground": true, "seed": 1.8, "u": { "color": { "x": 0.35, "y": 0.9, "z": 0.4 }, "mode": 0, "sustain": 1 } }] }, "Resistance": { "period": 2.4, "items": [{ "s": 1, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 0.25, "y": 0.9, "z": 0.78 }, "mode": 2, "sustain": 1 } }] }, "Sanctuary": { "period": 2.4, "items": [{ "s": 1, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 0.7, "y": 0.85, "z": 1 }, "mode": 2, "sustain": 1 } }] }, "Slow": { "period": 2.8, "items": [{ "s": 15, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "mode": 0, "color": { "x": 0.46, "y": 0.66, "z": 0.82 } } }] }, "Spider Climb": { "period": 2.8, "items": [{ "s": 17, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1 } }] }, "Starry Wisp": { "period": 2.8, "items": [{ "s": 9, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "color": { "x": 0.65, "y": 0.85, "z": 1 }, "mode": 3 } }] }, "Stoneskin": { "period": 2.4, "items": [{ "s": 2, "w": 1.5, "h": 1.5, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 0.58, "y": 0.57, "z": 0.52 }, "mode": 1, "sustain": 1 } }] }, "Sunbeam": { "period": 2.8, "items": [{ "s": 7, "w": 0.938, "h": 0.938, "dx": 0, "dy": -0.445, "ground": false, "seed": 2.3, "u": { "sustain": 1, "color": { "x": 1, "y": 0.8, "z": 0.3 }, "mode": 0 } }] }, "Sunburst": { "period": 2.8, "items": [{ "s": 9, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "color": { "x": 1, "y": 0.92, "z": 0.6 }, "mode": 5 } }] }, "Vicious Mockery": { "period": 2.8, "items": [{ "s": 9, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "color": { "x": 0.85, "y": 0.25, "z": 0.8 }, "mode": 4 } }] }, "Vitriolic Sphere": { "period": 2.8, "items": [{ "s": 9, "w": 1.55, "h": 1.55, "dx": 0, "dy": 0, "ground": false, "seed": 2.3, "u": { "sustain": 1, "color": { "x": 0.4, "y": 0.95, "z": 0.08 }, "mode": 1 } }] }, "Warding Bond": { "period": 2.4, "items": [{ "s": 1, "w": 1.594, "h": 1.594, "dx": 0, "dy": 0, "ground": false, "seed": 1.8, "u": { "color": { "x": 1, "y": 0.78, "z": 0.25 }, "mode": 1, "sustain": 1 } }] } };
+var ZONE_LOOPS = { "Black Tentacles": { "period": 2.8, "s": 12, "w": 4, "h": 4, "seed": 2.3, "u": { "sustain": 1 } }, "Cloudkill": { "period": 2.8, "s": 11, "w": 8, "h": 8, "seed": 2.3, "u": { "sustain": 1, "color": { "x": 0.16, "y": 0.55, "z": 0.25 } } }, "Flaming Sphere": { "period": 2.8, "s": 7, "w": 2.25, "h": 2.25, "seed": 2.3, "u": { "sustain": 1, "color": { "x": 1, "y": 0.3, "z": 0.035 }, "mode": 1 } }, "Gust of Wind": { "period": 2.8, "s": 13, "w": 12, "h": 2, "seed": 2.3, "u": { "sustain": 1, "wall": 0 } }, "Magic Circle": { "period": 2.8, "s": 18, "w": 4.75, "h": 4.75, "seed": 2.3, "u": { "sustain": 1 } }, "Spike Growth": { "period": 2.8, "s": 10, "w": 8, "h": 8, "seed": 2.3, "u": { "sustain": 1, "wall": 0 } }, "Stinking Cloud": { "period": 2.8, "s": 11, "w": 8, "h": 8, "seed": 2.3, "u": { "sustain": 1, "color": { "x": 0.56, "y": 0.61, "z": 0.13 } } }, "Wall of Ice": { "period": 2.8, "s": 14, "w": 8, "h": 2.266, "seed": 2.3, "u": { "sustain": 1 } }, "Wall of Thorns": { "period": 2.8, "s": 10, "w": 8, "h": 2, "seed": 2.3, "u": { "sustain": 1, "wall": 1 } }, "Wind Wall": { "period": 2.8, "s": 13, "w": 10, "h": 1.5, "seed": 2.3, "u": { "sustain": 1, "wall": 1 } } };
+
+// src/obr/spell-fx.js
+var KEY4 = `${EXT}/spell-fx`;
+var NAMES = new Set(Object.keys(CREATURE_LOOPS));
+var FADE_SECONDS = 0.4;
+var FRAME_MS3 = 40;
+var AURA_SQUARES = 3;
+var role5 = "PLAYER";
+var state4 = null;
+var busy4 = false;
+var again4 = false;
+var settled = false;
+var fading = /* @__PURE__ */ new Map();
+var uniforms = (loop, it, fade) => [
+  { name: "period", value: loop.period },
+  { name: "fade", value: fade },
+  { name: "seed", value: it.seed },
+  ...Object.entries(it.u).map(([name, value]) => ({ name, value }))
+];
+var finish = (builder, token, sig) => builder.attachedTo(token.id).visible(token.visible).zIndex(0).disableAutoZIndex(true).locked(true).disableHit(true).name("Spell effect").metadata({ [KEY4]: sig });
+function onToken(token, bounds, spell, i, sig, fade, dpi) {
+  const loop = CREATURE_LOOPS[spell], it = loop.items[i];
+  const unit = it.w > AURA_SQUARES ? dpi : Math.max(bounds.width, bounds.height);
+  const w = it.w * unit, h = it.h * unit, x = bounds.center.x + it.dx * unit - w / 2, y = bounds.center.y + it.dy * unit - h / 2;
+  return finish(buildEffect().effectType("STANDALONE").width(w).height(h).position({ x, y }).sksl(SHADERS[it.s]).uniforms(uniforms(loop, it, fade)).layer(it.ground ? "MOUNT" : "ATTACHMENT").disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]), token, sig).build();
+}
+function onZone(prop, spell, sig, fade) {
+  const loop = ZONE_LOOPS[spell];
+  return finish(buildEffect().effectType("ATTACHMENT").position(prop.position).rotation(prop.rotation).sksl(SHADERS[loop.s]).uniforms(uniforms(loop, loop, fade)).layer("ATTACHMENT").disableAttachmentBehavior(["COPY"]), prop, sig).build();
+}
+async function draw3() {
+  if (!await lib_default.scene.isReady()) {
+    settled = false;
+    return;
+  }
+  const marked = markedTokens(state4, NAMES);
+  const seen = (t) => role5 === "GM" || t.visible;
+  const tokens = marked.size ? (await lib_default.scene.items.getItems([...marked.keys()])).filter(seen) : [];
+  const zones = (await lib_default.scene.items.getItems((i) => ZONE_LOOPS[i.metadata?.[ZONE_KEY]?.spell])).filter(seen);
+  const dpi = tokens.length ? await lib_default.scene.grid.getDpi() : 0;
+  const want = /* @__PURE__ */ new Map();
+  for (const t of tokens) {
+    const b = await lib_default.scene.items.getItemBounds([t.id]);
+    for (const spell of marked.get(t.id)) CREATURE_LOOPS[spell].items.forEach((_, i) => {
+      const sig = [t.id, spell, i, Math.round(b.width), t.visible].join("|");
+      want.set(sig, (fade) => onToken(t, b, spell, i, sig, fade, dpi));
+    });
+  }
+  for (const z of zones) {
+    const spell = z.metadata[ZONE_KEY].spell, sig = [z.id, spell, z.visible].join("|");
+    want.set(sig, (fade) => onZone(z, spell, sig, fade));
+  }
+  const have = await lib_default.scene.local.getItems((i) => i.metadata?.[KEY4] !== void 0);
+  const old = have.filter((i) => !want.has(i.metadata[KEY4])).map((i) => i.id);
+  const drawn2 = new Set(have.map((i) => i.metadata[KEY4]));
+  const add = [...want].filter(([sig]) => !drawn2.has(sig)).map(([, build]) => build(settled ? 0 : 1));
+  if (old.length) await lib_default.scene.local.deleteItems(old);
+  if (add.length) {
+    await lib_default.scene.local.addItems(add);
+    if (settled) for (const it of add) fading.set(it.id, performance.now());
+  }
+  settled = true;
+}
+async function sync3() {
+  if (busy4) {
+    again4 = true;
+    return;
+  }
+  busy4 = true;
+  try {
+    do {
+      again4 = false;
+      await draw3();
+    } while (again4);
+  } catch (err) {
+    console.error("Encounter Builder: could not draw the spell effects", err);
+  } finally {
+    busy4 = false;
+  }
+}
+var stepping = false;
+setInterval(async () => {
+  if (stepping || !fading.size) return;
+  stepping = true;
+  const now = performance.now(), fade = /* @__PURE__ */ new Map();
+  for (const [id, start] of fading) {
+    const k = Math.min(1, (now - start) / (FADE_SECONDS * 1e3));
+    fade.set(id, k);
+    if (k >= 1) fading.delete(id);
+  }
+  try {
+    await lib_default.scene.local.updateItems([...fade.keys()], (items) => {
+      for (const it of items) it.uniforms.find((u) => u.name === "fade").value = fade.get(it.id);
+    }, true);
+  } catch {
+  }
+  stepping = false;
+}, FRAME_MS3);
+async function startSpellFx() {
+  role5 = await lib_default.player.getRole();
+  lib_default.player.onChange((p) => {
+    if (p.role !== role5) {
+      role5 = p.role;
+      sync3();
+    }
+  });
+  state4 = (await lib_default.room.getMetadata())[TRACKER_KEY] || null;
+  lib_default.room.onMetadataChange((m) => {
+    state4 = m[TRACKER_KEY] || null;
+    sync3();
+  });
+  lib_default.scene.onReadyChange((ready2) => {
+    if (!ready2) {
+      settled = false;
+      fading.clear();
+    }
+    sync3();
+  });
+  let timer = null;
+  lib_default.scene.items.onChange(() => {
+    clearTimeout(timer);
+    timer = setTimeout(sync3, 200);
+  });
+  sync3();
+}
+
+// src/obr/zones.js
+var TOOL = `${EXT}/zone-tool`;
+var MODE = `${EXT}/zone-place`;
+var MENU2 = `${EXT}/zone-menu`;
+var MOVE = "rodeo.owlbear.tool/move";
+var SQUARE = 64;
+var placing = null;
+function zoneProp(spell, position) {
+  const { w, h } = ZONE_LOOPS[spell], width = Math.round(w * SQUARE), height = Math.round(h * SQUARE);
+  return buildImage({ url: new URL("zone-handle.png", location.href).href, width, height, mime: "image/png" }, { dpi: SQUARE, offset: { x: width / 2, y: height / 2 } }).name(spell).position(position).layer("PROP").metadata({ [ZONE_KEY]: { spell } }).build();
+}
+async function startPlacing(spell) {
+  if (!ZONE_LOOPS[spell]) return;
+  if (placing) await finish2();
+  await lib_default.player.deselect();
+  const back = await lib_default.tool.getActiveTool().catch(() => MOVE);
+  placing = { spell, back: back === TOOL ? MOVE : back };
+  await addTool();
+  await lib_default.tool.activateTool(TOOL);
+  lib_default.notification.show(`Click where ${spell} goes (Esc stops).`, "DEFAULT");
+}
+async function finish2() {
+  if (!placing) return;
+  const { back } = placing;
+  placing = null;
+  await lib_default.tool.activateTool(back).catch(() => lib_default.tool.activateTool(MOVE)).catch(() => {
+  });
+  await lib_default.tool.removeMode(MODE).catch(() => {
+  });
+  await lib_default.tool.remove(TOOL).catch(() => {
+  });
+}
+async function place(position) {
+  if (!placing) return;
+  const prop = zoneProp(placing.spell, position);
+  await lib_default.scene.items.addItems([prop]);
+  await finish2();
+  await lib_default.player.select([prop.id]);
+}
+async function addTool() {
+  const icon = new URL("../logo/logo-64.png", location.href).href;
+  try {
+    await lib_default.tool.create({ id: TOOL, icons: [{ icon, label: "Placing a zone spell (Esc stops)", filter: { roles: ["GM"] } }], defaultMode: MODE });
+    await lib_default.tool.createMode({
+      id: MODE,
+      icons: [{ icon, label: "Click where the zone goes", filter: { activeTools: [TOOL] } }],
+      cursors: [{ cursor: "crosshair" }],
+      onToolClick: (ctx, ev) => {
+        place(ev.pointerPosition);
+        return false;
+      },
+      onKeyDown: (ctx, ev) => {
+        if (ev.key === "Escape") finish2();
+      },
+      onDeactivate: () => finish2()
+      // the GM picked another tool
+    });
+  } catch (err) {
+    console.error("Encounter Builder: could not set up the zone tool", err);
+  }
+}
+async function startZones() {
+  const icon = new URL("../logo/logo-64.png", location.href).href;
+  lib_default.broadcast.onMessage(ZONE_PICK, ({ data }) => {
+    startPlacing(data?.spell).catch((err) => console.error("Encounter Builder: could not place a zone", err));
+  });
+  try {
+    await lib_default.contextMenu.create({
+      id: MENU2,
+      icons: [{ icon, label: "Zone spell", filter: { roles: ["GM"], max: 1, every: [{ key: "layer", value: "MAP" }] } }],
+      embed: { url: new URL("zone-menu.html", location.href).href, height: 262 }
+    });
+  } catch (err) {
+    console.error("Encounter Builder: could not add zone spells to Owlbear", err);
+  }
 }
 
 // src/obr/whisper.js
@@ -4892,9 +5131,9 @@ function spots(centre, n, step) {
 // src/obr/latest-writer.js
 function latestWriter(write, { onStatus = () => {
 }, wait = (ms) => new Promise((r) => setTimeout(r, ms)), firstDelay = 1e3, maxDelay = 8e3 } = {}) {
-  let next = null, busy4 = false, failing = false;
+  let next = null, busy5 = false, failing = false;
   async function run() {
-    busy4 = true;
+    busy5 = true;
     let delay = firstDelay;
     while (next) {
       const { value } = next;
@@ -4916,17 +5155,17 @@ function latestWriter(write, { onStatus = () => {
         delay = Math.min(delay * 2, maxDelay);
       }
     }
-    busy4 = false;
+    busy5 = false;
   }
   return (value) => {
     next = { value };
-    if (!busy4) run();
+    if (!busy5) run();
   };
 }
 
 // src/obr/background.js
 var whispers = null;
-var role5 = "PLAYER";
+var role6 = "PLAYER";
 var settings3 = {};
 var gm = null;
 var gmSeen = 0;
@@ -4941,7 +5180,7 @@ var post = (target, msg) => {
   }
 };
 var linked = () => !!gm && Date.now() - gmSeen < 8e3;
-var writeTracker = latestWriter((state4) => lib_default.room.setMetadata({ [TRACKER_KEY]: state4 }), {
+var writeTracker = latestWriter((state5) => lib_default.room.setMetadata({ [TRACKER_KEY]: state5 }), {
   onStatus: (s) => {
     if (s.error) console.error("Encounter Builder: Owlbear refused a tracker update", s.error);
     if (gm) post(gm, { type: "trackerStatus", ...s });
@@ -4958,7 +5197,7 @@ function status(force = false) {
 window.addEventListener("message", async (e) => {
   if (e.origin !== location.origin || !e.data?.eb || !e.source) return;
   await ready;
-  if (role5 !== "GM") return;
+  if (role6 !== "GM") return;
   const m = e.data;
   if (m.type === "hello") {
     gm = e.source;
@@ -4987,35 +5226,35 @@ window.addEventListener("message", async (e) => {
   else if (m.type === "addTokens") post(e.source, { type: "tokensAdded", id: m.id, ...await addTokens(m.list || []).catch((err) => ({ error: String(err?.message || err) })) });
   else if (m.type === "whisper") post(e.source, { type: "whisperResult", id: m.id, ...await sendWhisper(m).catch((err) => ({ error: String(err?.message || err) })) });
 });
-var TOOL = `${EXT}/link-tool`;
-var MODE = `${EXT}/pick`;
+var TOOL2 = `${EXT}/link-tool`;
+var MODE2 = `${EXT}/pick`;
 var LINK_KEY = `${EXT}/link`;
-var MOVE = "rodeo.owlbear.tool/move";
+var MOVE2 = "rodeo.owlbear.tool/move";
 var pick = null;
 async function startPick(source, { id, names }) {
   if (pick) await finishPick("replaced");
   if (!names?.length) return;
-  pick = { id, names, at: 0, picked: /* @__PURE__ */ new Set(), source, back: await lib_default.tool.getActiveTool().catch(() => MOVE) };
-  if (pick.back === TOOL) pick.back = MOVE;
+  pick = { id, names, at: 0, picked: /* @__PURE__ */ new Set(), source, back: await lib_default.tool.getActiveTool().catch(() => MOVE2) };
+  if (pick.back === TOOL2) pick.back = MOVE2;
   await addLinkTool();
-  await lib_default.tool.activateTool(TOOL);
+  await lib_default.tool.activateTool(TOOL2);
 }
 async function finishPick(reason) {
   if (!pick) return;
   const { id, source, back } = pick;
   pick = null;
   post(source, { type: "pickDone", id, reason });
-  await lib_default.tool.activateTool(back).catch(() => lib_default.tool.activateTool(MOVE)).catch(() => {
+  await lib_default.tool.activateTool(back).catch(() => lib_default.tool.activateTool(MOVE2)).catch(() => {
   });
   await removeLinkTool();
 }
 async function addLinkTool() {
   const icon = new URL("../logo/logo-64.png", location.href).href;
   try {
-    await lib_default.tool.create({ id: TOOL, icons: [{ icon, label: "Linking a token (Esc stops)", filter: { roles: ["GM"] } }], defaultMode: MODE });
+    await lib_default.tool.create({ id: TOOL2, icons: [{ icon, label: "Linking a token (Esc stops)", filter: { roles: ["GM"] } }], defaultMode: MODE2 });
     await lib_default.tool.createMode({
-      id: MODE,
-      icons: [{ icon, label: "Click a token to link it", filter: { activeTools: [TOOL] } }],
+      id: MODE2,
+      icons: [{ icon, label: "Click a token to link it", filter: { activeTools: [TOOL2] } }],
       cursors: [{ cursor: "crosshair" }],
       onToolClick: (ctx, ev) => {
         onTokenClick(ev.target);
@@ -5032,9 +5271,9 @@ async function addLinkTool() {
   }
 }
 async function removeLinkTool() {
-  await lib_default.tool.removeMode(MODE).catch(() => {
+  await lib_default.tool.removeMode(MODE2).catch(() => {
   });
-  await lib_default.tool.remove(TOOL).catch(() => {
+  await lib_default.tool.remove(TOOL2).catch(() => {
   });
 }
 async function onTokenClick(target) {
@@ -5108,7 +5347,7 @@ async function addTokens(list) {
 }
 var lastTokens = "";
 async function sendTokens(force = false) {
-  if (role5 !== "GM" || !linked() || !await lib_default.scene.isReady()) return;
+  if (role6 !== "GM" || !linked() || !await lib_default.scene.isReady()) return;
   const tokens = (await lib_default.scene.items.getItems((i) => i.layer === "CHARACTER" || i.layer === "MOUNT")).map((i) => ({ id: i.id, name: i.name || "", label: i.text?.plainText || "", visible: i.visible, look: lookOf(i) }));
   const sig = JSON.stringify(tokens);
   if (!force && sig === lastTokens) return;
@@ -5120,9 +5359,9 @@ var iconUrl = (id) => new URL(`../conditions%20symbols/png-128/${id}.png`, locat
 var syncRunning = false;
 var syncNext;
 var lastState = null;
-async function syncMarkers(state4) {
-  lastState = state4;
-  syncNext = state4;
+async function syncMarkers(state5) {
+  lastState = state5;
+  syncNext = state5;
   if (syncRunning) return;
   syncRunning = true;
   try {
@@ -5137,11 +5376,11 @@ async function syncMarkers(state4) {
     syncRunning = false;
   }
 }
-async function drawMarkers(state4) {
-  if (role5 !== "GM" || !await lib_default.scene.isReady()) return;
+async function drawMarkers(state5) {
+  if (role6 !== "GM" || !await lib_default.scene.isReady()) return;
   const want = /* @__PURE__ */ new Map();
-  for (const r of state4?.order || []) for (const [token, marks] of Object.entries(r.tm || {})) want.set(token, marks);
-  for (const [token, marks] of Object.entries(state4?.tmExtra || {})) want.set(token, marks);
+  for (const r of state5?.order || []) for (const [token, marks] of Object.entries(r.tm || {})) want.set(token, marks);
+  for (const [token, marks] of Object.entries(state5?.tmExtra || {})) want.set(token, marks);
   const tokens = new Map((want.size ? await lib_default.scene.items.getItems([...want.keys()]) : []).map((t) => [t.id, t]));
   const have = /* @__PURE__ */ new Map();
   const remove = [];
@@ -5176,19 +5415,19 @@ async function markersFor(token, marks, sig, dpi) {
   const extra = row.length - shown.length;
   const count = shown.length + (extra ? 1 : 0);
   const at = (k) => ({ x: b.center.x - step * (count - 1) / 2 + k * step, y: b.min.y + size * 0.3 });
-  const finish = (builder, name) => builder.attachedTo(token.id).layer("ATTACHMENT").locked(true).disableHit(true).visible(token.visible).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).name(name).metadata({ [MARK_KEY]: { sig } }).build();
+  const finish3 = (builder, name) => builder.attachedTo(token.id).layer("ATTACHMENT").locked(true).disableHit(true).visible(token.visible).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).name(name).metadata({ [MARK_KEY]: { sig } }).build();
   const badge = (text, k) => buildLabel().plainText(text).fontSize(size * 0.42).fontWeight(700).padding(size * 0.12).cornerRadius(size / 2).backgroundColor("#3a3d45").backgroundOpacity(0.95).fillColor("#ffffff").pointerWidth(0).pointerHeight(0).position({ ...at(k), y: at(k).y + size * 0.35 });
-  const items = shown.map((m, k) => m.i ? finish(buildImage({ url: iconUrl(m.i), width: 128, height: 128, mime: "image/png" }, { dpi: 128, offset: { x: 64, y: 64 } }).scale({ x: size / dpi, y: size / dpi }).position(at(k)), `Condition: ${m.n}`) : finish(badge(m.t, k), `Condition: ${m.n}`));
-  if (extra) items.push(finish(badge(`+${extra}`, shown.length), `Conditions: ${extra} more`));
+  const items = shown.map((m, k) => m.i ? finish3(buildImage({ url: iconUrl(m.i), width: 128, height: 128, mime: "image/png" }, { dpi: 128, offset: { x: 64, y: 64 } }).scale({ x: size / dpi, y: size / dpi }).position(at(k)), `Condition: ${m.n}`) : finish3(badge(m.t, k), `Condition: ${m.n}`));
+  if (extra) items.push(finish3(badge(`+${extra}`, shown.length), `Conditions: ${extra} more`));
   if (row.length < marks.length) {
-    items.push(finish(buildImage({ url: new URL("bloodied-mark.png", location.href).href, width: 128, height: 128, mime: "image/png" }, { dpi: 128, offset: { x: 64, y: 64 } }).scale({ x: size * 0.6 / dpi, y: size * 0.6 / dpi }).position({ x: b.center.x, y: b.max.y - size * 0.22 }), `Condition: ${BLOODIED}`));
+    items.push(finish3(buildImage({ url: new URL("bloodied-mark.png", location.href).href, width: 128, height: 128, mime: "image/png" }, { dpi: 128, offset: { x: 64, y: 64 } }).scale({ x: size * 0.6 / dpi, y: size * 0.6 / dpi }).position({ x: b.center.x, y: b.max.y - size * 0.22 }), `Condition: ${BLOODIED}`));
   }
   return items;
 }
 lib_default.onReady(async () => {
-  role5 = await lib_default.player.getRole();
+  role6 = await lib_default.player.getRole();
   lib_default.player.onChange((p) => {
-    role5 = p.role;
+    role6 = p.role;
   });
   settings3 = (await lib_default.room.getMetadata())[SETTINGS_KEY] || {};
   lib_default.room.onMetadataChange((md) => {
@@ -5198,13 +5437,13 @@ lib_default.onReady(async () => {
     if (linked()) post(gm, { type: "settings", settings: settings3 });
   });
   lib_default.broadcast.onMessage(LOCAL_COMMAND, ({ data }) => {
-    if (role5 === "GM" && linked()) post(gm, { type: "command", cmd: data?.cmd });
+    if (role6 === "GM" && linked()) post(gm, { type: "command", cmd: data?.cmd });
   });
   lib_default.broadcast.onMessage(LOCAL_ASK, () => status(true));
   removeLinkTool();
   setInterval(() => status(), 2e3);
   const redraw = async () => {
-    if (role5 === "GM") syncMarkers((await lib_default.room.getMetadata())[TRACKER_KEY] ?? null);
+    if (role6 === "GM") syncMarkers((await lib_default.room.getMetadata())[TRACKER_KEY] ?? null);
   };
   lib_default.scene.onReadyChange((ready2) => {
     if (ready2) {
@@ -5214,11 +5453,11 @@ lib_default.onReady(async () => {
   });
   let resizeTimer = null, tokensTimer = null;
   lib_default.scene.items.onChange(() => {
-    if (role5 === "GM") {
+    if (role6 === "GM") {
       clearTimeout(tokensTimer);
       tokensTimer = setTimeout(() => sendTokens(), 400);
     }
-    if (role5 !== "GM" || !lastState) return;
+    if (role6 !== "GM" || !lastState) return;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => syncMarkers(lastState), 250);
   });
@@ -5227,7 +5466,9 @@ lib_default.onReady(async () => {
   startMovement();
   startBloodied();
   startTokenFx();
-  whispers = startWhispers({ isGM: () => role5 === "GM", toWindow: (msg) => {
+  startSpellFx();
+  startZones();
+  whispers = startWhispers({ isGM: () => role6 === "GM", toWindow: (msg) => {
     if (!linked()) return false;
     post(gm, msg);
     return true;

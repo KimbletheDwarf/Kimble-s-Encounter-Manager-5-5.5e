@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Zone spell</title>
+  <link rel="stylesheet" href="popover.css">
+  <style>
+    body { padding: 6px 8px 8px; }
+    #find { width: 100%; font: inherit; color: var(--text); background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; outline: none; }
+    #find:focus { border-color: var(--accent); }
+    #list { margin-top: 6px; height: 204px; overflow-y: auto; color: var(--muted); }
+    #list button { display: block; width: 100%; text-align: left; border: 0; background: none; padding: 5px 8px; }
+    #list button.on { background: rgba(187, 153, 255, 0.18); }
+  </style>
+</head>
+<body>
+  <input id="find" type="text" placeholder="Search zone spells" autocomplete="off" spellcheck="false" autofocus>
+  <div id="list"></div>
+  <script type="module" src="zone-menu.js"></script>
+</body>
+</html>

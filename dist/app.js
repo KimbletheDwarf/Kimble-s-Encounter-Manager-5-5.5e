@@ -65508,6 +65508,28 @@ var init_loot_dialog = __esm({
   }
 });
 
+// src/spell-loop-names.js
+var CREATURE_SPELLS;
+var init_spell_loop_names = __esm({
+  "src/spell-loop-names.js"() {
+    CREATURE_SPELLS = ["Aid", "Arcane Shield", "Aura of Life", "Bane", "Barkskin", "Beacon of Hope", "Blindness/Deafness", "Charm Person", "Confusion", "Death Ward", "Enhance Ability", "Ensnaring Strike", "Flame Blade", "Foresight", "Freedom of Movement", "Haste", "Heat Metal", "Heroes\u2019 Feast", "Heroism", "Hex", "Holy Aura", "Hypnotic Pattern", "Mage Armor", "Magic Weapon", "Mind Blank", "Nondetection", "Protection from Energy", "Protection from Evil and Good", "Protection from Poison", "Ray of Sickness", "Regenerate", "Resistance", "Sanctuary", "Slow", "Spider Climb", "Starry Wisp", "Stoneskin", "Sunbeam", "Sunburst", "Vicious Mockery", "Vitriolic Sphere", "Warding Bond"];
+  }
+});
+
+// src/spell-search.js
+function matchSpells(names, text) {
+  const q = plain4(text);
+  if (!q) return [...names];
+  const hits = names.filter((n) => plain4(n).includes(q));
+  return [...hits.filter((n) => plain4(n).startsWith(q)), ...hits.filter((n) => !plain4(n).startsWith(q))];
+}
+var plain4;
+var init_spell_search = __esm({
+  "src/spell-search.js"() {
+    plain4 = (s) => s.toLowerCase().replace(/[’‘]/g, "'").replace(/[^a-z0-9']+/g, " ").trim();
+  }
+});
+
 // src/condition-icons.js
 var CONDITION_ICONS;
 var init_condition_icons = __esm({
@@ -65702,6 +65724,58 @@ function numberPop(anchor, { title: title2, hint, value = "", min = 0, onEnter }
   input.focus();
   input.select();
 }
+function spellPop(anchor, has2, onPick) {
+  closePop();
+  const names = CREATURE_SPELLS.filter((s) => !has2.includes(s));
+  const input = h("input.spell-find", { type: "text", placeholder: "Search spells", autocomplete: "off", spellcheck: false });
+  const list = h("div.spell-list");
+  const box = h("div.pop-menu.spell-pop", input, list);
+  let shown4 = [], at2 = 0;
+  const take = (name) => {
+    if (!name) return;
+    closePop();
+    onPick(name);
+  };
+  const show3 = () => {
+    shown4 = matchSpells(names, input.value);
+    at2 = Math.min(at2, Math.max(0, shown4.length - 1));
+    list.replaceChildren(...shown4.length ? shown4.map((name, i) => h(`button${i === at2 ? ".on" : ""}`, { onclick: () => take(name) }, name)) : [h("div.hint", "No spell by that name.")]);
+    list.querySelector(".on")?.scrollIntoView({ block: "nearest" });
+  };
+  show3();
+  const r = anchor.getBoundingClientRect();
+  document.body.append(box);
+  box.style.left = `${Math.min(window.innerWidth - box.offsetWidth - 8, Math.max(8, r.left))}px`;
+  box.style.top = `${r.bottom + box.offsetHeight + 8 > window.innerHeight ? Math.max(8, r.top - box.offsetHeight - 4) : r.bottom + 4}px`;
+  const away = (e2) => {
+    if (!box.contains(e2.target)) closePop();
+  };
+  setTimeout(() => document.addEventListener("mousedown", away), 0);
+  closePop = () => {
+    box.remove();
+    document.removeEventListener("mousedown", away);
+    closePop = () => {
+    };
+  };
+  input.addEventListener("input", () => {
+    at2 = 0;
+    show3();
+  });
+  input.addEventListener("keydown", (e2) => {
+    if (e2.key === "Escape") {
+      e2.stopPropagation();
+      closePop();
+    } else if (e2.key === "Enter") {
+      e2.preventDefault();
+      take(shown4[at2]);
+    } else if (e2.key === "ArrowDown" || e2.key === "ArrowUp") {
+      e2.preventDefault();
+      if (shown4.length) at2 = (at2 + (e2.key === "ArrowDown" ? 1 : -1) + shown4.length) % shown4.length;
+      show3();
+    }
+  });
+  input.focus();
+}
 function condChips(c2, { add: add2, remove: remove2, timed = false, setRounds }) {
   const left = (q) => c2.timers?.[q]?.left;
   return h(
@@ -65725,7 +65799,11 @@ function condChips(c2, { add: add2, remove: remove2, timed = false, setRounds })
       e2.stopPropagation();
       const anchor = e2.currentTarget;
       popMenu(anchor, [.../* @__PURE__ */ new Set([...conditionNames(), BLOODIED, "Concentrating", "Dodging"])].filter((q) => !rowMarks(c2, bloodiedAt()).includes(q)).map((q) => [[condIcon(q), q], () => timed ? roundsPop(anchor, q, 0, (n) => add2(q, n)) : add2(q), "", { dataset: { cond: q } }]));
-    } }, "+ Condition")
+    } }, "+ Condition"),
+    isOut(c2) ? null : h("button.cond.add", { title: "Add a spell that stays in effect. It plays on their linked token until you remove it.", onclick: (e2) => {
+      e2.stopPropagation();
+      spellPop(e2.currentTarget, c2.conditions, (q) => add2(q, 0));
+    } }, "+ Spell")
   );
 }
 function act(fn, { redraw = true } = {}) {
@@ -66212,7 +66290,9 @@ function memberConditions(anchor, c2, i) {
   popMenu(anchor, [.../* @__PURE__ */ new Set([...conditionNames(), BLOODIED, "Concentrating"])].map((q) => [[has2.includes(q) ? "\u2713 " : "", condIcon(q), q], () => act((x) => {
     const m = find(x, c2.key).members[i];
     m.conditions = m.conditions.includes(q) ? m.conditions.filter((z) => z !== q) : [...m.conditions, q];
-  }), "", { dataset: { cond: q } }]));
+  }), "", { dataset: { cond: q } }]).concat([["+ Spell", () => spellPop(anchor, has2, (q) => act((x) => {
+    find(x, c2.key).members[i].conditions.push(q);
+  }))]]));
 }
 function minionDialog(c2, change = (fn) => act((x) => fn(find(x, c2.key)))) {
   const left = standing(c2).length;
@@ -67044,6 +67124,8 @@ var init_runner = __esm({
     init_loot_dialog();
     init_dice();
     init_conditions();
+    init_spell_loop_names();
+    init_spell_search();
     init_condition_icon();
     init_format();
     init_encounters();
@@ -72120,7 +72202,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.13.0";
+var version2 = "1.14.0";
 
 // src/app.js
 var TABS = [
