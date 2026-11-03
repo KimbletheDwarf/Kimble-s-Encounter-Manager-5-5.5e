@@ -3550,7 +3550,7 @@ var CHAT_UPDATED = `${EXT}/chat-updated`;
 var MESSAGE_MODAL = `${EXT}/message`;
 
 // src/spell-loop-names.js
-var ZONE_SPELLS = ["Black Tentacles", "Cloudkill", "Flaming Sphere", "Gust of Wind", "Magic Circle", "Spike Growth", "Stinking Cloud", "Wall of Ice", "Wall of Thorns", "Wind Wall"];
+var ZONE_SPELLS = ["Arcane Shield", "Black Tentacles", "Cloudkill", "Darkness", "Entangle", "Flaming Sphere", "Fog Cloud", "Grease", "Gust of Wind", "Mage Hand", "Magic Circle", "Moonbeam", "Silence", "Sleet Storm", "Spike Growth", "Spiritual Weapon", "Stinking Cloud", "Void Glyph", "Void Shield", "Wall of Fire \u2014 20 ft Line", "Wall of Fire \u2014 20 ft Ring", "Wall of Ice", "Wall of Thorns", "Web", "Wind Wall"];
 
 // src/spell-search.js
 var plain = (s) => s.toLowerCase().replace(/[’‘]/g, "'").replace(/[^a-z0-9']+/g, " ").trim();

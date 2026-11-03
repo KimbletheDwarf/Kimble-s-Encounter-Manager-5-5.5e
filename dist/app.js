@@ -72202,7 +72202,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.14.1";
+var version2 = "1.14.2";
 
 // src/app.js
 var TABS = [
