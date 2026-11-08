@@ -36855,6 +36855,79 @@ var init_conditions_data = __esm({
   }
 });
 
+// src/library-pack.js
+function cleanDeleted(list) {
+  const out = /* @__PURE__ */ new Map();
+  for (const t of Array.isArray(list) ? list : []) {
+    if (!t || !DELETABLE.includes(t.kind) || typeof t.id !== "string" || !ID.test(t.id) || !(Number(t.deleted) > 0)) continue;
+    const key3 = `${t.kind}/${t.id}`, at2 = Number(t.deleted);
+    if (!out.has(key3) || out.get(key3).deleted < at2) out.set(key3, { kind: t.kind, id: t.id, deleted: at2 });
+  }
+  return [...out.values()];
+}
+function makePack(lists, now = /* @__PURE__ */ new Date()) {
+  const pack = { format: PACK_FORMAT, version: 1, exported: now.toISOString() };
+  for (const k of PACK_KINDS) pack[k] = (lists[k] || []).map((x) => structuredClone(x));
+  const deleted = cleanDeleted(lists.tombstones);
+  if (deleted.length) pack.deleted = deleted;
+  return pack;
+}
+function readPack(text) {
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    return { error: "That file is not a library pack (it is not readable JSON)." };
+  }
+  if (!data || data.format !== PACK_FORMAT) return { error: "That file is not an Encounter Builder library pack." };
+  if (!(data.version >= 1)) return { error: "That library pack has no version number." };
+  if (data.version > 1) return { error: "That library pack was made by a newer version of Encounter Builder. Update this one first." };
+  const pack = { ...data }, skipped2 = {};
+  for (const k of PACK_KINDS) {
+    const list = Array.isArray(data[k]) ? data[k] : [];
+    pack[k] = list.filter((x) => x && typeof x === "object" && !Array.isArray(x) && typeof x.id === "string" && ID.test(x.id));
+    if (list.length > pack[k].length) skipped2[k] = list.length - pack[k].length;
+  }
+  pack.deleted = cleanDeleted(data.deleted);
+  return { pack, skipped: skipped2 };
+}
+function planImport(pack, current3) {
+  const plan = { tombstones: cleanDeleted([...current3.tombstones || [], ...pack.deleted || []]) };
+  for (const k of PACK_KINDS) {
+    const mine3 = new Map((current3[k] || []).map((x) => [x.id, x]));
+    const deletedThere = deletedMap(pack.deleted, k), deletedHere = deletedMap(current3.tombstones, k);
+    const p = plan[k] = { add: [], newer: [], older: [], same: [], remove: [], gone: [] };
+    for (const x of pack[k] || []) {
+      const have = mine3.get(x.id);
+      if (!have && deletedHere.get(x.id) > (x.updated || 0)) p.gone.push(x);
+      else if (!have) p.add.push(x);
+      else if ((x.updated || 0) > (have.updated || 0)) p.newer.push(x);
+      else if ((x.updated || 0) < (have.updated || 0)) p.older.push(x);
+      else p.same.push(x);
+    }
+    for (const have of current3[k] || []) if (deletedThere.get(have.id) > (have.updated || 0)) p.remove.push(have);
+  }
+  return plan;
+}
+function countText(by) {
+  const parts = PACK_KINDS.map((k) => [k, Array.isArray(by[k]) ? by[k].length : by[k] || 0]).filter(([, n]) => n).map(([k, n]) => `${n} ${n === 1 ? LABEL[k].slice(0, -1) : LABEL[k]}`);
+  return parts.length ? parts.join(", ") : "nothing";
+}
+var PACK_FORMAT, PACK_KINDS, ID, DELETABLE, deletedMap, LABEL, packFileName, toRemove, toImport;
+var init_library_pack = __esm({
+  "src/library-pack.js"() {
+    PACK_FORMAT = "encounter-builder-library";
+    PACK_KINDS = ["monsters", "party", "encounters", "conditions", "loot", "items", "spells"];
+    ID = /^[a-z0-9-]{1,80}$/;
+    DELETABLE = PACK_KINDS.filter((k) => k !== "loot");
+    deletedMap = (list, kind2) => new Map(cleanDeleted(list).filter((t) => t.kind === kind2).map((t) => [t.id, t.deleted]));
+    LABEL = { monsters: "monsters", party: "characters", encounters: "encounters", conditions: "conditions", loot: "loot tables", items: "items", spells: "spells" };
+    packFileName = (now = /* @__PURE__ */ new Date()) => `encounter-builder-library-${now.toISOString().slice(0, 10)}.json`;
+    toRemove = (plan) => Object.fromEntries(PACK_KINDS.map((k) => [k, plan[k].remove]));
+    toImport = (plan, mode3) => Object.fromEntries(PACK_KINDS.map((k) => [k, [...plan[k].add, ...plan[k].newer, ...mode3 === "all" ? plan[k].older : []]]));
+  }
+});
+
 // src/store.js
 var store_exports = {};
 __export(store_exports, {
@@ -36869,6 +36942,7 @@ __export(store_exports, {
   findMonster: () => findMonster,
   flushSaves: () => flushSaves,
   isHomebrew: () => isHomebrew,
+  keepTombstones: () => keepTombstones,
   loadLibrary: () => loadLibrary,
   newId: () => newId,
   onChange: () => onChange,
@@ -36967,7 +37041,15 @@ async function flushSaves() {
   for (const t of waiting2) clearTimeout(t.timer);
   await Promise.allSettled([...waiting2.map((t) => t.write()), ...writing]);
 }
-async function remove(kind2, item) {
+function keepTombstones(list) {
+  store.tombstones = cleanDeleted([...store.tombstones, ...list]);
+  try {
+    localStorage.setItem(TOMBSTONES, JSON.stringify(store.tombstones));
+  } catch {
+  }
+}
+async function remove(kind2, item, { record: record2 = true } = {}) {
+  if (record2 && DELETABLE.includes(kind2)) keepTombstones([{ kind: kind2, id: item.id, deleted: Date.now() }]);
   const key3 = `${kind2}/${item.id}`;
   if (timers.has(key3)) {
     clearTimeout(timers.get(key3).timer);
@@ -36978,11 +37060,12 @@ async function remove(kind2, item) {
   await window.desktop.remove(kind2, item.id);
   emit(kind2);
 }
-var CONDITIONS_SRD, listeners, store, onChange, emit, arr, NORMALIZE, timers, writing, pending, statusListeners, onSaveStatus, status, allMonsters, findMonster, findCharacter, isHomebrew, allItems, findItem, allSpells, ITEM_CATEGORIES;
+var CONDITIONS_SRD, listeners, store, onChange, emit, arr, NORMALIZE, timers, writing, pending, statusListeners, onSaveStatus, status, TOMBSTONES, allMonsters, findMonster, findCharacter, isHomebrew, allItems, findItem, allSpells, ITEM_CATEGORIES;
 var init_store = __esm({
   "src/store.js"() {
     init_format();
     init_conditions_data();
+    init_library_pack();
     CONDITIONS_SRD = "5.2.1";
     listeners = /* @__PURE__ */ new Set();
     store = {
@@ -37005,6 +37088,8 @@ var init_store = __esm({
       // the user's own items (made in the Maker or the Items tab)
       loot: [],
       // the user's loot tables: edited or new themes (src/loot-data.js has the built-in ones)
+      tombstones: [],
+      // { kind, id, deleted }: what was deleted, so a load can't bring it back (src/library-pack.js)
       errors: []
     };
     onChange = (fn) => {
@@ -37056,6 +37141,14 @@ var init_store = __esm({
     statusListeners = /* @__PURE__ */ new Set();
     onSaveStatus = (fn) => statusListeners.add(fn);
     status = (s) => statusListeners.forEach((fn) => fn(s));
+    TOMBSTONES = "libraryTombstones";
+    store.tombstones = (() => {
+      try {
+        return cleanDeleted(JSON.parse(localStorage.getItem(TOMBSTONES) || "[]"));
+      } catch {
+        return [];
+      }
+    })();
     allMonsters = () => [...store.monsters, ...store.srd];
     findMonster = (id) => store.monsters.find((m) => m.id === id) || store.srd.find((m) => m.id === id);
     findCharacter = (id) => store.party.find((c2) => c2.id === id);
@@ -67569,56 +67662,7 @@ function render() {
 
 // src/app.js
 init_store();
-
-// src/library-pack.js
-var PACK_FORMAT = "encounter-builder-library";
-var PACK_KINDS = ["monsters", "party", "encounters", "conditions", "loot", "items", "spells"];
-var ID = /^[a-z0-9-]{1,80}$/;
-var LABEL = { monsters: "monsters", party: "characters", encounters: "encounters", conditions: "conditions", loot: "loot tables", items: "items", spells: "spells" };
-function makePack(lists, now = /* @__PURE__ */ new Date()) {
-  const pack = { format: PACK_FORMAT, version: 1, exported: now.toISOString() };
-  for (const k of PACK_KINDS) pack[k] = (lists[k] || []).map((x) => structuredClone(x));
-  return pack;
-}
-var packFileName = (now = /* @__PURE__ */ new Date()) => `encounter-builder-library-${now.toISOString().slice(0, 10)}.json`;
-function readPack(text) {
-  let data;
-  try {
-    data = JSON.parse(text);
-  } catch {
-    return { error: "That file is not a library pack (it is not readable JSON)." };
-  }
-  if (!data || data.format !== PACK_FORMAT) return { error: "That file is not an Encounter Builder library pack." };
-  if (!(data.version >= 1)) return { error: "That library pack has no version number." };
-  if (data.version > 1) return { error: "That library pack was made by a newer version of Encounter Builder. Update this one first." };
-  const pack = { ...data }, skipped2 = {};
-  for (const k of PACK_KINDS) {
-    const list = Array.isArray(data[k]) ? data[k] : [];
-    pack[k] = list.filter((x) => x && typeof x === "object" && !Array.isArray(x) && typeof x.id === "string" && ID.test(x.id));
-    if (list.length > pack[k].length) skipped2[k] = list.length - pack[k].length;
-  }
-  return { pack, skipped: skipped2 };
-}
-function planImport(pack, current3) {
-  const plan = {};
-  for (const k of PACK_KINDS) {
-    const mine3 = new Map((current3[k] || []).map((x) => [x.id, x]));
-    const p = plan[k] = { add: [], newer: [], older: [], same: [] };
-    for (const x of pack[k] || []) {
-      const have = mine3.get(x.id);
-      if (!have) p.add.push(x);
-      else if ((x.updated || 0) > (have.updated || 0)) p.newer.push(x);
-      else if ((x.updated || 0) < (have.updated || 0)) p.older.push(x);
-      else p.same.push(x);
-    }
-  }
-  return plan;
-}
-var toImport = (plan, mode3) => Object.fromEntries(PACK_KINDS.map((k) => [k, [...plan[k].add, ...plan[k].newer, ...mode3 === "all" ? plan[k].older : []]]));
-function countText(by) {
-  const parts = PACK_KINDS.map((k) => [k, Array.isArray(by[k]) ? by[k].length : by[k] || 0]).filter(([, n]) => n).map(([k, n]) => `${n} ${n === 1 ? LABEL[k].slice(0, -1) : LABEL[k]}`);
-  return parts.length ? parts.join(", ") : "nothing";
-}
+init_library_pack();
 
 // src/github-library.js
 var KEY = "githubLibrary";
@@ -72194,7 +72238,8 @@ var OWLBEAR_SWITCHES = [
   ["showPartyHp", "Show party HP to players", false, ""],
   ["showTurnDie", "Show the turn d20 on the active token", true, ""],
   ["trackMovement", "Track movement on the active token", true, 'A green trail with a dot every 5 ft and "15 / 30 ft" on the linked token whose turn it is. Right-click the token > Reset movement to start its turn again.'],
-  ["stopAtSpeed", "Stop movement at its speed", false, "A token can\u2019t be moved past its speed this turn."]
+  ["stopAtSpeed", "Stop movement at its speed", false, "A token can\u2019t be moved past its speed this turn."],
+  ["spellAnimations", "Show spell and zone animations", true, "The looping animations of spells on creatures and of zone spells, for everyone. Each player can also turn them off for their own screen, in the tracker panel."]
 ];
 var switchOn = (settings3, key3) => {
   const s = OWLBEAR_SWITCHES.find((x) => x[0] === key3);
@@ -72202,7 +72247,7 @@ var switchOn = (settings3, key3) => {
 };
 
 // src/obr/manifest.json
-var version2 = "1.14.3";
+var version2 = "1.14.4";
 
 // src/app.js
 var TABS = [
@@ -72471,28 +72516,35 @@ async function importLibrary(text, fileName, { onDone } = {}) {
   }, "primary"]]);
   const plan = planImport(pack, store);
   const sum = (key3) => Object.fromEntries(PACK_KINDS.map((k) => [k, plan[k][key3]]));
-  const add2 = sum("add"), newer = sum("newer"), older = sum("older"), same = sum("same");
+  const add2 = sum("add"), newer = sum("newer"), older = sum("older"), same = sum("same"), removed = sum("remove"), gone = sum("gone");
   const n = (by) => PACK_KINDS.reduce((t, k) => t + by[k].length, 0);
   const lines = [
     n(add2) ? h("li", h("strong", "New: "), countText(add2)) : null,
     n(newer) ? h("li", h("strong", "Changed since your copy: "), countText(newer), " (the file\u2019s copy replaces yours)") : null,
     n(older) ? h("li", h("strong", "Yours are newer: "), countText(older), " (kept, unless you choose Import everything)") : null,
+    n(removed) ? h("li", h("strong", "Deleted elsewhere: "), countText(removed), " (deleted here too)") : null,
     n(same) ? h("li.muted", "Already the same: ", countText(same)) : null,
+    n(gone) ? h("li.muted", "Deleted here, left out: ", countText(gone)) : null,
     Object.keys(skipped2).length ? h("li.muted", "Unreadable records left out: ", countText(skipped2)) : null
   ];
-  const localOnly = PACK_KINDS.some((k) => store[k].some((x) => !pack[k].some((y) => y.id === x.id)));
+  const localOnly = PACK_KINDS.some((k) => store[k].some((x) => !pack[k].some((y) => y.id === x.id))) || store.tombstones.some((t) => !pack.deleted.some((d) => d.kind === t.kind && d.id === t.id && d.deleted >= t.deleted));
   const run3 = async (mode3) => {
-    const items = toImport(plan, mode3);
+    const items = toImport(plan, mode3), gone2 = toRemove(plan);
+    keepTombstones(plan.tombstones);
+    for (const k of PACK_KINDS) for (const x of gone2[k]) await remove(k, x, { record: false });
     for (const k of PACK_KINDS) for (const x of items[k]) save(k, x, { delay: 0, touch: false });
     await flushSaves();
     await loadLibrary();
     go8(active || "maker");
-    modal("Library imported", h("p", `Imported ${countText(items)}.`), [["OK", () => {
+    modal("Library imported", h("p", `Imported ${countText(items)}.${n(removed) ? ` Deleted ${countText(removed)}.` : ""}`), [["OK", () => {
     }, "primary"]]);
     onDone?.({ mode: mode3, localNewer: localOnly || mode3 !== "all" && n(older) > 0 });
   };
-  const nothing = !n(add2) && !n(newer);
-  if (nothing) onDone?.({ mode: null, localNewer: localOnly || n(older) > 0 });
+  const nothing = !n(add2) && !n(newer) && !n(removed);
+  if (nothing) {
+    keepTombstones(plan.tombstones);
+    onDone?.({ mode: null, localNewer: localOnly || n(older) > 0 });
+  }
   modal(`Import ${fileName}`, h(
     "div",
     h("p.muted", `Exported ${pack.exported ? new Date(pack.exported).toLocaleString() : "at an unknown time"}.`),
@@ -72701,7 +72753,7 @@ function effectsSection() {
   const shown4 = h("span.fx-shake-value", `${fx.shake}%`);
   return [
     h("h4", "Token effects"),
-    h("p.muted", "When a linked token takes damage it shakes and flashes red; when it is healed it glows, with a swirl around it. Everyone in the room sees them."),
+    h("p.muted", "When a linked token takes damage it shakes and flashes red; when it is healed it glows, with a swirl around it. Everyone in the room sees them, unless a player turns them off for their own screen in the tracker panel. Switching them off here turns them off for everyone."),
     h("label.check-row", h("input", { type: "checkbox", checked: fx.on, onchange: (e2) => change({ on: e2.target.checked }) }), "Play effects on tokens"),
     h(
       "div.form-grid",
@@ -72890,7 +72942,7 @@ async function init() {
 }
 if (location.search.includes("test")) {
   Promise.all([Promise.resolve().then(() => (init_ocr(), ocr_exports)), Promise.resolve().then(() => (init_parse(), parse_exports)), Promise.resolve().then(() => (init_store(), store_exports)), Promise.resolve().then(() => (init_conditions(), conditions_exports)), Promise.resolve().then(() => (init_spells(), spells_exports)), Promise.resolve().then(() => (init_snapshot(), snapshot_exports)), Promise.resolve().then(() => (init_chat(), chat_exports))]).then(([ocr, parse, st, cond, sp, snap, chat2]) => {
-    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, condify: cond.condify, spellify: sp.spellify, go: go8, importLibrary, flushSaves: st.flushSaves, elementPng: snap.elementPng, initChat: chat2.initChat };
+    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, remove: st.remove, condify: cond.condify, spellify: sp.spellify, go: go8, importLibrary, flushSaves: st.flushSaves, elementPng: snap.elementPng, initChat: chat2.initChat };
   });
 }
 init();
@@ -72958,14 +73010,21 @@ function rowOf(c2, showPartyHp, mark2, speed2 = () => null, bloodied = 50) {
   if (tokens.length && sp > 0) row2.sp = sp;
   const marks = rowMarks(c2, bloodied);
   if (marks.length) row2.marks = marks.map(mark2);
-  const tm = tokenMarks(c2, bloodied).filter((x) => x.marks.length);
-  if (tm.length) row2.tm = Object.fromEntries(tm.map((x) => [x.token, x.marks.map(mark2)]));
+  if (isGroup(c2)) {
+    const tm = tokenMarks(c2, bloodied).filter((x) => x.marks.length);
+    if (tm.length) row2.tm = Object.fromEntries(tm.map((x) => [x.token, x.marks.map(mark2)]));
+  }
   return row2;
 }
+var ROOM_LIMIT = 16 * 1024;
+var stateBytes = (state2) => new TextEncoder().encode(JSON.stringify(state2)).length;
 function fit(state2) {
-  if (JSON.stringify(state2).length > MAX_BYTES) for (const r of state2.order) r.name = r.name.slice(0, 24);
-  while (JSON.stringify(state2).length > MAX_BYTES && state2.order.length > 1) {
-    state2.order.pop();
+  if (stateBytes(state2) > MAX_BYTES) for (const r of state2.order) r.name = r.name.slice(0, 24);
+  const keep2 = (r) => r.key === state2.turn || r.during && r.with === state2.turn;
+  while (stateBytes(state2) > MAX_BYTES) {
+    const i = state2.order.findLastIndex((r) => !keep2(r));
+    if (i < 0) break;
+    state2.order.splice(i, 1);
     state2.truncated = true;
   }
   return state2;
@@ -72981,6 +73040,20 @@ var settings2 = {};
 var lastSent = null;
 var sceneTokens2 = [];
 var badge = h("span.obr-link", { title: "" });
+var meterFill = h("span.room-fill");
+var meterText = h("span.room-pct");
+var meter = h("span.room-use", { hidden: true }, h("span.room-bar", meterFill), meterText);
+var kb = (n) => `${(n / 1024).toFixed(1)} kB`;
+function setMeter({ total, ours, others, limit }) {
+  const pct = Math.min(100, Math.round(total / limit * 100));
+  meter.hidden = false;
+  meterFill.style.width = `${pct}%`;
+  meterText.textContent = `${pct}%`;
+  meter.classList.toggle("warn", pct >= 70 && pct < 90);
+  meter.classList.toggle("full", pct >= 90);
+  meter.title = `Owlbear room data: ${kb(total)} of about ${kb(limit)} (${pct}%). This tracker: ${kb(ours)}; other extensions: ${kb(others)}.
+It counts the turn order, conditions and spells on creatures, linked tokens and the room\u2019s settings. Zone spells, animations, badges and tokens are kept with the scene, so they don\u2019t count.` + (pct >= 90 ? "\nNearly full: the tracker leaves out rows from the end of the order to stay inside it." : "");
+}
 var refused = "";
 function setBadge() {
   badge.textContent = refused ? "\u26A0 Owlbear" : bridge ? "\u25CF Owlbear" : "\u25CB Owlbear";
@@ -73018,7 +73091,7 @@ function hello() {
 }
 var mark = (name) => {
   const i = iconOf(name, store.conditions);
-  return i ? { n: name, i } : { n: name, t: iconLetters(name) };
+  return i ? i === slug(name) ? { n: name } : { n: name, i } : { n: name, t: iconLetters(name) };
 };
 var speed = (c2) => {
   if (c2.form) {
@@ -73078,6 +73151,7 @@ window.addEventListener("message", (e2) => {
     vitals = null;
     playEffects();
   } else if (m.type === "pong") lastPong = Date.now();
+  else if (m.type === "roomUsage") setMeter(m);
   else if (m.type === "settings") {
     settings2 = m.settings || {};
     publish();
@@ -73163,7 +73237,7 @@ onChange((kind2) => {
 var mount = () => {
   const bar = document.querySelector("header.top .top-right");
   if (!bar) return setTimeout(mount, 100);
-  bar.prepend(badge);
+  bar.prepend(badge, meter);
   setBadge();
 };
 mount();

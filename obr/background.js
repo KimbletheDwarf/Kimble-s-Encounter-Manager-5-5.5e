@@ -126,9 +126,9 @@ var require_events = __commonJS({
         ReflectApply(handler, this, args);
       } else {
         var len = handler.length;
-        var listeners = arrayClone(handler, len);
+        var listeners2 = arrayClone(handler, len);
         for (var i = 0; i < len; ++i)
-          ReflectApply(listeners[i], this, args);
+          ReflectApply(listeners2[i], this, args);
       }
       return true;
     };
@@ -251,7 +251,7 @@ var require_events = __commonJS({
     };
     EventEmitter2.prototype.off = EventEmitter2.prototype.removeListener;
     EventEmitter2.prototype.removeAllListeners = function removeAllListeners(type) {
-      var listeners, events, i;
+      var listeners2, events, i;
       events = this._events;
       if (events === void 0)
         return this;
@@ -280,12 +280,12 @@ var require_events = __commonJS({
         this._eventsCount = 0;
         return this;
       }
-      listeners = events[type];
-      if (typeof listeners === "function") {
-        this.removeListener(type, listeners);
-      } else if (listeners !== void 0) {
-        for (i = listeners.length - 1; i >= 0; i--) {
-          this.removeListener(type, listeners[i]);
+      listeners2 = events[type];
+      if (typeof listeners2 === "function") {
+        this.removeListener(type, listeners2);
+      } else if (listeners2 !== void 0) {
+        for (i = listeners2.length - 1; i >= 0; i--) {
+          this.removeListener(type, listeners2[i]);
         }
       }
       return this;
@@ -301,7 +301,7 @@ var require_events = __commonJS({
         return unwrap ? [evlistener.listener || evlistener] : [evlistener];
       return unwrap ? unwrapListeners(evlistener) : arrayClone(evlistener, evlistener.length);
     }
-    EventEmitter2.prototype.listeners = function listeners(type) {
+    EventEmitter2.prototype.listeners = function listeners2(type) {
       return _listeners(this, type, true);
     };
     EventEmitter2.prototype.rawListeners = function rawListeners(type) {
@@ -488,8 +488,8 @@ var PlayerApi = class {
   }
   getRole() {
     return __awaiter(this, void 0, void 0, function* () {
-      const { role: role7 } = yield this.messageBus.sendAsync("OBR_PLAYER_GET_ROLE", {});
-      return role7;
+      const { role: role8 } = yield this.messageBus.sendAsync("OBR_PLAYER_GET_ROLE", {});
+      return role8;
     });
   }
   getMetadata() {
@@ -505,8 +505,8 @@ var PlayerApi = class {
   }
   hasPermission(permission) {
     return __awaiter(this, void 0, void 0, function* () {
-      const role7 = yield this.getRole();
-      if (role7 === "GM") {
+      const role8 = yield this.getRole();
+      if (role8 === "GM") {
         return true;
       }
       const { permissions } = yield this.messageBus.sendAsync("OBR_ROOM_GET_PERMISSIONS", {});
@@ -4079,6 +4079,7 @@ var TRACKER_KEY = `${EXT}/tracker`;
 var SETTINGS_KEY = `${EXT}/settings`;
 var EFFECTS = `${EXT}/effects`;
 var ZONE_KEY = `${EXT}/zone`;
+var LOCAL_FX = `${EXT}/spell-fx-pref`;
 var ZONE_PICK = `${EXT}/zone-pick`;
 var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
@@ -4243,8 +4244,10 @@ var tracked = /* @__PURE__ */ new Map();
 var drawnSig = /* @__PURE__ */ new Map();
 var busy2 = false;
 var again2 = false;
+var writer = () => true;
 var on = () => settings2.trackMovement !== false;
-async function startMovement() {
+async function startMovement(isWriter2 = () => true) {
+  writer = isWriter2;
   role2 = await lib_default.player.getRole();
   me = await lib_default.player.getId();
   lib_default.player.onChange((p) => {
@@ -4269,7 +4272,7 @@ async function startMovement() {
     if (role2 === "GM" && tracked.size && items.some((i) => tracked.has(i.id))) queue();
   });
   lib_default.broadcast.onMessage(RESET, ({ data }) => {
-    if (role2 === "GM") reset(data?.ids || []);
+    if (role2 === "GM" && writer()) reset(data?.ids || []);
   });
   lib_default.broadcast.onMessage(NOTE, async ({ data }) => {
     if (role2 === "GM") return;
@@ -4283,7 +4286,7 @@ async function startMovement() {
       icons: [{ icon, label: "Reset movement", filter: { every: [{ key: ["metadata", MOVE_KEY], value: void 0, operator: "!=" }] } }],
       onClick: (ctx) => {
         const ids = ctx.items.map((i) => i.id);
-        if (role2 === "GM") reset(ids);
+        if (role2 === "GM" && writer()) reset(ids);
         else lib_default.broadcast.sendMessage(RESET, { ids }).catch(() => {
         });
       }
@@ -4292,6 +4295,10 @@ async function startMovement() {
     console.error("Encounter Builder: could not add movement tracking to Owlbear", err);
   }
   queue();
+  return () => {
+    drawnSig.clear();
+    queue();
+  };
 }
 async function queue() {
   if (busy2) {
@@ -4319,7 +4326,7 @@ function wanted2() {
   return { key: `${state2.encounter}:${state2.round}:${state2.turn}`, tokens };
 }
 async function update() {
-  if (role2 !== "GM" || !await lib_default.scene.isReady()) return;
+  if (role2 !== "GM" || !writer() || !await lib_default.scene.isReady()) return;
   const { key, tokens } = wanted2();
   if (key !== turnKey) {
     await clearAll(key, tokens);
@@ -4368,7 +4375,7 @@ async function update() {
   }
 }
 async function reset(ids) {
-  if (!await lib_default.scene.isReady()) return;
+  if (!writer() || !await lib_default.scene.isReady()) return;
   const here = (await lib_default.scene.items.getItems(ids)).filter((t) => t.metadata[MOVE_KEY]);
   if (!here.length) return;
   await lib_default.scene.items.updateItems(here.map((t) => t.id), (items) => {
@@ -4464,25 +4471,32 @@ var CRS = ["0", "1/8", "1/4", "1/2", ...Array.from({ length: 30 }, (_, i) => Str
 var BLOODIED = "Bloodied";
 
 // src/obr/tracker-state.js
+var ROOM_LIMIT = 16 * 1024;
+function roomUsage(md, prefix) {
+  const bytes = (v) => new TextEncoder().encode(JSON.stringify(v)).length;
+  const keys = Object.keys(md || {});
+  const total = bytes(md || {}), ours = keys.filter((k) => k.startsWith(prefix)).reduce((n, k) => n + bytes({ [k]: md[k] }), 0);
+  return { total, ours, others: Math.max(0, total - ours), limit: ROOM_LIMIT };
+}
+function tokenEntries(state5) {
+  const rows = (state5?.order || []).flatMap((r) => r.tm ? Object.entries(r.tm) : r.marks?.length ? (r.tokens || []).map((t) => [t, r.marks]) : []);
+  return [...rows, ...Object.entries(state5?.tmExtra || {})];
+}
 function bloodiedTokens(state5) {
-  const maps = [...(state5?.order || []).map((r) => r.tm), state5?.tmExtra].filter(Boolean);
-  return maps.flatMap((tm) => Object.entries(tm)).filter(([, marks]) => marks.some((m) => m.n === BLOODIED)).map(([token]) => token);
+  return tokenEntries(state5).filter(([, marks]) => marks.some((m) => m.n === BLOODIED)).map(([token]) => token);
 }
 function markedTokens(state5, names) {
   const out = /* @__PURE__ */ new Map();
-  for (const tm of [...(state5?.order || []).map((r) => r.tm), state5?.tmExtra].filter(Boolean)) {
-    for (const [token, marks] of Object.entries(tm)) {
-      const hit = marks.filter((m) => names.has(m.n)).map((m) => m.n);
-      if (hit.length) out.set(token, [.../* @__PURE__ */ new Set([...out.get(token) || [], ...hit])]);
-    }
+  for (const [token, marks] of tokenEntries(state5)) {
+    const hit = marks.filter((m) => names.has(m.n)).map((m) => m.n);
+    if (hit.length) out.set(token, [.../* @__PURE__ */ new Set([...out.get(token) || [], ...hit])]);
   }
   return out;
 }
 function tokenBadges(state5, spells) {
   const out = /* @__PURE__ */ new Map();
-  for (const tm of [...(state5?.order || []).map((r) => r.tm), state5?.tmExtra].filter(Boolean)) {
-    for (const [token, marks] of Object.entries(tm)) out.set(token, marks.filter((m) => !spells.has(m.n)));
-  }
+  for (const [token, marks] of tokenEntries(state5)) out.set(token, marks.filter((m) => !spells.has(m.n)));
+  for (const r of state5?.order || []) for (const t of r.tokens || []) if (!out.has(t)) out.set(t, []);
   return out;
 }
 
@@ -4551,6 +4565,35 @@ async function startBloodied() {
   });
   sync2();
 }
+
+// src/obr/fx-pref.js
+var KEYS = { spells: "kem-spell-animations", hits: "kem-hit-heal-effects" };
+var software = null;
+function softwareDrawing() {
+  if (software !== null) return software;
+  software = false;
+  try {
+    const gl = document.createElement("canvas").getContext("webgl");
+    if (!gl) return software = true;
+    const info = gl.getExtension("WEBGL_debug_renderer_info");
+    const name = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    software = /swiftshader|llvmpipe|softpipe|software|basic render/i.test(name);
+  } catch {
+  }
+  return software;
+}
+var savedChoice = (kind) => {
+  try {
+    return localStorage.getItem(KEYS[kind]);
+  } catch {
+    return null;
+  }
+};
+var effectsOn = (kind) => {
+  const c = savedChoice(kind);
+  return c ? c === "on" : !softwareDrawing();
+};
 
 // src/obr/fx-shaders.js
 var HIT_SECONDS = 0.825;
@@ -4776,7 +4819,7 @@ function effectOn(bounds, { sksl, reach, layer, uniforms: uniforms2 }) {
   return buildEffect().effectType("STANDALONE").width(w).height(w).position({ x: bounds.center.x - w / 2, y: bounds.center.y - w / 2 }).sksl(sksl).uniforms([{ name: "reach", value: reach }, ...uniforms2, { name: "seed", value: Math.random() * 6.283 }, { name: "progress", value: 0 }]).layer(layer).locked(true).disableHit(true).name("Token effect").metadata({ [KEY3]: true }).build();
 }
 async function play({ hits = [], heals = [], shake = 1, style = "light" }) {
-  if (!await lib_default.scene.isReady()) return;
+  if (!effectsOn("hits") || !await lib_default.scene.isReady()) return;
   const shown = async (ids) => ids.length ? (await lib_default.scene.items.getItems(ids)).filter((t) => role4 === "GM" || t.visible) : [];
   const add = [], seconds = /* @__PURE__ */ new Map();
   for (const t of await shown(hits)) {
@@ -4828,6 +4871,19 @@ async function startTokenFx() {
   lib_default.scene.onReadyChange(() => running.clear());
 }
 
+// src/owlbear-settings.js
+var OWLBEAR_SWITCHES = [
+  ["showPartyHp", "Show party HP to players", false, ""],
+  ["showTurnDie", "Show the turn d20 on the active token", true, ""],
+  ["trackMovement", "Track movement on the active token", true, 'A green trail with a dot every 5 ft and "15 / 30 ft" on the linked token whose turn it is. Right-click the token > Reset movement to start its turn again.'],
+  ["stopAtSpeed", "Stop movement at its speed", false, "A token can\u2019t be moved past its speed this turn."],
+  ["spellAnimations", "Show spell and zone animations", true, "The looping animations of spells on creatures and of zone spells, for everyone. Each player can also turn them off for their own screen, in the tracker panel."]
+];
+var switchOn = (settings5, key) => {
+  const s = OWLBEAR_SWITCHES.find((x) => x[0] === key);
+  return settings5[key] ?? s?.[2] ?? false;
+};
+
 // src/obr/spell-loops.js
 var SHADERS = [
   "uniform vec2 size;uniform float time;\nuniform float period;\nuniform float fade;\nfloat progress;uniform float seed;\nuniform vec3 color;uniform float mode;uniform float sustain;\n\nfloat hash2(vec2 p){p=fract(p*vec2(.1031,.11369));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash2(i),hash2(i+vec2(1.0,0.0)),f.x),mix(hash2(i+vec2(0.0,1.0)),hash2(i+vec2(1.0)),f.x),f.y);}\nfloat cloud(vec2 p){return noise2(p)*.65+noise2(p*2.13+7.7)*.35;}\nfloat segment(vec2 p,vec2 a,vec2 b){vec2 d=b-a;return length(p-a-d*clamp(dot(p-a,d)/max(dot(d,d),.0001),0.0,1.0));}\nfloat lineGlow(float d,float w){return exp(-d*d/(w*w));}\nvec2 turn(vec2 p,float a){return vec2(p.x*cos(a)-p.y*sin(a),p.x*sin(a)+p.y*cos(a));}\n\nfloat life(){return sustain>.5?1.0:smoothstep(0.0,.11,progress)*(1.0-smoothstep(.86,1.0,progress));}\nhalf4 paint(float v,float bright,vec3 c){float al=clamp(v*life(),0.0,.95);return half4(mix(c,vec3(.98,.98,1.0),clamp(bright,0.0,.9))*al,al);}\nhalf4 spell(float2 coord) {\n vec2 p=(coord/size-.5)*2.0;float r=length(p),a=atan(p.y,p.x),t=progress*6.2831853;\n float n=cloud(p*5.0+vec2(cos(t),sin(t))*.75);\n float flow=.61+.055*sin(a*4.0+t)+.025*sin(a*9.0-t);\n float ribbon=lineGlow(r-flow,.026)*(.5+n*.5)+lineGlow(r-flow,.09)*.25;\n float inner=lineGlow(r-(.48+.02*sin(a*5.0-t)),.018)*.4;\n float wisps=lineGlow(r-.66,.15)*pow(max(0.0,sin(a*6.0+r*15.0-t)),6.0)*n*.6;\n float motes=0.0;\n for(int i=0;i<8;i++){float k=float(i),theta=k*.785398+t,rad=.56+.12*sin(k*3.0+t);vec2 q=vec2(cos(theta),sin(theta))*rad;vec2 d=abs(p-q);\n  motes+=exp(-dot(d,d)*1600.0)+exp(-min(d.x,d.y)*150.0-max(d.x,d.y)*38.0)*.35;\n }\n return paint(ribbon+inner+wisps+motes,clamp(motes+ribbon*.3,0.0,.9),color);\n}\nhalf4 main(float2 coord) {\n  progress = fract(time / period);\n  return spell(coord) * half(fade);\n}\n",
@@ -4863,6 +4919,7 @@ var FRAME_MS3 = 40;
 var AURA_SQUARES = 3;
 var role5 = "PLAYER";
 var state4 = null;
+var settings3 = {};
 var busy4 = false;
 var again4 = false;
 var settled = false;
@@ -4891,10 +4948,11 @@ async function draw3() {
     settled = false;
     return;
   }
-  const marked = markedTokens(state4, NAMES);
+  const on2 = switchOn(settings3, "spellAnimations") && effectsOn("spells");
+  const marked = on2 ? markedTokens(state4, NAMES) : /* @__PURE__ */ new Map();
   const seen = (t) => role5 === "GM" || t.visible;
   const tokens = marked.size ? (await lib_default.scene.items.getItems([...marked.keys()])).filter(seen) : [];
-  const zones = (await lib_default.scene.items.getItems((i) => ZONE_LOOPS[i.metadata?.[ZONE_KEY]?.spell])).filter(seen);
+  const zones = on2 ? (await lib_default.scene.items.getItems((i) => ZONE_LOOPS[i.metadata?.[ZONE_KEY]?.spell])).filter(seen) : [];
   const dpi = tokens.length ? await lib_default.scene.grid.getDpi() : 0;
   const want = /* @__PURE__ */ new Map();
   for (const t of tokens) {
@@ -4964,9 +5022,12 @@ async function startSpellFx() {
       sync3();
     }
   });
-  state4 = (await lib_default.room.getMetadata())[TRACKER_KEY] || null;
+  const md = await lib_default.room.getMetadata();
+  state4 = md[TRACKER_KEY] || null;
+  settings3 = md[SETTINGS_KEY] || {};
   lib_default.room.onMetadataChange((m) => {
     state4 = m[TRACKER_KEY] || null;
+    settings3 = m[SETTINGS_KEY] || {};
     sync3();
   });
   lib_default.scene.onReadyChange((ready2) => {
@@ -4981,6 +5042,7 @@ async function startSpellFx() {
     clearTimeout(timer);
     timer = setTimeout(sync3, 200);
   });
+  lib_default.broadcast.onMessage(LOCAL_FX, () => sync3());
   sync3();
 }
 
@@ -5058,6 +5120,47 @@ async function startZones() {
   } catch (err) {
     console.error("Encounter Builder: could not add zone spells to Owlbear", err);
   }
+}
+
+// src/obr/writer.js
+var WRITER = `${EXT}/writer`;
+var EVERY = 3e3;
+var QUIET = 8e3;
+var role6 = "PLAYER";
+var me2 = "";
+var lowest = true;
+var otherLinked = 0;
+var was = null;
+var linkedHere = () => false;
+var listeners = /* @__PURE__ */ new Set();
+var isWriter = () => role6 === "GM" && (linkedHere() || Date.now() - otherLinked > QUIET && lowest);
+var onWriterChange = (fn) => {
+  listeners.add(fn);
+};
+async function check() {
+  if (role6 === "GM" && linkedHere()) lib_default.broadcast.sendMessage(WRITER, {}, { destination: "REMOTE" }).catch(() => {
+  });
+  try {
+    const others = (await lib_default.party.getPlayers()).filter((p) => p.role === "GM").map((p) => p.connectionId);
+    lowest = others.every((id) => me2 <= id);
+  } catch {
+  }
+  const now = isWriter();
+  if (was === false && now) listeners.forEach((fn) => fn());
+  was = now;
+}
+async function startWriter(isLinked) {
+  linkedHere = isLinked;
+  role6 = await lib_default.player.getRole();
+  lib_default.player.onChange((p) => {
+    role6 = p.role;
+  });
+  me2 = await lib_default.player.getConnectionId();
+  lib_default.broadcast.onMessage(WRITER, () => {
+    otherLinked = Date.now();
+  });
+  await check();
+  setInterval(check, EVERY);
 }
 
 // src/obr/whisper.js
@@ -5178,10 +5281,14 @@ function latestWriter(write, { onStatus = () => {
 // src/spell-loop-names.js
 var CREATURE_SPELLS = ["Aid", "Arcane Shield", "Aura of Life", "Bane", "Barkskin", "Beacon of Hope", "Blindness/Deafness", "Charm Person", "Confusion", "Death Ward", "Enhance Ability", "Ensnaring Strike", "Flame Blade", "Foresight", "Freedom of Movement", "Haste", "Heat Metal", "Heroes\u2019 Feast", "Heroism", "Hex", "Holy Aura", "Hypnotic Pattern", "Mage Armor", "Magic Weapon", "Mind Blank", "Nondetection", "Protection from Energy", "Protection from Evil and Good", "Protection from Poison", "Ray of Sickness", "Regenerate", "Resistance", "Sanctuary", "Slow", "Spider Climb", "Starry Wisp", "Stoneskin", "Sunbeam", "Sunburst", "Vicious Mockery", "Vitriolic Sphere", "Warding Bond"];
 
+// src/condition-icon.js
+var slug = (name) => String(name).split("/")[0].toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+var markIcon = (m) => m.t ? null : m.i || slug(m.n);
+
 // src/obr/background.js
 var whispers = null;
-var role6 = "PLAYER";
-var settings3 = {};
+var role7 = "PLAYER";
+var settings4 = {};
 var gm = null;
 var gmSeen = 0;
 var resolveReady;
@@ -5212,15 +5319,16 @@ function status(force = false) {
 window.addEventListener("message", async (e) => {
   if (e.origin !== location.origin || !e.data?.eb || !e.source) return;
   await ready;
-  if (role6 !== "GM") return;
+  if (role7 !== "GM") return;
   const m = e.data;
   if (m.type === "hello") {
     gm = e.source;
     gmSeen = Date.now();
-    post(gm, { type: "welcome", settings: settings3 });
+    post(gm, { type: "welcome", settings: settings4 });
     status();
     whispers?.flush();
     sendTokens(true);
+    sendUsage();
   } else if (m.type === "ping") {
     if (e.source === gm) {
       gmSeen = Date.now();
@@ -5231,7 +5339,7 @@ window.addEventListener("message", async (e) => {
     gmSeen = Date.now();
     writeTracker(m.state ?? null);
     syncMarkers(m.state ?? null);
-  } else if (m.type === "setSettings") await lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings3, ...m.settings || {} } });
+  } else if (m.type === "setSettings") await lib_default.room.setMetadata({ [SETTINGS_KEY]: { ...settings4, ...m.settings || {} } });
   else if (m.type === "pick") startPick(e.source, m);
   else if (m.type === "unlink") await unlink(m.ids || []);
   else if (m.type === "rename") await rename(m.items || []);
@@ -5362,7 +5470,7 @@ async function addTokens(list) {
 }
 var lastTokens = "";
 async function sendTokens(force = false) {
-  if (role6 !== "GM" || !linked() || !await lib_default.scene.isReady()) return;
+  if (role7 !== "GM" || !linked() || !await lib_default.scene.isReady()) return;
   const tokens = (await lib_default.scene.items.getItems((i) => i.layer === "CHARACTER" || i.layer === "MOUNT")).map((i) => ({ id: i.id, name: i.name || "", label: i.text?.plainText || "", visible: i.visible, look: lookOf(i) }));
   const sig = JSON.stringify(tokens);
   if (!force && sig === lastTokens) return;
@@ -5393,7 +5501,7 @@ async function syncMarkers(state5) {
 }
 var SPELLS = new Set(CREATURE_SPELLS);
 async function drawMarkers(state5) {
-  if (role6 !== "GM" || !await lib_default.scene.isReady()) return;
+  if (role7 !== "GM" || !await lib_default.scene.isReady()) return;
   const want = tokenBadges(state5, SPELLS);
   const tokens = new Map((want.size ? await lib_default.scene.items.getItems([...want.keys()]) : []).map((t) => [t.id, t]));
   const have = /* @__PURE__ */ new Map();
@@ -5412,7 +5520,7 @@ async function drawMarkers(state5) {
   const add = [];
   for (const [id, token] of tokens) {
     const marks = want.get(id);
-    const sig = JSON.stringify([marks.map((x) => x.i || `~${x.t}`), token.scale.x, token.scale.y, token.visible]);
+    const sig = JSON.stringify([marks.map((x) => markIcon(x) || `~${x.t}`), token.scale.x, token.scale.y, token.visible]);
     const h = have.get(id);
     if (h && !h.mixed && h.sig === sig) continue;
     if (h) remove.push(...h.ids);
@@ -5431,33 +5539,42 @@ async function markersFor(token, marks, sig, dpi) {
   const at = (k) => ({ x: b.center.x - step * (count - 1) / 2 + k * step, y: b.min.y + size * 0.3 });
   const finish3 = (builder, name) => builder.attachedTo(token.id).layer("ATTACHMENT").locked(true).disableHit(true).visible(token.visible).disableAttachmentBehavior(["COPY", "ROTATION", "SCALE"]).name(name).metadata({ [MARK_KEY]: { sig } }).build();
   const badge = (text, k) => buildLabel().plainText(text).fontSize(size * 0.42).fontWeight(700).padding(size * 0.12).cornerRadius(size / 2).backgroundColor("#3a3d45").backgroundOpacity(0.95).fillColor("#ffffff").pointerWidth(0).pointerHeight(0).position({ ...at(k), y: at(k).y + size * 0.35 });
-  const items = shown.map((m, k) => m.i ? finish3(buildImage({ url: iconUrl(m.i), width: 128, height: 128, mime: "image/png" }, { dpi: 128, offset: { x: 64, y: 64 } }).scale({ x: size / dpi, y: size / dpi }).position(at(k)), `Condition: ${m.n}`) : finish3(badge(m.t, k), `Condition: ${m.n}`));
+  const items = shown.map((m, k) => markIcon(m) ? finish3(buildImage({ url: iconUrl(markIcon(m)), width: 128, height: 128, mime: "image/png" }, { dpi: 128, offset: { x: 64, y: 64 } }).scale({ x: size / dpi, y: size / dpi }).position(at(k)), `Condition: ${m.n}`) : finish3(badge(m.t, k), `Condition: ${m.n}`));
   if (extra) items.push(finish3(badge(`+${extra}`, shown.length), `Conditions: ${extra} more`));
   if (row.length < marks.length) {
     items.push(finish3(buildImage({ url: new URL("bloodied-mark.png", location.href).href, width: 128, height: 128, mime: "image/png" }, { dpi: 128, offset: { x: 64, y: 64 } }).scale({ x: size * 0.6 / dpi, y: size * 0.6 / dpi }).position({ x: b.center.x, y: b.max.y - size * 0.22 }), `Condition: ${BLOODIED}`));
   }
   return items;
 }
+async function sendUsage(md) {
+  if (role7 !== "GM" || !gm) return;
+  try {
+    post(gm, { type: "roomUsage", ...roomUsage(md || await lib_default.room.getMetadata(), EXT) });
+  } catch {
+  }
+}
 lib_default.onReady(async () => {
-  role6 = await lib_default.player.getRole();
+  role7 = await lib_default.player.getRole();
   lib_default.player.onChange((p) => {
-    role6 = p.role;
+    role7 = p.role;
   });
-  settings3 = (await lib_default.room.getMetadata())[SETTINGS_KEY] || {};
+  settings4 = (await lib_default.room.getMetadata())[SETTINGS_KEY] || {};
   lib_default.room.onMetadataChange((md) => {
+    sendUsage(md);
     const next = md[SETTINGS_KEY] || {};
-    if (JSON.stringify(next) === JSON.stringify(settings3)) return;
-    settings3 = next;
-    if (linked()) post(gm, { type: "settings", settings: settings3 });
+    if (JSON.stringify(next) === JSON.stringify(settings4)) return;
+    settings4 = next;
+    if (linked()) post(gm, { type: "settings", settings: settings4 });
   });
   lib_default.broadcast.onMessage(LOCAL_COMMAND, ({ data }) => {
-    if (role6 === "GM" && linked()) post(gm, { type: "command", cmd: data?.cmd });
+    if (role7 === "GM" && linked()) post(gm, { type: "command", cmd: data?.cmd });
   });
   lib_default.broadcast.onMessage(LOCAL_ASK, () => status(true));
   removeLinkTool();
   setInterval(() => status(), 2e3);
+  await startWriter(linked);
   const redraw = async () => {
-    if (role6 === "GM") syncMarkers((await lib_default.room.getMetadata())[TRACKER_KEY] ?? null);
+    if (role7 === "GM" && isWriter()) syncMarkers((await lib_default.room.getMetadata())[TRACKER_KEY] ?? null);
   };
   lib_default.scene.onReadyChange((ready2) => {
     if (ready2) {
@@ -5467,22 +5584,26 @@ lib_default.onReady(async () => {
   });
   let resizeTimer = null, tokensTimer = null;
   lib_default.scene.items.onChange(() => {
-    if (role6 === "GM") {
+    if (role7 === "GM") {
       clearTimeout(tokensTimer);
       tokensTimer = setTimeout(() => sendTokens(), 400);
     }
-    if (role6 !== "GM" || !lastState) return;
+    if (role7 !== "GM" || !lastState || !isWriter()) return;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => syncMarkers(lastState), 250);
   });
   redraw();
   startTurnDie();
-  startMovement();
+  const nudgeMovement = await startMovement(isWriter);
+  onWriterChange(() => {
+    redraw();
+    nudgeMovement();
+  });
   startBloodied();
   startTokenFx();
   startSpellFx();
   startZones();
-  whispers = startWhispers({ isGM: () => role6 === "GM", toWindow: (msg) => {
+  whispers = startWhispers({ isGM: () => role7 === "GM", toWindow: (msg) => {
     if (!linked()) return false;
     post(gm, msg);
     return true;

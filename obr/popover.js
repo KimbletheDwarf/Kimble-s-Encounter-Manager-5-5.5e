@@ -3539,6 +3539,7 @@ var TRACKER_KEY = `${EXT}/tracker`;
 var SETTINGS_KEY = `${EXT}/settings`;
 var EFFECTS = `${EXT}/effects`;
 var ZONE_KEY = `${EXT}/zone`;
+var LOCAL_FX = `${EXT}/spell-fx-pref`;
 var ZONE_PICK = `${EXT}/zone-pick`;
 var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
@@ -3549,6 +3550,58 @@ var WHISPER_ACK = `${EXT}/whisper-ack`;
 var WHISPER_REPLY = `${EXT}/whisper-reply`;
 var CHAT_UPDATED = `${EXT}/chat-updated`;
 var MESSAGE_MODAL = `${EXT}/message`;
+
+// src/obr/fx-pref.js
+var KEYS = { spells: "kem-spell-animations", hits: "kem-hit-heal-effects" };
+var software = null;
+function softwareDrawing() {
+  if (software !== null) return software;
+  software = false;
+  try {
+    const gl = document.createElement("canvas").getContext("webgl");
+    if (!gl) return software = true;
+    const info = gl.getExtension("WEBGL_debug_renderer_info");
+    const name = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    software = /swiftshader|llvmpipe|softpipe|software|basic render/i.test(name);
+  } catch {
+  }
+  return software;
+}
+var savedChoice = (kind) => {
+  try {
+    return localStorage.getItem(KEYS[kind]);
+  } catch {
+    return null;
+  }
+};
+var effectsOn = (kind) => {
+  const c = savedChoice(kind);
+  return c ? c === "on" : !softwareDrawing();
+};
+function setEffects(kind, on) {
+  try {
+    localStorage.setItem(KEYS[kind], on ? "on" : "off");
+  } catch {
+  }
+}
+
+// src/owlbear-settings.js
+var OWLBEAR_SWITCHES = [
+  ["showPartyHp", "Show party HP to players", false, ""],
+  ["showTurnDie", "Show the turn d20 on the active token", true, ""],
+  ["trackMovement", "Track movement on the active token", true, 'A green trail with a dot every 5 ft and "15 / 30 ft" on the linked token whose turn it is. Right-click the token > Reset movement to start its turn again.'],
+  ["stopAtSpeed", "Stop movement at its speed", false, "A token can\u2019t be moved past its speed this turn."],
+  ["spellAnimations", "Show spell and zone animations", true, "The looping animations of spells on creatures and of zone spells, for everyone. Each player can also turn them off for their own screen, in the tracker panel."]
+];
+var switchOn = (settings2, key) => {
+  const s = OWLBEAR_SWITCHES.find((x) => x[0] === key);
+  return settings2[key] ?? s?.[2] ?? false;
+};
+
+// src/condition-icon.js
+var slug = (name) => String(name).split("/")[0].toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+var markIcon = (m) => m.t ? null : m.i || slug(m.n);
 
 // src/rules.js
 var CR_XP = {
@@ -3593,6 +3646,7 @@ var CR_ORDER = Object.keys(CR_XP);
 var CRS = ["0", "1/8", "1/4", "1/2", ...Array.from({ length: 30 }, (_, i) => String(i + 1))];
 
 // src/obr/tracker-state.js
+var ROOM_LIMIT = 16 * 1024;
 function upcoming(state2, n = 3) {
   const order = state2?.order || [];
   const at = order.findIndex((r) => r.key === state2.turn);
@@ -3639,7 +3693,7 @@ function marks(list = []) {
   return h(
     "span.marks",
     { title: list.map((m) => m.n).join(", ") },
-    shown.map((m) => m.i ? h("img.mark", { src: iconUrl(m.i), alt: m.n }) : h("span.mark.letters", {}, m.t)),
+    shown.map((m) => markIcon(m) ? h("img.mark", { src: iconUrl(markIcon(m)), alt: m.n }) : h("span.mark.letters", {}, m.t)),
     list.length > shown.length ? h("span.mark.more", {}, `+${list.length - shown.length}`) : null
   );
 }
@@ -3750,8 +3804,31 @@ function openGmWindow() {
   note = "";
   render();
 }
+function animationSwitches() {
+  const auto = ["spells", "hits"].some((k) => !savedChoice(k)) && softwareDrawing();
+  const roomOff = !switchOn(settings, "spellAnimations");
+  const one = (kind, label, title, off) => h(
+    "label.switch",
+    { title: off ? "The GM has turned these off for everyone." : title },
+    h("input", { type: "checkbox", checked: !off && effectsOn(kind), disabled: off, onchange: (e) => {
+      setEffects(kind, e.target.checked);
+      lib_default.broadcast.sendMessage(LOCAL_FX, {}, { destination: "LOCAL" }).catch(() => {
+      });
+      render();
+    } }),
+    label
+  );
+  return h(
+    "div.prefs",
+    {},
+    one("spells", "Spell animations", "Spells and zones on the map, on your screen only. Turn off if Owlbear stutters or freezes. Conditions still show.", roomOff),
+    one("hits", "Hit and heal effects", "The shake when a token is hit and the glow when it is healed, on your screen only.", false),
+    roomOff ? h("div.status", {}, "The GM has turned spell animations off for everyone.") : null,
+    auto ? h("div.status", {}, "Started off: this browser draws without graphics acceleration, and the animations could freeze Owlbear.") : null
+  );
+}
 function render() {
-  root.replaceChildren(...tracker(), role === "GM" ? gmControls() : "");
+  root.replaceChildren(...tracker(), role === "GM" ? gmControls() : "", animationSwitches());
   lib_default.action.setHeight(Math.min(640, Math.max(140, Math.ceil(document.body.scrollHeight) + 4))).catch(() => {
   });
 }

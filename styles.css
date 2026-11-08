@@ -92,6 +92,15 @@ nav.tabs button.active { color: #fff; border-bottom-color: var(--red); }
 .obr-link { color: var(--muted); font-size: 12px; cursor: help; }
 .obr-link.on { color: #8fd18f; }
 .obr-link.warn { color: #ffb86b; }
+/* the room's shared space in Owlbear (src/obr/link.js) */
+.room-use { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); cursor: help; }
+.room-use[hidden] { display: none; }
+.room-bar { width: 46px; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, .12); overflow: hidden; }
+.room-fill { display: block; height: 100%; width: 0; background: #8fd18f; transition: width .3s; }
+.room-use.warn .room-fill { background: #ffb86b; }
+.room-use.warn .room-pct { color: #ffb86b; }
+.room-use.full .room-fill { background: #ff6b6b; }
+.room-use.full .room-pct { color: #ff6b6b; }
 .lib-btn { display: flex; gap: 6px; align-items: center; max-width: 260px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .lib-btn.warn { border-color: var(--gold); color: var(--gold); }
 .settings-btn { font-size: 18px; }

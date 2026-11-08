@@ -3539,6 +3539,7 @@ var TRACKER_KEY = `${EXT}/tracker`;
 var SETTINGS_KEY = `${EXT}/settings`;
 var EFFECTS = `${EXT}/effects`;
 var ZONE_KEY = `${EXT}/zone`;
+var LOCAL_FX = `${EXT}/spell-fx-pref`;
 var ZONE_PICK = `${EXT}/zone-pick`;
 var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
