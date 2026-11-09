@@ -93,6 +93,8 @@ nav.tabs button.active { color: #fff; border-bottom-color: var(--red); }
 .obr-link.on { color: #8fd18f; }
 .obr-link.warn { color: #ffb86b; }
 /* the room's shared space in Owlbear (src/obr/link.js) */
+/* an initiative a player typed in Owlbear (src/tabs/runner.js) */
+.init-input.from-player { border-color: #5fae6b; box-shadow: 0 0 0 1px #5fae6b inset; }
 .room-use { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); cursor: help; }
 .room-use[hidden] { display: none; }
 .room-bar { width: 46px; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, .12); overflow: hidden; }

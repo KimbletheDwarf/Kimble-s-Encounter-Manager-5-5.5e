@@ -3545,6 +3545,10 @@ var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
 var LOCAL_ASK = `${EXT}/status?`;
 var GM_WINDOW = "eb-gm";
+var LOCAL_PLAYER_ASK = `${EXT}/player-ask-local`;
+var PLAYER_ASK = `${EXT}/player-ask`;
+var PLAYER_ANSWER = `${EXT}/player-answer`;
+var INIT_MODAL = `${EXT}/initiative`;
 var WHISPER = `${EXT}/whisper`;
 var WHISPER_ACK = `${EXT}/whisper-ack`;
 var WHISPER_REPLY = `${EXT}/whisper-reply`;
@@ -3592,7 +3596,8 @@ var OWLBEAR_SWITCHES = [
   ["showTurnDie", "Show the turn d20 on the active token", true, ""],
   ["trackMovement", "Track movement on the active token", true, 'A green trail with a dot every 5 ft and "15 / 30 ft" on the linked token whose turn it is. Right-click the token > Reset movement to start its turn again.'],
   ["stopAtSpeed", "Stop movement at its speed", false, "A token can\u2019t be moved past its speed this turn."],
-  ["spellAnimations", "Show spell and zone animations", true, "The looping animations of spells on creatures and of zone spells, for everyone. Each player can also turn them off for their own screen, in the tracker panel."]
+  ["spellAnimations", "Show spell and zone animations", true, "The looping animations of spells on creatures and of zone spells, for everyone. Each player can also turn them off for their own screen, in the tracker panel."],
+  ["playerInitiative", "Players enter their own initiative", true, "While you roll initiative, a player with a linked token gets a box on their screen for it. What they type fills in here; you can still change it."]
 ];
 var switchOn = (settings2, key) => {
   const s = OWLBEAR_SWITCHES.find((x) => x[0] === key);
@@ -3661,7 +3666,28 @@ function upcoming(state2, n = 3) {
   }
   return out;
 }
+function linkedTokens(state2) {
+  const rows = (state2?.order || []).flatMap((r) => [...r.tokens || [], ...Object.keys(r.tm || {})]);
+  return [.../* @__PURE__ */ new Set([...rows, ...Object.keys(state2?.tmExtra || {})])];
+}
+function initiativeRows(state2, owned) {
+  if (state2?.phase !== "setup") return [];
+  return (state2.order || []).filter((r) => !r.with && (r.tokens || []).some((t) => owned.has(t)));
+}
 var ownsTurn = (order, row2) => !(row2.during && order.some((r) => r.key === row2.with));
+
+// src/obr/player-asks.js
+var COND_MENU = `${EXT}/add-condition`;
+var SPELL_MENU = `${EXT}/add-spell`;
+async function ownedOf(ids) {
+  if (!ids.length || !await lib_default.scene.isReady()) return /* @__PURE__ */ new Set();
+  const myId = await lib_default.player.getId();
+  return new Set((await lib_default.scene.items.getItems(ids)).filter((i) => i.createdUserId === myId).map((i) => i.id));
+}
+function openInitiative(count) {
+  lib_default.modal.open({ id: INIT_MODAL, url: new URL("init.html", location.href).href, width: 320, height: Math.min(420, 150 + 52 * count), hideBackdrop: true }).catch(() => {
+  });
+}
 
 // src/obr/popover.js
 var root = document.getElementById("root");
@@ -3672,6 +3698,7 @@ var connected = false;
 var expanded = false;
 var note = "";
 var pictures = /* @__PURE__ */ new Map();
+var mine = 0;
 function h(tag, attrs = {}, ...kids) {
   const [name, ...classes] = tag.split(".");
   const el = document.createElement(name);
@@ -3723,7 +3750,13 @@ function tracker() {
   }
   if (state.phase === "party") return [h("div.head", {}, h("h1", {}, "Party"), h("span.round", {}, "No fight running")), ...state.order.map((r) => row(r))];
   const head = h("div.head", {}, h("h1", {}, state.name || "Combat"), h("span.round", {}, state.phase === "active" ? `Round ${state.round}` : "Rolling initiative"));
-  if (state.phase !== "active") return [head, h("p.muted", {}, "Initiative is being rolled\u2026")];
+  if (state.phase !== "active") {
+    return [
+      head,
+      h("p.muted", {}, "Initiative is being rolled\u2026"),
+      mine && switchOn(settings, "playerInitiative") ? h("button.primary", { onclick: () => openInitiative(mine) }, mine > 1 ? "Enter your initiatives" : "Enter your initiative") : null
+    ];
+  }
   const current2 = state.order.find((r) => r.key === state.turn);
   const next = upcoming(state, 3);
   const out = [head, current2 ? row(current2, "now") : h("p.muted", {}, "Waiting for the first turn\u2026")];
@@ -3783,6 +3816,13 @@ async function loadPictures() {
   if (!ids.length || !await lib_default.scene.isReady()) return;
   for (const it of await lib_default.scene.items.getItems(ids)) if (it.image?.url) pictures.set(it.id, it.image.url);
   render();
+}
+async function loadMine() {
+  const n = role === "GM" || state?.phase !== "setup" ? 0 : initiativeRows(state, await ownedOf(linkedTokens(state))).length;
+  if (n !== mine) {
+    mine = n;
+    render();
+  }
 }
 function openGmWindow() {
   const w = window.open("", GM_WINDOW, "popup,width=1440,height=900");
@@ -3851,11 +3891,14 @@ lib_default.onReady(async () => {
     settings = m[SETTINGS_KEY] || {};
     render();
     loadPictures();
+    loadMine();
   });
   lib_default.scene.onReadyChange((ready) => {
     pictures.clear();
-    if (ready) loadPictures();
-    else render();
+    if (ready) {
+      loadPictures();
+      loadMine();
+    } else render();
   });
   lib_default.player.onChange((p) => {
     if (p.role !== role) {
@@ -3871,4 +3914,5 @@ lib_default.onReady(async () => {
   });
   render();
   loadPictures();
+  loadMine();
 });

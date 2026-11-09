@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Initiative</title>
+  <link rel="stylesheet" href="message.css">
+  <style>
+    #root { gap: 8px; }
+    .rows { display: grid; gap: 6px; overflow-y: auto; }
+    .ch { display: flex; align-items: center; gap: 8px; }
+    .ch .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ch input { width: 64px; padding: 7px 8px; border-radius: 8px; border: 1px solid var(--line); background: rgba(0, 0, 0, 0.25); color: var(--text); font: 600 16px/1 inherit; text-align: center; }
+    .ch input:focus { outline: none; border-color: var(--accent); }
+    .ch .sent { width: 54px; font-size: 12px; color: var(--muted); }
+    .ch .sent.ok { color: #8fd18f; }
+    .foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; }
+    button.skip { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: none; color: var(--muted); cursor: pointer; font: inherit; }
+  </style>
+</head>
+<body>
+  <main id="root"></main>
+  <script type="module" src="init.js"></script>
+</body>
+</html>

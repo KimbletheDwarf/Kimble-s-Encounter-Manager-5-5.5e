@@ -2980,13 +2980,13 @@ var ActionApi = class {
   }
   getIcon() {
     return __awaiter14(this, void 0, void 0, function* () {
-      const { icon } = yield this.messageBus.sendAsync("OBR_ACTION_GET_ICON", {});
-      return icon;
+      const { icon: icon2 } = yield this.messageBus.sendAsync("OBR_ACTION_GET_ICON", {});
+      return icon2;
     });
   }
-  setIcon(icon) {
+  setIcon(icon2) {
     return __awaiter14(this, void 0, void 0, function* () {
-      const data = normalizeIconPaths([{ icon }]);
+      const data = normalizeIconPaths([{ icon: icon2 }]);
       yield this.messageBus.sendAsync("OBR_ACTION_SET_ICON", {
         icon: data[0].icon
       });
@@ -4084,6 +4084,10 @@ var ZONE_PICK = `${EXT}/zone-pick`;
 var LOCAL_COMMAND = `${EXT}/command`;
 var LOCAL_STATUS = `${EXT}/status`;
 var LOCAL_ASK = `${EXT}/status?`;
+var LOCAL_PLAYER_ASK = `${EXT}/player-ask-local`;
+var PLAYER_ASK = `${EXT}/player-ask`;
+var PLAYER_ANSWER = `${EXT}/player-answer`;
+var INIT_MODAL = `${EXT}/initiative`;
 var WHISPER = `${EXT}/whisper`;
 var WHISPER_ACK = `${EXT}/whisper-ack`;
 var WHISPER_REPLY = `${EXT}/whisper-reply`;
@@ -4279,11 +4283,11 @@ async function startMovement(isWriter2 = () => true) {
     const [token] = await lib_default.scene.items.getItems([data?.token]).catch(() => []);
     if (token?.createdUserId === me) lib_default.notification.show(data.text, "WARNING");
   });
-  const icon = new URL("../logo/logo-64.png", location.href).href;
+  const icon2 = new URL("../logo/logo-64.png", location.href).href;
   try {
     await lib_default.contextMenu.create({
       id: MENU,
-      icons: [{ icon, label: "Reset movement", filter: { every: [{ key: ["metadata", MOVE_KEY], value: void 0, operator: "!=" }] } }],
+      icons: [{ icon: icon2, label: "Reset movement", filter: { every: [{ key: ["metadata", MOVE_KEY], value: void 0, operator: "!=" }] } }],
       onClick: (ctx) => {
         const ids = ctx.items.map((i) => i.id);
         if (role2 === "GM" && writer()) reset(ids);
@@ -4498,6 +4502,14 @@ function tokenBadges(state5, spells) {
   for (const [token, marks] of tokenEntries(state5)) out.set(token, marks.filter((m) => !spells.has(m.n)));
   for (const r of state5?.order || []) for (const t of r.tokens || []) if (!out.has(t)) out.set(t, []);
   return out;
+}
+function linkedTokens(state5) {
+  const rows = (state5?.order || []).flatMap((r) => [...r.tokens || [], ...Object.keys(r.tm || {})]);
+  return [.../* @__PURE__ */ new Set([...rows, ...Object.keys(state5?.tmExtra || {})])];
+}
+function initiativeRows(state5, owned) {
+  if (state5?.phase !== "setup") return [];
+  return (state5.order || []).filter((r) => !r.with && (r.tokens || []).some((t) => owned.has(t)));
 }
 
 // src/obr/bloodied.js
@@ -4877,12 +4889,15 @@ var OWLBEAR_SWITCHES = [
   ["showTurnDie", "Show the turn d20 on the active token", true, ""],
   ["trackMovement", "Track movement on the active token", true, 'A green trail with a dot every 5 ft and "15 / 30 ft" on the linked token whose turn it is. Right-click the token > Reset movement to start its turn again.'],
   ["stopAtSpeed", "Stop movement at its speed", false, "A token can\u2019t be moved past its speed this turn."],
-  ["spellAnimations", "Show spell and zone animations", true, "The looping animations of spells on creatures and of zone spells, for everyone. Each player can also turn them off for their own screen, in the tracker panel."]
+  ["spellAnimations", "Show spell and zone animations", true, "The looping animations of spells on creatures and of zone spells, for everyone. Each player can also turn them off for their own screen, in the tracker panel."],
+  ["playerInitiative", "Players enter their own initiative", true, "While you roll initiative, a player with a linked token gets a box on their screen for it. What they type fills in here; you can still change it."]
 ];
 var switchOn = (settings5, key) => {
   const s = OWLBEAR_SWITCHES.find((x) => x[0] === key);
   return settings5[key] ?? s?.[2] ?? false;
 };
+var PLAYER_CONDITION_CHOICES = [["allow", "Allow"], ["ask", "Ask me first"], ["off", "Off"]];
+var playerConditions = (settings5) => PLAYER_CONDITION_CHOICES.some(([k]) => k === settings5?.playerConditions) ? settings5.playerConditions : "allow";
 
 // src/obr/spell-loops.js
 var SHADERS = [
@@ -5085,12 +5100,12 @@ async function place(position) {
   await lib_default.player.select([prop.id]);
 }
 async function addTool() {
-  const icon = new URL("../logo/logo-64.png", location.href).href;
+  const icon2 = new URL("../logo/logo-64.png", location.href).href;
   try {
-    await lib_default.tool.create({ id: TOOL, icons: [{ icon, label: "Placing a zone spell (Esc stops)", filter: { roles: ["GM"] } }], defaultMode: MODE });
+    await lib_default.tool.create({ id: TOOL, icons: [{ icon: icon2, label: "Placing a zone spell (Esc stops)", filter: { roles: ["GM"] } }], defaultMode: MODE });
     await lib_default.tool.createMode({
       id: MODE,
-      icons: [{ icon, label: "Click where the zone goes", filter: { activeTools: [TOOL] } }],
+      icons: [{ icon: icon2, label: "Click where the zone goes", filter: { activeTools: [TOOL] } }],
       cursors: [{ cursor: "crosshair" }],
       onToolClick: (ctx, ev) => {
         place(ev.pointerPosition);
@@ -5107,14 +5122,14 @@ async function addTool() {
   }
 }
 async function startZones() {
-  const icon = new URL("../logo/logo-64.png", location.href).href;
+  const icon2 = new URL("../logo/logo-64.png", location.href).href;
   lib_default.broadcast.onMessage(ZONE_PICK, ({ data }) => {
     startPlacing(data?.spell).catch((err) => console.error("Encounter Builder: could not place a zone", err));
   });
   try {
     await lib_default.contextMenu.create({
       id: MENU2,
-      icons: [{ icon, label: "Zone spell", filter: { roles: ["GM"], max: 1, every: [{ key: "layer", value: "MAP" }] } }],
+      icons: [{ icon: icon2, label: "Zone spell", filter: { roles: ["GM"], max: 1, every: [{ key: "layer", value: "MAP" }] } }],
       embed: { url: new URL("zone-menu.html", location.href).href, height: 262 }
     });
   } catch (err) {
@@ -5202,7 +5217,7 @@ async function sendWhisper(m) {
   return { sentTo: [...new Set(players.map((p) => p.name))] };
 }
 function startWhispers(gm2) {
-  const waiting = [];
+  const waiting2 = [];
   lib_default.broadcast.onMessage(WHISPER, async ({ data }) => {
     if (gm2.isGM() || !data?.to?.includes(await lib_default.player.getId())) return;
     addToThread(data.thread, data.character, { dir: "in", from: data.from, text: data.text, at: data.at });
@@ -5221,12 +5236,140 @@ function startWhispers(gm2) {
     if (!gm2.isGM() || !data) return;
     const msg = { type: "whisperReply", thread: data.thread, character: data.character, name: data.name, text: data.text, at: data.at };
     if (gm2.toWindow(msg)) return;
-    waiting.push(msg);
+    waiting2.push(msg);
     lib_default.notification.show(`Reply from ${data.name} (${data.character}). Open the GM window to read it.`, "INFO");
   });
   return { flush: () => {
-    while (waiting.length && gm2.toWindow(waiting[0])) waiting.shift();
+    while (waiting2.length && gm2.toWindow(waiting2[0])) waiting2.shift();
   } };
+}
+
+// src/obr/player-asks.js
+var COND_MENU = `${EXT}/add-condition`;
+var SPELL_MENU = `${EXT}/add-spell`;
+var WAIT = 5e3;
+var icon = () => new URL("../logo/logo-64.png", location.href).href;
+var me3 = { id: "", conn: "", name: "" };
+var waiting = /* @__PURE__ */ new Map();
+var relayed = /* @__PURE__ */ new Map();
+async function ownedOf(ids) {
+  if (!ids.length || !await lib_default.scene.isReady()) return /* @__PURE__ */ new Set();
+  const myId = await lib_default.player.getId();
+  return new Set((await lib_default.scene.items.getItems(ids)).filter((i) => i.createdUserId === myId).map((i) => i.id));
+}
+async function startPlayerAsks({ role: role8, linked: linked2, toWindow }) {
+  [me3.id, me3.conn, me3.name] = await Promise.all([lib_default.player.getId(), lib_default.player.getConnectionId(), lib_default.player.getName()]);
+  lib_default.player.onChange((p) => {
+    me3.name = p.name;
+  });
+  lib_default.broadcast.onMessage(LOCAL_PLAYER_ASK, ({ data }) => {
+    if (!data?.what || !data.token) return;
+    const ask = { id: `ask-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`, what: data.what, token: data.token, name: data.name ?? null, value: data.value ?? null };
+    if (role8() === "GM" && linked2()) return relay(ask, { conn: me3.conn, local: true, from: me3.name, gm: true });
+    waiting.set(ask.id, setTimeout(() => {
+      waiting.delete(ask.id);
+      lib_default.notification.show("The GM window isn\u2019t open, so nothing changed. Ask your GM.", "WARNING");
+    }, WAIT));
+    lib_default.broadcast.sendMessage(PLAYER_ASK, ask, { destination: "REMOTE" }).catch(() => {
+    });
+  });
+  lib_default.broadcast.onMessage(PLAYER_ANSWER, ({ data }) => {
+    if (data?.to !== me3.conn) return;
+    clearTimeout(waiting.get(data.id));
+    waiting.delete(data.id);
+    if (data.text) lib_default.notification.show(data.text, data.pending ? "INFO" : data.ok ? "SUCCESS" : "WARNING");
+  });
+  lib_default.broadcast.onMessage(PLAYER_ASK, async ({ data, connectionId }) => {
+    if (role8() !== "GM" || !linked2() || !data?.id) return;
+    const who = (await lib_default.party.getPlayers()).find((p) => p.connectionId === connectionId);
+    if (!who) return;
+    const reply = (text) => answerTo({ conn: connectionId, local: false }, { id: data.id, ok: false, text });
+    if (who.role !== "GM") {
+      const [token] = await lib_default.scene.isReady() ? await lib_default.scene.items.getItems([data.token]) : [];
+      if (!token) return reply("That token isn\u2019t on the GM\u2019s map.");
+      if (token.createdUserId !== who.id) return reply("That token isn\u2019t yours, so you can\u2019t change it.");
+    }
+    relay(data, { conn: connectionId, local: false, from: who.name, gm: who.role === "GM" });
+  });
+  function relay(ask, r) {
+    relayed.set(ask.id, r);
+    if (!toWindow({ type: "playerAsk", ...ask, from: r.from, gm: r.gm })) answer({ id: ask.id, ok: false, text: "The GM window isn\u2019t open, so nothing changed." });
+  }
+  function answerTo(r, m) {
+    if (r.local) {
+      if (m.text && !m.ok) lib_default.notification.show(m.text, "WARNING");
+      return;
+    }
+    lib_default.broadcast.sendMessage(PLAYER_ANSWER, { id: m.id, to: r.conn, ok: !!m.ok, text: m.text || "", pending: !!m.pending }, { destination: "REMOTE" }).catch(() => {
+    });
+  }
+  function answer(m) {
+    const r = relayed.get(m?.id);
+    if (!r) return;
+    if (!m.pending) relayed.delete(m.id);
+    answerTo(r, m);
+  }
+  const md = await lib_default.room.getMetadata();
+  let state5 = md[TRACKER_KEY] || null, settings5 = md[SETTINGS_KEY] || {};
+  const follow = () => {
+    setMenus(role8(), state5, settings5);
+    askInitiative(role8(), state5, settings5);
+  };
+  lib_default.room.onMetadataChange((m) => {
+    state5 = m[TRACKER_KEY] || null;
+    settings5 = m[SETTINGS_KEY] || {};
+    follow();
+  });
+  lib_default.player.onChange(() => follow());
+  lib_default.scene.onReadyChange((ready2) => {
+    if (ready2) follow();
+  });
+  follow();
+  return { answer };
+}
+var menuSig = "";
+async function setMenus(role8, state5, settings5) {
+  const gm2 = role8 === "GM", ids = gm2 ? [] : linkedTokens(state5).sort();
+  const off = !gm2 && (playerConditions(settings5) === "off" || !ids.length);
+  const sig = JSON.stringify([gm2, off, ids]);
+  if (sig === menuSig) return;
+  menuSig = sig;
+  await Promise.all([COND_MENU, SPELL_MENU].map((id) => lib_default.contextMenu.remove(id).catch(() => {
+  })));
+  if (off) return;
+  const filter = gm2 ? { roles: ["GM"], max: 1, every: [{ key: ["metadata", ZONE_KEY], value: void 0 }], some: [{ key: "layer", value: "CHARACTER" }, { key: "layer", value: "MOUNT" }] } : { roles: ["PLAYER"], max: 1, every: [{ key: "createdUserId", value: me3.id }], some: ids.map((id) => ({ key: "id", value: id })) };
+  const url = (kind) => `${new URL("cond-menu.html", location.href).href}?kind=${kind}`;
+  try {
+    await lib_default.contextMenu.create({ id: COND_MENU, icons: [{ icon: icon(), label: "Add condition", filter }], embed: { url: url("condition"), height: 250 } });
+    await lib_default.contextMenu.create({ id: SPELL_MENU, icons: [{ icon: icon(), label: "Add spell", filter }], embed: { url: url("spell"), height: 250 } });
+  } catch (err) {
+    console.error("Encounter Builder: could not add the condition menus to Owlbear", err);
+  }
+}
+var askedFor = null;
+var initOpen = false;
+async function askInitiative(role8, state5, settings5) {
+  const rolling = role8 !== "GM" && state5?.phase === "setup" && switchOn(settings5, "playerInitiative");
+  if (!rolling) {
+    if (state5?.phase !== "setup") askedFor = null;
+    if (initOpen) {
+      initOpen = false;
+      lib_default.modal.close(INIT_MODAL).catch(() => {
+      });
+    }
+    return;
+  }
+  const fight = state5.encounter || state5.name;
+  if (askedFor === fight) return;
+  const rows = initiativeRows(state5, await ownedOf(linkedTokens(state5)));
+  if (!rows.length) return;
+  askedFor = fight;
+  initOpen = true;
+  openInitiative(rows.length);
+}
+function openInitiative(count) {
+  lib_default.modal.open({ id: INIT_MODAL, url: new URL("init.html", location.href).href, width: 320, height: Math.min(420, 150 + 52 * count), hideBackdrop: true }).catch(() => {
+  });
 }
 
 // src/obr/token-look.js
@@ -5287,6 +5430,7 @@ var markIcon = (m) => m.t ? null : m.i || slug(m.n);
 
 // src/obr/background.js
 var whispers = null;
+var asks = null;
 var role7 = "PLAYER";
 var settings4 = {};
 var gm = null;
@@ -5348,6 +5492,7 @@ window.addEventListener("message", async (e) => {
   });
   else if (m.type === "addTokens") post(e.source, { type: "tokensAdded", id: m.id, ...await addTokens(m.list || []).catch((err) => ({ error: String(err?.message || err) })) });
   else if (m.type === "whisper") post(e.source, { type: "whisperResult", id: m.id, ...await sendWhisper(m).catch((err) => ({ error: String(err?.message || err) })) });
+  else if (m.type === "playerAnswer") asks?.answer(m);
 });
 var TOOL2 = `${EXT}/link-tool`;
 var MODE2 = `${EXT}/pick`;
@@ -5372,12 +5517,12 @@ async function finishPick(reason) {
   await removeLinkTool();
 }
 async function addLinkTool() {
-  const icon = new URL("../logo/logo-64.png", location.href).href;
+  const icon2 = new URL("../logo/logo-64.png", location.href).href;
   try {
-    await lib_default.tool.create({ id: TOOL2, icons: [{ icon, label: "Linking a token (Esc stops)", filter: { roles: ["GM"] } }], defaultMode: MODE2 });
+    await lib_default.tool.create({ id: TOOL2, icons: [{ icon: icon2, label: "Linking a token (Esc stops)", filter: { roles: ["GM"] } }], defaultMode: MODE2 });
     await lib_default.tool.createMode({
       id: MODE2,
-      icons: [{ icon, label: "Click a token to link it", filter: { activeTools: [TOOL2] } }],
+      icons: [{ icon: icon2, label: "Click a token to link it", filter: { activeTools: [TOOL2] } }],
       cursors: [{ cursor: "crosshair" }],
       onToolClick: (ctx, ev) => {
         onTokenClick(ev.target);
@@ -5546,6 +5691,14 @@ async function markersFor(token, marks, sig, dpi) {
   }
   return items;
 }
+var lastSelection = "";
+function sendSelection(ids = []) {
+  if (role7 !== "GM" || !linked() || pick) return;
+  const sig = ids.join(",");
+  if (sig === lastSelection) return;
+  lastSelection = sig;
+  post(gm, { type: "selection", ids });
+}
 async function sendUsage(md) {
   if (role7 !== "GM" || !gm) return;
   try {
@@ -5557,6 +5710,7 @@ lib_default.onReady(async () => {
   role7 = await lib_default.player.getRole();
   lib_default.player.onChange((p) => {
     role7 = p.role;
+    sendSelection(p.selection);
   });
   settings4 = (await lib_default.room.getMetadata())[SETTINGS_KEY] || {};
   lib_default.room.onMetadataChange((md) => {
@@ -5603,10 +5757,15 @@ lib_default.onReady(async () => {
   startTokenFx();
   startSpellFx();
   startZones();
-  whispers = startWhispers({ isGM: () => role7 === "GM", toWindow: (msg) => {
+  const toWindow = (msg) => {
     if (!linked()) return false;
     post(gm, msg);
     return true;
-  } });
+  };
+  whispers = startWhispers({ isGM: () => role7 === "GM", toWindow });
+  asks = await startPlayerAsks({ role: () => role7, linked, toWindow }).catch((err) => {
+    console.error("Encounter Builder: could not start the players' own changes", err);
+    return null;
+  });
   resolveReady();
 });

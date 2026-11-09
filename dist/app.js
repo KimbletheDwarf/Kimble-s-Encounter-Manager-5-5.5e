@@ -43496,6 +43496,23 @@ function hiddenByTokens(c2, tokens) {
   const here = tokensOf(c2).map((id) => tokens.find((t) => t.id === id)).filter(Boolean);
   return here.length ? here.every((t) => t.visible === false) : null;
 }
+function linkedTo(combatants, token) {
+  for (const c2 of combatants || []) {
+    if (isGroup(c2)) {
+      const i = c2.members.findIndex((m) => m.token === token);
+      if (i >= 0) return { c: c2, member: i };
+    } else if ((c2.tokens || []).includes(token)) return { c: c2, member: -1 };
+  }
+  return null;
+}
+function setCondition(c2, member2, name, on) {
+  const x = member2 >= 0 ? c2.members?.[member2] : c2;
+  if (!x) return false;
+  const now = x.conditions || [];
+  if (now.includes(name) === on) return false;
+  x.conditions = on ? [...now, name] : now.filter((q) => q !== name);
+  return true;
+}
 function linkPlan(c2) {
   if (!isGroup(c2)) return [{ member: -1, name: tokenName(c2) }];
   const open3 = c2.members.map((m, i) => i).filter((i) => !c2.members[i].token);
@@ -65695,7 +65712,64 @@ var init_fight_settings = __esm({
   }
 });
 
+// src/owlbear-settings.js
+var owlbear_settings_exports = {};
+__export(owlbear_settings_exports, {
+  OWLBEAR_SWITCHES: () => OWLBEAR_SWITCHES,
+  PLAYER_CONDITION_CHOICES: () => PLAYER_CONDITION_CHOICES,
+  owlbearLinked: () => owlbearLinked,
+  owlbearSettings: () => owlbearSettings,
+  playerConditions: () => playerConditions,
+  registerOwlbearSettings: () => registerOwlbearSettings,
+  setOwlbearSettings: () => setOwlbearSettings,
+  switchOn: () => switchOn
+});
+var link2, registerOwlbearSettings, owlbearLinked, owlbearSettings, setOwlbearSettings, OWLBEAR_SWITCHES, switchOn, PLAYER_CONDITION_CHOICES, playerConditions;
+var init_owlbear_settings = __esm({
+  "src/owlbear-settings.js"() {
+    link2 = null;
+    registerOwlbearSettings = (l) => {
+      link2 = l;
+    };
+    owlbearLinked = () => !!link2?.linked();
+    owlbearSettings = () => link2?.get() || {};
+    setOwlbearSettings = (patch) => link2?.set(patch);
+    OWLBEAR_SWITCHES = [
+      ["showPartyHp", "Show party HP to players", false, ""],
+      ["showTurnDie", "Show the turn d20 on the active token", true, ""],
+      ["trackMovement", "Track movement on the active token", true, 'A green trail with a dot every 5 ft and "15 / 30 ft" on the linked token whose turn it is. Right-click the token > Reset movement to start its turn again.'],
+      ["stopAtSpeed", "Stop movement at its speed", false, "A token can\u2019t be moved past its speed this turn."],
+      ["spellAnimations", "Show spell and zone animations", true, "The looping animations of spells on creatures and of zone spells, for everyone. Each player can also turn them off for their own screen, in the tracker panel."],
+      ["playerInitiative", "Players enter their own initiative", true, "While you roll initiative, a player with a linked token gets a box on their screen for it. What they type fills in here; you can still change it."]
+    ];
+    switchOn = (settings3, key3) => {
+      const s = OWLBEAR_SWITCHES.find((x) => x[0] === key3);
+      return settings3[key3] ?? s?.[2] ?? false;
+    };
+    PLAYER_CONDITION_CHOICES = [["allow", "Allow"], ["ask", "Ask me first"], ["off", "Off"]];
+    playerConditions = (settings3) => PLAYER_CONDITION_CHOICES.some(([k]) => k === settings3?.playerConditions) ? settings3.playerConditions : "allow";
+  }
+});
+
 // src/tabs/runner.js
+var runner_exports = {};
+__export(runner_exports, {
+  activeParty: () => activeParty,
+  characterTokens: () => characterTokens,
+  companionCombatants: () => companionCombatants,
+  justUndone: () => justUndone,
+  linkByName: () => linkByName,
+  liveEncounter: () => liveEncounter,
+  mountRunner: () => mountRunner,
+  playerAsk: () => playerAsk,
+  runnerCommand: () => runnerCommand,
+  sceneTokensChanged: () => sceneTokensChanged,
+  setMessenger: () => setMessenger,
+  setTokenLinker: () => setTokenLinker,
+  showRunner: () => showRunner,
+  tokenSelected: () => tokenSelected,
+  tokenVitalsNow: () => tokenVitalsNow
+});
 function mountRunner(root, navigate) {
   el10 = root;
   go7 = navigate;
@@ -65945,6 +66019,7 @@ function rollFor(which) {
     const shared = /* @__PURE__ */ new Map();
     for (const c2 of s.combatants) {
       if (c2.owner || which === "monsters" && c2.kind !== "monster") continue;
+      if (c2.initBy && c2.init != null) continue;
       if (sameInit && c2.kind === "monster" && c2.refId) {
         if (!shared.has(c2.refId)) shared.set(c2.refId, rollInit(c2));
         c2.init = shared.get(c2.refId);
@@ -65962,7 +66037,7 @@ function renderSetup() {
       h(
         "div.card.tracker",
         h("div.tracker-head", h("h2", "Roll initiative"), h("button.outline", { onclick: addCombatant }, "Manual entry")),
-        h("p.muted", "Type each initiative, or roll. Players usually roll their own; monsters can be rolled here."),
+        h("p.muted", `Type each initiative, or roll. Players usually roll their own; monsters can be rolled here.${linker && switchOn(owlbearSettings(), "playerInitiative") ? " Players with a linked token can type theirs in Owlbear: it shows here in green, and rolling for everyone leaves it alone." : ""}`),
         h("label.check-row", h("input", { type: "checkbox", checked: sameInit, onchange: (e2) => {
           sameInit = e2.target.checked;
         } }), "Identical monsters share one initiative roll"),
@@ -65971,13 +66046,25 @@ function renderSetup() {
           { oncontextmenu: (e2) => tokenMenu(e2, c2) },
           avatarFor(c2, "sm"),
           h("div.setup-name", c2.name, linkTag(c2), hiddenTag(c2), h("div.muted", `${c2.owner ? followText(c2) : c2.kind === "pc" ? "Character" : isGroup(c2) ? `Group of ${c2.members.length} ${c2.group === "minion" ? "minions" : "(pack)"}` : "Monster"}${c2.owner ? "" : ` \xB7 init ${signed(c2.initBonus)}`}`)),
-          c2.owner ? h("span.muted.follow-init", "\u21B3") : h("input.init-input", { type: "number", value: c2.init ?? "", placeholder: "\u2014", oninput: (e2) => {
-            c2.init = e2.target.value === "" ? null : Number(e2.target.value);
-            save("encounters", enc);
-            updateStart();
-          } }),
+          c2.owner ? h("span.muted.follow-init", "\u21B3") : h("input.init-input" + (c2.initBy ? ".from-player" : ""), {
+            type: "number",
+            value: c2.init ?? "",
+            placeholder: "\u2014",
+            dataset: { key: c2.key },
+            title: c2.initBy ? `Typed by ${c2.initBy} in Owlbear` : null,
+            oninput: (e2) => {
+              c2.init = e2.target.value === "" ? null : Number(e2.target.value);
+              delete c2.initBy;
+              e2.target.classList.remove("from-player");
+              e2.target.title = "";
+              save("encounters", enc);
+              updateStart();
+            }
+          }),
           c2.owner ? h("span") : h("button.icon-btn", { title: "Roll", onclick: () => act((x) => {
-            x.combatants.find((y) => y.key === c2.key).init = rollInit(c2, false);
+            const y = x.combatants.find((z) => z.key === c2.key);
+            y.init = rollInit(c2, false);
+            delete y.initBy;
           }) }, "\u{1F3B2}"),
           h("button.icon-btn", { title: "Remove from this fight", onclick: () => act((x) => {
             x.combatants = x.combatants.filter((y) => y.key !== c2.key);
@@ -66015,7 +66102,10 @@ function followText(c2) {
   return `${o ? `${o.name}'s` : "A"} ${c2.summoned || c2.companion?.summon ? "summon" : "companion"}: ${c2.during ? "acts during their turn" : "right after their turn"}`;
 }
 function start() {
-  act((s) => startCombat(s, rollInit));
+  act((s) => {
+    startCombat(s, rollInit);
+    for (const c2 of s.combatants) delete c2.initBy;
+  });
 }
 function shortcutsDialog() {
   modal("Keyboard shortcuts", h("div.shortcuts", SHORTCUTS.map(([k, what]) => h("div.shortcut", h("kbd", k), h("span", what)))), [["Done", () => {
@@ -67135,6 +67225,101 @@ function loadTokens() {
     else notice([`Loaded ${names(load2)}.`, rest].filter(Boolean).join(" "));
   });
 }
+function tokenSelected(ids) {
+  if (!el10 || el10.hidden || !ids.length) return;
+  const e2 = liveEncounter();
+  if (e2?.combat?.phase !== "active" || enc && enc !== e2) return;
+  const hit = ids.map((id) => linkedTo(e2.combat.combatants, id)).find(Boolean);
+  if (!hit) return;
+  const same = enc === e2 && e2.combat.selectedKey === hit.c.key;
+  enc = e2;
+  if (!same) {
+    e2.combat.selectedKey = hit.c.key;
+    save("encounters", e2);
+    renderTracker();
+  }
+  el10.querySelector(".turn-row.selected")?.scrollIntoView({ block: "nearest" });
+}
+function askTarget(token) {
+  const e2 = liveEncounter();
+  const hit = e2?.combat && linkedTo(e2.combat.combatants, token);
+  if (hit) {
+    const { c: c2, member: member2 } = hit;
+    return {
+      e: e2,
+      c: c2,
+      name: member2 >= 0 ? `${c2.name} ${member2 + 1}` : c2.name,
+      conditions: (member2 >= 0 ? c2.members[member2].conditions : c2.conditions) || [],
+      change: (on, q) => fightChange(e2, (s) => {
+        setCondition(find(s, c2.key), member2, q, on);
+      })
+    };
+  }
+  for (const ch of activeParty()) {
+    const pc = partyCombatant(ch);
+    if (tokensOf(pc).includes(token)) return { name: ch.name, conditions: pc.conditions, change: (on, q) => partyAct(ch.id, (p) => {
+      setCondition(p, -1, q, on);
+    }) };
+    for (const cc of companionCombatants(ch)) {
+      const m = linkedTo([cc], token);
+      if (m) return {
+        name: m.member >= 0 ? `${cc.name} ${m.member + 1}` : cc.name,
+        conditions: (m.member >= 0 ? cc.members[m.member].conditions : cc.conditions) || [],
+        change: (on, q) => companionAct(ch.id, cc.companion.id, (y) => {
+          setCondition(y, m.member, q, on);
+        })
+      };
+    }
+  }
+  return null;
+}
+function playerAsk(ask, reply) {
+  if (!askTarget(ask.token)) return reply({ ok: false, text: "That token isn\u2019t linked to anyone in the GM window." });
+  if (ask.what === "init") return initiativeAsk(ask, reply);
+  if (ask.what !== "add" && ask.what !== "remove") return reply({ ok: false, text: "The GM window didn\u2019t understand that." });
+  const name = String(ask.name || ""), adding = ask.what === "add";
+  if (!(/* @__PURE__ */ new Set([...conditionNames(), BLOODIED, "Concentrating", "Dodging", ...CREATURE_SPELLS])).has(name)) return reply({ ok: false, text: `The GM window doesn\u2019t know ${name || "that"}.` });
+  const mode3 = ask.gm ? "allow" : playerConditions(owlbearSettings());
+  if (mode3 === "off") return reply({ ok: false, text: "The GM has turned this off." });
+  const apply = () => {
+    const t = askTarget(ask.token);
+    if (!t) return reply({ ok: false, text: "That token isn\u2019t linked any more." });
+    if (t.conditions.includes(name) === adding) {
+      return reply({ ok: false, text: adding ? `${t.name} already has ${name}.` : `${t.name} doesn\u2019t have ${name}${HP_MARKS.has(name) ? ": it follows their hit points" : ""}.` });
+    }
+    t.change(adding, name);
+    const text = `${name} ${adding ? "added to" : "taken off"} ${t.name}.`;
+    if (!ask.gm) notice(`${ask.from} in Owlbear: ${text}`);
+    reply({ ok: true, text });
+  };
+  if (mode3 !== "ask") return apply();
+  const who = askTarget(ask.token).name;
+  reply({ ok: true, pending: true, text: "Sent to the GM." });
+  modal(`${ask.from} asks`, h("p", adding ? `Add ${name} to ${who}?` : `Take ${name} off ${who}?`), [
+    ["No", () => reply({ ok: false, text: `The GM said no to ${name} on ${who}.` })],
+    ["Yes", apply, "primary"]
+  ]);
+}
+function initiativeAsk(ask, reply) {
+  const t = askTarget(ask.token), n = Math.round(Number(ask.value));
+  if (!switchOn(owlbearSettings(), "playerInitiative")) return reply({ ok: false, text: "The GM has turned this off: tell them your initiative." });
+  if (!t.e || t.e.combat.phase !== "setup") return reply({ ok: false, text: "Initiative isn\u2019t being rolled now: tell the GM." });
+  if (!Number.isFinite(n) || Math.abs(n) > 99) return reply({ ok: false, text: "That isn\u2019t a number the GM window can use." });
+  const c2 = t.c.owner ? find(t.e.combat, t.c.owner) || t.c : t.c;
+  c2.init = n;
+  c2.initBy = ask.from;
+  save("encounters", t.e);
+  if (enc === t.e && !el10.hidden) {
+    const box = el10.querySelector(`.init-input[data-key="${CSS.escape(c2.key)}"]`);
+    if (box && document.activeElement?.matches?.(".init-input")) {
+      box.value = n;
+      box.classList.add("from-player");
+      box.title = `Typed by ${ask.from} in Owlbear`;
+    } else renderSetup();
+  }
+  notice(`${ask.from} in Owlbear: initiative ${n} for ${c2.name}.`);
+  reply({ ok: true, text: `Initiative ${n} sent for ${c2.name}.` });
+}
 function renderBlock() {
   const box = el10.querySelector("#run-block");
   if (!box) return;
@@ -67205,7 +67390,7 @@ function renderLog() {
     h("div.log-total", r.total)
   ))) : h("div.empty", "Rolls show here. Click dice in a stat block; Shift-click rolls with advantage, Ctrl-click with disadvantage."));
 }
-var el10, go7, enc, sameInit, UNDO_LIMIT, undoStacks, undoStack, live, liveEncounter, undoneAt, justUndone, tokenVitalsNow, tokenArt, artOf, condIcon, closePop, roundsPop, setupCombat2, C, ordered2, PICKS, pick4, SHORTCUTS, conSave2, find, numberInput, linker, messenger, messageItem, hiddenTag, NOT_LINKED, linkTag, shapeTag, activeParty, partyUndo, companionKey, warnedTwice, linking, unlinkedByHand, sceneTokens, companionTokens, single;
+var el10, go7, enc, sameInit, UNDO_LIMIT, undoStacks, undoStack, live, liveEncounter, undoneAt, justUndone, tokenVitalsNow, tokenArt, artOf, condIcon, closePop, roundsPop, setupCombat2, C, ordered2, PICKS, pick4, SHORTCUTS, conSave2, find, numberInput, linker, messenger, messageItem, hiddenTag, NOT_LINKED, linkTag, shapeTag, activeParty, partyUndo, companionKey, warnedTwice, linking, unlinkedByHand, sceneTokens, companionTokens, single, HP_MARKS;
 var init_runner = __esm({
   "src/tabs/runner.js"() {
     init_ui();
@@ -67224,6 +67409,7 @@ var init_runner = __esm({
     init_encounters();
     init_rules();
     init_fight_settings();
+    init_owlbear_settings();
     init_groups();
     enc = null;
     sameInit = true;
@@ -67293,6 +67479,7 @@ var init_runner = __esm({
       return c2 ? tokensOf(c2) : comp.live?.tokens || [];
     };
     single = (comp) => (comp.count || 1) === 1;
+    HP_MARKS = /* @__PURE__ */ new Set([BLOODIED, "Unconscious", "Dead"]);
   }
 });
 
@@ -72225,29 +72412,10 @@ document.addEventListener("scroll", (e2) => {
 
 // src/app.js
 init_fight_settings();
-
-// src/owlbear-settings.js
-var link2 = null;
-var registerOwlbearSettings = (l) => {
-  link2 = l;
-};
-var owlbearLinked = () => !!link2?.linked();
-var owlbearSettings = () => link2?.get() || {};
-var setOwlbearSettings = (patch) => link2?.set(patch);
-var OWLBEAR_SWITCHES = [
-  ["showPartyHp", "Show party HP to players", false, ""],
-  ["showTurnDie", "Show the turn d20 on the active token", true, ""],
-  ["trackMovement", "Track movement on the active token", true, 'A green trail with a dot every 5 ft and "15 / 30 ft" on the linked token whose turn it is. Right-click the token > Reset movement to start its turn again.'],
-  ["stopAtSpeed", "Stop movement at its speed", false, "A token can\u2019t be moved past its speed this turn."],
-  ["spellAnimations", "Show spell and zone animations", true, "The looping animations of spells on creatures and of zone spells, for everyone. Each player can also turn them off for their own screen, in the tracker panel."]
-];
-var switchOn = (settings3, key3) => {
-  const s = OWLBEAR_SWITCHES.find((x) => x[0] === key3);
-  return settings3[key3] ?? s?.[2] ?? false;
-};
+init_owlbear_settings();
 
 // src/obr/manifest.json
-var version2 = "1.14.4";
+var version2 = "1.15.0";
 
 // src/app.js
 var TABS = [
@@ -72783,23 +72951,40 @@ function owlbearSection() {
   const box = h("div.owlbear-switches");
   const draw2 = () => {
     const s = owlbearSettings();
-    fill(box, OWLBEAR_SWITCHES.map(([key3, label, , hint]) => {
-      const under = key3 === "stopAtSpeed";
-      return h(
-        `label.check-row${under ? ".indent" : ""}`,
-        { title: hint },
-        h("input", {
-          type: "checkbox",
-          checked: switchOn(s, key3),
-          disabled: under && !switchOn(s, "trackMovement"),
-          onchange: (e2) => {
-            setOwlbearSettings({ [key3]: e2.target.checked });
+    fill(
+      box,
+      OWLBEAR_SWITCHES.map(([key3, label, , hint]) => {
+        const under = key3 === "stopAtSpeed";
+        return h(
+          `label.check-row${under ? ".indent" : ""}`,
+          { title: hint },
+          h("input", {
+            type: "checkbox",
+            checked: switchOn(s, key3),
+            disabled: under && !switchOn(s, "trackMovement"),
+            onchange: (e2) => {
+              setOwlbearSettings({ [key3]: e2.target.checked });
+              draw2();
+            }
+          }),
+          label
+        );
+      }),
+      // what players may change on their own characters from Owlbear's right-click menu (src/obr/player-asks.js)
+      h("div.form-grid", h(
+        "label",
+        { title: "Players right-click their own linked token for Add condition and Add spell. Allow: it goes on straight away, with a note here. Ask me first: you say yes or no to each." },
+        "Players add their own conditions and spells",
+        h(
+          "select",
+          { onchange: (e2) => {
+            setOwlbearSettings({ playerConditions: e2.target.value });
             draw2();
-          }
-        }),
-        label
-      );
-    }));
+          } },
+          PLAYER_CONDITION_CHOICES.map(([value, text]) => h("option", { value, selected: playerConditions(s) === value }, text))
+        )
+      ))
+    );
   };
   draw2();
   return [h("h4", "Owlbear"), h("p.muted", "The room\u2019s settings. They apply to everyone in the room straight away."), box];
@@ -72941,8 +73126,8 @@ async function init() {
   if (!store.libraryPath) welcome();
 }
 if (location.search.includes("test")) {
-  Promise.all([Promise.resolve().then(() => (init_ocr(), ocr_exports)), Promise.resolve().then(() => (init_parse(), parse_exports)), Promise.resolve().then(() => (init_store(), store_exports)), Promise.resolve().then(() => (init_conditions(), conditions_exports)), Promise.resolve().then(() => (init_spells(), spells_exports)), Promise.resolve().then(() => (init_snapshot(), snapshot_exports)), Promise.resolve().then(() => (init_chat(), chat_exports))]).then(([ocr, parse, st, cond, sp, snap, chat2]) => {
-    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, remove: st.remove, condify: cond.condify, spellify: sp.spellify, go: go8, importLibrary, flushSaves: st.flushSaves, elementPng: snap.elementPng, initChat: chat2.initChat };
+  Promise.all([Promise.resolve().then(() => (init_ocr(), ocr_exports)), Promise.resolve().then(() => (init_parse(), parse_exports)), Promise.resolve().then(() => (init_store(), store_exports)), Promise.resolve().then(() => (init_conditions(), conditions_exports)), Promise.resolve().then(() => (init_spells(), spells_exports)), Promise.resolve().then(() => (init_snapshot(), snapshot_exports)), Promise.resolve().then(() => (init_chat(), chat_exports)), Promise.resolve().then(() => (init_runner(), runner_exports)), Promise.resolve().then(() => (init_owlbear_settings(), owlbear_settings_exports))]).then(([ocr, parse, st, cond, sp, snap, chat2, runner, obs]) => {
+    window.__eb = { ocrImage: ocr.ocrImage, parseStatBlock: parse.parseStatBlock, store: st.store, save: st.save, remove: st.remove, condify: cond.condify, spellify: sp.spellify, go: go8, importLibrary, flushSaves: st.flushSaves, elementPng: snap.elementPng, initChat: chat2.initChat, runner, owlbearSettings: obs };
   });
 }
 init();
@@ -73032,6 +73217,7 @@ function fit(state2) {
 
 // src/obr/link.js
 init_chat();
+init_owlbear_settings();
 init_fight_settings();
 var obr = window.opener ? window.opener.top : null;
 var bridge = null;
@@ -73152,7 +73338,11 @@ window.addEventListener("message", (e2) => {
     playEffects();
   } else if (m.type === "pong") lastPong = Date.now();
   else if (m.type === "roomUsage") setMeter(m);
-  else if (m.type === "settings") {
+  else if (m.type === "selection") tokenSelected(m.ids || []);
+  else if (m.type === "playerAsk") {
+    const back = e2.source;
+    playerAsk(m, (answer) => post(back, { type: "playerAnswer", id: m.id, ...answer }));
+  } else if (m.type === "settings") {
     settings2 = m.settings || {};
     publish();
   } else if (m.type === "command") runnerCommand(m.cmd);
