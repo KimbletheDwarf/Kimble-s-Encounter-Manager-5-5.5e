@@ -407,6 +407,7 @@ details summary { cursor: pointer; color: var(--muted); margin: 12px 0 8px; }
 .spell-find { width: 100%; margin-bottom: 6px; }
 .spell-list { max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; }
 .spell-list button.on { background: var(--card-2); }
+.spell-list .cond-icon, .spell-list .cond-badge { display: inline-block; margin-right: 6px; vertical-align: -3px; }
 .num-pop-title { font: 700 13px var(--head); margin-bottom: 6px; }
 .num-pop input { width: 100%; font-size: 18px; text-align: center; }
 .num-pop .hint { margin-top: 6px; white-space: normal; }

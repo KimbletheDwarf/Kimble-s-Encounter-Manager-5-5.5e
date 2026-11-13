@@ -66024,10 +66024,9 @@ function numberPop(anchor, { title: title2, hint, value = "", min = 0, onEnter }
   input.focus();
   input.select();
 }
-function spellPop(anchor, has2, onPick) {
+function findPop(anchor, names, onPick, { placeholder = "Search", none = "Nothing by that name.", icon = null } = {}) {
   closePop();
-  const names = CREATURE_SPELLS.filter((s) => !has2.includes(s));
-  const input = h("input.spell-find", { type: "text", placeholder: "Search spells", autocomplete: "off", spellcheck: false });
+  const input = h("input.spell-find", { type: "text", placeholder, autocomplete: "off", spellcheck: false });
   const list = h("div.spell-list");
   const box = h("div.pop-menu.spell-pop", input, list);
   let shown4 = [], at2 = 0;
@@ -66039,7 +66038,7 @@ function spellPop(anchor, has2, onPick) {
   const show3 = () => {
     shown4 = matchSpells(names, input.value);
     at2 = Math.min(at2, Math.max(0, shown4.length - 1));
-    list.replaceChildren(...shown4.length ? shown4.map((name, i) => h(`button${i === at2 ? ".on" : ""}`, { onclick: () => take(name) }, name)) : [h("div.hint", "No spell by that name.")]);
+    list.replaceChildren(...shown4.length ? shown4.map((name, i) => h(`button${i === at2 ? ".on" : ""}`, { onclick: () => take(name), ...icon ? { dataset: { cond: name } } : {} }, icon ? icon(name) : null, name)) : [h("div.hint", none)]);
     list.querySelector(".on")?.scrollIntoView({ block: "nearest" });
   };
   show3();
@@ -66098,7 +66097,8 @@ function condChips(c2, { add: add2, remove: remove2, timed = false, setRounds })
     isOut(c2) ? null : h("button.cond.add", { title: "Add a condition", onclick: (e2) => {
       e2.stopPropagation();
       const anchor = e2.currentTarget;
-      popMenu(anchor, [.../* @__PURE__ */ new Set([...conditionNames(), BLOODIED, "Concentrating", "Dodging"])].filter((q) => !rowMarks(c2, bloodiedAt()).includes(q)).map((q) => [[condIcon(q), q], () => timed ? roundsPop(anchor, q, 0, (n) => add2(q, n)) : add2(q), "", { dataset: { cond: q } }]));
+      const names = [.../* @__PURE__ */ new Set([...conditionNames(), BLOODIED, "Concentrating", "Dodging"])].filter((q) => !rowMarks(c2, bloodiedAt()).includes(q) && !c2.conditions.includes(q));
+      findPop(anchor, names, (q) => timed ? roundsPop(anchor, q, 0, (n) => add2(q, n)) : add2(q), { placeholder: "Search conditions", none: "No condition by that name.", icon: condIcon });
     } }, "+ Condition"),
     isOut(c2) ? null : h("button.cond.add", { title: "Add a spell that stays in effect. It plays on their linked token until you remove it.", onclick: (e2) => {
       e2.stopPropagation();
@@ -67665,7 +67665,7 @@ function renderLog() {
     h("div.log-total", r.total)
   ))) : h("div.empty", "Rolls show here. Click dice in a stat block; Shift-click rolls with advantage, Ctrl-click with disadvantage."));
 }
-var el10, go7, enc, sameInit, UNDO_LIMIT, undoStacks, undoStack, live, liveEncounter, undoneAt, justUndone, tokenVitalsNow, tokenArt, artOf, condIcon, closePop, roundsPop, setupCombat2, C, ordered2, PICKS, pick4, SHORTCUTS, conSave2, find, numberInput, groupPending, lastGroupAc, toHitLabel, damageLabel, linker, messenger, messageItem, hiddenTag, NOT_LINKED, linkTag, shapeTag, activeParty, partyUndo, companionKey, warnedTwice, linking, unlinkedByHand, sceneTokens, companionTokens, single, HP_MARKS;
+var el10, go7, enc, sameInit, UNDO_LIMIT, undoStacks, undoStack, live, liveEncounter, undoneAt, justUndone, tokenVitalsNow, tokenArt, artOf, condIcon, closePop, spellPop, roundsPop, setupCombat2, C, ordered2, PICKS, pick4, SHORTCUTS, conSave2, find, numberInput, groupPending, lastGroupAc, toHitLabel, damageLabel, linker, messenger, messageItem, hiddenTag, NOT_LINKED, linkTag, shapeTag, activeParty, partyUndo, companionKey, warnedTwice, linking, unlinkedByHand, sceneTokens, companionTokens, single, HP_MARKS;
 var init_runner = __esm({
   "src/tabs/runner.js"() {
     init_ui();
@@ -67712,6 +67712,7 @@ var init_runner = __esm({
     };
     closePop = () => {
     };
+    spellPop = (anchor, has2, onPick) => findPop(anchor, CREATURE_SPELLS.filter((s) => !has2.includes(s)), onPick, { placeholder: "Search spells", none: "No spell by that name." });
     roundsPop = (anchor, cond, now, onEnter) => numberPop(anchor, { title: `${cond}: rounds`, hint: "0 = until removed. Otherwise it counts down at the end of each of their turns.", value: now, onEnter });
     setupCombat2 = (e2) => setupCombat(e2, { character: findCharacter, monster: findMonster, asGroup: runsAsGroup });
     C = () => enc.combat;
@@ -72702,7 +72703,7 @@ init_fight_settings();
 init_owlbear_settings();
 
 // src/obr/manifest.json
-var version2 = "1.15.2";
+var version2 = "1.15.3";
 
 // src/app.js
 var TABS = [
