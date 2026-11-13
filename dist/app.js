@@ -36326,14 +36326,16 @@ function pasteToPicture(tabEl) {
 function doRoll(expr, { who = "", label = "", mode: mode3 = "normal", quiet = false } = {}) {
   const r = roll(expr, mode3);
   if (!r) return null;
-  const entry = { ...r, who, label, detail: describe(r), at: Date.now() };
+  const entry = logRoll({ ...r, who, label, detail: describe(r) }, { quiet });
+  if (!quiet) showDice(r);
+  return entry;
+}
+function logRoll(entry, { quiet = false } = {}) {
+  entry = { mode: "normal", at: Date.now(), ...entry };
   rollLog.unshift(entry);
   rollLog.length = Math.min(rollLog.length, 200);
   rollListeners.forEach((fn) => fn(entry));
-  if (!quiet) {
-    toast(entry);
-    showDice(r);
-  }
+  if (!quiet) toast(entry);
   return entry;
 }
 function diceSettings() {
@@ -36479,7 +36481,7 @@ function debounce(fn, ms) {
     t = setTimeout(() => fn(...a2), ms);
   };
 }
-var esc, richText, hasImage, rollLog, rollListeners, onRoll, DICE_DEFAULTS, dice, diceStage, coolUntil, coolTimer, ROLLABLE, TOAST_DEFAULTS, toastBox, noticeEl;
+var esc, richText, hasImage, rollLog, rollListeners, onRoll, DICE_DEFAULTS, dice, diceStage, coolUntil, coolTimer, altClicked, rollHook, setRollHook, ROLLABLE, TOAST_DEFAULTS, toastBox, noticeEl;
 var init_ui = __esm({
   "src/ui.js"() {
     init_dice();
@@ -36496,12 +36498,28 @@ var init_ui = __esm({
     coolUntil = 0;
     document.addEventListener("dragover", (e2) => e2.preventDefault());
     document.addEventListener("drop", (e2) => e2.preventDefault());
+    altClicked = false;
+    document.addEventListener("keydown", (e2) => {
+      if (e2.key === "Alt") altClicked = false;
+    }, true);
+    document.addEventListener("keyup", (e2) => {
+      if (e2.key === "Alt" && altClicked) {
+        e2.preventDefault();
+        altClicked = false;
+      }
+    }, true);
+    rollHook = null;
+    setRollHook = (fn) => {
+      rollHook = fn;
+    };
     document.addEventListener("click", (e2) => {
       const b2 = e2.target.closest(".roll");
       if (!b2) return;
       e2.preventDefault();
       e2.stopPropagation();
       const mode3 = e2.shiftKey ? "advantage" : e2.ctrlKey ? "disadvantage" : "normal";
+      if (e2.altKey) altClicked = true;
+      if (rollHook?.(b2, e2, mode3)) return;
       rollFromClick(b2, b2.dataset.expr, { who: b2.dataset.who || "", label: b2.dataset.label || "", mode: mode3 });
     }, true);
     ROLLABLE = /([+\-−–]\s?\d+)(?=\s+to hit)|\b(\d+d\d+(?:\s*[+\-−–]\s*\d+)?)/g;
@@ -65731,6 +65749,35 @@ var init_loot_dialog = __esm({
   }
 });
 
+// src/group-roll.js
+function groupAttack(expr, count, ac, mode3 = "normal", rng2 = Math.random) {
+  if (!parseDice(expr)) return null;
+  const rolls = Array.from({ length: Math.max(0, count) }, () => {
+    const r = roll(expr, mode3, rng2);
+    return { total: r.total, natural20: r.natural20, natural1: r.natural1, hit: r.natural20 || !r.natural1 && r.total >= ac };
+  }).sort((a2, b2) => b2.total - a2.total);
+  const hits = rolls.filter((r) => r.hit).length, crits = rolls.filter((r) => r.natural20).length;
+  return { rolls, hits, crits };
+}
+function groupAttackText({ rolls }) {
+  const one = (r) => `${r.total}${r.natural20 ? " (crit)" : r.natural1 ? " (nat 1)" : ""}`;
+  const hit = rolls.filter((r) => r.hit).map(one), miss = rolls.filter((r) => !r.hit).map(one);
+  return [hit.length ? `hit ${hit.join(", ")}` : "", miss.length ? `miss ${miss.join(", ")}` : ""].filter(Boolean).join(" \xB7 ");
+}
+function groupDamageExpr(expr, hits, crits = 0) {
+  const terms = parseDice(expr);
+  if (!terms || hits < 1) return null;
+  return terms.map((t, i) => {
+    const sign3 = t.sign < 0 || t.flat < 0 ? "-" : i ? "+" : "";
+    return t.flat != null ? `${sign3}${Math.abs(t.flat) * hits}` : `${sign3}${t.count * (hits + crits)}d${t.sides}`;
+  }).join("");
+}
+var init_group_roll = __esm({
+  "src/group-roll.js"() {
+    init_dice();
+  }
+});
+
 // src/spell-loop-names.js
 var CREATURE_SPELLS;
 var init_spell_loop_names = __esm({
@@ -65865,6 +65912,7 @@ function mountRunner(root, navigate) {
     if (!el10.hidden) render4();
   });
   document.addEventListener("keydown", onKey);
+  setRollHook(groupRollHook);
   el10.addEventListener("click", (e2) => {
     const row2 = pick4 && e2.target.closest(".turn-row");
     if (!row2) return;
@@ -66275,6 +66323,10 @@ function onKey(e2) {
   if (e2.key === "Escape" && pick4) {
     e2.preventDefault();
     return endPick();
+  }
+  if (e2.key === "Escape" && groupPending && !document.querySelector(".modal-back, .pop-menu")) {
+    e2.preventDefault();
+    return clearGroupPending();
   }
   if (enc?.combat?.phase !== "active" || document.querySelector(".modal-back, .pop-menu") || /^(INPUT|TEXTAREA|SELECT)$/.test(e2.target.tagName)) return;
   const ctrl = e2.ctrlKey || e2.metaKey, key3 = e2.key.toLowerCase();
@@ -66716,7 +66768,7 @@ function mergeRows(c2) {
     x.combatants = x.combatants.filter((z) => !others.includes(z));
   });
 }
-function groupAttack(key3, entry) {
+function groupAttack2(key3, entry) {
   const c2 = find(C(), key3);
   if (!c2 || !entry) return;
   const a2 = groupAttackOf(entry.text);
@@ -66750,6 +66802,142 @@ function groupAttack(key3, entry) {
     }
   });
   n.select();
+}
+function groupRollHook(b2, e2, mode3) {
+  if (el10.hidden || !enc?.combat || !b2.closest("#run-block")) return false;
+  const c2 = C().combatants.find((x) => x.key === C().selectedKey);
+  if (!c2 || !isGroup(c2)) return false;
+  const label = b2.dataset.label || "";
+  if (e2.altKey && label.endsWith(": to hit")) {
+    askGroupAttack(c2, b2, label.slice(0, -": to hit".length), mode3);
+    return true;
+  }
+  if (groupPending?.key === c2.key && label === damageLabel(groupPending.name)) {
+    rollGroupDamage(c2, b2);
+    return true;
+  }
+  if (e2.altKey && label.endsWith(": damage")) {
+    askGroupDamage(c2, b2, label.slice(0, -": damage".length));
+    return true;
+  }
+  return false;
+}
+function askGroupDamage(c2, b2, name) {
+  const count = standing(c2).length;
+  const hits = h("input.hp-input", { type: "number", min: 1, value: count || 1 });
+  const crits = h("input.hp-input", { type: "number", min: 0, value: 0 });
+  const roll3 = () => {
+    const n = Math.round(Number(hits.value)), k = Math.max(0, Math.min(n, Math.round(Number(crits.value)) || 0));
+    if (!(n > 0)) {
+      hits.focus();
+      return false;
+    }
+    const expr = groupDamageExpr(b2.dataset.expr, n, k);
+    if (!expr) return false;
+    rollFromClick(b2, expr, { who: c2.name, label: `${name}: damage for ${n} hit${n === 1 ? "" : "s"}${k ? ` (${k} critical)` : ""}` });
+  };
+  modal(
+    `${c2.name}: ${name} damage`,
+    h(
+      "div.hp-edit.group-edit",
+      h("label.mg-row", "How many hit:", hits),
+      h("label.mg-row", "Of those, critical hits:", crits),
+      h("div.hint", `Rolls ${b2.dataset.expr} once for every hit (${count} standing); a critical hit doubles its dice. Enter rolls.`)
+    ),
+    [["Cancel", () => {
+    }], ["Roll", roll3, "primary"]]
+  );
+  for (const input of [hits, crits]) input.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter") {
+      e2.preventDefault();
+      if (roll3() !== false) input.closest(".modal-back")?.remove();
+    }
+  });
+  hits.select();
+}
+function askGroupAttack(c2, b2, name, mode3) {
+  const count = standing(c2).length;
+  if (!count) return notice(`${c2.name}: nobody is left standing to attack.`);
+  const expr = b2.dataset.expr;
+  const ac = h("input.hp-input", { type: "number", min: 1, value: lastGroupAc, placeholder: "AC" });
+  const roll3 = () => {
+    const target = Math.round(Number(ac.value));
+    if (!(target > 0)) {
+      ac.focus();
+      return false;
+    }
+    lastGroupAc = String(target);
+    const r = groupAttack(expr, count, target, mode3);
+    if (!r) return false;
+    logRoll({
+      expr: `${count}\xD7 ${expr} vs AC ${target}`,
+      who: c2.name,
+      label: `${name}: group attack`,
+      mode: mode3,
+      detail: groupAttackText(r),
+      total: `${r.hits} hit${r.hits === 1 ? "" : "s"}`,
+      natural20: r.crits > 0
+    });
+    const line = b2.closest("p") || b2.parentElement;
+    const left = line ? [...line.querySelectorAll(".roll")].filter((x) => x.dataset.label === damageLabel(name)).length : 0;
+    groupPending = r.hits && left ? { key: c2.key, name, ac: target, hits: r.hits, crits: r.crits, count, left } : null;
+    drawGroupBadge();
+  };
+  modal(
+    `${c2.name}: ${name} (${count} attacking)`,
+    h(
+      "div.hp-edit.group-edit",
+      h("label.mg-row", "Target AC:", ac),
+      h("div.hint", `Rolls ${expr} for each of the ${count} standing${mode3 !== "normal" ? `, each with ${mode3}` : ""}. A natural 20 always hits (critical); a natural 1 always misses.`)
+    ),
+    [["Cancel", () => {
+    }], ["Roll", roll3, "primary"]]
+  );
+  ac.addEventListener("keydown", (e2) => {
+    if (e2.key === "Enter") {
+      e2.preventDefault();
+      if (roll3() !== false) ac.closest(".modal-back")?.remove();
+    }
+  });
+  ac.select();
+}
+function rollGroupDamage(c2, b2) {
+  const p = groupPending;
+  const expr = groupDamageExpr(b2.dataset.expr, p.hits, p.crits);
+  if (!expr) {
+    clearGroupPending();
+    return;
+  }
+  const r = rollFromClick(b2, expr, { who: c2.name, label: `${p.name}: damage for ${p.hits} hit${p.hits === 1 ? "" : "s"}${p.crits ? ` (${p.crits} critical)` : ""}` });
+  if (!r) return;
+  b2.classList.add("group-used");
+  if (--p.left <= 0) clearGroupPending();
+  else drawGroupBadge();
+}
+function clearGroupPending() {
+  groupPending = null;
+  drawGroupBadge();
+}
+function drawGroupBadge() {
+  const box = el10?.querySelector("#run-block");
+  box?.querySelectorAll(".group-pending").forEach((x) => x.remove());
+  if (!box) return;
+  if (!groupPending) {
+    box.querySelectorAll(".group-used").forEach((x) => x.classList.remove("group-used"));
+    return;
+  }
+  if (C()?.selectedKey !== groupPending.key) return;
+  const p = groupPending;
+  const at2 = [...box.querySelectorAll(".roll")].find((x) => x.dataset.label === toHitLabel(p.name));
+  at2?.after(h(
+    "button.group-pending",
+    { title: `${p.hits} of ${p.count} hit AC ${p.ac}${p.crits ? ` (${p.crits} critical)` : ""}. Click this attack's damage to roll it for every hit. Esc or click here to cancel.`, onclick: (e2) => {
+      e2.preventDefault();
+      e2.stopPropagation();
+      clearGroupPending();
+    } },
+    `\u2694 ${p.hits}${p.crits ? ` (${p.crits}\u2605)` : ""}`
+  ));
 }
 function renameCombatant(c2) {
   const input = h("input", { type: "text", value: c2.name });
@@ -67432,7 +67620,7 @@ function renderBlock() {
         }
       }, { redraw: false })
     };
-    const group = isGroup(c2) ? { attack: (entry) => groupAttack(c2.key, entry) } : null;
+    const group = isGroup(c2) ? { attack: (entry) => groupAttack2(c2.key, entry) } : null;
     const pc2 = c2.kind === "pc" ? findCharacter(c2.refId) : null;
     fill(
       box,
@@ -67448,9 +67636,11 @@ function renderBlock() {
         m.description?.length ? h("button.outline", { dataset: { desc: m.id }, title: "Hover to read it; click to pin it open" }, "Description") : null,
         h("button.outline", { onclick: () => go7("library", m.id) }, "View in Creatures")
       ) : null,
+      m && isGroup(c2) ? h("div.hint.group-roll-hint", `Alt-click a to-hit: all ${standing(c2).length} standing roll against a target AC, then click its damage to roll it for every hit (Esc cancels). Alt-click a damage to type how many hit.`) : null,
       m ? statBlock(m, { who: c2.name, description: false, tracker, recharge, group }) : h("div.empty", `${c2.name} has no stat block (manual entry or deleted from the library).`),
       pc2?.sheet ? h("details.own-sheet", h("summary", `${pc2.name}'s own sheet`), characterSheet(pc2, { hp: c2.hp, compact: true })) : null
     );
+    drawGroupBadge();
     return;
   }
   const pc = findCharacter(c2.refId);
@@ -67475,10 +67665,11 @@ function renderLog() {
     h("div.log-total", r.total)
   ))) : h("div.empty", "Rolls show here. Click dice in a stat block; Shift-click rolls with advantage, Ctrl-click with disadvantage."));
 }
-var el10, go7, enc, sameInit, UNDO_LIMIT, undoStacks, undoStack, live, liveEncounter, undoneAt, justUndone, tokenVitalsNow, tokenArt, artOf, condIcon, closePop, roundsPop, setupCombat2, C, ordered2, PICKS, pick4, SHORTCUTS, conSave2, find, numberInput, linker, messenger, messageItem, hiddenTag, NOT_LINKED, linkTag, shapeTag, activeParty, partyUndo, companionKey, warnedTwice, linking, unlinkedByHand, sceneTokens, companionTokens, single, HP_MARKS;
+var el10, go7, enc, sameInit, UNDO_LIMIT, undoStacks, undoStack, live, liveEncounter, undoneAt, justUndone, tokenVitalsNow, tokenArt, artOf, condIcon, closePop, roundsPop, setupCombat2, C, ordered2, PICKS, pick4, SHORTCUTS, conSave2, find, numberInput, groupPending, lastGroupAc, toHitLabel, damageLabel, linker, messenger, messageItem, hiddenTag, NOT_LINKED, linkTag, shapeTag, activeParty, partyUndo, companionKey, warnedTwice, linking, unlinkedByHand, sceneTokens, companionTokens, single, HP_MARKS;
 var init_runner = __esm({
   "src/tabs/runner.js"() {
     init_ui();
+    init_group_roll();
     init_store();
     init_statblock();
     init_combat();
@@ -67536,12 +67727,18 @@ var init_runner = __esm({
       ["Ctrl+Shift+H", "Heal several: the same"],
       ["Ctrl+S, then click", "Summon for that creature"],
       ["Ctrl+T or Alt+T, then click", "Link its token in Owlbear (browsers keep Ctrl+T for a new tab, so use Alt+T there)"],
-      ["Esc", "Stop picking"],
+      ["Alt-click a to-hit (a group)", "Every standing member attacks against a target AC; then click that attack\u2019s damage to roll it for every hit. Add Shift or Ctrl for advantage or disadvantage"],
+      ["Alt-click a damage (a group)", "Roll it for however many hit: type the number (and any critical hits)"],
+      ["Esc", "Stop picking, or cancel a waiting group roll"],
       ["Ctrl+K", "Search everything (any tab)"]
     ];
     conSave2 = (c2) => conSave(c2, c2.kind === "monster" ? findMonster(statRef(c2)) : null, c2.kind === "pc" ? findCharacter(c2.refId) : null);
     find = (s, key3) => s.combatants.find((z) => z.key === key3);
     numberInput = (value, min, max) => h("input", { type: "number", min, max, value });
+    groupPending = null;
+    lastGroupAc = "";
+    toHitLabel = (name) => `${name}: to hit`;
+    damageLabel = (name) => `${name}: damage`;
     linker = null;
     messenger = null;
     messageItem = (charId, name) => messenger ? [["Send message\u2026", () => messenger.compose({ charId, character: name })]] : [];
@@ -72505,7 +72702,7 @@ init_fight_settings();
 init_owlbear_settings();
 
 // src/obr/manifest.json
-var version2 = "1.15.1";
+var version2 = "1.15.2";
 
 // src/app.js
 var TABS = [

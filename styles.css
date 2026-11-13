@@ -937,3 +937,8 @@ button.temp { background: #13283a; border-color: #2b5a80; color: #8fd0ff; }
 .shape-banner { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; padding: 8px 10px; background: #3a2e1a; color: #f3cf8f; border-radius: 4px; font-weight: 700; }
 .own-sheet { margin-top: 12px; }
 .own-sheet > summary { cursor: pointer; font-weight: 700; color: var(--muted); }
+.group-pending { display: inline-block; margin: 0 4px; padding: 0 6px; border-radius: 10px; border: 1px solid #b8860b; background: #fff3c4; color: #5a3c00; font: 700 12px/18px system-ui, sans-serif; cursor: pointer; vertical-align: 1px; animation: group-pulse 1.4s ease-in-out infinite; }
+@keyframes group-pulse { 50% { box-shadow: 0 0 0 3px #f2c14e66; } }
+@media (prefers-reduced-motion: reduce) { .group-pending { animation: none; } }
+.roll.group-used { opacity: 0.55; }
+.group-roll-hint { margin: 2px 0 6px; }
