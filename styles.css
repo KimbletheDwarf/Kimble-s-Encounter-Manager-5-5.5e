@@ -442,6 +442,8 @@ kbd { font: 700 12px var(--head); background: #2a2c31; border: 1px solid var(--l
 .cond.auto { cursor: default; background: #3a1e1e; border: 1px solid #6b2b2b; color: #ffc9c2; }
 .cond-icon { width: 15px; height: 15px; flex: none; }
 .cond-badge { width: 15px; height: 15px; flex: none; border-radius: 50%; background: #3a3d45; border: 1px solid #111; color: #fff; font: 700 8px/13px system-ui, sans-serif; text-align: center; }
+.sym-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+.sym-row .sym-preview { width: 48px; height: 48px; font-size: 18px; line-height: 46px; }
 .pop-menu .cond-icon, .pop-menu .cond-badge { margin-right: 6px; vertical-align: -3px; display: inline-block; }
 .hp-box { display: flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-left: 1px solid #353941; border-radius: 0; background: transparent; font: 700 20px var(--head); color: var(--muted); }
 .turn-row .hp-box { font-size: 15px; gap: 3px; padding: 0 4px; }

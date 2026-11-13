@@ -3681,7 +3681,7 @@ function tokenEntries(state) {
 var marksOn = (state, token2) => tokenEntries(state).find(([t]) => t === token2)?.[1] || [];
 
 // src/condition-icons.js
-var CONDITION_ICONS = /* @__PURE__ */ new Set(["asleep", "attached", "banished", "bleeding", "blinded", "bloodied", "burning", "charmed", "choking", "concentrating", "confused", "cursed", "dazed", "dead", "deafened", "diseased", "dominated", "exhaustion", "flanked", "frightened", "grappled", "hidden", "incapacitated", "invisible", "levitating", "limb-damage", "paralyzed", "petrified", "poisoned", "possessed", "prone", "reduced-statistics", "restrained", "save-ends", "stunned", "suffocating", "swallowed", "temporary-hit-points", "turned", "unconscious"]);
+var CONDITION_ICONS = /* @__PURE__ */ new Set(["asleep", "attached", "banished", "bleeding", "blinded", "bloodied", "burning", "charmed", "choking", "concentrating", "confused", "cursed", "dazed", "dead", "deafened", "diseased", "dominated", "exhaustion", "flanked", "frightened", "grappled", "hidden", "incapacitated", "invisible", "levitating", "limb-damage", "paralyzed", "petrified", "poisoned", "possessed", "prone", "reduced-statistics", "restrained", "routing", "save-ends", "stunned", "suffocating", "swallowed", "temporary-hit-points", "turned", "unconscious", "wavering"]);
 
 // src/condition-icon.js
 var slug = (name) => String(name).split("/")[0].toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");

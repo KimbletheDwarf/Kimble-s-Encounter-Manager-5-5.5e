@@ -40957,6 +40957,45 @@ var init_tooltip = __esm({
   }
 });
 
+// src/condition-icons.js
+var CONDITION_ICONS;
+var init_condition_icons = __esm({
+  "src/condition-icons.js"() {
+    CONDITION_ICONS = /* @__PURE__ */ new Set(["asleep", "attached", "banished", "bleeding", "blinded", "bloodied", "burning", "charmed", "choking", "concentrating", "confused", "cursed", "dazed", "dead", "deafened", "diseased", "dominated", "exhaustion", "flanked", "frightened", "grappled", "hidden", "incapacitated", "invisible", "levitating", "limb-damage", "paralyzed", "petrified", "poisoned", "possessed", "prone", "reduced-statistics", "restrained", "routing", "save-ends", "stunned", "suffocating", "swallowed", "temporary-hit-points", "turned", "unconscious", "wavering"]);
+  }
+});
+
+// src/condition-icon.js
+function iconOf(name, conditions = []) {
+  const id = conditionId2(name, conditions);
+  return CONDITION_ICONS.has(id) ? id : CONDITION_ICONS.has(slug(name)) ? slug(name) : null;
+}
+function iconLetters(name) {
+  const words2 = String(name).split("/")[0].trim().split(/\s+/).filter(Boolean);
+  if (!words2.length) return "?";
+  return words2.length > 1 ? (words2[0][0] + words2[1][0]).toUpperCase() : words2[0][0].toUpperCase() + (words2[0][1] || "").toLowerCase();
+}
+function iconSrc(name, conditions = [], size = 64) {
+  const s = symbolOf(name, conditions);
+  if (s) return s;
+  const i = iconOf(name, conditions);
+  return i ? iconPath(i, size) : null;
+}
+var slug, conditionId2, iconPath, isSymbol, symbolOf;
+var init_condition_icon = __esm({
+  "src/condition-icon.js"() {
+    init_condition_icons();
+    slug = (name) => String(name).split("/")[0].toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    conditionId2 = (name, conditions = []) => conditions.find((c2) => c2.name === name)?.id || slug(name);
+    iconPath = (id, size = 64) => `conditions%20symbols/png-${size}/${id}.png`;
+    isSymbol = (s) => typeof s === "string" && s.startsWith("data:image/png;base64,");
+    symbolOf = (name, conditions = []) => {
+      const s = conditions.find((c2) => c2.name === name)?.symbol;
+      return isSymbol(s) ? s : null;
+    };
+  }
+});
+
 // src/conditions.js
 var conditions_exports = {};
 __export(conditions_exports, {
@@ -41046,6 +41085,34 @@ function conditionEditor(c2, { changed: changed3 }) {
     !c2.keywords.length ? h("div.hint", "No keywords: this condition is never linked in stat blocks, only listed here and in the runner.") : null
   );
   drawKeywords();
+  const symBox = h("div.sym-row");
+  const file = h("input", { type: "file", accept: "image/*", hidden: true, onchange: async (e2) => {
+    const f = e2.target.files[0];
+    e2.target.value = "";
+    if (!f) return;
+    try {
+      c2.symbol = await fitSymbol(f);
+    } catch {
+      return alert("That image could not be read. Try a PNG, JPG, WebP or SVG file.");
+    }
+    drawSymbol();
+    changed3();
+  } });
+  const drawSymbol = () => {
+    const src = iconSrc(c2.name, [c2], 128);
+    fill(
+      symBox,
+      src ? h("img.sym-preview", { src, alt: "" }) : h("span.cond-badge.sym-preview", iconLetters(c2.name)),
+      h("button", { onclick: () => file.click() }, c2.symbol ? "Replace symbol" : "Upload symbol"),
+      c2.symbol ? h("button", { title: "Go back to the built-in symbol, or letters if there is none", onclick: () => {
+        delete c2.symbol;
+        drawSymbol();
+        changed3();
+      } }, "Remove") : null,
+      file
+    );
+  };
+  drawSymbol();
   return h(
     "div.cond-editor",
     h(
@@ -41053,8 +41120,12 @@ function conditionEditor(c2, { changed: changed3 }) {
       h("label", "Name", h("input", { type: "text", value: c2.name, oninput: (e2) => {
         c2.name = e2.target.value;
         changed3({ renamed: true });
+        drawSymbol();
       } }))
     ),
+    h("h4", "Symbol"),
+    symBox,
+    h("div.hint", "Any image works; square ones look best. Empty edges are trimmed and it is sized to match the built-in symbols, then saved with the condition in your library. On the Owlbear map it shows letters until the symbol is added to an app release."),
     h("h4", "Keywords and phrases"),
     h("div.hint", 'Stat block text is searched for these (whole words). Tick "Capitalized only" for ordinary words, so "burning oil" stays plain but "gains Burning (1d10)" links. A capitalized-only word is also skipped at the start of a sentence and when it starts a name ("Hidden Dagger").'),
     kwBox,
@@ -41071,12 +41142,49 @@ function conditionEditor(c2, { changed: changed3 }) {
     h("div.hint", 'Format: a blank line starts a new paragraph. **bold**, *italic*. Start lines with "- " for a list, "> " for a variant/design box, "### " for a small heading, and "| a | b |" for table rows (the first row is the header).')
   );
 }
-var byWord, keywordRe, capsWords, findCondition, conditionNames, inline, conditionHtml;
+async function fitSymbol(f) {
+  const url = URL.createObjectURL(f);
+  try {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    const w = img.naturalWidth || 512, ht = img.naturalHeight || 512;
+    let box = { x: 0, y: 0, w, h: ht };
+    if (w * ht <= 16e6) {
+      const scan = document.createElement("canvas");
+      scan.width = w;
+      scan.height = ht;
+      const sx = scan.getContext("2d", { willReadFrequently: true });
+      sx.drawImage(img, 0, 0, w, ht);
+      const d = sx.getImageData(0, 0, w, ht).data;
+      let x0 = w, y0 = ht, x1 = -1, y1 = -1;
+      for (let y = 0; y < ht; y++) for (let x = 0; x < w; x++) if (d[(y * w + x) * 4 + 3] > 8) {
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+        if (y > y1) y1 = y;
+      }
+      if (x1 >= 0) box = { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+    }
+    const out = document.createElement("canvas");
+    out.width = out.height = SYMBOL_SIZE;
+    const scale = (SYMBOL_SIZE - 2 * SYMBOL_PAD) / Math.max(box.w, box.h);
+    const dw = box.w * scale, dh = box.h * scale;
+    const ctx = out.getContext("2d");
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(img, box.x, box.y, box.w, box.h, (SYMBOL_SIZE - dw) / 2, (SYMBOL_SIZE - dh) / 2, dw, dh);
+    return out.toDataURL("image/png");
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+var byWord, keywordRe, capsWords, findCondition, conditionNames, inline, conditionHtml, SYMBOL_SIZE, SYMBOL_PAD;
 var init_conditions = __esm({
   "src/conditions.js"() {
     init_ui();
     init_store();
     init_tooltip();
+    init_condition_icon();
     byWord = /* @__PURE__ */ new Map();
     keywordRe = null;
     capsWords = /* @__PURE__ */ new Set();
@@ -41087,6 +41195,8 @@ var init_conditions = __esm({
     conditionNames = () => store.conditions.filter((c2) => c2.id !== "save-ends").map((c2) => c2.name).sort((a2, b2) => a2.localeCompare(b2));
     inline = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\*(.+?)\*/g, "<em>$1</em>");
     conditionHtml = (c2) => `<div class="cond-name">${esc(c2.name)}</div>${rollify(markupHtml(c2.text), c2.name, "", c2.name)}`;
+    SYMBOL_SIZE = 256;
+    SYMBOL_PAD = 4;
     registerTip("cond", (name) => {
       const c2 = findCondition(name);
       return c2 ? conditionHtml(c2) : "";
@@ -42762,8 +42872,9 @@ function nameHas(name, phrase) {
 function comesFrom(item, monsters, tables = null) {
   return (item.creatures || []).some((c2) => monsters.some((m) => {
     const name = typeof m === "string" ? m : m?.name, type = typeof m === "string" ? null : m?.monsterType;
-    const [, kind2, value] = String(c2).match(/^\s*(type|theme)\s*:\s*(.+?)\s*$/i) || [];
+    const [, kind2, value] = String(c2).match(/^\s*(type|subtype|theme)\s*:\s*(.+?)\s*$/i) || [];
     if (kind2?.toLowerCase() === "type") return !!type && type.toLowerCase() === value.toLowerCase();
+    if (kind2?.toLowerCase() === "subtype") return typeof m !== "string" && (m?.subtypes || []).some((x) => String(x).toLowerCase() === value.toLowerCase());
     if (kind2) {
       if (!tables || typeof m === "string") return false;
       const t = themeFor(m, tables).theme;
@@ -42885,8 +42996,9 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
           const it = pick3(r, theme.items);
           if (it) add2(lines, { kind: "item", name: it.name, qty: qtyOf(it.qty, r), value: Number(it.value) || 0, desc: flavorOf(it) });
         }
-        if (minorPool.length && r() < Math.min(C2.minorCeiling, C2.minorChance * gen * share * extra)) {
-          const it = pick3(r, minorPool, (x) => x.creatures?.length && comesFrom(x, [m], tables) ? C2.minorLinkedWeight : 1);
+        const minorHere = minorPool.filter((x) => dropsHere(x, [m], tables));
+        if (minorHere.length && r() < Math.min(C2.minorCeiling, C2.minorChance * gen * share * extra)) {
+          const it = pick3(r, minorHere, (x) => x.creatures?.length && comesFrom(x, [m], tables) ? C2.minorLinkedWeight : 1);
           add2(lines, { kind: "minor", id: it.id, name: it.name, qty: 1, value: Number(it.price) > 0 ? Number(it.price) : RARITY_VALUE[it.rarity] / (it.consumable ? 2 : 1) || 0 });
         }
       }
@@ -42923,8 +43035,8 @@ function generateLoot({ enemies, partyLevel, items, spells = [], tables, setting
     const maxCr = crs.reduce((a2, b2) => crValue(b2) > crValue(a2) ? b2 : a2, "0");
     const top = rarityCap(level, maxCr);
     const allowed = RARITIES.slice(1, RARITIES.indexOf(top) + 1);
-    const magic = items.filter((x) => isToggleMagic(x) && allowed.includes(x.rarity));
     const foes = enemies.filter((x) => x.monster).map((x) => x.monster);
+    const magic = items.filter((x) => isToggleMagic(x) && allowed.includes(x.rarity) && dropsHere(x, foes, tables));
     for (let n = 0; n < magicCount; n++) {
       const rarity = pick3(r, allowed, (x) => C2.rarityWeights[x] * (gen > 1 ? gen ** RARITIES.indexOf(x) : 1));
       const choices = [...magic.filter((x) => x.rarity === rarity), ...spells.length ? [{ scroll: true, rarity, consumable: true }] : []];
@@ -42991,7 +43103,7 @@ function priceText(gp) {
   if (gp >= 1) return `${Number(gp.toFixed(2)).toLocaleString()} gp`;
   return coinText(Math.max(1, Math.round(gp * 100)));
 }
-var LOOT_CONFIG, RARITIES, RARITY_VALUE, PARTY_CAP, CR_CAP, SCROLL_LEVELS, SCROLL_VALUE, GENEROSITY, generosityName, LOOT_SETTINGS, band, lowerRarity, rarityCap, gearCap, words, isPart, isTrueMagic, isToggleMagic, isMinorMagic, lc3, isCaster, qtyOf, round2, roughly;
+var LOOT_CONFIG, RARITIES, RARITY_VALUE, PARTY_CAP, CR_CAP, SCROLL_LEVELS, SCROLL_VALUE, GENEROSITY, generosityName, LOOT_SETTINGS, band, lowerRarity, rarityCap, gearCap, words, dropsHere, isPart, isTrueMagic, isToggleMagic, isMinorMagic, lc3, isCaster, qtyOf, round2, roughly;
 var init_loot = __esm({
   "src/loot.js"() {
     init_rules();
@@ -43045,6 +43157,7 @@ var init_loot = __esm({
     rarityCap = (partyLevel, maxCr) => lowerRarity(band(PARTY_CAP, partyLevel), band(CR_CAP, crValue(maxCr)));
     gearCap = (partyLevel, generosity) => band(LOOT_CONFIG.gearCaps, partyLevel) * generosity;
     words = (s) => String(s || "").toLowerCase().replace(/[’']/g, "").split(/[^a-z0-9]+/).filter(Boolean);
+    dropsHere = (item, monsters, tables) => !item.onlyFrom || comesFrom(item, monsters, tables);
     isPart = (x) => x.category !== "magic" && (x.component || x.creatures?.length && x.category !== "trinket");
     isTrueMagic = (x) => x.category === "magic" && x.loot !== false && !!String(x.text || "").trim();
     isToggleMagic = (x) => isTrueMagic(x) && x.rarity !== "Common";
@@ -65640,34 +65753,6 @@ var init_spell_search = __esm({
   }
 });
 
-// src/condition-icons.js
-var CONDITION_ICONS;
-var init_condition_icons = __esm({
-  "src/condition-icons.js"() {
-    CONDITION_ICONS = /* @__PURE__ */ new Set(["asleep", "attached", "banished", "bleeding", "blinded", "bloodied", "burning", "charmed", "choking", "concentrating", "confused", "cursed", "dazed", "dead", "deafened", "diseased", "dominated", "exhaustion", "flanked", "frightened", "grappled", "hidden", "incapacitated", "invisible", "levitating", "limb-damage", "paralyzed", "petrified", "poisoned", "possessed", "prone", "reduced-statistics", "restrained", "save-ends", "stunned", "suffocating", "swallowed", "temporary-hit-points", "turned", "unconscious"]);
-  }
-});
-
-// src/condition-icon.js
-function iconOf(name, conditions = []) {
-  const id = conditionId2(name, conditions);
-  return CONDITION_ICONS.has(id) ? id : CONDITION_ICONS.has(slug(name)) ? slug(name) : null;
-}
-function iconLetters(name) {
-  const words2 = String(name).split("/")[0].trim().split(/\s+/).filter(Boolean);
-  if (!words2.length) return "?";
-  return words2.length > 1 ? (words2[0][0] + words2[1][0]).toUpperCase() : words2[0][0].toUpperCase() + (words2[0][1] || "").toLowerCase();
-}
-var slug, conditionId2, iconPath;
-var init_condition_icon = __esm({
-  "src/condition-icon.js"() {
-    init_condition_icons();
-    slug = (name) => String(name).split("/")[0].toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-    conditionId2 = (name, conditions = []) => conditions.find((c2) => c2.name === name)?.id || slug(name);
-    iconPath = (id, size = 64) => `conditions%20symbols/png-${size}/${id}.png`;
-  }
-});
-
 // src/fight-settings.js
 function bloodiedAt() {
   try {
@@ -67431,8 +67516,8 @@ var init_runner = __esm({
     tokenArt = /* @__PURE__ */ new Map();
     artOf = (c2) => tokensOf(c2).map((id) => tokenArt.get(id)).find(Boolean);
     condIcon = (name) => {
-      const i = iconOf(name, store.conditions);
-      return i ? h("img.cond-icon", { src: iconPath(i, 64), alt: "" }) : h("span.cond-badge", iconLetters(name));
+      const src = iconSrc(name, store.conditions, 64);
+      return src ? h("img.cond-icon", { src, alt: "" }) : h("span.cond-badge", iconLetters(name));
     };
     closePop = () => {
     };
@@ -68297,7 +68382,7 @@ function itemTypeLine(it) {
 function itemHtml(it) {
   const value = itemValue(it);
   const stat = (label, v) => v ? `<div class="item-stat"><strong>${label}</strong> ${esc2(v)}</div>` : "";
-  return `<div class="cond-name">${esc2(it.name)}</div><div class="spell-meta">${esc2(itemTypeLine(it))}</div>` + stat(it.category === "magic" && !(Number(it.price) > 0) ? "Value (by rarity)" : "Cost", value != null ? `${priceText(value)}${it.bundle ? ` each (${it.bundle} to a bundle)` : ""}` : "") + stat("Armor Class", it.ac) + stat("Damage", it.damage) + stat("Properties", it.properties) + stat("Mastery", it.mastery) + stat("Strength", it.strength) + stat("Stealth", it.stealth) + stat("Weight", it.weight) + stat("Comes from", (it.creatures || []).join(", ")) + stat("Source", it.book) + (it.text ? `<div class="item-text">${glossify(condify(spellify(markupHtml(it.text))))}</div>` : gearFlavor(it.name) ? `<div class="item-text"><p><em>${esc2(gearFlavor(it.name))}</em></p></div>` : "") + (it.loot === false ? '<div class="spell-tags">Never drops as loot</div>' : "");
+  return `<div class="cond-name">${esc2(it.name)}</div><div class="spell-meta">${esc2(itemTypeLine(it))}</div>` + stat(it.category === "magic" && !(Number(it.price) > 0) ? "Value (by rarity)" : "Cost", value != null ? `${priceText(value)}${it.bundle ? ` each (${it.bundle} to a bundle)` : ""}` : "") + stat("Armor Class", it.ac) + stat("Damage", it.damage) + stat("Properties", it.properties) + stat("Mastery", it.mastery) + stat("Strength", it.strength) + stat("Stealth", it.stealth) + stat("Weight", it.weight) + stat(it.onlyFrom ? "Only from" : "Comes from", (it.creatures || []).join(", ")) + stat("Source", it.book) + (it.text ? `<div class="item-text">${glossify(condify(spellify(markupHtml(it.text))))}</div>` : gearFlavor(it.name) ? `<div class="item-text"><p><em>${esc2(gearFlavor(it.name))}</em></p></div>` : "") + (it.loot === false ? '<div class="spell-tags">Never drops as loot</div>' : "");
 }
 var blankItem = (name = "New Item") => ({ name, category: "magic", magic: "wondrous", rarity: "Uncommon", price: null, consumable: false, carried: true, text: "", source: "Homebrew" });
 function itemEditor(it, { changed: changed3, redraw }) {
@@ -68373,9 +68458,9 @@ function itemEditor(it, { changed: changed3, redraw }) {
       text("Weight", "weight", { placeholder: "3 lb." }),
       h(
         "label",
-        { title: 'Who it comes from, separated by commas: a creature name or part of one (Exonid), "type: Humanoid", or "theme: Bandit" (every creature using that loot theme). When they are in a fight, Loot picks this item more often: \xD710 for "Magic items found", \xD74 for minor magic. A creature part is harvested from them.' },
+        { title: 'Who it comes from, separated by commas: a creature name or part of one (Exonid), "type: Humanoid", "subtype: Skaven" (the word in brackets after the type), or "theme: Bandit" (every creature using that loot theme). When they are in a fight, Loot picks this item more often: \xD710 for "Magic items found", \xD74 for minor magic. A creature part is harvested from them.' },
         "Comes from (creatures)",
-        h("input", { type: "text", value: (it.creatures || []).join(", "), placeholder: "e.g. Cloud Shark, type: Fey, theme: Bandit", onchange: (e2) => {
+        h("input", { type: "text", value: (it.creatures || []).join(", "), placeholder: "e.g. Cloud Shark, type: Fey, subtype: Skaven, theme: Bandit", onchange: (e2) => {
           const list = e2.target.value.split(",").map((x) => x.trim()).filter(Boolean);
           if (list.length) it.creatures = list;
           else delete it.creatures;
@@ -68391,6 +68476,11 @@ function itemEditor(it, { changed: changed3, redraw }) {
         else it.loot = false;
         changed3();
       }, "Off: the loot generator never picks it"),
+      check("Only drops from these creatures", !!it.onlyFrom, (on) => {
+        if (on) it.onlyFrom = true;
+        else delete it.onlyFrom;
+        changed3();
+      }, 'On: Loot never picks it unless one of the creatures in "Comes from" is in the fight. Off: it can turn up anywhere, just more often from them.'),
       check("Used up when used (potion, scroll, ammunition)", !!it.consumable, (on) => {
         it.consumable = on;
         changed3();
@@ -72415,7 +72505,7 @@ init_fight_settings();
 init_owlbear_settings();
 
 // src/obr/manifest.json
-var version2 = "1.15.0";
+var version2 = "1.15.1";
 
 // src/app.js
 var TABS = [
